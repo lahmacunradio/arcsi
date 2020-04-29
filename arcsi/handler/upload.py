@@ -51,7 +51,23 @@ class DoArchive(object):
         )
         # How about expiration date? `ExpiresIn=0` tops out at 7 days maybe? We have GET API anyway but we should still have another look
 
+    # STUB lets see what the final architecture would look like
+    def batch_upload(self):
+        upload_queue = UploadQueue(100)
+        # get list of non uploaded items from arcsidb
+        threading.Thread(target=upload, args=(upload_queue,)).start()
+
 
 class UploadQueue(queue.Queue):
     def __init__(self):
         self.chunk_size = 1024
+
+    def write(self, data):
+        if data:
+            self.put(data)
+
+    def __iter__(self):
+        return iter(self.get, None)
+
+    def close(self):
+        self.put(None)
