@@ -1,22 +1,22 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}List of archives{% endblock %}</h1>
+<h1>{% block title %}List of archives{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-  {% for item in items %}
-    <h3>Show name: {{item.show_name}}<h3> 
+{% for item in items %}
+<h3>Show name: {{item.show_name}}<h3>
     <p>Show cover placeholder here: {{item.show_cover_url}}</p>
     <h3>Episode title: {{item.episode_title}}</h3>
     <p>Episode cover placeholder here: {{item.episode_cover_url}}</p>
-    <h4>Date: {{item.episode_date}}</h4> 
+    <h4>Date: {{item.episode_date}}</h4>
     <h4>Length: {{item.episode_length}}</h4>
     <h4>Archive URL: {{item.archive_url}}</h4>
     <br>
     <p>--------------------</p>
     <p>item num. {{item.id}}</p>
     <br><br><br><br><br>
-  {% endfor %}
+    {% endfor %}
 
-{% endblock %}
+    {% endblock %}
