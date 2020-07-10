@@ -224,9 +224,7 @@ class AzuraArchive(object):
         # PUT method; add episode to playlist
         if self.find_playlist_id():
             if not self.empty_playlist():
-                print("wnp?")
                 wiped = self.wipe_playlist_play_file()
-                print("plw'd")
                 if not wiped:
                     return False
             payload = {
@@ -234,7 +232,6 @@ class AzuraArchive(object):
                 "files": [self.play_file_name],
                 "playlists": [self.playlist_id],
             }
-            print(payload)
             r = requests.put(
                 self.config["base"] + self.config["endpoint"]["batch_update"],
                 headers=self.config["headers"],
@@ -242,7 +239,6 @@ class AzuraArchive(object):
             )
 
             if r.ok:
-                print(r.content)
                 return True
             return False
         return False
