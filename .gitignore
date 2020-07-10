@@ -1,8 +1,11 @@
 .DS_Store
 .env
+*.env
+config.py
 .flaskenv
 *.pyc
 *.pyo
+*.log
 **/venv
 env/
 dist/
@@ -16,3 +19,8 @@ _mailinglist
 .idea/
 docs/_build/
 .vscode
+*prod.py
+*dev.py
+*local.py
+*override.yml
+pg-data
