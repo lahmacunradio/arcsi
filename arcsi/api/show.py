@@ -64,7 +64,9 @@ def list_shows():
     shows = Show.query.all()
     for show in shows:
         if show.cover_image_url:
-            show.cover_image_url = do.download(show.playlist_name, show.cover_image_url)
+            show.cover_image_url = do.download(
+                show.archive_lahmastore_base_url, show.cover_image_url
+            )
     return many_show_details_schema.dumps(shows)
 
 
@@ -75,7 +77,9 @@ def view_show(id):
     if show:
         if show.cover_image_url:
             do = DoArchive()
-            show.cover_image_url = do.download(show.playlist_name, show.cover_image_url)
+            show.cover_image_url = do.download(
+                show.archive_lahmastore_base_url, show.cover_image_url
+            )
         return show_details_schema.dump(show)
     else:
         return make_response("Show not found", 404, headers)
