@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}My user profile{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<p>User name: {{user.name}}</p>
+<p>User email: {{user.email}}</p>
+<p>User active: {{user.active}}</p>
+<p>User butt username: {{user.butt_user}}</p>
+<p>User butt password: {{user.butt_pw}}</p>
+<p>User hosted shows: {% for show in user.shows %} {{ show.name }} {% endfor %}</p>
+<a href="{{ url_for('router.edit_user', id=user['id']) }}">Edit user</a> || <a
+  href="{{ url_for('arcsi.delete_user', id=user['id']) }}">Delete user</a>
+<hr>
+{% endblock %}

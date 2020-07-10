@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}All users{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% for user in users %}
+<p>User name: {{user.name}}</p>
+<p>User email: {{user.email}}</p>
+<p>User active: {{user.active}}</p>
+<p>User butt username: {{user.butt_user}}</p>
+<p>User butt password: {{user.butt_pw}}</p>
+<p>User hosted shows: {% for show in user.shows %} {{ show.name }} {% endfor %}</p>
+<p>permalink <a href="{{ url_for('router.view_user', id=user.id) }}">{{user.id}}</a></p>
+<hr>
+{% endfor %}
+{% endblock %}
