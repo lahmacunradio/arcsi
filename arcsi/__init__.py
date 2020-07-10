@@ -9,18 +9,18 @@ from arcsi.view.forms.register import ButtRegisterForm
 
 migrate = Migrate()
 
-# TODO create separate: dev, prod, test config -- from base config
+
 def create_app(config_file):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_pyfile(config_file)
 
     # ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
-    except OSError:
-        # TODO handle exception correctly
-        pass
+    except OSError as e:
+        return e
+
+    app.config.from_pyfile(config_file)
 
     user_store = SQLAlchemySessionUserDatastore(db.session, user.User, role.Role)
     # TODO w/ user_store can create_role() etc.
