@@ -1,5 +1,6 @@
 import requests
 
+from flask import current_app as app
 from flask import redirect, render_template, request, url_for
 from flask_login import current_user
 
@@ -8,7 +9,7 @@ from arcsi.view import router
 
 @router.route("/item/all")
 def list_items():
-    result = requests.get("http://" + request.host + url_for("arcsi.list_items"))
+    result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_items"))
     items = result.json()
     return render_template("item/list.html", items=items)
 
@@ -27,12 +28,12 @@ def add_item():
 @router.route("/item/<id>", methods=["GET"])
 def view_item(id):
     relpath = url_for("arcsi.view_item", id=id)
-    item = requests.get("http://" + request.host + relpath)
+    item = requests.get(app.config["APP_BASE_URL"] + relpath)
     return render_template("item/view.html", item=item.json())
 
 
 @router.route("/item/<id>/edit", methods=["GET"])
 def edit_item(id):
     relpath = url_for("arcsi.edit_item", id=id)
-    item = requests.get("http://" + request.host + relpath)
+    item = requests.get(app.config["APP_BASE_URL"] + relpath)
     return render_template("item/edit.html", item=item.json())

@@ -8,7 +8,7 @@ from arcsi.view import router
 
 @router.route("/user/all")
 def list_users():
-    result = requests.get("http://" + request.host + url_for("arcsi.list_users"))
+    result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_users"))
     users = result.json()
     return render_template("user/list.html", users=users)
 
