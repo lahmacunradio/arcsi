@@ -1,0 +1,38 @@
+---
+    version: "3"
+    services:
+      nginx:
+        build: ./nginx
+        restart: always
+        ports:
+          - "80:80"
+        depends_on:
+          - web
+      web:
+        links:
+          - "db"
+        build: .
+        image: arcsi:0.2
+        restart: always
+        expose:
+          - 5666
+        volumes:
+          - .:/app
+        depends_on:
+          - db
+        env_file: 
+            - app.env
+        # there is no `depend_on: condition:` in compose service v3
+        entrypoint: sh -c 'sleep 60; /app/entrypoint.sh'
+
+      db:
+        image: postgres:10
+        restart: always
+        volumes:
+            - ./pg-data/postgres:/var/lib/postgresql/data
+        ports:
+          - "5432:5432"
+        expose:
+          - 5432
+        env_file:
+          - db.env
