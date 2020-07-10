@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Edit episode item{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<form action="{{ url_for('arcsi.edit_item', id=item.id) }}" method="post" enctype="multipart/form-data">
+  <label for="shows">Episode of show:</label>
+  <input type="hidden" name="show_name" id="show_name" value="{{ item.shows[0].name }}"><select name="shows" id="shows"
+    onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
+    {% for show in item.shows %}
+    <option value="{{ show.id }}">{{ show.name }}</option>
+    {% endfor %}
+  </select>
+  <label for="number">Episode number</label>
+  <input type="number" name="number" id="number" value="{{ item.number }}">
+  <label for="name">Episode name</label>
+  <input name="name" id="name" value="{{ item.name }}">
+  <label for="description">Episode description</label>
+  <input name="description" id="description" value="{{ item.description }}">
+  <fieldset>
+    <legend>Episode language</legend>
+    <label for="music">Music</label>
+    <input type="radio" name="language" id="music" value="music">
+    <label for="hu_hu">Magyar</label>
+    <input type="radio" name="language" id="hu_hu" value="hu_hu" checked>
+    <label for="en_uk">English</label>
+    <input type="radio" name="language" id="en_uk" value="en_uk">
+  </fieldset>
+  <label for="play_date">Play date</label>
+  <input type="date" name="play_date" id="play_date" value="{{ item.play_date }}">
+  <label for="play_file">Play file</label>
+  <input type="file" name="play_file" id="play_file" value="{{ item.play_file_name }}">
+  <label for="image_file">Episode cover image</label>
+  <input type="file" name="image_file" id="image_file" value="{{ item.image_url }}">
+  <label for="live">Live</label>
+  <input type="hidden" name="live" id="live" {% if item.live %} value="1" {% else %} value="0" {% endif %}><input
+    type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0" {% if item.live %} checked {% endif %}>
+  <p>TODO THIS DIFFERENTLY ON EDIT</p>
+  <label for="broadcast">Broadcast</label>
+  <input type="hidden" id="broadcast" name="broadcast" {% if item.broadcast %} value="1" {% else %} value="0"
+    {% endif %}><input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
+    {% if item.broadcast %} checked {% endif %}>
+  <label for="archive_lahmastore">Archive to Lahmastore</label>
+  <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" {% if item.archive_lahmastore %} value="1"
+    {% else %} value="0" {% endif %}><input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
+    {% if item.archive_lahmastore %} checked {% endif %}>
+  <label for="archive_mixcloud">Archive to Mixcloud</label>
+  <input type="hidden" name="archive_mixcloud" id="archive_mixcloud" {% if item.archive_mixcloud %} value="1" {% else %}
+    value="0" {% endif %}><input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
+    {% if item.archive_mixcloud %} checked {% endif %}>
+  <!-- TODO updated_at ? uploader means anything here? -->
+  <input type="hidden" name="uploader" id="uploader" value="{{ current_user.email }}">
+  <input type="submit" value="Update">
+</form>
+{% endblock %}

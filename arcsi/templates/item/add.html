@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Add episode to archive{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<form action="{{ url_for('arcsi.add_item') }}" method="post" enctype="multipart/form-data">
+  <label for="shows">Show:</label>
+  <input type="hidden" name="show_name" id="show_name" value="{{ current_user.shows[0].name }}"><select name="shows"
+    id="shows" onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
+    {% for show in current_user.shows %}
+    <option value="{{ show.id }}">{{ show.name }}</option>
+    {% endfor %}
+  </select>
+  <label for="number">Episode number</label>
+  <input type="number" name="number" id="number">
+  <label for="name">Episode name</label>
+  <input name="name" id="name" required>
+  <label for="description">Episode description</label>
+  <input name="description" id="description">
+  <fieldset>
+    <legend>Episode language</legend>
+    <label for="music">Music</label>
+    <input type="radio" name="language" id="music" value="music">
+    <label for="hu_hu">Magyar</label>
+    <input type="radio" name="language" id="hu_hu" value="hu_hu" checked>
+    <label for="en_uk">English</label>
+    <input type="radio" name="language" id="en_uk" value="en_uk">
+  </fieldset>
+  <label for="play_date">Play date</label>
+  <input type="date" name="play_date" id="play_date" required>
+  <label for="play_file">Play file</label>
+  <input type="file" name="play_file" id="play_file">
+  <label for="image_file">Episode cover image</label>
+  <input type="file" name="image_file" id="image_file">
+  <label for="live">Live</label>
+  <input type="hidden" name="live" id="live" value="0"><input type="checkbox"
+    onclick="this.previousElementSibling.value=this.checked?1:0">
+  <label for="broadcast">Broadcast</label>
+  <input type="hidden" id="broadcast" name="broadcast" value="0"><input type="checkbox"
+    onclick="this.previousElementSibling.value=this.checked?1:0">
+  <p>WARNING THESE OVERWRITE SHOW-LEVEL SETTINGS</p>
+  <label for="archive_lahmastore">Archive to Lahmastore</label>
+  <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" value="1"><input type="checkbox"
+    onclick="this.previousElementSibling.value=this.checked?1:0" checked>
+  <label for="archive_mixcloud">Archive to Mixcloud</label>
+  <input type="hidden" name="archive_mixcloud" id="archive_mixcloud" value="0"><input type="checkbox"
+    onclick="this.previousElementSibling.value=this.checked?1:0">
+  <input type="hidden" name="uploader" id="uploader" value="{{ current_user.email }}">
+  <input type="submit" value="Add">
+</form>
+{% endblock %}
