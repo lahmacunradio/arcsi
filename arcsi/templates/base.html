@@ -1,19 +1,41 @@
 <!doctype html>
-<title>{% block title %}{% endblock %}</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<nav>
-  <h1><a href="{{ url_for('router.archive') }}">A R C S I</a></h1>
-  <ul>
-    <li><a href="{{ url_for('router.add') }}">ADD NEW</a>
-  </ul>
-</nav>
-<section class="content">
-  <header>
-    {% block header %}{% endblock %}
-  </header>
-  {% for message in get_flashed_messages() %}
-  <div class="flash">{{ message }}</div>
-  {% endfor %}
+<html>
 
-  {% block content %}{% endblock %}
-</section>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+  <nav>
+    <h1><a href="{{ url_for('router.archive') }}">A R C S I</a></h1><br>
+    <ul>
+      <li><a href="{{ url_for('router.add_show') }}">Add new show</a></li>
+      <li><a href="{{ url_for('router.list_shows') }}">Shows archive</a></li>
+      <li><a href="{{ url_for('router.add_item') }}">Add new item</a></li>
+      <li><a href="{{ url_for('router.list_items') }}">Items archive</a></li>
+      {% if current_user.is_authenticated %}
+      <li><a href="{{ url_for('router.view_user') }}">User {{ current_user.email }}</a></li>
+      <li><a href="{{ url_for('security.logout') }}">Logout</a></li>
+      {% else %}
+      <li><a href="{{ url_for('security.login') }}">Login</a></li>
+      <li><a href="{{ url_for('security.register') }}">Register</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+  <section class="content">
+    <header>
+      {% block header %}{% endblock %}
+    </header>
+    {% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+    {% endfor %}
+
+    {% block content %}{% endblock %}
+  </section>
+</body>
+
+</html>
