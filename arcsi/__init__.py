@@ -18,7 +18,8 @@ def create_app(config_file):
     try:
         os.makedirs(app.instance_path)
     except OSError as e:
-        return e
+        # already exists
+        pass
 
     app.config.from_pyfile(config_file)
 
