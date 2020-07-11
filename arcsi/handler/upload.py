@@ -237,7 +237,6 @@ class AzuraArchive(object):
                 headers=self.config["headers"],
                 json=payload,
             )
-
             if r.ok:
                 return True
             return False
