@@ -60,7 +60,9 @@ def list_items():
     items = Item.query.all()
     for item in items:
         if item.image_url:
-            item.image_url = do.download(item.shows[0].playlist_name, item.image_url)
+            item.image_url = do.download(
+                item.shows[0].archive_lahmastore_base_url, item.image_url
+            )
     return many_item_details_schema.dumps(items)
 
 
@@ -71,7 +73,9 @@ def view_item(id):
     if item:
         if item.image_url:
             do = DoArchive()
-            item.image_url = do.download(item.shows[0].playlist_name, item.image_url)
+            item.image_url = do.download(
+                item.shows[0].archive_lahmastore_base_url, item.image_url
+            )
         return item_details_schema.dump(item)
     else:
         return make_response("Item not found", 404, headers)
