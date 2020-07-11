@@ -177,7 +177,7 @@ def add_item():
                         )
 
                         # TODO find image -- fallback to show cover; handle this if-tree better
-                        # Embed image to uploaded file so Azuracast displays it
+                        # TODO embed metadata regardless of there's image or not f.e. title && artist
                         if new_item.image_url:
                             episode_update = az.embedded_metadata()
                         station_upload = az.upload()
