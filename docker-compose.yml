@@ -6,6 +6,8 @@
         restart: always
         ports:
           - "80:80"
+        volumes:
+          - ./nginx/arcsi.conf:/etc/nginx/conf.d/arcsi.conf
         depends_on:
           - web
       web:
