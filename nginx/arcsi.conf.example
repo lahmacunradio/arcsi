@@ -1,0 +1,85 @@
+upstream arcsi {
+    server web:5666;
+}
+
+# HTTP
+server {
+    listen 80;
+    listen [::]:80;
+    server_name localhost;
+
+    location /.well-known/ {
+        root /var/lib/certbot;
+    }
+
+    location / {
+        return 301 https://localhost$request_uri;
+    }
+}
+
+# HTTPS
+server {
+    listen 443 ssl http2 default_server;
+    listen [::]:443 ssl http2 default_server;
+    server_name localhost;
+
+    # SSL certificates
+    ssl_certificate /etc/letsencrypt/live/localhost/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/localhost/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/localhost/chain.pem;
+
+    # Adding custom headers    
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;
+
+    # Might add CSP headers later on
+    # add_header Content-Security-Policy "default-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self';";
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+    add_header Allow "GET, POST, HEAD" always;
+
+    access_log /var/log/nginx/localhost.access.log;
+    error_log /var/log/nginx/localhost.error.log warn;
+
+    location / {
+        proxy_http_version 1.1;
+        proxy_cache_bypass $http_upgrade;
+        proxy_hide_header X-Powered-By;
+        proxy_hide_header Server;
+        proxy_hide_header X-AspNetMvc-Version;
+        proxy_hide_header X-AspNet-Version;
+        proxy_pass http://arcsi;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header Proxy "";
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_redirect off;
+        proxy_read_timeout 12000s;
+        proxy_connect_timeout 12000s;
+    }
+    location ~* \.(?:css|cur|js|jpe?g|gif|htc|ico|png|html|xml|otf|ttf|eot|woff|woff2|svg)$ {
+        expires 7d;
+        add_header Pragma public;
+        add_header Cache-Control public;
+
+        proxy_pass http://arcsi;
+    }
+    if ( $request_method !~ ^(GET|POST|HEAD)$ ) {
+        return 405;
+    }
+
+    if ($http_user_agent ~* LWP::Simple|BBBike|wget) {
+        return 403;
+    }
+
+    location ~ /\.(?!well-known) {
+        deny all;
+    }
+
+}
