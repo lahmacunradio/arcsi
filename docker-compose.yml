@@ -6,10 +6,15 @@
         restart: always
         ports:
           - "80:80"
+          - "443:443"
         volumes:
           - ./nginx/arcsi.conf:/etc/nginx/conf.d/arcsi.conf
+          - /etc/letsencrypt:/etc/letsencrypt
         depends_on:
           - web
+        env_file:
+          - srv.env
+        entrypoint: sh -c '/entrypoint.sh $DOMAIN $EMAIL'
       web:
         links:
           - "db"
