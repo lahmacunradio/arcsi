@@ -32,6 +32,15 @@ def create_app(config_file):
         db.init_app(app)
         migrate.init_app(app, db)
 
+        # create arcsi roles: 
+        # `admin` => access to whole service, 
+        # `host` => acces to their show, 
+        # `guest` => acces to their episode
+        user_store.find_or_create_role(name='admin', description='Radio staff')
+        user_store.find_or_create_role(name='host', description='Show host')
+        user_store.find_or_create_role(name='guest', description='Episode guest')
+        db.session.commit()
+
     from arcsi import api
     from arcsi import view
 
