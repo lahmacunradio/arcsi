@@ -210,6 +210,22 @@ def add_item():
 
         return make_response(jsonify(item_details_schema.dump(new_item)), 200, headers,)
 
+@arcsi.route("item/<id>/listen/<audio>", methods=["GET"])
+def listen_play_file(id, audio):
+    do = DoArchive()
+    item_query = Item.query.filter_by(play_file_name=audio)
+    item = item_query.first()
+    if item is None:
+        item_query = Item.query.filter_by(id=id)
+        item = item_query.first()
+    presigned = do.download(
+        item.shows[0].archive_lahmastore_base_url, item.archive_lahmastore_canonical_url
+    )
+    req = requests.get(presigned)
+    media_item = io.BytesIO(req.content)
+    return send_file(
+        media_item, as_attachment=False, attachment_filename=audio,
+    )
 
 @arcsi.route("/item/<id>/download", methods=["GET"])
 def download_play_file(id):
@@ -222,7 +238,7 @@ def download_play_file(id):
     req = requests.get(presigned)
     media_item = io.BytesIO(req.content)
     return send_file(
-        media_item, as_attachment=True, attachment_filename=item.play_file_name
+        media_item, as_attachment=True, attachment_filename=item.play_file_name,
     )
 
 
