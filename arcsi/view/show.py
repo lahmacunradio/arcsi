@@ -2,6 +2,8 @@ import requests
 
 from flask import current_app as app
 from flask import render_template, request, url_for
+from flask_login import current_user
+from flask_security import roles_accepted, roles_required
 
 from arcsi.view import router
 
@@ -14,6 +16,7 @@ def list_shows():
 
 
 @router.route("/show/add", methods=["GET"])
+@roles_accepted("admin", "host")
 def add_show():
     return render_template("show/add.html")
 
@@ -26,6 +29,7 @@ def view_show(id):
 
 
 @router.route("/show/<id>/edit", methods=["GET"])
+@roles_accepted("admin", "host", "guest")
 def edit_show(id):
     relpath = url_for("arcsi.edit_show", id=id)
     show = requests.get(app.config["APP_BASE_URL"] + relpath)
