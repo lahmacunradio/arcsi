@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}My user profile{% endblock %}</h1>
+<h1>{% block title %}User profile{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,10 @@
 <p>User butt username: {{user.butt_user}}</p>
 <p>User butt password: {{user.butt_pw}}</p>
 <p>User hosted shows: {% for show in user.shows %} {{ show.name }} {% endfor %}</p>
-<a href="{{ url_for('router.edit_user', id=user['id']) }}">Edit user</a> || <a
-  href="{{ url_for('arcsi.delete_user', id=user['id']) }}">Delete user</a>
+<a href="{{ url_for('router.edit_user', id=user['id']) }}">Edit user</a>
+{% if user.has_role("admin") %}
+<h4>ADMIN EYES</h4>
+<p>User roles: {% for role in user.roles %} {{ role.name }} {% endfor %}</p>
+{% endif %}
 <hr>
 {% endblock %}

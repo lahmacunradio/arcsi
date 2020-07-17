@@ -12,6 +12,10 @@
 <p>User butt username: {{user.butt_user}}</p>
 <p>User butt password: {{user.butt_pw}}</p>
 <p>User hosted shows: {% for show in user.shows %} {{ show.name }} {% endfor %}</p>
+{% if user.has_role("admin") %}
+<h4>ADMIN EYES</h4>
+<p>User roles: {% for role in user.roles %} {{ role.name }} {% endfor %}</p>
+{% endif %}
 <p>permalink <a href="{{ url_for('router.view_user', id=user.id) }}">{{user.id}}</a></p>
 <hr>
 {% endfor %}
