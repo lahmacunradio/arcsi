@@ -6,7 +6,7 @@ import io
 from mutagen.id3 import APIC, ID3
 from mutagen.mp3 import MP3
 
-from flask import flash, jsonify, make_response, redirect, request, send_file, url_for
+from flask import flash, jsonify, make_response, request, send_file, url_for
 from marshmallow import fields, post_load, Schema, ValidationError
 
 

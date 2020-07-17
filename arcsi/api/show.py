@@ -3,7 +3,7 @@ import os
 import requests
 import io
 
-from flask import flash, jsonify, make_response, redirect, request, url_for
+from flask import flash, jsonify, make_response, request, url_for
 from flask import current_app as app
 from marshmallow import fields, post_load, Schema, ValidationError
 from werkzeug import secure_filename

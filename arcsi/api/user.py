@@ -1,7 +1,7 @@
 import json
 import os
 
-from flask import flash, jsonify, make_response, redirect, request, url_for
+from flask import flash, jsonify, make_response, request, url_for
 from flask import current_app as app
 from marshmallow import fields, post_load, Schema, ValidationError
 

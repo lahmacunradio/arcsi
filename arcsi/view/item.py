@@ -1,7 +1,7 @@
 import requests
 
 from flask import current_app as app
-from flask import redirect, render_template, request, url_for
+from flask import render_template, request, url_for
 from flask_login import current_user
 from flask_security import roles_accepted
 
