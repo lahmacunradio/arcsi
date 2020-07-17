@@ -3,6 +3,7 @@ import requests
 from flask import current_app as app
 from flask import redirect, render_template, request, url_for
 from flask_login import current_user
+from flask_security import roles_accepted
 
 from arcsi.view import router
 
@@ -15,14 +16,16 @@ def list_items():
 
 
 @router.route("/item/add", methods=["GET"])
+@roles_accepted("admin", "host")
 def add_item():
     if current_user.is_anonymous:
         # TODO error handling
         return redirect(url_for("security.login", _external=True))
-    elif not current_user.shows.all():
+    elif not current_user.has_role("admin") or not current_user.shows.all():
         # TODO error handling
         return "add new show first"
-    return render_template("item/add.html")
+    if current_user.is_authenticated:
+        return render_template("item/add.html")
 
 
 @router.route("/item/<id>", methods=["GET"])
