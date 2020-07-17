@@ -7,12 +7,21 @@
 {% block content %}
 <form action="{{ url_for('arcsi.edit_item', id=item.id) }}" method="post" enctype="multipart/form-data">
   <label for="shows">Episode of show:</label>
+  {% if current_user.has_role("admin") %}
+  <input type="hidden" name="show_name" id="show_name" value="{{ shows[0].name }}"><select name="shows" id="shows"
+  onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
+  {% for show in shows %}
+  <option value="{{ show.id }}">{{ show.name }}</option>
+  {% endfor %}
+</select>
+  {% else %}
   <input type="hidden" name="show_name" id="show_name" value="{{ item.shows[0].name }}"><select name="shows" id="shows"
     onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
     {% for show in item.shows %}
     <option value="{{ show.id }}">{{ show.name }}</option>
     {% endfor %}
   </select>
+  {% endif %}
   <label for="number">Episode number</label>
   <input type="number" name="number" id="number" value="{{ item.number }}">
   <label for="name">Episode name</label>
