@@ -18,11 +18,15 @@
       <li><a href="{{ url_for('router.add_item') }}">Add new item</a></li>
       <li><a href="{{ url_for('router.list_items') }}">Items archive</a></li>
       {% if current_user.is_authenticated %}
-      <li><a href="{{ url_for('router.view_user') }}">User {{ current_user.email }}</a></li>
+      <li><a href="{{ url_for('router.view_user') }}">Profile</a></li>
       <li><a href="{{ url_for('security.logout') }}">Logout</a></li>
       {% else %}
       <li><a href="{{ url_for('security.login') }}">Login</a></li>
       <li><a href="{{ url_for('security.register') }}">Register</a></li>
+      {% endif %}
+      {% if current_user.has_role("admin") %}
+      <h4>ADMIN INTERFACE</h4>
+      <li><a href="{{ url_for('router.list_users') }}">All users</a></li>
       {% endif %}
     </ul>
   </nav>
