@@ -14,7 +14,7 @@
           - web
         env_file:
           - srv.env
-        entrypoint: sh -c '/entrypoint.sh $$DOMAIN $$EMAIL'
+        entrypoint: sh -c '/entrypoint.sh $DOMAIN $EMAIL'
       web:
         links:
           - "db"
