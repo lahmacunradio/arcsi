@@ -9,10 +9,9 @@ from mutagen.mp3 import MP3
 from flask import flash, jsonify, make_response, request, send_file, url_for
 from marshmallow import fields, post_load, Schema, ValidationError
 
-
-from .utils import dict_to_obj, media_path, normalise
+from .utils import dict_to_obj, media_path, normalise, process_media
 from arcsi.api import arcsi
-from arcsi.handler.upload import AzuraArchive, DoArchive
+from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.item import Item
 from arcsi.model.show import Show
@@ -135,70 +134,13 @@ def add_item():
             uploader=item_metadata.uploader,
             shows=shows,
         )
-
+  
         db.session.add(new_item)
         db.session.flush()
 
         if request.files:
-            if request.files["image_file"]:
-                image_file = request.files["image_file"]
-                image_file_name = normalise(image_file.filename)
-                if image_file_name != "":
-                    image_file_path = media_path(
-                        shows[0].archive_lahmastore_base_url,
-                        str(new_item.number),
-                        image_file_name,
-                    )
-                    image_file.save(image_file_path)
-                    do = DoArchive()
-                    # TODO try / except
-                    new_item.image_url = do.upload(
-                        image_file_path,
-                        shows[0].archive_lahmastore_base_url,
-                        new_item.number,
-                    )
-            if request.files["play_file"]:
-                play_file = request.files["play_file"]
-                play_file_name = normalise(play_file.filename)
-                if play_file_name != "":
-                    play_file_path = media_path(
-                        shows[0].archive_lahmastore_base_url,
-                        str(new_item.number),
-                        play_file_name,
-                    )
-                    play_file.save(play_file_path)
-                    new_item.play_file_name = play_file_name
-
-                    # TODO error handling if broadcast || archive_lahmastore but no play_file
-                    if new_item.broadcast:
-                        az = AzuraArchive(
-                            play_file_path,
-                            new_item.play_file_name,
-                            image_file_path,
-                            shows[0].name,
-                            new_item.name,
-                            shows[0].playlist_name,
-                        )
-
-                        # TODO find image -- fallback to show cover; handle this if-tree better
-                        # TODO embed metadata regardless of there's image or not f.e. title && artist
-                        if new_item.image_url:
-                            episode_update = az.embedded_metadata()
-                        station_upload = az.upload()
-                        if station_upload:
-                            episode_playlist = az.assign_playlist()
-                            if episode_playlist:
-                                # TODO change all other episode airing to false
-                                new_item.airing = True
-
-                    if new_item.archive_lahmastore:
-                        do = DoArchive()
-                        new_item.archive_lahmastore_canonical_url = do.upload(
-                            play_file_path,
-                            shows[0].archive_lahmastore_base_url,
-                            new_item.number,
-                        )
-                        new_item.archived = True
+            process_media(request.files, new_item)
+            
 
             # TODO some mp3 error
             # TODO Maybe I used vanilla mp3 not from azuracast
@@ -283,8 +225,8 @@ def edit_item(id):
         item.language = item_metadata.language
         item.play_date = item_metadata.play_date
         item.live = item_metadata.live
-        # item.broadcast = item_metadata.broadcast
-        # item.airing = item_metadata.airing
+        item.broadcast = item_metadata.broadcast
+        item.airing = item_metadata.airing
         item.uploader = item_metadata.uploader
         item.archive_lahmastore = item_metadata.archive_lahmastore
         item.archive_mixcloud = item_metadata.archive_mixcloud
@@ -298,6 +240,12 @@ def edit_item(id):
             .filter(Show.id.in_((show.id for show in item_metadata.shows)))
             .all()
         )
+        db.session.add(item)
+        db.session.flush()
+        
+        if request.files:
+            process_media(request.files, item)
+
         db.session.commit()
         return make_response(
             jsonify(item_details_partial_schema.dump(item)), 200, headers
