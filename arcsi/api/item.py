@@ -19,7 +19,7 @@ from arcsi.model.show import Show
 
 class ItemDetailsSchema(Schema):
     id = fields.Int()
-    number = fields.Int(required=True)
+    number = fields.Int(required=True)  # TODO value can't be 0 -- reserved for show itself
     name = fields.Str(required=True, min=1)
     description = fields.Str()
     language = fields.Str(max=5)
@@ -134,7 +134,7 @@ def add_item():
             uploader=item_metadata.uploader,
             shows=shows,
         )
-  
+        
         db.session.add(new_item)
         db.session.flush()
 
