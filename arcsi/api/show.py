@@ -8,7 +8,7 @@ from flask import current_app as app
 from marshmallow import fields, post_load, Schema, ValidationError
 from werkzeug import secure_filename
 
-from .utils import media_path, normalise
+from .utils import media_path, normalise, process_image
 from arcsi.api import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
@@ -140,18 +140,8 @@ def add_show():
 
         if request.files:
             if request.files["image_file"]:
-                image_file = request.files["image_file"]
-                image_file_name = image_file.filename
-                if image_file_name != "":
-                    image_file_path = media_path(
-                        new_show.archive_lahmastore_base_url, "0", image_file_name
-                    )
-                    image_file.save(image_file_path)
-                    do = DoArchive()
-                    # TODO try / except
-                    new_show.cover_image_url = do.upload(
-                        image_file_path, new_show.archive_lahmastore_base_url, 0,
-                    )
+                process_image(request.files["image_file"], new_show)
+            
         db.session.commit()
 
         return make_response(jsonify(show_details_schema.dump(new_show)), 200, headers,)
@@ -213,6 +203,14 @@ def edit_show(id):
             .filter(User.id.in_((user.id for user in show_metadata.users)))
             .all()
         )
+
+        db.session.add(show)
+        db.session.flush()
+
+        if request.files:
+            if request.files["image_file"]:
+                process_image(request.files["image_file"], show)
+
         db.session.commit()
         return make_response(
             jsonify(show_details_partial_schema.dump(show)), 200, headers

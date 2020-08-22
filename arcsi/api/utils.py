@@ -3,6 +3,8 @@ import unicodedata
 
 from arcsi.handler.upload import AzuraArchive, DoArchive
 from arcsi.model import db
+from arcsi.model.item import Item
+from arcsi.model.show import Show
 from flask import current_app as app
 from werkzeug import secure_filename
 
@@ -88,19 +90,31 @@ def process_audio(play_file, item, image_file_path):
 def process_image(image_file, item):
     image_file_name = normalise(image_file.filename)
     if image_file_name != "":
-        image_file_path = media_path(
-            item.shows[0].archive_lahmastore_base_url,
-            str(item.number),
-            image_file_name,
-        )
+        if isinstance(item, Show):
+            image_file_path = media_path(
+                item.archive_lahmastore_base_url,
+                str(0),
+                image_file_name,
+            )
+        else:
+            image_file_path = media_path(
+                item.shows[0].archive_lahmastore_base_url,
+                str(item.number),
+                image_file_name,
+            )
         image_file.save(image_file_path)
         do = DoArchive()
         # TODO try / except
-        item.image_url = do.upload(
-            image_file_path,
-            item.shows[0].archive_lahmastore_base_url,
-            item.number,
-        )
+        if isinstance(item, Show):
+            item.cover_image_url = do.upload(
+                image_file_path, item.archive_lahmastore_base_url, 0,
+            )
+        else:
+            item.image_url = do.upload(
+                image_file_path,
+                item.shows[0].archive_lahmastore_base_url,
+                item.number,
+            )
         return image_file_path
 
 def process_media(request_files, item):
@@ -109,6 +123,3 @@ def process_media(request_files, item):
     if request_files["play_file"]:
         if image_file_path:
             audio_file_path = process_audio(request_files["play_file"], item, image_file_path)
-        
-        
-        
