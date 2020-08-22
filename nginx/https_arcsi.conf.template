@@ -63,7 +63,7 @@ server {
         proxy_read_timeout 12000s;
         proxy_connect_timeout 12000s;
     }
-    location ~* \.(?:css|cur|js|jpe?g|gif|htc|ico|png|html|xml|otf|ttf|eot|woff|woff2|svg)$ {
+    location ~* \.(?:css|cur|js|jpe?g|gif|htc|ico|mp3|png|html|xml|otf|ttf|eot|woff|woff2|svg)$ {
         expires 7d;
         add_header Pragma public;
         add_header Cache-Control public;
