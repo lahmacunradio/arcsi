@@ -3,6 +3,7 @@ import os
 from flask import Flask
 from flask_security import Security, SQLAlchemySessionUserDatastore
 from flask_migrate import Migrate
+from flask_swagger_ui import get_swaggerui_blueprint
 
 from arcsi.model import db, item, role, show, user
 from arcsi.view.forms.register import ButtRegisterForm
@@ -13,6 +14,19 @@ migrate = Migrate()
 def create_app(config_file):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+
+    ### swagger specific ###
+    SWAGGER_URL = '/swagger'
+    API_URL = '/static/swagger.json'
+    SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
+        SWAGGER_URL,
+        API_URL,
+        config={
+            'app_name': "Arcsi"
+        }
+    )
+    app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
+    ### end swagger specific ###
 
     # ensure the instance folder exists
     try:
