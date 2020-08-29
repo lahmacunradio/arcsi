@@ -29,7 +29,7 @@ Python uses the `venv` module to create app specific virtual environments. Here 
 
 (Exit w/ `deactivate`)
 
-3. `pip install -r arcsi/requirements.txt`
+3. `pip install -r requirements.txt`
 4. `export FLASK_APP="run.py"`
 5. `export FLASK_DEBUG=1`
 
