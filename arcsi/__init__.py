@@ -15,19 +15,6 @@ def create_app(config_file):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
 
-    ### swagger specific ###
-    SWAGGER_URL = '/swagger'
-    API_URL = '/static/swagger.json'
-    SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
-        SWAGGER_URL,
-        API_URL,
-        config={
-            'app_name': "Arcsi"
-        }
-    )
-    app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
-    ### end swagger specific ###
-
     # ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
@@ -60,5 +47,19 @@ def create_app(config_file):
 
     app.register_blueprint(api.arcsi)
     app.register_blueprint(view.router)
+
+    ### swagger specific ###
+    SWAGGER_URL = '/swagger'
+    API_URL = '/static/swagger.json'
+    SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
+        SWAGGER_URL,
+        API_URL,
+        config={
+            'app_name': "Arcsi"
+        }
+    )
+    app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
+    ### end swagger specific ###
+    
 
     return app
