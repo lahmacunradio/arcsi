@@ -24,6 +24,7 @@ Create following template files:
 ## Start docker
 Run `docker-compose up -d`
 
+Note: you may need to comment out following line in `docker-compose.yml`: `/etc/letsencrypt:/etc/letsencrypt`
+
 ## Run app
 Hit http://localhost in your browser
-
