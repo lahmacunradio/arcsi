@@ -13,6 +13,7 @@ Make sure you have Docker.
 ## Create environment
 Create following template files:
 1. config.template.py -> `config.py`
+   * Mind this: https://github.com/mmmnmnm/lahmacun_arcsi/issues/5
 2. app.env.template -> `app.env`
    * Set `FLASK_APP=run.py`
 3. db.env.template -> `db.env`
