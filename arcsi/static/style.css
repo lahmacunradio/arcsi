@@ -1,0 +1,34 @@
+body {
+    background-color: #d09cf8;
+    color: #23282d;    
+}
+
+.container {
+    max-width: 1200px;
+    width: 98%;
+    margin: auto;
+}
+
+header.siteheader {
+    display: flex;
+    flex-flow: row;
+    padding: 1em;
+    align-content: center;
+}
+
+header.siteheader h1 {
+    margin: 0;
+}
+
+header.siteheader a {
+    color: #23282d;
+}
+
+nav ul {
+    list-style: none;
+}
+
+nav ul li {
+    display: inline-block;
+    margin-right: 0.5em;
+}
