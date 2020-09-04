@@ -3,36 +3,55 @@
 
 <head>
   <title>{% block title %}{% endblock %}</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Rubik:300,300i,400,400i,500,500i,700,700i&amp;subset=latin-ext" rel="stylesheet">
+
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-  <div class="container">
+  <div class="container-fluid">
 
     <header class="siteheader">
-      <h1><a href="{{ url_for('router.archive') }}">A R C S I</a></h1><br>
-      <nav>
-        <ul>
-          <li><a href="{{ url_for('router.add_show') }}">Add new show</a></li>
-          <li><a href="{{ url_for('router.list_shows') }}">Shows archive</a></li>
-          <li><a href="{{ url_for('router.add_item') }}">Add new item</a></li>
-          <li><a href="{{ url_for('router.list_items') }}">Items archive</a></li>
-          {% if current_user.is_authenticated %}
-          <li><a href="{{ url_for('router.view_user') }}">Profile</a></li>
-          <li><a href="{{ url_for('security.logout') }}">Logout</a></li>
-          {% else %}
-          <li><a href="{{ url_for('security.login') }}">Login</a></li>
-          <li><a href="{{ url_for('security.register') }}">Register</a></li>
-          {% endif %}
-          {% if current_user.has_role("admin") %}
-          <h4>ADMIN INTERFACE</h4>
-          <li><a href="{{ url_for('router.list_users') }}">All users</a></li>
-          {% endif %}
-        </ul>
-      </nav>      
+      <h1>
+        <a href="{{ url_for('router.archive') }}">A R C S I</a>
+      </h1>
+      <div class="navigation-block">
+        <nav>
+          <ul>
+            <li><a href="{{ url_for('router.add_show') }}">Add new show</a></li>
+            <li><a href="{{ url_for('router.list_shows') }}">Shows archive</a></li>
+            <li><a href="{{ url_for('router.add_item') }}">Add new item</a></li>
+            <li><a href="{{ url_for('router.list_items') }}">Items archive</a></li>
+          </ul>
+        </nav> 
+        <div>
+          
+          <div class="adminmenu">
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('router.view_user') }}" title="Profile"><i class="far fa-user-circle"></i></a>
+            <a href="{{ url_for('security.logout') }}" title="Logout"><i class="fas fa-sign-out-alt"></i></a>
+            {% else %}
+            <a href="{{ url_for('security.login') }}" title="Login"><i class="fas fa-sign-in-alt"></i></a>
+            <a href="{{ url_for('security.register') }}" title="Register"><i class="fas fa-user-plus"></i></a>
+            {% endif %}
+
+            {% if current_user.has_role("admin") %}
+            <div class="has-submenu admin-menu" title="ADMIN INTERFACE">
+              <i class="fas fa-users-cog"></i>
+              <div class="hidden-sub">
+                <a href="{{ url_for('router.list_users') }}">All users</a>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          
+          
+        </div>
+      </div>     
     </header>
 
   <section class="content">
