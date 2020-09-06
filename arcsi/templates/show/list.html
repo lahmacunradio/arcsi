@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}Shows archive{% endblock %}</h1>
+<h2>{% block title %}Shows archive{% endblock %}</h2>
 {% endblock %}
 
 {% block content %}
-<h1>Shows</h1>
+<h3>Shows</h3>
 {% for show in shows %}
 <p>Show host: {% for user in show.users %} {% if user.name %} {{ user.name }} {% else %} {{ user.email }} {% endif %}
     {% endfor %}</p>

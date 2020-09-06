@@ -87,3 +87,24 @@ header .admin-menu {
     padding-left: 0.5em;
     border-left: 1px solid grey;
 }
+
+/* Content */
+
+section.content h2 {
+    margin-bottom: 2rem;
+}
+
+.admin-content > div {
+    margin-bottom: 2rem;
+}
+
+.users-list {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    column-gap: 1rem;
+}
+
+.users-list .user-card {
+    padding: 1em;
+    border: 1px solid;
+}
