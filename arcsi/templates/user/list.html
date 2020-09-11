@@ -5,18 +5,22 @@
 {% endblock %}
 
 {% block content %}
-{% for user in users %}
-<p>User name: {{user.name}}</p>
-<p>User email: {{user.email}}</p>
-<p>User active: {{user.active}}</p>
-<p>User butt username: {{user.butt_user}}</p>
-<p>User butt password: {{user.butt_pw}}</p>
-<p>User hosted shows: {% for show in user.shows %} {{ show.name }} {% endfor %}</p>
-{% if current_user.has_role("admin") %}
-<h4>ADMIN EYES</h4>
-<p>User roles: {% for role in user.roles %} {{ role.name }} {% endfor %}</p>
-{% endif %}
-<p>permalink <a href="{{ url_for('router.view_user', id=user.id) }}">{{user.id}}</a></p>
-<hr>
-{% endfor %}
+<div class="users-list">
+    {% for user in users %}
+    <div class="user-card">
+        <p>User name: {{user.name}}</p>
+        <p>User email: {{user.email}}</p>
+        <p>User active: {{user.active}}</p>
+        <p>User butt username: {{user.butt_user}}</p>
+        <p>User butt password: {{user.butt_pw}}</p>
+        <p>User hosted shows: {% for show in user.shows %} {{ show.name }} {% endfor %}</p>
+        {% if current_user.has_role("admin") %}
+
+        <h4>ADMIN EYES</h4>
+        <p>User roles: {% for role in user.roles %} {{ role.name }} {% endfor %}</p>
+        {% endif %}
+        <p>permalink <a href="{{ url_for('router.view_user', id=user.id) }}">{{user.id}}</a></p>
+    </div>
+{% endfor %}    
+</div>    
 {% endblock %}
