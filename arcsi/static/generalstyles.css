@@ -103,6 +103,11 @@ section.content h2 {
     margin-bottom: 2rem;
 }
 
+section.content h4 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
 section p {
     margin-top: 0;
     margin-bottom: 0.5rem;
@@ -122,4 +127,37 @@ section p {
     padding: 1em;
     border: 1px solid;
     border-radius: 3px;
+}
+
+.add-infos {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+}
+
+.add-infos > div {
+    display: flex;
+    flex-flow: row;
+    margin: 0.5rem 0;
+    align-items: center;
+}
+
+.add-infos > div label {
+    margin: 0 0.4rem 0 0;
+    font-weight: 500;
+}
+
+.add-infos > div input {
+    margin-right: 1rem;
+}
+
+.add-infos > div input[type=button], 
+.add-infos > div input[type=reset], 
+.add-infos > div input[type=submit], 
+.add-infos > div button {
+    background: #862eca;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 0.5rem 2rem;
 }

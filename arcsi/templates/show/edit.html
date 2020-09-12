@@ -6,52 +6,92 @@
 
 {% block content %}
 <form action="{{ url_for('arcsi.edit_show', id=show.id) }}" method="post" enctype="multipart/form-data">
-  <label for="users">Host: </label>
-  <input type="hidden" name="user_name" id="user_name" value="{{ current_user.name }}">
-  <input type="hidden" name="user_email" id="user_email" value="{{ current_user.email }}">
-  <select name="users" id="users">
-    <option value="{{current_user.id}}"> {% if current_user.name %} {{ current_user.name }} {% else %}
-      {{ current_user.email }} {% endif %}</option>
-  </select>
-  <label for="active">Active</label>
-  <input type="radio" name="active" id="active" value="1" checked>
-  <label for="name">Show name</label>
-  <input name="name" id="name" value="{{ show.name }}" required>
-  <label for="description">Show description</label>
-  <input name="description" id="description" value="{{ show.description }}" required>
-  <fieldset>
-    <legend>Show language</legend>
-    <label for="music">Music</label>
-    <input type="radio" name="language" id="music" value="music">
-    <label for="hu_hu">Magyar</label>
+<article class="add-infos">
+
+  <div>
+    <label for="users">Host: </label>
+    <input type="hidden" name="user_name" id="user_name" value="{{ current_user.name }}">
+    <input type="hidden" name="user_email" id="user_email" value="{{ current_user.email }}">
+    <select name="users" id="users">
+      <option value="{{current_user.id}}"> {% if current_user.name %} {{ current_user.name }} {% else %}
+        {{ current_user.email }} {% endif %}</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="active">Active</label>
+    <input type="hidden" id="active" name="active" value="1">
+    <input type="checkbox"
+      onclick="this.previousElementSibling.value=this.checked?1:0" checked>
+  </div>
+
+  <div>
+    <label for="name">Show name</label>
+    <input name="name" id="name" value="{{ show.name }}" required>
+  </div>
+
+  <div>
+    <label for="description">Show description</label>
+    <input name="description" id="description" value="{{ show.description }}" required>
+  </div>
+
+  <div>
+    <label for="language">Show language</label>
     <!-- TODO dynamic checked here based on db record -->
-    <input type="radio" name="language" id="hu_hu" value="hu_hu" checked>
-    <label for="en_uk">English</label>
-    <input type="radio" name="language" id="en_uk" value="en_uk">
-  </fieldset>
-  <label for="playlist_name">Playlist name</label>
-  <input name="playlist_name" id="playlist_name" value="{{ show.playlist_name }}">
-  <label for="image_file">Cover image</label>
-  <input type="file" name="image_file" id="image_file">
-  <label for="frequency">Frequency (new-show-per-month)</label>
-  <input type="number" name="frequency" id="frequency" value="{{ show.frequency }}">
-  <label for="week">Week</label>
-  <input type="number" name="week" id="week" value="{{ show.week }}">
-  <label for="day">Day</label>
-  <input type="number" name="day" id="day" value="{{ show.day }}">
-  <label for="start">Start</label>
-  <input type="time" name="start" id="start" value="{{ show.start }}">
-  <label for="end">End</label>
-  <input type="time" name="end" id="end" value="{{ show.end }}">
-  <p>TODO THIS DIFFERENTLY ON EDIT</p>
-  <label for="archive_lahmastore">Archive to Lahmastore</label>
-  <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" {% if show.archive_lahmastore %} value="1"
-    {% else %} value="0" {% endif %}><input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
-    {% if show.archive_lahmastore %} checked {% endif %}>
-  <label for="archive_mixcloud">Archive to Mixcloud</label>
-  <input type="hidden" name="archive_mixcloud" id="archive_mixcloud" {% if show.archive_mixcloud %} value="1" {% else %}
-    value="0" {% endif %}><input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
-    {% if show.archive_mixcloud %} checked {% endif %}>
-  <input type="submit" value="Update">
+    <select name="language" id="language">
+      <option id="music" value="music">Music</option>
+      <option id="hu_hu" value="hu_hu" selected>Magyar</option>
+      <option id="en_uk" value="en_uk">English</option>
+    </select>
+</div>
+
+  <div>
+    <label for="playlist_name">Playlist name</label>
+    <input name="playlist_name" id="playlist_name" value="{{ show.playlist_name }}">
+  </div>
+
+  <div>
+    <label for="image_file">Cover image</label>
+    <input type="file" name="image_file" id="image_file">
+  </div>
+
+  <div>
+    <label for="frequency">Frequency (new-show-per-month)</label>
+    <input type="number" name="frequency" id="frequency" value="{{ show.frequency }}">
+  </div>
+  
+  <div>
+    <label for="week">Week</label>
+    <input type="number" name="week" id="week" value="{{ show.week }}">
+    <label for="day">Day</label>
+    <input type="number" name="day" id="day" value="{{ show.day }}">
+  </div>
+  
+  <div>
+    <label for="start">Start</label>
+    <input type="time" name="start" id="start" value="{{ show.start }}">
+    <label for="end">End</label>
+    <input type="time" name="end" id="end" value="{{ show.end }}">
+  </div>
+
+
+  <h4>TODO THIS DIFFERENTLY ON EDIT</h4>
+
+  <div>
+    <label for="archive_lahmastore">Archive to Lahmastore</label>
+    <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" {% if show.archive_lahmastore %} value="1"
+      {% else %} value="0" {% endif %}><input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
+      {% if show.archive_lahmastore %} checked {% endif %}>
+    <label for="archive_mixcloud">Archive to Mixcloud</label>
+    <input type="hidden" name="archive_mixcloud" id="archive_mixcloud" {% if show.archive_mixcloud %} value="1" {% else %}
+      value="0" {% endif %}><input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
+      {% if show.archive_mixcloud %} checked {% endif %}>
+  </div>
+
+  <div>
+    <input type="submit" value="Update">
+  </div>
+
+</article>
 </form>
 {% endblock %}
