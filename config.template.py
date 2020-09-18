@@ -1,3 +1,5 @@
+import os
+
 # APP SECRET
 SECRET_KEY = "yoursecretkeynotinversioncontrol"  # Never share! This is used to sign session. Note: https://github.com/pallets/itsdangerous/issues/41#issuecomment-69416785
 
