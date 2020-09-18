@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}{{show.name}}{% endblock %}</h1>
+<h2>{% block title %}{{show.name}}{% endblock %}</h2>
 {% endblock %}
+
 {% block content %}
 <p>Show host: {% for user in show.users %} {% if user.name %} {{ user.name }} {% else %} {{ user.email }}
     {% endif %} {% endfor %}</p>

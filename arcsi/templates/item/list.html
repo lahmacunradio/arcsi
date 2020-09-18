@@ -1,32 +1,36 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}All episodes{% endblock %}</h1>
+<h2>{% block title %}All episodes{% endblock %}</h2>
 {% endblock %}
 
 {% block content %}
-{% for item in items %}
-<p>Episode parent show: {% for show in item["shows"] %} {{ show["name"] }} {% endfor %}</p>
-<p>Episode number: {{item["number"]}}</p>
-<p>Episode name: {{item["name"]}}</p>
-<p>Episode image URL: {{item["image_url"]}}</p>
-<p>Episode description: {{item["description"]}}</p>
-<p>Episode language: {{item.language}}</p>
-<p>Episode play date: {{item["play_date"]}}</p>
-<p>Episode play file name: {{item["play_file_name"]}}</p>
-<p>Episode play length: {{item["length"]}}</p>
-<p>Episode live?: {{item["live"]}} </p>
-<p>Episode broadcasted?: {{item["broadcast"]}}</p>
-<p>Episode (currently) airing?: {{item.airing}}</p>
-<p>Episode archive lahmastore: {{item["archive_lahmastore"]}}</p>
-<p>Episode archive lahmastore URL : {{item["archive_lahmastore_canonical_url"]}}</p>
-<p>Episode archive mixcloud: {{item["archive_mixcloud"]}}</p>
-<p>Episode archive mixcloud URL: {{item["archive_mixcloud_canonical_url"]}}</p>
-<p>Episode archived?: {{item["archived"]}}</p>
-<p>Episode D/L count: {{item["download_count"]}}</p>
-<p>Episode uploader: {{item["uploader"]}}</p>
-<p>Episode uploaded at: {{item["uploaded_at"]}}</p>
-<p>permalink <a href="{{ url_for('router.view_item', id=item['id']) }}">{{item['id']}}</a></p>
-<hr>
-{% endfor %}
+<div class="episodes-list">
+    {% for item in items %}
+    <div class="episode-card">
+        <p>Episode parent show: {% for show in item["shows"] %} {{ show["name"] }} {% endfor %}</p>
+        <p>Episode number: {{item["number"]}}</p>
+        <p>Episode name: {{item["name"]}}</p>
+        <p>Episode image URL: {{item["image_url"]}}</p>
+        <p>Episode description: {{item["description"]}}</p>
+        <p>Episode language: {{item.language}}</p>
+        <p>Episode play date: {{item["play_date"]}}</p>
+        <p>Episode play file name: {{item["play_file_name"]}}</p>
+        <p>Episode play length: {{item["length"]}}</p>
+        <p>Episode live?: {{item["live"]}} </p>
+        <p>Episode broadcasted?: {{item["broadcast"]}}</p>
+        <p>Episode (currently) airing?: {{item.airing}}</p>
+        <p>Episode archive lahmastore: {{item["archive_lahmastore"]}}</p>
+        <p>Episode archive lahmastore URL : {{item["archive_lahmastore_canonical_url"]}}</p>
+        <p>Episode archive mixcloud: {{item["archive_mixcloud"]}}</p>
+        <p>Episode archive mixcloud URL: {{item["archive_mixcloud_canonical_url"]}}</p>
+        <p>Episode archived?: {{item["archived"]}}</p>
+        <p>Episode D/L count: {{item["download_count"]}}</p>
+        <p>Episode uploader: {{item["uploader"]}}</p>
+        <p>Episode uploaded at: {{item["uploaded_at"]}}</p>
+        <p>permalink <a href="{{ url_for('router.view_item', id=item['id']) }}">{{item['id']}}</a></p>
+    </div>
+    {% endfor %}    
+</div> 
+  
 {% endblock %}

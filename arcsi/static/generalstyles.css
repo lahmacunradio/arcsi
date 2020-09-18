@@ -1,0 +1,163 @@
+body {
+    background-color: #d09cf8;
+    color: #23282d;  
+    font-family: 'Rubik', "Segoe UI","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";  
+}
+
+.container {
+    max-width: 1200px;
+    width: 98%;
+    margin: auto;
+}
+
+.arcsipage a {
+    color: #23282d;
+}
+
+.arcsipage a:hover {
+    color: white;
+}
+
+header.siteheader {
+    border-bottom: 1px solid;
+    margin-bottom: 1em;
+}
+
+header.siteheader .navigation-block {
+    display: flex;
+    flex-flow: row;
+    padding: 0;
+    justify-content: space-between;
+    font-size: 1.2em;
+}
+
+header.siteheader h1 {
+    margin: 0;
+    font-family: inherit;
+    font-size: 2rem;
+    text-transform: uppercase;
+    line-height: 1em;
+    background: url(img/lahmacun-logo.png) no-repeat left center;
+    background-size: 70px;
+    height: 82px;
+    display: flex;
+    align-items: center;
+}
+
+header.siteheader h1 a {
+    padding-left: 80px;
+}
+
+
+header.siteheader a {
+    color: #23282d;
+}
+
+header nav ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+header nav ul li {
+    display: inline-block;
+    margin-right: 0.5em;
+}
+
+header .adminmenu {
+    display: flex;
+    align-items: center;
+}
+
+header .adminmenu a {
+    margin: 0 0.5em;
+}
+
+header .has-submenu {
+    position: relative;
+}
+
+header .has-submenu .hidden-sub {
+    position: absolute;
+    position: absolute;
+    display: none;
+    right: 0;
+    white-space: nowrap;
+    background: #d09cf8;
+    border: 1px solid grey;
+    font-size: 0.8em;
+    padding: 1em;
+}
+
+header .has-submenu:hover .hidden-sub {
+    display: block;
+}
+
+header .admin-menu {
+    padding-left: 0.5em;
+    border-left: 1px solid grey;
+}
+
+/* Content */
+
+section.content h2 {
+    margin-bottom: 2rem;
+}
+
+section.content h4 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+section p {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+.admin-content > div {
+    margin-bottom: 2rem;
+}
+
+.users-list, .shows-list, .episodes-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    column-gap: 1rem;
+}
+
+.user-card, .show-card, .episode-card {
+    padding: 1em;
+    border: 1px solid;
+    border-radius: 3px;
+}
+
+.add-infos {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+}
+
+.add-infos > div {
+    display: flex;
+    flex-flow: row;
+    margin: 0.5rem 0;
+    align-items: center;
+}
+
+.add-infos > div label {
+    margin: 0 0.4rem 0 0;
+    font-weight: 500;
+}
+
+.add-infos > div input {
+    margin-right: 1rem;
+}
+
+.add-infos > div input[type=button], 
+.add-infos > div input[type=reset], 
+.add-infos > div input[type=submit], 
+.add-infos > div button {
+    background: #862eca;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 0.5rem 2rem;
+}
