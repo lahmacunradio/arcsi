@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}Edit episode item{% endblock %}</h1>
+<h2>{% block title %}Edit episode item{% endblock %}</h2>
 {% endblock %}
 
 {% block content %}
@@ -10,6 +10,7 @@
   {% if current_user.has_role("admin") %}
   <input type="hidden" name="show_name" id="show_name" value="{{ shows[0].name }}"><select name="shows" id="shows"
   onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
+
   {% for show in shows %}
   <option value="{{ show.id }}">{{ show.name }}</option>
   {% endfor %}

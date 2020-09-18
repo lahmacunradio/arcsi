@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}User profile{% endblock %}</h1>
+<h2>{% block title %}User profile{% endblock %}</h2>
 {% endblock %}
 
 {% block content %}
@@ -13,8 +13,9 @@
 <p>User hosted shows: {% for show in user.shows %} {{ show.name }} {% endfor %}</p>
 <a href="{{ url_for('router.edit_user', id=user['id']) }}">Edit user</a>
 {% if user.has_role("admin") %}
+
 <h4>ADMIN EYES</h4>
 <p>User roles: {% for role in user.roles %} {{ role.name }} {% endfor %}</p>
 {% endif %}
-<hr>
+
 {% endblock %}
