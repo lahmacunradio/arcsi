@@ -14,7 +14,6 @@ Make sure you have Docker.
 Create following template files:
 1. config.template.py -> `config.py`
    * Replace line 5 with `SQLALCHEMY_DATABASE_URI = "postgresql://postgres:p0stgr3s@db/arcsi"` (https://github.com/mmmnmnm/lahmacun_arcsi/issues/7)
-   * Comment out `if` branch with `os` (https://github.com/mmmnmnm/lahmacun_arcsi/issues/5
 2. app.env.template -> `app.env`
    * Set `FLASK_APP=run.py`
 3. db.env.template -> `db.env`
