@@ -18,8 +18,9 @@
 <p>Episode broadcasted?: {{item["broadcast"]}}</p>
 <p>Episode (currently) airing?: {{item.airing}}</p>
 <p>Episode archive lahmastore: {{item["archive_lahmastore"]}}</p>
-<p>Episode archive lahmastore URL : <a
-                href="{{ url_for('arcsi.download_play_file', id=item['id']) }}">Download</a> || <a href="{{ url_for('arcsi.listen_play_file', id=item['id'], audio=item['play_file_name']) }}">Listen</a> {{item["archive_lahmastore_canonical_url"]}}
+<p>Episode archive lahmastore URL : <a href="{{ url_for('arcsi.download_play_file', id=item['id']) }}">Download</a> ||
+    <a href="{{ url_for('arcsi.listen_play_file', id=item['id']) }}">Listen</a>
+    {{item["archive_lahmastore_canonical_url"]}}
 </p>
 <p>Episode archive mixcloud: {{item["archive_mixcloud"]}}</p>
 <p>Episode archive mixcloud URL: {{item["archive_mixcloud_canonical_url"]}}</p>
@@ -28,5 +29,5 @@
 <p>Episode uploader: {{item["uploader"]}}</p>
 <p>Episode uploaded at: {{item["uploaded_at"]}}</p>
 <p><a href="{{ url_for('router.edit_item', id=item['id']) }}">Edit Episode</a> || <a
-                href="{{ url_for('arcsi.delete_item', id=item['id']) }}">Delete Episode</a></p>
+        href="{{ url_for('arcsi.delete_item', id=item['id']) }}">Delete Episode</a></p>
 {% endblock %}
