@@ -26,7 +26,7 @@ Run `docker-compose up -d`
 
 Note: 
    * You may need to comment out following line in `docker-compose.yml`: `/etc/letsencrypt:/etc/letsencrypt`
-   * `arcsi/__init__.py` may beed special treatment: https://github.com/mmmnmnm/lahmacun_arcsi/issues/8
+   * `arcsi/__init__.py` may need special treatment: https://github.com/mmmnmnm/lahmacun_arcsi/issues/8
 
 ## Run app
 Hit http://localhost in your browser
