@@ -8,7 +8,7 @@ from flask import current_app as app
 from marshmallow import fields, post_load, Schema, ValidationError
 from werkzeug import secure_filename
 
-from .utils import media_path, normalise, process_image
+from .utils import media_path, slug, process_image
 from arcsi.api import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
@@ -85,6 +85,22 @@ def view_show(id):
         return make_response("Show not found", 404, headers)
 
 
+@arcsi.route("/show/<string:slug>/archive", methods=["GET"])
+def view_archive(slug):
+    # TODO instead of json filtering,
+    # write actual query
+    # joining shows and items
+    # so we can limit date etc.
+    show_query = Show.query.filter_by(archive_lahmastore_base_url=slug)
+    show = show_query.first_or_404()
+    if show:
+        show_json = show_details_schema.dump(show)
+        show_items = show_json["items"]
+        return json.dumps(show_items)
+    else:
+        return make_response("Shwo not found", 404, headers)
+
+
 # TODO /item/<uuid>/add route so that each upload has unique id to begin with
 # no need for different methods for `POST` & `PUT`
 @arcsi.route("/show/add", methods=["POST"])
@@ -127,7 +143,7 @@ def add_show():
             start=show_metadata.start,
             end=show_metadata.end,
             archive_lahmastore=show_metadata.archive_lahmastore,
-            archive_lahmastore_base_url=normalise(show_metadata.playlist_name),
+            archive_lahmastore_base_url=slug(show_metadata.name),
             archive_mixcloud=show_metadata.archive_mixcloud,
             # archive_mixcloud_base_url=archive_mixcloud_base_url,
             users=db.session.query(User)
@@ -141,7 +157,7 @@ def add_show():
         if request.files:
             if request.files["image_file"]:
                 process_image(request.files["image_file"], new_show)
-            
+
         db.session.commit()
 
         return make_response(jsonify(show_details_schema.dump(new_show)), 200, headers,)
@@ -196,7 +212,7 @@ def edit_show(id):
         show.start = show_metadata.start
         show.end = show_metadata.end
         show.archive_lahmastore = show_metadata.archive_lahmastore
-        show.archive_lahmastore_base_url = normalise(show_metadata.playlist_name)
+        show.archive_lahmastore_base_url = slug(show_metadata.name)
         show.archive_mixcloud = show_metadata.archive_mixcloud
         show.users = (
             db.session.query(User)

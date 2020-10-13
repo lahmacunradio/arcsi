@@ -9,7 +9,7 @@ from mutagen.mp3 import MP3
 from flask import flash, jsonify, make_response, request, send_file, url_for
 from marshmallow import fields, post_load, Schema, ValidationError
 
-from .utils import dict_to_obj, media_path, normalise, process_media
+from .utils import dict_to_obj, media_path, process_media
 from arcsi.api import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
@@ -19,7 +19,9 @@ from arcsi.model.show import Show
 
 class ItemDetailsSchema(Schema):
     id = fields.Int()
-    number = fields.Int(required=True)  # TODO value can't be 0 -- reserved for show itself
+    number = fields.Int(
+        required=True
+    )  # TODO value can't be 0 -- reserved for show itself
     name = fields.Str(required=True, min=1)
     description = fields.Str()
     language = fields.Str(max=5)
@@ -134,13 +136,12 @@ def add_item():
             uploader=item_metadata.uploader,
             shows=shows,
         )
-        
+
         db.session.add(new_item)
         db.session.flush()
 
         if request.files:
             process_media(request.files, new_item)
-            
 
             # TODO some mp3 error
             # TODO Maybe I used vanilla mp3 not from azuracast
@@ -152,22 +153,24 @@ def add_item():
 
         return make_response(jsonify(item_details_schema.dump(new_item)), 200, headers,)
 
-@arcsi.route("item/<id>/listen/<audio>", methods=["GET"])
-def listen_play_file(id, audio):
+
+@arcsi.route("item/<id>/listen", methods=["GET"])
+def listen_play_file(id):
     do = DoArchive()
-    item_query = Item.query.filter_by(play_file_name=audio)
+    item_query = Item.query.filter_by(id=id)
     item = item_query.first()
-    if item is None:
-        item_query = Item.query.filter_by(id=id)
-        item = item_query.first()
     presigned = do.download(
         item.shows[0].archive_lahmastore_base_url, item.archive_lahmastore_canonical_url
     )
     req = requests.get(presigned)
     media_item = io.BytesIO(req.content)
     return send_file(
-        media_item, as_attachment=False, mimetype="audio/mpeg", attachment_filename=audio,
+        media_item,
+        as_attachment=False,
+        mimetype="audio/mpeg",
+        attachment_filename=item.name,
     )
+
 
 @arcsi.route("/item/<id>/download", methods=["GET"])
 def download_play_file(id):
@@ -179,9 +182,7 @@ def download_play_file(id):
     )
     req = requests.get(presigned)
     media_item = io.BytesIO(req.content)
-    return send_file(
-        media_item, as_attachment=True, attachment_filename=item.play_file_name,
-    )
+    return send_file(media_item, as_attachment=True, attachment_filename=item.name,)
 
 
 @arcsi.route("/item/<id>", methods=["DELETE"])
@@ -242,7 +243,7 @@ def edit_item(id):
         )
         db.session.add(item)
         db.session.flush()
-        
+
         if request.files:
             process_media(request.files, item)
 
