@@ -27,7 +27,7 @@ Run `docker-compose up -d`
 Note: 
    * You may need to comment out following line in `docker-compose.yml`: `/etc/letsencrypt:/etc/letsencrypt`
    * `arcsi/__init__.py` may need special treatment: https://github.com/mmmnmnm/lahmacun_arcsi/issues/8
-   * If an entry point is failed to execute (e.g., on Windows) use the `dos2unix` command in the Dockerfile, e.g., `RUN dos2unix /entrypoint.sh`
+   * If an entry point fails to execute on Windows (the sh interpreter will tell you that the file doesn't exist, which is probably not true), check if there are Windows-style (CRLF) line endings and change them to Unix-style ones (LF). 
 
 
 ## Run app
