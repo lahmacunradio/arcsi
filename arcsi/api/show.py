@@ -97,7 +97,7 @@ def view_archive(slug):
         show_json = show_details_schema.dump(show)
         show_items = show_json["items"]
         for show_item in show_items:
-            show_item.image_url = do.download(show.archive_lahmastore_base_url, show_item.image_url)
+            show_item["image_url"] = do.download(show.archive_lahmastore_base_url, show_item["image_url"])
         return json.dumps(show_items)
     else:
         return make_response("Show not found", 404, headers)
