@@ -16,7 +16,8 @@ from arcsi.model.item import Item
 from arcsi.model.show import Show
 from arcsi.model.user import User
 
-do = DoArchive()
+with app.app_context():
+    do = DoArchive()
 
 class ShowDetailsSchema(Schema):
     id = fields.Int()
