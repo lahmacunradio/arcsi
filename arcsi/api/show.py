@@ -10,6 +10,7 @@ from werkzeug import secure_filename
 
 from .utils import media_path, slug, process_image
 from arcsi.api import arcsi
+from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.item import Item
 from arcsi.model.show import Show
@@ -57,6 +58,7 @@ headers = {"Content-Type": "application/json"}
 @arcsi.route("/show", methods=["GET"])
 @arcsi.route("/show/all", methods=["GET"])
 def list_shows():
+    do = DoArchive()
     shows = Show.query.all()
     for show in shows:
         if show.cover_image_url:
@@ -68,6 +70,7 @@ def list_shows():
 
 @arcsi.route("/show/<id>", methods=["GET"])
 def view_show(id):
+    do = DoArchive()
     show_query = Show.query.filter_by(id=id)
     show = show_query.first_or_404()
     if show:
@@ -82,6 +85,7 @@ def view_show(id):
 
 @arcsi.route("/show/<string:slug>/archive", methods=["GET"])
 def view_archive(slug):
+    do = DoArchive()
     # TODO instead of json filtering,
     # write actual query
     # joining shows and items

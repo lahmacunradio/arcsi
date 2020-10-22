@@ -44,11 +44,8 @@ def create_app(config_file):
 
     from arcsi import api
     from arcsi import view
-    from arcsi.handler.upload import DoArchive
 
     app.register_blueprint(api.arcsi)
     app.register_blueprint(view.router)
-
-    do = DoArchive()
 
     return app
