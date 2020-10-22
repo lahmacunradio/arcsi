@@ -16,6 +16,7 @@ from arcsi.model.item import Item
 from arcsi.model.show import Show
 from arcsi.model.user import User
 
+do = DoArchive()
 
 class ShowDetailsSchema(Schema):
     id = fields.Int()
@@ -60,7 +61,6 @@ headers = {"Content-Type": "application/json"}
 @arcsi.route("/show", methods=["GET"])
 @arcsi.route("/show/all", methods=["GET"])
 def list_shows():
-    do = DoArchive()
     shows = Show.query.all()
     for show in shows:
         if show.cover_image_url:
@@ -76,7 +76,6 @@ def view_show(id):
     show = show_query.first_or_404()
     if show:
         if show.cover_image_url:
-            do = DoArchive()
             show.cover_image_url = do.download(
                 show.archive_lahmastore_base_url, show.cover_image_url
             )
