@@ -10,7 +10,6 @@ from werkzeug import secure_filename
 
 from .utils import media_path, slug, process_image
 from arcsi.api import arcsi
-from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.item import Item
 from arcsi.model.show import Show
@@ -54,7 +53,6 @@ show_details_partial_schema = ShowDetailsSchema(partial=True)
 many_show_details_schema = ShowDetailsSchema(many=True)
 
 headers = {"Content-Type": "application/json"}
-do = DoArchive()
 
 @arcsi.route("/show", methods=["GET"])
 @arcsi.route("/show/all", methods=["GET"])

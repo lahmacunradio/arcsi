@@ -4,6 +4,7 @@ from flask import Flask
 from flask_security import Security, SQLAlchemySessionUserDatastore
 from flask_migrate import Migrate
 
+from arcsi.api.handlers import DoArchive
 from arcsi.model import db, item, role, show, user
 from arcsi.view.forms.register import ButtRegisterForm
 
@@ -40,6 +41,8 @@ def create_app(config_file):
         user_store.find_or_create_role(name='host', description='Show host')
         user_store.find_or_create_role(name='guest', description='Episode guest')
         db.session.commit()
+
+        do = DoArchive()
 
     from arcsi import api
     from arcsi import view
