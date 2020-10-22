@@ -139,8 +139,8 @@ class AzuraArchive(object):
             remaining_byte = self.play_file_size
             retry = 1
             tot_chunk_num = self.chunk_file_pieces()
-            print("tot size {}".format(self.play_file_size))
-            print("tot chunks {}".format(tot_chunk_num))
+            app.logger.debug("tot size {}".format(self.play_file_size))
+            app.logger.debug("tot chunks {}".format(tot_chunk_num))
             while chunk_count <= tot_chunk_num:
                 play_file.seek(start)
                 chunk_byte = min(remaining_byte, self.config["chunk_byte"])
@@ -159,7 +159,7 @@ class AzuraArchive(object):
                 }
                 files = {"file_data": play_file.read(chunk_byte)}
 
-                print(
+                app.logger.debug(
                     "post chunk {}/{} w/ {}/{} bytes".format(
                         chunk_count, tot_chunk_num, chunk_byte, self.play_file_size,
                     )
@@ -175,13 +175,13 @@ class AzuraArchive(object):
                         chunk_count += 1
                         remaining_byte -= chunk_byte
                         start += chunk_byte
-                        print("chunk posted! {} bytes remaining".format(remaining_byte))
+                        app.logger.debug("chunk posted! {} bytes remaining".format(remaining_byte))
                 except requests.exceptions.RequestException as e:
                     # max 30 retries
                     if retry >= 30:
-                        print("upload failed after 30 retries")
+                        app.logger.debug("upload failed after 30 retries")
                         return False
-                    print("Retry #{}: chunk post failed w/ {}!".format(retry, e,))
+                    app.logger.debug("Retry #{}: chunk post failed w/ {}!".format(retry, e,))
                     retry += 1
                     time.sleep(5)
                     continue
@@ -223,22 +223,33 @@ class AzuraArchive(object):
     def assign_playlist(self,):
         # PUT method; add episode to playlist
         if self.find_playlist_id():
+            app.logger.info("Playlist id found successfully")
+            app.logger.debug("Playlist id is {} \n playlist name is {}".format(self.playlist_id, self.playlist_name))
             if not self.empty_playlist():
+                app.logger.info("Playlist is not empty")
+                app.logger.info("Trying to wipe playlist")
                 wiped = self.wipe_playlist_play_file()
                 if not wiped:
+                    app.logger.info("Couldn't wipe playlist")
                     return False
+            app.logger.info("Playlist wiped")
             payload = {
                 "do": "playlist",
                 "files": [self.play_file_name],
                 "playlists": [self.playlist_id],
             }
+            app.logger.debug("Playlist payload \n {}".format(payload))
             r = requests.put(
                 self.config["base"] + self.config["endpoint"]["batch_update"],
                 headers=self.config["headers"],
                 json=payload,
             )
             if r.ok:
+                app.logger.info("Add to playlist request successful")
                 return True
+            app.logger.info("Add to playlist didn't succeed")
+            app.logger.debug("Add to playlist request returned {}".format(r.status_code))
+            app.logger.debug("Request response \n {}".format(r.content))
             return False
         return False
 
