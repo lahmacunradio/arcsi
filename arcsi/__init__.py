@@ -4,7 +4,7 @@ from flask import Flask
 from flask_security import Security, SQLAlchemySessionUserDatastore
 from flask_migrate import Migrate
 
-from arcsi.api.handlers import DoArchive
+from arcsi.api.handler import DoArchive
 from arcsi.model import db, item, role, show, user
 from arcsi.view.forms.register import ButtRegisterForm
 
