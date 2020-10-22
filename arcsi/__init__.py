@@ -41,6 +41,7 @@ def create_app(config_file):
         user_store.find_or_create_role(name='guest', description='Episode guest')
         db.session.commit()
 
+
     from arcsi import api
     from arcsi import view
 

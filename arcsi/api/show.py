@@ -16,7 +16,6 @@ from arcsi.model.item import Item
 from arcsi.model.show import Show
 from arcsi.model.user import User
 
-
 class ShowDetailsSchema(Schema):
     id = fields.Int()
     active = fields.Boolean(required=True)
@@ -37,7 +36,7 @@ class ShowDetailsSchema(Schema):
     items = fields.List(
         fields.Nested(
             "ItemDetailsSchema",
-            only=("id", "archived", "description", "name", "number", "play_date"),
+            only=("id", "archived", "description", "name", "number", "play_date", "image_url"),
         ),
         dump_only=True,
     )
@@ -56,7 +55,6 @@ many_show_details_schema = ShowDetailsSchema(many=True)
 
 headers = {"Content-Type": "application/json"}
 
-
 @arcsi.route("/show", methods=["GET"])
 @arcsi.route("/show/all", methods=["GET"])
 def list_shows():
@@ -72,11 +70,11 @@ def list_shows():
 
 @arcsi.route("/show/<id>", methods=["GET"])
 def view_show(id):
+    do = DoArchive()
     show_query = Show.query.filter_by(id=id)
     show = show_query.first_or_404()
     if show:
         if show.cover_image_url:
-            do = DoArchive()
             show.cover_image_url = do.download(
                 show.archive_lahmastore_base_url, show.cover_image_url
             )
@@ -87,18 +85,22 @@ def view_show(id):
 
 @arcsi.route("/show/<string:slug>/archive", methods=["GET"])
 def view_archive(slug):
+    do = DoArchive()
     # TODO instead of json filtering,
     # write actual query
     # joining shows and items
     # so we can limit date etc.
     show_query = Show.query.filter_by(archive_lahmastore_base_url=slug)
+    # item_query = Item.query.filter_by(parent_show=)
     show = show_query.first_or_404()
     if show:
         show_json = show_details_schema.dump(show)
         show_items = show_json["items"]
+        for show_item in show_items:
+            show_item["image_url"] = do.download(show.archive_lahmastore_base_url, show_item["image_url"])
         return json.dumps(show_items)
     else:
-        return make_response("Shwo not found", 404, headers)
+        return make_response("Show not found", 404, headers)
 
 
 # TODO /item/<uuid>/add route so that each upload has unique id to begin with
