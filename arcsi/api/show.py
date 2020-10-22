@@ -37,7 +37,7 @@ class ShowDetailsSchema(Schema):
     items = fields.List(
         fields.Nested(
             "ItemDetailsSchema",
-            only=("id", "archived", "description", "name", "number", "play_date"),
+            only=("id", "archived", "description", "name", "number", "play_date", "image_url"),
         ),
         dump_only=True,
     )
@@ -92,6 +92,7 @@ def view_archive(slug):
     # joining shows and items
     # so we can limit date etc.
     show_query = Show.query.filter_by(archive_lahmastore_base_url=slug)
+    # item_query = Item.query.filter_by(parent_show=)
     show = show_query.first_or_404()
     if show:
         show_json = show_details_schema.dump(show)
