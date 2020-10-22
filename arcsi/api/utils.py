@@ -34,7 +34,7 @@ def slug(namestring):
 
 def normalise(namestring):
     stripped = unicodedata.normalize("NFD", namestring).encode("ascii", "ignore")
-    norms = stripped.decode("utf-8").lower().replace(" ", "_")
+    norms = stripped.decode("utf-8").lower().replace(" ", "_").replace("#", "_")
     return norms
 
 
