@@ -97,9 +97,11 @@ def view_archive(slug):
     if show:
         show_json = show_details_schema.dump(show)
         show_items = show_json["items"]
+        for show_item in show_items:
+            show_item.image_url = do.download(show.archive_lahmastore_base_url, show_item.image_url)
         return json.dumps(show_items)
     else:
-        return make_response("Shwo not found", 404, headers)
+        return make_response("Show not found", 404, headers)
 
 
 # TODO /item/<uuid>/add route so that each upload has unique id to begin with
