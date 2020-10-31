@@ -15,6 +15,7 @@ from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.item import Item
 from arcsi.model.show import Show
+from flask import current_app as app
 
 
 class ItemDetailsSchema(Schema):
@@ -91,9 +92,20 @@ def add_item():
     # work around ImmutableDict type
     item_metadata = request.form.to_dict()
     # TODO if we could send JSON payloads w/ ajax then this prevalidation isn't needed
+    show_id = int(item_metadata["shows"]) #shortcut in case the show id is needed in the next if statement
     item_metadata["shows"] = [
         {"id": item_metadata["shows"], "name": item_metadata["show_name"]}
     ]
+
+    if item_metadata["number"] == "":
+        show_request = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.view_show", id=show_id))
+        show_dict = show_request.json()
+        if len(show_dict["items"])>0:
+            items_sorted = sorted(show_dict["items"], key=lambda k: k['number'], reverse = True)
+            item_metadata["number"] = int(items_sorted[0]["number"])+1
+        else:
+           item_metadata["number"] = "1"
+
     item_metadata.pop("show_name", None)
     # validate payload
     err = item_details_schema.validate(item_metadata)
