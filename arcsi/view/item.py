@@ -28,7 +28,8 @@ def add_item():
         result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_shows"))
         shows = result.json()
 
-    return render_template("item/add.html", shows=shows)
+    shows_sorted = sorted(shows, key=lambda k: k['name'])
+    return render_template("item/add.html", shows=shows_sorted)
 
 
 @router.route("/item/<id>", methods=["GET"])
@@ -48,4 +49,5 @@ def edit_item(id):
         result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_shows"))
         shows = result.json()
 
-    return render_template("item/edit.html", item=item.json(), shows=shows)
+    shows_sorted = sorted(shows, key=lambda k: k['name'])
+    return render_template("item/edit.html", item=item.json(), shows=shows_sorted)
