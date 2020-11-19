@@ -70,8 +70,8 @@ def broadcast_audio(audio_file_path, item, image_file_path):
 
 
 def process_audio(play_file, item, image_file_path):
-    play_file_name = normalise(play_file.filename)
-    if play_file_name != "":
+    play_file_name = normalise("-".join([item.shows[0].name, item.name]))
+    if play_file.filename != "":
         play_file_path = media_path(
             item.shows[0].archive_lahmastore_base_url, str(item.number), play_file_name,
         )
