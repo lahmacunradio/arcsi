@@ -70,7 +70,13 @@ def broadcast_audio(audio_file_path, item, image_file_path):
 
 
 def process_audio(play_file, item, image_file_path):
-    play_file_name = normalise("-".join([item.shows[0].name, item.name]))
+    '''
+    Filename naming schema: 
+    Use normalised combination of show name and episode name of parent object. 
+    Get the extension from file sent to API.
+    To get the extension we use rsplit w/ maxsplit=1 to make sure we always get the extension even if there is another dot in the filename.
+    '''
+    play_file_name = "{}.{}".format(normalise("-".join([item.shows[0].name, item.name])), play_file.filename.rsplit(".", 1)[1])
     if play_file.filename != "":
         play_file_path = media_path(
             item.shows[0].archive_lahmastore_base_url, str(item.number), play_file_name,
