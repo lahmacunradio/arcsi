@@ -3,6 +3,7 @@ import os
 import requests
 import io
 
+from datetime import datetime, timedelta
 from flask import flash, jsonify, make_response, request, url_for
 from flask import current_app as app
 from marshmallow import fields, post_load, Schema, ValidationError
@@ -95,7 +96,7 @@ def view_archive(slug):
     show = show_query.first_or_404()
     if show:
         show_json = show_details_schema.dump(show)
-        show_items = show_json["items"]
+        show_items = [show_item for show_item in show_json["items"] if datetime.strptime(show_item.get("play_date"), "%Y-%m-%d")+timedelta(days=1) < datetime.today()]
         for show_item in show_items:
             show_item["image_url"] = do.download(show.archive_lahmastore_base_url, show_item["image_url"])
         return json.dumps(show_items)
