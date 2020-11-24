@@ -44,12 +44,15 @@ server {
 
     location / {
         proxy_http_version 1.1;
+        proxy_max_temp_file_size 0;
+        chunked_transfer_encoding off;
+        proxy_buffering off;
+        proxy_request_buffering off;
         proxy_cache_bypass $http_upgrade;
         proxy_hide_header X-Powered-By;
         proxy_hide_header Server;
         proxy_hide_header X-AspNetMvc-Version;
         proxy_hide_header X-AspNet-Version;
-        proxy_pass http://arcsi;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
@@ -62,6 +65,30 @@ server {
         proxy_redirect off;
         proxy_read_timeout 12000s;
         proxy_connect_timeout 12000s;
+        if ($http_origin ~* (https?://localhost(:[0-9]+)?$)) {
+	        set $cors "1";
+	    }
+	    if ($http_origin ~* (https?://.*\.subdomainedlocalhost(:[0-9]+)?$)) {
+	        set $cors "1";
+	    }
+	    if ($request_method = 'OPTIONS') {
+	        set $cors "${cors}o";
+	    }
+        if ($cors = "1") {
+            add_header Access-Control-Allow-Origin '$http_origin' always;
+            add_header Access-Control-Allow-Credentials 'true' always;
+            proxy_pass       http://arcsi;
+        }
+        if ($cors = "1o") {
+            add_header Access-Control-Allow-Origin '$http_origin' always;
+            add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS, PUT, DELETE' always;
+            add_header Access-Control-Allow-Credentials 'true' always;
+            add_header Access-Control-Allow-Headers 'Origin,Content-Type,Accept' always;
+            add_header Content-Length 0 always;
+            add_header Content-Type text/plain always;
+            return 204; 
+        }
+        proxy_pass http://arcsi;
     }
     location ~* \.(?:css|cur|js|jpe?g|gif|htc|ico|mp3|png|html|xml|otf|ttf|eot|woff|woff2|svg)$ {
         expires 7d;
