@@ -19,10 +19,9 @@
 <p>Episode (currently) airing?: {{item.airing}}</p>
 <p>Episode archive lahmastore: {{item["archive_lahmastore"]}}</p>
 <p>Episode archive lahmastore URL : <a href="{{ url_for('arcsi.download_play_file', id=item['id']) }}">Download</a> ||
-    <video controls="" name="media">
-        <source src="{{item['file_url']}}" type="audio/mpeg">
-    </video>
-    
+        <audio controls="" name="media">
+                <source src="{{ audiofile_URL }}" type="audio/mpeg">
+        </audio>
 </p>
 <p>Episode archive mixcloud: {{item["archive_mixcloud"]}}</p>
 <p>Episode archive mixcloud URL: {{item["archive_mixcloud_canonical_url"]}}</p>

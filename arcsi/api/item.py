@@ -27,7 +27,6 @@ class ItemDetailsSchema(Schema):
     language = fields.Str(max=5)
     play_date = fields.Date(required=True)
     image_url = fields.Str(dump_only=True)
-    file_url = fields.Str(dump_only=True)
     play_file_name = fields.Str(dump_only=True)
     live = fields.Boolean()
     broadcast = fields.Boolean()
@@ -77,9 +76,6 @@ def view_item(id):
             do = DoArchive()
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
-            )
-            item.file_url = do.download(
-                item.shows[0].archive_lahmastore_base_url, item.archive_lahmastore_canonical_url
             )
         return item_details_schema.dump(item)
     else:
@@ -166,14 +162,7 @@ def listen_play_file(id):
     presigned = do.download(
         item.shows[0].archive_lahmastore_base_url, item.archive_lahmastore_canonical_url
     )
-    req = requests.get(presigned)
-    media_item = io.BytesIO(req.content)
-    return send_file(
-        media_item,
-        as_attachment=False,
-        mimetype="audio/mpeg",
-        attachment_filename=item.name,
-    )
+    return presigned
 
 
 @arcsi.route("/item/<id>/download", methods=["GET"])
