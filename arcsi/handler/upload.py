@@ -71,11 +71,12 @@ class DoArchive(object):
             aws_secret_access_key=self.config["secret_key"],
         )
 
+        # there seems to be no cleaner way to get the public URI
         self.dl_file = cli.generate_presigned_url(
             "get_object",
             ExpiresIn=0,
             Params={"Bucket": self.config["space"], "Key": "{}".format(path),},
-        )
+        ).split("?")[0]
         return self.dl_file
 
     # TODO STUB lets see what the final architecture would look like
