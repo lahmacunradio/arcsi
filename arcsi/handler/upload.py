@@ -25,15 +25,16 @@ from mutagen.mp3 import MP3
 class DoArchive(object):
     def __init__(self):
         self.config = {
-            "region": app.config["ARCHIVE_REGION"],  # digitalocean region
-            "host": app.config["ARCHIVE_HOST_BASE_URL"],  # digitalocean droplet IP
+            "region": app.config["ARCHIVE_REGION"],  # region
+            "host": app.config["ARCHIVE_HOST_BASE_URL"],  # origin
+            "endpoint": app.config["ARCHIVE_ENDPOINT"],  # public
             "api_key": app.config[
                 "ARCHIVE_API_KEY"
-            ],  # digitalocean access key see API_KEYS
+            ],
             "secret_key": app.config[
                 "ARCHIVE_SECRET_KEY"
-            ],  # digitalocean secret key see API_KEYS
-            "space": "",  # digitalocean upload space (eg. bucket)
+            ],
+            "space": "",  # s3 bucket name
         }
 
     # Should we have one session for class instance or one each for each method called?
