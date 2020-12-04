@@ -54,7 +54,9 @@ class DoArchive(object):
         )
         try:
             res = cli.upload_file(
-                self.file, self.config["space"], "{}/{}".format(number, self.filename)
+                self.file, self.config["space"], 
+                "{}/{}".format(number, self.filename), 
+                ExtraArgs={"ACL":"public-read"},
             )
         except ClientError:
             return False
