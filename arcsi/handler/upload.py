@@ -71,18 +71,12 @@ class DoArchive(object):
             aws_secret_access_key=self.config["secret_key"],
         )
 
-        self.presigned = cli.generate_presigned_url(
+        self.dl_file = cli.generate_presigned_url(
             "get_object",
+            ExpiresIn=0,
             Params={"Bucket": self.config["space"], "Key": "{}".format(path),},
         )
-        return self.presigned
-
-    # TODO cant do this w/o db entry but then its perhaps easier to set expiry time in db
-    def valid_presigned(self, url):
-        req = requests.post(self.presigned)
-        if req.ok:
-            return True
-        return False
+        return self.dl_file
 
     # TODO STUB lets see what the final architecture would look like
     def batch_upload(self):
