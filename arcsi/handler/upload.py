@@ -63,24 +63,10 @@ class DoArchive(object):
         return "{}/{}".format(number, self.filename)
 
     def download(self, space, path):
+        # TODO if space and dl file URL always change they don't need to be class attributes
         self.config["space"] = space
-
-        sess = boto3.session.Session()
-        cli = sess.client(
-            "s3",
-            region_name=self.config["region"],
-            endpoint_url=self.config["host"],
-            aws_access_key_id=self.config["api_key"],
-            aws_secret_access_key=self.config["secret_key"],
-        )
-
-        # there seems to be no cleaner way to get the public URI
-        self.dl_file = cli.generate_presigned_url(
-            "get_object",
-            ExpiresIn=0,
-            Params={"Bucket": self.config["space"], "Key": "{}".format(path),},
-        ).split("?")[0]
-        return self.dl_file
+        self.dl_file_url = "{}/{}/{}".format(self.config["endpoint"], self.config["space"], path)
+        return self.dl_file_url
 
     # TODO STUB lets see what the final architecture would look like
     def batch_upload(self):
