@@ -22,6 +22,7 @@ ARCHIVE_REGION = "jams4"  # used by boto3; depending on storage service might di
 ARCHIVE_HOST_BASE_URL = (
     "https://ip-or-url-of-provid.er"  # used by boto3; an IP or public URL
 )
+ARCHIVE_ENDPOINT = "https://cdn.ed.ge"  # public URL or CDN edge
 ARCHIVE_API_KEY = (
     "some-api-key-from-provider"  # used by boto3; access key from provider's interface
 )

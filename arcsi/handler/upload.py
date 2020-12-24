@@ -25,15 +25,16 @@ from mutagen.mp3 import MP3
 class DoArchive(object):
     def __init__(self):
         self.config = {
-            "region": app.config["ARCHIVE_REGION"],  # digitalocean region
-            "host": app.config["ARCHIVE_HOST_BASE_URL"],  # digitalocean droplet IP
+            "region": app.config["ARCHIVE_REGION"],  # region
+            "host": app.config["ARCHIVE_HOST_BASE_URL"],  # origin
+            "endpoint": app.config["ARCHIVE_ENDPOINT"],  # public
             "api_key": app.config[
                 "ARCHIVE_API_KEY"
-            ],  # digitalocean access key see API_KEYS
+            ],
             "secret_key": app.config[
                 "ARCHIVE_SECRET_KEY"
-            ],  # digitalocean secret key see API_KEYS
-            "space": "",  # digitalocean upload space (eg. bucket)
+            ],
+            "space": "",  # s3 bucket name
         }
 
     # Should we have one session for class instance or one each for each method called?
@@ -53,36 +54,19 @@ class DoArchive(object):
         )
         try:
             res = cli.upload_file(
-                self.file, self.config["space"], "{}/{}".format(number, self.filename)
+                self.file, self.config["space"], 
+                "{}/{}".format(number, self.filename), 
+                ExtraArgs={"ACL":"public-read"},
             )
         except ClientError:
             return False
         return "{}/{}".format(number, self.filename)
 
     def download(self, space, path):
+        # TODO if space and dl file URL always change they don't need to be class attributes
         self.config["space"] = space
-
-        sess = boto3.session.Session()
-        cli = sess.client(
-            "s3",
-            region_name=self.config["region"],
-            endpoint_url=self.config["host"],
-            aws_access_key_id=self.config["api_key"],
-            aws_secret_access_key=self.config["secret_key"],
-        )
-
-        self.presigned = cli.generate_presigned_url(
-            "get_object",
-            Params={"Bucket": self.config["space"], "Key": "{}".format(path),},
-        )
-        return self.presigned
-
-    # TODO cant do this w/o db entry but then its perhaps easier to set expiry time in db
-    def valid_presigned(self, url):
-        req = requests.post(self.presigned)
-        if req.ok:
-            return True
-        return False
+        self.dl_file_url = "{}/{}/{}".format(self.config["endpoint"], self.config["space"], path)
+        return self.dl_file_url
 
     # TODO STUB lets see what the final architecture would look like
     def batch_upload(self):
