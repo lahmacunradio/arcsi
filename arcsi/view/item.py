@@ -36,7 +36,10 @@ def add_item():
 def view_item(id):
     relpath = url_for("arcsi.view_item", id=id)
     item = requests.get(app.config["APP_BASE_URL"] + relpath)
-    return render_template("item/view.html", item=item.json())
+    # use listen API to get the audio URL (HTTP response)
+    audiofile_URL_response = requests.get(app.config["APP_BASE_URL"] + relpath + "/listen")
+    # pass the audio URL to the template (text part of HTTP response)
+    return render_template("item/view.html", item=item.json(), audiofile_URL=audiofile_URL_response.text)
 
 
 @router.route("/item/<id>/edit", methods=["GET"])

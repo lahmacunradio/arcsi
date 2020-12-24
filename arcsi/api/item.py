@@ -6,7 +6,7 @@ import io
 from mutagen.id3 import APIC, ID3
 from mutagen.mp3 import MP3
 
-from flask import flash, jsonify, make_response, request, send_file, url_for
+from flask import flash, jsonify, make_response, request, send_file, url_for, redirect
 from marshmallow import fields, post_load, Schema, ValidationError
 
 from .utils import dict_to_obj, media_path, process_media
@@ -162,14 +162,7 @@ def listen_play_file(id):
     presigned = do.download(
         item.shows[0].archive_lahmastore_base_url, item.archive_lahmastore_canonical_url
     )
-    req = requests.get(presigned)
-    media_item = io.BytesIO(req.content)
-    return send_file(
-        media_item,
-        as_attachment=False,
-        mimetype="audio/mpeg",
-        attachment_filename=item.name,
-    )
+    return presigned
 
 
 @arcsi.route("/item/<id>/download", methods=["GET"])
@@ -180,9 +173,7 @@ def download_play_file(id):
     presigned = do.download(
         item.shows[0].archive_lahmastore_base_url, item.archive_lahmastore_canonical_url
     )
-    req = requests.get(presigned)
-    media_item = io.BytesIO(req.content)
-    return send_file(media_item, as_attachment=True, attachment_filename=item.name,)
+    return redirect(presigned, code=302)
 
 
 @arcsi.route("/item/<id>", methods=["DELETE"])
