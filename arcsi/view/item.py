@@ -36,10 +36,14 @@ def add_item():
 def view_item(id):
     relpath = url_for("arcsi.view_item", id=id)
     item = requests.get(app.config["APP_BASE_URL"] + relpath)
+    item_json = item.json()
+    #Check legacy None values if no image has been uploaded and change it to empty string so that the renderer doesn't throw error
+    if item_json["image_url"] == None:
+        item_json["image_url"] = ""
     # use listen API to get the audio URL (HTTP response)
     audiofile_URL_response = requests.get(app.config["APP_BASE_URL"] + relpath + "/listen")
     # pass the audio URL to the template (text part of HTTP response)
-    return render_template("item/view.html", item=item.json(), audiofile_URL=audiofile_URL_response.text)
+    return render_template("item/view.html", item=item_json, audiofile_URL=audiofile_URL_response.text)
 
 
 @router.route("/item/<id>/edit", methods=["GET"])
