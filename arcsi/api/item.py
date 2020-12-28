@@ -106,7 +106,7 @@ def add_item():
         download_count = 0
         length = 0
         archived = False
-        image_url = None
+        image_url = ""
         play_file_name = None
         archive_lahmastore_canonical_url = ""
         archive_mixcloud_canonical_url = ""
