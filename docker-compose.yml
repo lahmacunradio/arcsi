@@ -33,7 +33,7 @@
         entrypoint: sh -c 'sleep 60; /app/entrypoint.sh'
 
       db:
-        image: postgres:10
+        image: postgres:12
         restart: always
         volumes:
             - ./pg-data/postgres:/var/lib/postgresql/data
