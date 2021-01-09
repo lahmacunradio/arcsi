@@ -5,11 +5,11 @@
         build: ./nginx
         restart: always
         ports:
-          - "40:80"
-          - "543:443"
+          - "80:80"
+          - "443:443"
         volumes:
           - ./nginx/arcsi.conf:/etc/nginx/conf.d/arcsi.conf
-          #- /etc/letsencrypt:/etc/letsencrypt
+          - /etc/letsencrypt:/etc/letsencrypt
         depends_on:
           - web
         env_file:
