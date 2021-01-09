@@ -92,4 +92,5 @@ local   replication     all                                     trust
 host    replication     all             127.0.0.1/32            trust
 host    replication     all             ::1/128                 trust
 
-host all all all md5
+#Replace DB and user name, the docker client/network names based on your container names
+host arcsi postgres lahmacun_arcsi_web_1.lahmacun_arcsi_default trust
