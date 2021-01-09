@@ -23,5 +23,6 @@ docs/_build/
 *dev.py
 *local.py
 *override.yml
-pg-data
+pg-data/postgres/*
+!pg-data/postgres/pg_hba.conf.template
 nginx/arcsi.conf

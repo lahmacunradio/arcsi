@@ -5,11 +5,11 @@
         build: ./nginx
         restart: always
         ports:
-          - "80:80"
-          - "443:443"
+          - "40:80"
+          - "543:443"
         volumes:
           - ./nginx/arcsi.conf:/etc/nginx/conf.d/arcsi.conf
-          - /etc/letsencrypt:/etc/letsencrypt
+          #- /etc/letsencrypt:/etc/letsencrypt
         depends_on:
           - web
         env_file:
@@ -33,7 +33,7 @@
         entrypoint: sh -c 'sleep 60; /app/entrypoint.sh'
 
       db:
-        image: postgres:12
+        image: postgres:10
         restart: always
         volumes:
             - ./pg-data/postgres:/var/lib/postgresql/data
