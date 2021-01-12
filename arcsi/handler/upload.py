@@ -160,6 +160,8 @@ class AzuraArchive(object):
                         remaining_byte -= chunk_byte
                         start += chunk_byte
                         app.logger.debug("chunk posted! {} bytes remaining".format(remaining_byte))
+                    else: 
+                        app.logger.debug("response error code: {}".format(req.status_code))
                 except requests.exceptions.RequestException as e:
                     # max 30 retries
                     if retry >= 30:
