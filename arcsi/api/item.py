@@ -84,6 +84,7 @@ def view_item(id):
 
 @arcsi.route("/item", methods=["POST"])
 def add_item():
+    no_error = True
     if request.is_json:
         return make_response(
             jsonify("Only accepts multipart/form-data for now, sorry"), 503, headers
@@ -141,7 +142,7 @@ def add_item():
         db.session.flush()
 
         if request.files:
-            process_media(request.files, new_item)
+            no_error = process_media(request.files, new_item)
 
             # TODO some mp3 error
             # TODO Maybe I used vanilla mp3 not from azuracast
@@ -150,8 +151,10 @@ def add_item():
             # item_length = item_audio_obj.info.length
 
         db.session.commit()
-
-        return make_response(jsonify(item_details_schema.dump(new_item)), 200, headers,)
+        if no_error:
+            return make_response(jsonify(item_details_schema.dump(new_item)), 200, headers,)
+        else:
+            return "Some error happened, check aguni.log for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
 
 
 @arcsi.route("item/<id>/listen", methods=["GET"])
@@ -187,6 +190,7 @@ def delete_item(id):
 
 @arcsi.route("/item/<id>", methods=["POST"])
 def edit_item(id):
+    no_error = True
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
     # work around ImmutableDict type
@@ -236,9 +240,12 @@ def edit_item(id):
         db.session.flush()
 
         if request.files:
-            process_media(request.files, item)
+            no_error = process_media(request.files, item)
 
         db.session.commit()
-        return make_response(
-            jsonify(item_details_partial_schema.dump(item)), 200, headers
-        )
+        if no_error:
+            return make_response(
+                jsonify(item_details_partial_schema.dump(item)), 200, headers
+            )
+        return "Some error happened, check aguni.log for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
+            
