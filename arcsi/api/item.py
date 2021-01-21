@@ -154,7 +154,7 @@ def add_item():
         if no_error:
             return make_response(jsonify(item_details_schema.dump(new_item)), 200, headers,)
         else:
-            return "Some error happened, check aguni.log for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
+            return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
 
 
 @arcsi.route("item/<id>/listen", methods=["GET"])
@@ -247,5 +247,5 @@ def edit_item(id):
             return make_response(
                 jsonify(item_details_partial_schema.dump(item)), 200, headers
             )
-        return "Some error happened, check aguni.log for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
+        return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
             
