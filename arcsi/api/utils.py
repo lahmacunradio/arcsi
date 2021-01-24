@@ -67,6 +67,9 @@ def broadcast_audio(audio_file_path, item, image_file_path):
         if episode_playlist:
             # TODO change all other episode airing to false
             item.airing = True
+            return True
+    return False
+
 
 
 def process_audio(play_file, item, image_file_path):
@@ -76,6 +79,7 @@ def process_audio(play_file, item, image_file_path):
     Get the extension from file sent to API.
     To get the extension we use rsplit w/ maxsplit=1 to make sure we always get the extension even if there is another dot in the filename.
     '''
+    no_error = True 
     play_file_name = "{}.{}".format(normalise("-".join([item.shows[0].name, item.name])), play_file.filename.rsplit(".", 1)[1])
     if play_file.filename != "":
         play_file_path = media_path(
@@ -91,13 +95,13 @@ def process_audio(play_file, item, image_file_path):
             # TODO fallback img arcsi default img
 
             # ughhhh........
-            broadcast_audio(play_file_path, item, image_file_path)
+            no_error = broadcast_audio(play_file_path, item, image_file_path)
 
         if item.archive_lahmastore:
             # disdain
             archive_audio(play_file_path, item)
 
-        return play_file_path
+        return no_error
 
 
 def process_image(image_file, item):
@@ -128,11 +132,13 @@ def process_image(image_file, item):
 
 
 def process_media(request_files, item):
+    no_error = True
     if request_files["image_file"]:
         image_file_path = process_image(request_files["image_file"], item)
     if request_files["play_file"]:
         if image_file_path:
-            audio_file_path = process_audio(
+            no_error = process_audio(
                 request_files["play_file"], item, image_file_path
             )
+    return no_error
 

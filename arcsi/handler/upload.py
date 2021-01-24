@@ -160,6 +160,9 @@ class AzuraArchive(object):
                         remaining_byte -= chunk_byte
                         start += chunk_byte
                         app.logger.debug("chunk posted! {} bytes remaining".format(remaining_byte))
+                    else: 
+                        app.logger.debug("Azuracast response error code: {}, body: {}".format(req.status_code, req.text))
+                        return False #exit while loop when error
                 except requests.exceptions.RequestException as e:
                     # max 30 retries
                     if retry >= 30:
@@ -216,7 +219,7 @@ class AzuraArchive(object):
                 if not wiped:
                     app.logger.info("Couldn't wipe playlist")
                     return False
-            app.logger.info("Playlist wiped")
+                app.logger.info("Playlist wiped")
             payload = {
                 "do": "playlist",
                 "files": [self.play_file_name],
@@ -228,10 +231,10 @@ class AzuraArchive(object):
                 headers=self.config["headers"],
                 json=payload,
             )
-            if r.ok:
+            if r.ok and not self.empty_playlist():
                 app.logger.info("Add to playlist request successful")
                 return True
-            app.logger.info("Add to playlist didn't succeed")
+            app.logger.debug("Add to playlist didn't succeed")
             app.logger.debug("Add to playlist request returned {}".format(r.status_code))
             app.logger.debug("Request response \n {}".format(r.content))
             return False
