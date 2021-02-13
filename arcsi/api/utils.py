@@ -1,5 +1,4 @@
 import os
-import unicodedata
 
 from arcsi.handler.upload import AzuraArchive, DoArchive
 from arcsi.model import db
@@ -33,8 +32,8 @@ def slug(namestring):
 
 
 def normalise(namestring):
-    stripped = unicodedata.normalize("NFD", namestring).encode("ascii", "ignore")
-    norms = stripped.decode("utf-8").lower().replace(" ", "_").replace("#", "_")
+    slugged = slugify(namestring)
+    norms = slugged.replace("-", "_")
     return norms
 
 
