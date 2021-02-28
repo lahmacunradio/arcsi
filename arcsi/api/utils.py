@@ -48,7 +48,7 @@ def form_filename(file_obj, item_obj):
     Get the extension from file sent to API.
     To get the extension we use rsplit w/ maxsplit=1 to make sure we always get the extension even if there is another dot in the filename.
     '''
-    ext = file_obj.filename.rsplit(DOT, 1)[1]
+    ext = file_obj.filename.rsplit(DOT, 1)[1].lower()
     norms_show_name = normalise(item_obj.shows[0].name)
     norms_ep_name = normalise(item_obj.name)
     norms_names = [norms_show_name, norms_ep_name]
