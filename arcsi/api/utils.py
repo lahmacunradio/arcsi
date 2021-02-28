@@ -8,6 +8,9 @@ from flask import current_app as app
 from slugify import slugify
 from werkzeug import secure_filename
 
+CONNECTER = "_"
+DELIMITER = "-"
+DOT = "."
 
 def dict_to_obj(dict_name, table):
     show_seq = (k["id"] for k in dict_name)
@@ -33,8 +36,23 @@ def slug(namestring):
 
 def normalise(namestring):
     slugged = slugify(namestring)
-    norms = slugged.replace("-", "_")
+    norms = slugged.replace(DELIMITER, CONNECTER)
     return norms
+
+
+def form_filename(file_obj, item_obj):
+    '''
+    Filename naming schema: 
+    Use normalised combination of show name and episode name of parent object. 
+    Join them w/ delimiter.
+    Get the extension from file sent to API.
+    To get the extension we use rsplit w/ maxsplit=1 to make sure we always get the extension even if there is another dot in the filename.
+    '''
+    ext = file_obj.filename.rsplit(DOT, 1)[1].lower()
+    norms_show_name = normalise(item_obj.shows[0].name)
+    norms_ep_name = normalise(item_obj.name)
+    norms_names = [norms_show_name, norms_ep_name]
+    return "{}{}{}".format(DELIMITER.join(norms_names), DOT, ext)
 
 
 def archive_audio(play_file_path, item):
@@ -72,14 +90,8 @@ def broadcast_audio(audio_file_path, item, image_file_path):
 
 
 def process_audio(play_file, item, image_file_path):
-    '''
-    Filename naming schema: 
-    Use normalised combination of show name and episode name of parent object. 
-    Get the extension from file sent to API.
-    To get the extension we use rsplit w/ maxsplit=1 to make sure we always get the extension even if there is another dot in the filename.
-    '''
     no_error = True 
-    play_file_name = "{}.{}".format(normalise("-".join([item.shows[0].name, item.name])), play_file.filename.rsplit(".", 1)[1])
+    play_file_name = form_filename(play_file, item)
     if play_file.filename != "":
         play_file_path = media_path(
             item.shows[0].archive_lahmastore_base_url, str(item.number), play_file_name,
@@ -104,7 +116,7 @@ def process_audio(play_file, item, image_file_path):
 
 
 def process_image(image_file, item):
-    image_file_name = normalise(image_file.filename)
+    image_file_name = form_filename(image_file, item)
     if image_file_name != "":
         if isinstance(item, Show):
             image_file_path = media_path(
