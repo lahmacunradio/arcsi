@@ -9,12 +9,13 @@
           - "443:443"
         volumes:
           - ./nginx/arcsi.conf:/etc/nginx/conf.d/arcsi.conf
-          - /etc/letsencrypt:/etc/letsencrypt
+          - certbot-etc:/etc/letsencrypt
         depends_on:
           - web
         env_file:
           - srv.env
-        entrypoint: sh -c '/entrypoint.sh $$DOMAIN $$EMAIL'
+        entrypoint: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+      
       web:
         links:
           - "db"
@@ -43,3 +44,15 @@
           - 5432
         env_file:
           - db.env
+
+      certbot:
+        depends_on:
+          - webserver
+        image: certbot/certbot
+        container_name: certbot
+        volumes:
+          - certbot-etc:/etc/letsencrypt
+        entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  certbot-etc:
