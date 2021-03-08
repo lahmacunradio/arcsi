@@ -9,7 +9,13 @@ from mutagen.mp3 import MP3
 from flask import flash, jsonify, make_response, request, send_file, url_for, redirect
 from marshmallow import fields, post_load, Schema, ValidationError
 
-from .utils import dict_to_obj, media_path, process_media
+from .utils import (
+    archive,
+    broadcast_audio,
+    dict_to_obj,
+    media_path,
+    process,
+)
 from arcsi.api import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
@@ -39,7 +45,11 @@ class ItemDetailsSchema(Schema):
     download_count = fields.Int(dump_only=True)
     uploader = fields.Str(required=True)
     shows = fields.List(
-        fields.Nested("ShowDetailsSchema", only=("id", "name"),), required=True,
+        fields.Nested(
+            "ShowDetailsSchema",
+            only=("id", "name"),
+        ),
+        required=True,
     )
 
     @post_load
@@ -48,7 +58,9 @@ class ItemDetailsSchema(Schema):
 
 
 item_details_schema = ItemDetailsSchema()
-item_details_partial_schema = ItemDetailsSchema(partial=True,)
+item_details_partial_schema = ItemDetailsSchema(
+    partial=True,
+)
 many_item_details_schema = ItemDetailsSchema(many=True)
 
 headers = {"Content-Type": "application/json"}
@@ -107,7 +119,10 @@ def add_item():
         download_count = 0
         length = 0
         archived = False
+        image_file_name = None
+        image_file = None
         image_url = ""
+        play_file = None
         play_file_name = None
         archive_lahmastore_canonical_url = ""
         archive_mixcloud_canonical_url = ""
@@ -141,8 +156,65 @@ def add_item():
         db.session.add(new_item)
         db.session.flush()
 
+        # TODO get show cover img and set as fallback
         if request.files:
-            no_error = process_media(request.files, new_item)
+            # process files first
+            if request.files["image_file"]:
+                if request.files["image_file"] != "":
+                    image_file = request.files["image_file"]
+                    image_file_name = process(
+                        archive_base=new_item.shows[0].archive_lahmastore_base_url,
+                        archive_idx=new_item.number,
+                        archive_file=image_file,
+                        archive_name=(new_item.shows[0].name, new_item.name),
+                    )
+            elif request.files["play_file"]:
+                if request.files["play_file"] != "":
+                    play_file = request.files["play_file"]
+                    new_item.play_file_name = process(
+                        archive_base=new_item.shows[0].archive_lahmastore_base_url,
+                        archive_idx=new_item.number,
+                        archive_file=play_file,
+                        archive_name=(new_item.shows[0].name, new_item.name),
+                    )
+            else:
+                no_error = False
+        # archive files if asked
+        if new_item.archive_lahmastore:
+            if no_error and (play_file or image_file):
+                if image_file_name:
+                    new_item.image_url = archive(
+                        archive_base=new_item.shows[0].archive_lahmastore_base_url,
+                        archive_file_name=image_file_name,
+                        archive_idx=new_item.number,
+                    )
+                    if not new_item.image_url:
+                        no_error = False
+                if new_item.play_file_name:
+                    new_item.archive_lahmastore_canonical_url = archive(
+                        archive_base=new_item.shows[0].archive_lahmastore_base_url,
+                        archive_file_name=new_item.play_file_name,
+                        archive_idx=new_item.number,
+                    )
+                    # Only set archived if there is audio data otherwise it's live episode
+                    if new_item.archive_lahmastore_canonical_url:
+                        new_item.archived = True
+                    else:
+                        no_error = False
+        # broadcast episode if asked
+        if new_item.broadcast:
+            if no_error and (play_file and image_file):
+                new_item.airing = broadcast_audio(
+                    archive_base=new_item.shows[0].archive_lahmastore_base_url,
+                    archive_idx=new_item.number,
+                    broadcast_file_name=new_item.play_file_name,
+                    broadcast_playlist=new_item.shows[0].playlist_name,
+                    broadcast_show=new_item.shows[0].name,
+                    broadcast_title=new_item.name,
+                    image_file_name=image_file_name,
+                )
+                if not new_item.airing:
+                    no_error = False
 
             # TODO some mp3 error
             # TODO Maybe I used vanilla mp3 not from azuracast
@@ -151,8 +223,13 @@ def add_item():
             # item_length = item_audio_obj.info.length
 
         db.session.commit()
+        # TODO no_error is just bandaid for proper exc handling
         if no_error:
-            return make_response(jsonify(item_details_schema.dump(new_item)), 200, headers,)
+            return make_response(
+                jsonify(item_details_schema.dump(new_item)),
+                200,
+                headers,
+            )
         else:
             return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
 
@@ -240,7 +317,63 @@ def edit_item(id):
         db.session.flush()
 
         if request.files:
-            no_error = process_media(request.files, item)
+            # process files first
+            if request.files["image_file"]:
+                if request.files["image_file"] != "":
+                    image_file = request.files["image_file"]
+                    image_file_name = process(
+                        archive_base=item.shows[0].archive_lahmastore_base_url,
+                        archive_idx=item.number,
+                        archive_file=image_file,
+                        archive_name=(item.shows[0].name, item.name),
+                    )
+            elif request.files["play_file"]:
+                if request.files["play_file"] != "":
+                    play_file = request.files["play_file"]
+                    item.play_file_name = process(
+                        archive_base=item.shows[0].archive_lahmastore_base_url,
+                        archive_idx=item.number,
+                        archive_file=play_file,
+                        archive_name=(item.shows[0].name, item.name),
+                    )
+            else:
+                no_error = False
+        # archive files if asked
+        if item.archive_lahmastore:
+            if no_error and (play_file or image_file):
+                if image_file_name:
+                    item.image_url = archive(
+                        archive_base=item.shows[0].archive_lahmastore_base_url,
+                        archive_file_name=image_file_name,
+                        archive_idx=item.number,
+                    )
+                    if not item.image_url:
+                        no_error = False
+                if item.play_file_name:
+                    item.archive_lahmastore_canonical_url = archive(
+                        archive_base=item.shows[0].archive_lahmastore_base_url,
+                        archive_file_name=item.play_file_name,
+                        archive_idx=item.number,
+                    )
+                    # Only set archived if there is audio data otherwise it's live episode
+                    if item.archive_lahmastore_canonical_url:
+                        item.archived = True
+                    else:
+                        no_error = False
+        # broadcast episode if asked
+        if item.broadcast:
+            if no_error and (play_file and image_file):
+                item.airing = broadcast_audio(
+                    archive_base=item.shows[0].archive_lahmastore_base_url,
+                    archive_idx=item.number,
+                    broadcast_file_name=item.play_file_name,
+                    broadcast_playlist=item.shows[0].playlist_name,
+                    broadcast_show=nitem.shows[0].name,
+                    broadcast_title=item.name,
+                    image_file_name=image_file_name,
+                )
+                if not item.airing:
+                    no_error = False
 
         db.session.commit()
         if no_error:
@@ -248,4 +381,3 @@ def edit_item(id):
                 jsonify(item_details_partial_schema.dump(item)), 200, headers
             )
         return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
-            
