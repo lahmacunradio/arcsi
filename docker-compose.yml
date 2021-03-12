@@ -1,45 +1,55 @@
----
-    version: "3"
-    services:
-      nginx:
-        build: ./nginx
-        restart: always
-        ports:
-          - "80:80"
-          - "443:443"
-        volumes:
-          - ./nginx/arcsi.conf:/etc/nginx/conf.d/arcsi.conf
-          - /etc/letsencrypt:/etc/letsencrypt
-        depends_on:
-          - web
-        env_file:
-          - srv.env
-        entrypoint: sh -c '/entrypoint.sh $$DOMAIN $$EMAIL'
-      web:
-        links:
-          - "db"
-        build: .
-        image: arcsi:0.2
-        restart: always
-        expose:
-          - 5666
-        volumes:
-          - .:/app
-        depends_on:
-          - db
-        env_file: 
-            - app.env
-        # there is no `depend_on: condition:` in compose service v3
-        entrypoint: sh -c 'sleep 60; /app/entrypoint.sh'
+version: "3"
 
-      db:
-        image: postgres:12
-        restart: always
-        volumes:
-            - ./pg-data/postgres:/var/lib/postgresql/data
-        ports:
-          - "5432:5432"
-        expose:
-          - 5432
-        env_file:
-          - db.env
+services:
+  nginx:
+    build: ./nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/arcsi.conf:/etc/nginx/conf.d/arcsi.conf
+      - /etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - web
+    env_file:
+      - srv.env
+    entrypoint: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  
+  web:
+    links:
+      - "db"
+    build: .
+    image: arcsi:0.2
+    restart: always
+    expose:
+      - 5666
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    env_file: 
+        - app.env
+    # there is no `depend_on: condition:` in compose service v3
+    entrypoint: sh -c 'sleep 60; /app/entrypoint.sh'
+
+  db:
+    image: postgres:12
+    restart: always
+    volumes:
+        - ./pg-data/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    env_file:
+      - db.env
+
+  certbot:
+    depends_on:
+      - nginx
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
