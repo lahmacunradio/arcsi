@@ -12,12 +12,13 @@ from arcsi.view import router
 # Flask-Security
 # @login_required
 def archive():
-    iresult = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_items"))
-    items = iresult.json()
-    uresult = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_users"))
-    users = uresult.json()
-    sresult = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_shows"))
-    shows = sresult.json()
+#    iresult = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_items"))
+#   items = iresult.json()
+#    uresult = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_users"))
+#    users = uresult.json()
+#    sresult = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_shows"))
+#    shows = sresult.json()
     return render_template(
-        "archive/list_archive.html", users=users, shows=shows, items=items
+#        "archive/list_archive.html", users=users, shows=shows, items=items
+        "archive/list_archive.html"
     )
