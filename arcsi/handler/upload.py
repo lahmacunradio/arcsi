@@ -210,16 +210,16 @@ class AzuraArchive(object):
     def assign_playlist(self,):
         # PUT method; add episode to playlist
         if self.find_playlist_id():
-            app.logger.info("Playlist id found successfully")
+            app.logger.debug("Playlist id found successfully")
             app.logger.debug("Playlist id is {} \n playlist name is {}".format(self.playlist_id, self.playlist_name))
             if not self.empty_playlist():
-                app.logger.info("Playlist is not empty")
-                app.logger.info("Trying to wipe playlist")
+                app.logger.debug("Playlist is not empty")
+                app.logger.debug("Trying to wipe playlist")
                 wiped = self.wipe_playlist_play_file()
                 if not wiped:
-                    app.logger.info("Couldn't wipe playlist")
+                    app.logger.debug("Couldn't wipe playlist")
                     return False
-                app.logger.info("Playlist wiped")
+                app.logger.debug("Playlist wiped")
             payload = {
                 "do": "playlist",
                 "files": [self.play_file_name],
@@ -232,7 +232,7 @@ class AzuraArchive(object):
                 json=payload,
             )
             if r.ok and not self.empty_playlist():
-                app.logger.info("Add to playlist request successful")
+                app.logger.debug("Add to playlist request successful")
                 return True
             app.logger.debug("Add to playlist didn't succeed")
             app.logger.debug("Add to playlist request returned {}".format(r.status_code))
