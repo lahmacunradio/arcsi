@@ -6,11 +6,14 @@
 
 {% block content %}
 <form action="{{ url_for('arcsi.edit_item', id=item.id) }}" method="post" enctype="multipart/form-data">
+
+<article class="add-infos">
+  <div>
   <label for="shows">Episode of show:</label>
   {% if current_user.has_role("admin") %}
   <input type="hidden" name="show_name" id="show_name" value="{{ shows[0].name }}"><select name="shows" id="shows"
   onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
-
+  <option value="">--Please choose an option--</option>
   {% for show in shows %}
   <option value="{{ show.id }}">{{ show.name }}</option>
   {% endfor %}
@@ -23,27 +26,48 @@
     {% endfor %}
   </select>
   {% endif %}
+</div>
+
+<div>
   <label for="number">Episode number</label>
   <input type="number" name="number" id="number" value="{{ item.number }}">
+</div>
+
+<div>
   <label for="name">Episode name</label>
   <input name="name" id="name" value="{{ item.name }}">
+</div>
+
+<div>
   <label for="description">Episode description</label>
   <input name="description" id="description" value="{{ item.description }}">
-  <fieldset>
-    <legend>Episode language</legend>
-    <label for="music">Music</label>
-    <input type="radio" name="language" id="music" value="music">
-    <label for="hu_hu">Magyar</label>
-    <input type="radio" name="language" id="hu_hu" value="hu_hu" checked>
-    <label for="en_uk">English</label>
-    <input type="radio" name="language" id="en_uk" value="en_uk">
-  </fieldset>
+</div>
+
+<div>
+  <label for="language">Episode language</label>
+  <select name="language" id="language">
+    <option id="music" value="music">Music</option>
+    <option id="hu_hu" value="hu_hu" selected>Magyar</option>
+    <option id="en_uk" value="en_uk">English</option>
+  </select>
+</div>
+
+<div>
   <label for="play_date">Play date</label>
   <input type="date" name="play_date" id="play_date" value="{{ item.play_date }}">
+</div>
+
+<div>
   <label for="play_file">Play file</label>
   <input type="file" name="play_file" id="play_file" value="{{ item.play_file_name }}">
+</div>
+
+<div>
   <label for="image_file">Episode cover image</label>
   <input type="file" name="image_file" id="image_file" value="{{ item.image_url }}">
+</div>
+
+<div>  
   <label for="live">Live</label>
   <input type="hidden" name="live" id="live" {% if item.live %} value="1" {% else %} value="0" {% endif %}><input
     type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0" {% if item.live %} checked {% endif %}>
@@ -52,6 +76,9 @@
   <input type="hidden" id="broadcast" name="broadcast" {% if item.broadcast %} value="1" {% else %} value="0"
     {% endif %}><input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
     {% if item.broadcast %} checked {% endif %}>
+  </div>
+
+  <div>   
   <label for="archive_lahmastore">Archive to Lahmastore</label>
   <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" {% if item.archive_lahmastore %} value="1"
     {% else %} value="0" {% endif %}><input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
@@ -62,6 +89,11 @@
     {% if item.archive_mixcloud %} checked {% endif %}>
   <!-- TODO updated_at ? uploader means anything here? -->
   <input type="hidden" name="uploader" id="uploader" value="{{ current_user.email }}">
+</div>
+
+<div>
   <input type="submit" value="Update">
+</div>  
+</article>
 </form>
 {% endblock %}
