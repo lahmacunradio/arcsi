@@ -191,7 +191,7 @@ def add_show():
                     new_show.cover_image_url = archive(
                         archive_base=new_show.archive_lahmastore_base_url,
                         archive_idx=0,
-                        image_file_name=cover_image_name,
+                        archive_file_name=cover_image_name,
                     )
 
         db.session.commit()
