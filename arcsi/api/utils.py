@@ -106,12 +106,11 @@ def process(archive_base, archive_idx, archive_file, archive_name):
     
 
 def archive(archive_base, archive_file_name, archive_idx):
-        do = DoArchive()
+    do = DoArchive()
 
-        archive_file_path = media_path(
-            archive_base, str(archive_idx), archive_file_name
-        )
-        archive_url = do.upload(archive_file_path, archive_base, archive_idx)
-        return archive_url
-    else:
-        return None
+    archive_file_path = media_path(
+        archive_base, str(archive_idx), archive_file_name
+    )
+    archive_url = do.upload(archive_file_path, archive_base, archive_idx)
+    
+    return archive_url
