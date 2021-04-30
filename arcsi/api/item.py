@@ -168,7 +168,7 @@ def add_item():
                         archive_file=image_file,
                         archive_name=(new_item.shows[0].name, new_item.name),
                     )
-            elif request.files["play_file"]:
+            if request.files["play_file"]:
                 if request.files["play_file"] != "":
                     play_file = request.files["play_file"]
                     new_item.play_file_name = process(
@@ -177,7 +177,8 @@ def add_item():
                         archive_file=play_file,
                         archive_name=(new_item.shows[0].name, new_item.name),
                     )
-            else:
+            
+            if not (image_file_name or new_item.play_file_name):
                 no_error = False
         # archive files if asked
         if new_item.archive_lahmastore:
@@ -196,14 +197,17 @@ def add_item():
                         archive_file_name=new_item.play_file_name,
                         archive_idx=new_item.number,
                     )
-                    # Only set archived if there is audio data otherwise it's live episode
+                    
                     if new_item.archive_lahmastore_canonical_url:
+                        # Only set archived if there is audio data otherwise it's live episode
                         new_item.archived = True
-                    else:
+                    else:  # Upload didn't succeed
                         no_error = False
         # broadcast episode if asked
-        if new_item.broadcast:
-            if no_error and (play_file and image_file):
+        if new_item.broadcast and no_error:
+            if not (play_file and image_file):
+                no_error = False
+            else:
                 new_item.airing = broadcast_audio(
                     archive_base=new_item.shows[0].archive_lahmastore_base_url,
                     archive_idx=new_item.number,
@@ -268,6 +272,10 @@ def delete_item(id):
 @arcsi.route("/item/<id>", methods=["POST"])
 def edit_item(id):
     no_error = True
+    image_file = None
+    image_file_name = None
+    play_file = None
+
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
     # work around ImmutableDict type
@@ -277,7 +285,7 @@ def edit_item(id):
         {"id": item_metadata["shows"], "name": item_metadata["show_name"]}
     ]
     item_metadata.pop("show_name", None)
-
+    
     # validate payload
     # TODO handle what happens on f.e: empty payload?
     # if err: -- need to check files {put IMG, put AUDIO} first
@@ -327,7 +335,8 @@ def edit_item(id):
                         archive_file=image_file,
                         archive_name=(item.shows[0].name, item.name),
                     )
-            elif request.files["play_file"]:
+                    
+            if request.files["play_file"]:
                 if request.files["play_file"] != "":
                     play_file = request.files["play_file"]
                     item.play_file_name = process(
@@ -336,8 +345,9 @@ def edit_item(id):
                         archive_file=play_file,
                         archive_name=(item.shows[0].name, item.name),
                     )
-            else:
+            if not (image_file_name or item.play_file_name):
                 no_error = False
+    
         # archive files if asked
         if item.archive_lahmastore:
             if no_error and (play_file or image_file):
@@ -361,14 +371,16 @@ def edit_item(id):
                     else:
                         no_error = False
         # broadcast episode if asked
-        if item.broadcast:
-            if no_error and (play_file and image_file):
+        if item.broadcast and no_error:
+            if not (play_file and image_file):
+                no_error = False
+            else:
                 item.airing = broadcast_audio(
                     archive_base=item.shows[0].archive_lahmastore_base_url,
                     archive_idx=item.number,
                     broadcast_file_name=item.play_file_name,
                     broadcast_playlist=item.shows[0].playlist_name,
-                    broadcast_show=nitem.shows[0].name,
+                    broadcast_show=item.shows[0].name,
                     broadcast_title=item.name,
                     image_file_name=image_file_name,
                 )
