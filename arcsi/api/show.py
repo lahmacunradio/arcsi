@@ -9,13 +9,14 @@ from flask import current_app as app
 from marshmallow import fields, post_load, Schema, ValidationError
 from werkzeug import secure_filename
 
-from .utils import media_path, slug, process_image
+from .utils import archive, process, slug
 from arcsi.api import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.item import Item
 from arcsi.model.show import Show
 from arcsi.model.user import User
+
 
 class ShowDetailsSchema(Schema):
     id = fields.Int()
@@ -37,12 +38,24 @@ class ShowDetailsSchema(Schema):
     items = fields.List(
         fields.Nested(
             "ItemDetailsSchema",
-            only=("id", "archived", "description", "name", "number", "play_date", "image_url"),
+            only=(
+                "id",
+                "archived",
+                "description",
+                "name",
+                "number",
+                "play_date",
+                "image_url",
+            ),
         ),
         dump_only=True,
     )
     users = fields.List(
-        fields.Nested("UserDetailsSchema", only=("id", "name", "email"),), required=True
+        fields.Nested(
+            "UserDetailsSchema",
+            only=("id", "name", "email"),
+        ),
+        required=True,
     )
 
     @post_load
@@ -55,6 +68,7 @@ show_details_partial_schema = ShowDetailsSchema(partial=True)
 many_show_details_schema = ShowDetailsSchema(many=True)
 
 headers = {"Content-Type": "application/json"}
+
 
 @arcsi.route("/show", methods=["GET"])
 @arcsi.route("/show/all", methods=["GET"])
@@ -96,9 +110,17 @@ def view_archive(slug):
     show = show_query.first_or_404()
     if show:
         show_json = show_details_schema.dump(show)
-        show_items = [show_item for show_item in show_json["items"] if datetime.strptime(show_item.get("play_date"), "%Y-%m-%d")+timedelta(days=1) < datetime.today()]
+        show_items = [
+            show_item
+            for show_item in show_json["items"]
+            if datetime.strptime(show_item.get("play_date"), "%Y-%m-%d")
+            + timedelta(days=1)
+            < datetime.today()
+        ]
         for show_item in show_items:
-            show_item["image_url"] = do.download(show.archive_lahmastore_base_url, show_item["image_url"])
+            show_item["image_url"] = do.download(
+                show.archive_lahmastore_base_url, show_item["image_url"]
+            )
         return json.dumps(show_items)
     else:
         return make_response("Show not found", 404, headers)
@@ -159,11 +181,26 @@ def add_show():
 
         if request.files:
             if request.files["image_file"]:
-                process_image(request.files["image_file"], new_show)
+                cover_image_name = process(
+                    archive_base=new_show.archive_lahmastore_base_url,
+                    archive_idx=0,
+                    archive_file=request.files["image_file"],
+                    archive_name=(new_show.name, "cover"),
+                )
+                if cover_image_name:
+                    new_show.cover_image_url = archive(
+                        archive_base=new_show.archive_lahmastore_base_url,
+                        archive_idx=0,
+                        archive_file_name=cover_image_name,
+                    )
 
         db.session.commit()
 
-        return make_response(jsonify(show_details_schema.dump(new_show)), 200, headers,)
+        return make_response(
+            jsonify(show_details_schema.dump(new_show)),
+            200,
+            headers,
+        )
 
 
 @arcsi.route("/show/<id>", methods=["DELETE"])
@@ -228,10 +265,20 @@ def edit_show(id):
 
         if request.files:
             if request.files["image_file"]:
-                process_image(request.files["image_file"], show)
+                cover_image_name = process(
+                    archive_base=show.archive_lahmastore_base_url,
+                    archive_idx=0,
+                    archive_file=request.files["image_file"],
+                    archive_name=(show.name, "cover"),
+                )
+                if cover_image_name:
+                    show.cover_image_url = archive(
+                        archive_base=show.archive_lahmastore_base_url,
+                        archive_idx=0,
+                        archive_file_name=cover_image_name,
+                    )
 
         db.session.commit()
         return make_response(
             jsonify(show_details_partial_schema.dump(show)), 200, headers
         )
-
