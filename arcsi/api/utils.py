@@ -34,11 +34,6 @@ def normalise(namestring):
     norms = slugged.replace(DELIMITER, CONNECTER)
     return norms
 
-
-def show_or_not(item_obj):
-    return True if isinstance(item_obj, Show) else False
-
-
 def slug(namestring):
     slugs = slugify(namestring)
     return slugs
