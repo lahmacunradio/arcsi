@@ -9,10 +9,12 @@
 <div class="shows-list">
     {% for show in shows %}
     <div class="show-card">
+        <p>Show name: 
+            <a href="{{ url_for('router.view_show', id=show.id) }}"><b>{{show.name}}</b></a>
+        </p>
+        <p>Show active: {{show.active}}</p>
         <p>Show host: {% for user in show.users %} {% if user.name %} {{ user.name }} {% else %} {{ user.email }} {% endif %}
             {% endfor %}</p>
-        <p>Show active: {{show.active}}</p>
-        <p>Show name: {{show.name}}</p>
         <p>Show description: {{show.description}}</p>
         <p>Show language: {{show.language}}</p>
         <p>Show cover image URL: {{show.cover_image_url}}</p>
@@ -25,11 +27,20 @@
         <p>Show archive lahmastore base URL: {{show.archive_lahmastore_base_url}}</p>
         <p>Show archive mixcloud: {{show.archive_mixcloud}}</p>
         <p>Show archive mixcloud base URL: {{show.archive_mixcloud_base_url}}</p>
-        <p>Show items:<br> {% for item in show["items"] %}--number: {{item.number}} --play_date: {{item.play_date}} --name:
-            {{item.name}} --description: {{item.description}} --archived:
-            {% if item.archived %}archived {% else %}not_archived {% endif %} --permalink: <a
-                href="{{ url_for('router.view_item', id=item.id) }}">{{item.id}}</a><br>{% endfor %}</p>
-        <p>permalink <a href="{{ url_for('router.view_show', id=show.id) }}">{{show.id}}</a></p>
+        <p>Show items: </p>
+        <ul>
+            {% for item in show["items"] %}
+            <li>
+            --name: <a href="{{ url_for('router.view_item', id=item.id) }}"><b>{{item.name}}</b></a>  
+            --number: {{item.number}} 
+            --play_date: {{item.play_date}} 
+            --description: {{item.description}} 
+            --archived: {% if item.archived %}archived {% else %}not_archived {% endif %} 
+            --permalink: <a href="{{ url_for('router.view_item', id=item.id) }}">{{item.id}}</a>
+            </li>
+            {% endfor %}
+        </ul>
+            <p>Show page: <a href="{{ url_for('router.view_show', id=show.id) }}">{{show.id}}</a></p>
     </div>
     {% endfor %}    
 </div>  

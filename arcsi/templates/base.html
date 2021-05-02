@@ -21,7 +21,7 @@
 <body class="arcsipage">
   <div class="container-fluid">
 
-    <header class="siteheader">
+    <header class="siteheader" id="topheader">
       <h1>
         <a href="{{ url_for('router.archive') }}">ARCSI</a>
       </h1>
@@ -72,6 +72,33 @@
   </section>
 
   </div>
+  <footer>
+    <a href="#topheader" id="topbutt" class="d-none">
+      <i class="far fa-arrow-alt-circle-up"></i>
+    </a>
+  </footer>
 </body>
+
+<script>
+  const totopbutton = document.querySelector('#topbutt');
+  totopbutton.addEventListener('click', (event) => { 
+    event.preventDefault()
+    window.scroll({top: 0, behavior: "smooth"}) 
+    totopbutton.classList.add('d-none')
+  });
+  const showTotop = () => {
+    if (window.scrollY > 150) {
+      totopbutton.classList.remove('d-none')
+    } else {
+      totopbutton.classList.add('d-none')
+    }
+  }
+  document.addEventListener('wheel', () => {
+    showTotop()
+  }, {
+    capture: true,
+    passive: true
+  })
+</script>
 
 </html>
