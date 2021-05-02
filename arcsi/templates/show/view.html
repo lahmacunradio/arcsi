@@ -23,11 +23,23 @@
 <p>Show archive lahmastore base URL: {{show.archive_lahmastore_base_url}}</p>
 <p>Show archive mixcloud: {{show.archive_mixcloud}}</p>
 <p>Show archive mixcloud base URL: {{show.archive_mixcloud_base_url}}</p>
-<p>Show items:<br> {% for item in show["items"] %}--number: {{item.number}} --play_date: {{item.play_date}} --name:
-    {{item.name}} --description: {{item.description}} --archived:
+<p>Show items:</p>
+    <ul>
+    {% for item in show["items"] %}
+    <li>
+    --name: <a href="{{ url_for('router.view_item', id=item.id) }}">
+        <b>{{item.name}}</b></a>
+    --number: {{item.number}} 
+    --play_date: {{item.play_date}} 
+    --description: {{item.description}} 
+    --archived:
     {% if item.archived %}archived {% else %}not_archived {% endif %} --permalink: <a
-        href="{{ url_for('router.view_item', id=item.id) }}">{{item.id}}</a><br>{% endfor %}</p>
+        href="{{ url_for('router.view_item', id=item.id) }}">{{item.id}}</a>
+    </li>    
+    {% endfor %}
+    </ul> 
+ <hr> 
 <p><a href="{{ url_for('router.edit_show', id=show['id']) }}">Edit show</a> || <a
-        href="{{ url_for('arcsi.delete_show', id=show['id']) }}">Delete show</a></p>
-<hr>
+        href="{{ url_for('arcsi.delete_show', id=show['id']) }}">Delete show</a>
+    
 {% endblock %}
