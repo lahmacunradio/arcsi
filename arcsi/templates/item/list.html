@@ -8,9 +8,19 @@
 <div class="episodes-list">
     {% for item in items %}
     <div class="episode-card">
-        <p>Episode parent show: {% for show in item["shows"] %} {{ show["name"] }} {% endfor %}</p>
+        <p>Show:
+            {% for show in item["shows"] %} 
+            <a href="{{ url_for('router.view_show', id=show['id']) }}">
+                <b>{{show["name"]}}</b>
+            </a>
+            {% endfor %}</p>
+        <p>Episode: 
+            <a href="{{ url_for('router.view_item', id=item['id']) }}">
+                <b>{{item["name"]}}</b>
+            </a>
+        </p>
         <p>Episode number: {{item["number"]}}</p>
-        <p>Episode name: {{item["name"]}}</p>
+        <p>Episode id: {{item['id']}}</p>
         <p>Episode image URL: {{item["image_url"]}}</p>
         <p>Episode description: {{item["description"]}}</p>
         <p>Episode language: {{item.language}}</p>

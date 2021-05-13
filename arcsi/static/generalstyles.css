@@ -4,10 +4,24 @@ body {
     font-family: 'Rubik', "Segoe UI","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";  
 }
 
+img {
+    max-width: 100%;
+}
+
+textarea {
+    resize: both;
+    min-width: 23rem;
+    min-height: 7rem;
+}
+
 .container {
     max-width: 1200px;
     width: 98%;
     margin: auto;
+}
+
+.container b {
+    font-weight: 600;
 }
 
 .arcsipage a {
@@ -99,6 +113,10 @@ header .admin-menu {
 
 /* Content */
 
+section.content {
+    padding-bottom: 2rem;
+}
+
 section.content h2 {
     margin-bottom: 2rem;
 }
@@ -113,6 +131,10 @@ section p {
     margin-bottom: 0.5rem;
 }
 
+section ul {
+    padding-left: 1rem;
+}
+
 .admin-content > div {
     margin-bottom: 2rem;
 }
@@ -120,13 +142,14 @@ section p {
 .users-list, .shows-list, .episodes-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    column-gap: 1rem;
+    gap: 1rem;
 }
 
 .user-card, .show-card, .episode-card {
     padding: 1em;
     border: 1px solid;
     border-radius: 3px;
+    overflow: auto;
 }
 
 .add-infos {
@@ -160,4 +183,17 @@ section p {
     border: none;
     border-radius: 3px;
     padding: 0.5rem 2rem;
+}
+
+#topbutt {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    padding: 0.5rem 1rem;
+    font-size: 2rem;
+    opacity: .5;
+}
+
+#topbutt:hover {
+    opacity: 1;
 }
