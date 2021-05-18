@@ -4,7 +4,12 @@ import os
 SECRET_KEY = "yoursecretkeynotinversioncontrol"  # Never share! This is used to sign session. Note: https://github.com/pallets/itsdangerous/issues/41#issuecomment-69416785
 
 # DB
-SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@db/arcsi"  # used by Sqlalchemy ORM; can be Mysql, Postgresql, sqlite, mongo etc.
+# Set in db.env
+SQLALCHEMY_DATABASE_URI = "postgresql://{}:{}@db/{}".format(
+    os.getenv("POSTGRES_USER"),
+    os.getenv("POSTGRES_PASSWORD"),
+    os.getenv("POSTGRES_DB")
+    )  # used by Sqlalchemy ORM; can be Mysql, Postgresql, sqlite, mongo etc.
 SQLALCHEMY_TRACK_MODIFICATIONS = (
     False  # https://github.com/pallets/flask-sqlalchemy/issues/365
 )
