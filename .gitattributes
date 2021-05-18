@@ -1,0 +1,10 @@
+text=lf
+ *.css linguist-vendored eol=lf
+ *.js linguist-vendored eol=lf
+ *.py eol=lf
+ *.env eol=lf
+ *.template eol=lf
+ *.yml eol=lf
+ *.sh eol=lf
+ *.conf eol=lf
+ CHANGELOG.md export-ignore 
