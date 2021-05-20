@@ -30,6 +30,7 @@ services:
       - db
     env_file: 
         - app.env
+        - db.env
     # there is no `depend_on: condition:` in compose service v3
     entrypoint: sh -c 'sleep 60; /app/entrypoint.sh'
 
