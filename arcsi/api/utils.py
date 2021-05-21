@@ -12,6 +12,13 @@ DELIMITER = "-"
 DOT = "."
 
 
+def allowed_file(filename):
+    return (
+        DOT in filename
+        and filename.rsplit(DOT, 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
+    )
+
+
 def dict_to_obj(dict_name, table):
     show_seq = (k["id"] for k in dict_name)
     obj_list = db.session.query(table).filter(table.id.in_(show_seq)).all()
@@ -34,6 +41,7 @@ def normalise(namestring):
     norms = slugged.replace(DELIMITER, CONNECTER)
     return norms
 
+
 def slug(namestring):
     slugs = slugify(namestring)
     return slugs
@@ -54,17 +62,19 @@ def form_filename(file_obj, title_tuple):
     return "{}{}{}".format(DELIMITER.join(norms_names), DOT, ext)
 
 
-def broadcast_audio(archive_base, archive_idx, broadcast_file_name, broadcast_playlist, broadcast_show, broadcast_title, image_file_name):
+def broadcast_audio(
+    archive_base,
+    archive_idx,
+    broadcast_file_name,
+    broadcast_playlist,
+    broadcast_show,
+    broadcast_title,
+    image_file_name,
+):
     broadcast_file_path = media_path(
-        archive_base,
-        str(archive_idx),
-        broadcast_file_name
+        archive_base, str(archive_idx), broadcast_file_name
     )
-    image_file_path = media_path(
-        archive_base,
-        str(archive_idx),
-        image_file_name
-    )
+    image_file_path = media_path(archive_base, str(archive_idx), image_file_name)
     az = AzuraArchive(
         broadcast_file_path,
         broadcast_file_name,
@@ -89,23 +99,24 @@ def broadcast_audio(archive_base, archive_idx, broadcast_file_name, broadcast_pl
 
 
 def process(archive_base, archive_idx, archive_file, archive_name):
-    archive_file_name = form_filename(archive_file, archive_name)
-    if archive_file_name != "":
-        archive_file_path = media_path(
-            archive_base, str(archive_idx), archive_file_name
-        )
-        archive_file.save(archive_file_path)
-        return archive_file_name
-    else:
+    if not allowed_file(archive_file):
         return None
-    
+    else:
+        archive_file_name = form_filename(archive_file, archive_name)
+        if archive_file_name == "":
+            return None
+        else:
+            archive_file_path = media_path(
+                archive_base, str(archive_idx), archive_file_name
+            )
+            archive_file.save(archive_file_path)
+            return archive_file_name
+
 
 def archive(archive_base, archive_file_name, archive_idx):
     do = DoArchive()
 
-    archive_file_path = media_path(
-        archive_base, str(archive_idx), archive_file_name
-    )
+    archive_file_path = media_path(archive_base, str(archive_idx), archive_file_name)
     archive_url = do.upload(archive_file_path, archive_base, archive_idx)
-    
+
     return archive_url
