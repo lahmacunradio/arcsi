@@ -9,7 +9,7 @@ from flask import current_app as app
 from marshmallow import fields, post_load, Schema, ValidationError
 from werkzeug import secure_filename
 
-from .utils import archive, process, slug
+from .utils import archive, process, slug, sort_for
 from arcsi.api import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
@@ -93,7 +93,13 @@ def view_show(id):
             show.cover_image_url = do.download(
                 show.archive_lahmastore_base_url, show.cover_image_url
             )
-        return show_details_schema.dump(show)
+        # Display episodes by date in descending order
+        # We need to sort nested: episode list of the full object then re-apply that part
+        serial_show = show_details_schema.dump(show)
+        date_desc_episodes = sort_for(serial_show["items"], "play_date", "desc")
+        serial_show["items"] = date_desc_episodes
+
+        return serial_show
     else:
         return make_response("Show not found", 404, headers)
 
