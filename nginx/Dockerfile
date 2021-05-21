@@ -13,10 +13,9 @@ COPY arcsi.conf /etc/nginx/conf.d/
 RUN mkdir /var/lib/certbot
 
 # copy entrypoint and renewal script for container
-COPY ./entrypoint.sh /entrypoint.sh
+
 COPY ./renew /etc/periodic/weekly/renew
-RUN chmod +x /entrypoint.sh \
-  && chmod +x /etc/periodic/weekly/renew
+RUN chmod +x /etc/periodic/weekly/renew
 
 # HTTP+S reverse proxy
 EXPOSE 80 443
