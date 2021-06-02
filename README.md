@@ -29,10 +29,9 @@ Run `docker-compose up -d`
 Hit http://localhost in your browser
 
 ### Hints for local setup with [frontend](https://github.com/mmmnmnm/lahmacun)
-   * Change port setting to e.g., `2222:80` in the docker-compose file (otherwise the nginx server will conflict with the frontend's nginx server). 
-   * Point the frontend to local arcsi instance in the `content-arcsi.php` file of the frontend project. Note: you may need to use the `http://docker.for.mac.localhost:2222` style notation for Mac. 
-
-
+   * (Docker-compose file) Change port setting to e.g., `2222:80` in the docker-compose file (otherwise the nginx server will conflict with the frontend's nginx server). 
+   * (Docker-compose file) Delete `certbot` service in the docker-compose file (otherwise the service with the same name of the frontend project will be in conflict; note that you don't need this service on localhost). 
+   * (PHP code) Point the frontend to local arcsi instance in the `content-arcsi.php` file of the frontend project. Note: you may need to use the `http://docker.for.mac.localhost:2222` style notation for Mac. 
 
 ## Windows
  - If an entry point fails to execute on Windows (the sh interpreter will tell you that the file doesn't exist, which is probably not true), check if there are Windows-style (CRLF) line endings and change them to Unix-style ones (LF). 
