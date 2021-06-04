@@ -12,6 +12,13 @@ DELIMITER = "-"
 DOT = "."
 
 
+
+def allowed_file(filename):
+    return (
+        DOT in filename
+        and filename.rsplit(DOT, 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
+    )
+
 def sort_for(collection, value, direction="asc"):
     if isinstance(collection, list):
         mod_list = [
@@ -113,15 +120,18 @@ def broadcast_audio(
 
 
 def process(archive_base, archive_idx, archive_file, archive_name):
-    archive_file_name = form_filename(archive_file, archive_name)
-    if archive_file_name != "":
-        archive_file_path = media_path(
-            archive_base, str(archive_idx), archive_file_name
-        )
-        archive_file.save(archive_file_path)
-        return archive_file_name
-    else:
+    if not allowed_file(archive_file):
         return None
+    else:
+        archive_file_name = form_filename(archive_file, archive_name)
+        if archive_file_name == "":
+            return None
+        else:
+            archive_file_path = media_path(
+                archive_base, str(archive_idx), archive_file_name
+            )
+            archive_file.save(archive_file_path)
+            return archive_file_name
 
 
 def archive(archive_base, archive_file_name, archive_idx):

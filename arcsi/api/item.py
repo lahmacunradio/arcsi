@@ -178,7 +178,7 @@ def add_item():
                         archive_name=(new_item.shows[0].name, new_item.name),
                     )
 
-            if not (image_file_name or new_item.play_file_name):
+            if not (image_file_name and new_item.play_file_name):
                 no_error = False
         # archive files if asked
         if new_item.archive_lahmastore:
@@ -342,7 +342,7 @@ def edit_item(id):
                         archive_file=play_file,
                         archive_name=(item.shows[0].name, item.name),
                     )
-            if not (image_file_name or item.play_file_name):
+            if not (image_file_name and item.play_file_name):
                 no_error = False
 
         # archive files if asked

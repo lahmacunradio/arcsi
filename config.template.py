@@ -6,10 +6,8 @@ SECRET_KEY = "yoursecretkeynotinversioncontrol"  # Never share! This is used to 
 # DB
 # Set in db.env
 SQLALCHEMY_DATABASE_URI = "postgresql://{}:{}@db/{}".format(
-    os.getenv("POSTGRES_USER"),
-    os.getenv("POSTGRES_PASSWORD"),
-    os.getenv("POSTGRES_DB")
-    )  # used by Sqlalchemy ORM; can be Mysql, Postgresql, sqlite, mongo etc.
+    os.getenv("POSTGRES_USER"), os.getenv("POSTGRES_PASSWORD"), os.getenv("POSTGRES_DB")
+)  # used by Sqlalchemy ORM; can be Mysql, Postgresql, sqlite, mongo etc.
 SQLALCHEMY_TRACK_MODIFICATIONS = (
     False  # https://github.com/pallets/flask-sqlalchemy/issues/365
 )
@@ -23,6 +21,7 @@ SECURITY_PASSWORD_SALT = "some_salt"
 
 # ARCSI CONF
 UPLOAD_FOLDER = "/abs/path/on/your/machine"  # this is where arcsi stores uploadable files temporarily
+ALLOWED_EXTENSIONS = ["mp3", "gif", "jpg", "jpeg", "png"]
 ARCHIVE_REGION = "jams4"  # used by boto3; depending on storage service might differ. AWS example: `eu-west-1`, DO example: `nyc1`
 ARCHIVE_HOST_BASE_URL = (
     "https://ip-or-url-of-provid.er"  # used by boto3; an IP or public URL
