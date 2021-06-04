@@ -177,7 +177,7 @@ def add_item():
                         archive_file=play_file,
                         archive_name=(new_item.shows[0].name, new_item.name),
                     )
-            
+
             if not (image_file_name or new_item.play_file_name):
                 no_error = False
         # archive files if asked
@@ -197,7 +197,7 @@ def add_item():
                         archive_file_name=new_item.play_file_name,
                         archive_idx=new_item.number,
                     )
-                    
+
                     if new_item.archive_lahmastore_canonical_url:
                         # Only set archived if there is audio data otherwise it's live episode
                         new_item.archived = True
@@ -285,7 +285,7 @@ def edit_item(id):
         {"id": item_metadata["shows"], "name": item_metadata["show_name"]}
     ]
     item_metadata.pop("show_name", None)
-    
+
     # validate payload
     # TODO handle what happens on f.e: empty payload?
     # if err: -- need to check files {put IMG, put AUDIO} first
@@ -311,10 +311,7 @@ def edit_item(id):
         item.uploader = item_metadata.uploader
         item.archive_lahmastore = item_metadata.archive_lahmastore
         item.archive_mixcloud = item_metadata.archive_mixcloud
-        if item.archive_lahmastore or item.archive_mixcloud:
-            item.archived = True
-        else:
-            item.archived = False
+
         # conflict between shows from detached object load(item_metadata) added to session vs original persistent object item from query
         item.shows = (
             db.session.query(Show)
@@ -335,7 +332,7 @@ def edit_item(id):
                         archive_file=image_file,
                         archive_name=(item.shows[0].name, item.name),
                     )
-                    
+
             if request.files["play_file"]:
                 if request.files["play_file"] != "":
                     play_file = request.files["play_file"]
@@ -347,7 +344,7 @@ def edit_item(id):
                     )
             if not (image_file_name or item.play_file_name):
                 no_error = False
-    
+
         # archive files if asked
         if item.archive_lahmastore:
             if no_error and (play_file or image_file):

@@ -12,11 +12,32 @@ DELIMITER = "-"
 DOT = "."
 
 
+
 def allowed_file(filename):
     return (
         DOT in filename
         and filename.rsplit(DOT, 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
     )
+
+def sort_for(collection, value, direction="asc"):
+    if isinstance(collection, list):
+        mod_list = [
+            collectible
+            for collectible in sorted(collection, key=lambda arg: arg[value])
+        ]
+        if direction == "desc":
+            mod_list.reverse()
+        elif direction == "asc":
+            pass  # sorted is ascending already
+        else:
+            raise ValueError("Only accepting `asc` and `desc` as directions")
+        return mod_list
+    else:
+        raise TypeError(
+            "Collection should be of type: `List` instead found {}".format(
+                type(collection)
+            )
+        )
 
 
 def dict_to_obj(dict_name, table):
