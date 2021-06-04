@@ -120,10 +120,10 @@ def broadcast_audio(
 
 
 def process(archive_base, archive_idx, archive_file, archive_name):
-    if not allowed_file(archive_file):
+    archive_file_name = form_filename(archive_file, archive_name)
+    if not allowed_file(archive_file_name):
         return None
     else:
-        archive_file_name = form_filename(archive_file, archive_name)
         if archive_file_name == "":
             return None
         else:
