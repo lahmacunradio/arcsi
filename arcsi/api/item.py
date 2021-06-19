@@ -184,7 +184,7 @@ def add_item():
                     no_error = False
             else: 
                 # this branch is typically used for pre-uploading live episodes (no audio)
-                if not (image_file_name):
+                if not image_file_name:
                     no_error = False
         # archive files if asked
         if new_item.archive_lahmastore:
@@ -348,8 +348,14 @@ def edit_item(id):
                         archive_file=play_file,
                         archive_name=(item.shows[0].name, item.name),
                     )
-            if not (image_file_name and item.play_file_name):
-                no_error = False
+            if new_item.broadcast:
+                # we require both image and audio if broadcast (Azuracast) is set
+                if not (image_file_name and new_item.play_file_name):
+                    no_error = False
+                else: 
+                    # this branch is typically used for pre-uploading live episodes (no audio)
+                    if not image_file_name:
+                        no_error = False
 
         # archive files if asked
         if item.archive_lahmastore:
