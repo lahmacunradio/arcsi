@@ -348,9 +348,9 @@ def edit_item(id):
                         archive_file=play_file,
                         archive_name=(item.shows[0].name, item.name),
                     )
-            if new_item.broadcast:
+            if item.broadcast:
                 # we require both image and audio if broadcast (Azuracast) is set
-                if not (image_file_name and new_item.play_file_name):
+                if not (image_file_name and item.play_file_name):
                     no_error = False
                 else: 
                     # this branch is typically used for pre-uploading live episodes (no audio)
