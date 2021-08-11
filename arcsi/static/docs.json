@@ -1,0 +1,960 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "description": "Arcsi API doc",
+      "version": "0.9.0",
+      "title": "Arcsi",
+      "contact": {
+        "email": "it@lahmacun.hu"
+      },
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "servers": [
+      {
+        "url": "/arcsi/"
+      }
+    ],
+    "tags": [
+      {
+        "name": "User Request",
+        "description": "API for requesting and return User details"
+      },
+      {
+        "name": "Show Request",
+        "description": "API for requesting and return Show details"
+      },
+      {
+        "name": "Item Request",
+        "description": "API for requesting and return Item details"
+      }
+    ],
+    "paths": {
+      "/user/all": {
+        "get": {
+          "tags": [
+            "User Request"
+          ],
+          "summary": "Return all User",
+          "produces": [
+            "text/html"
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "text/html": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserRequests"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/user/{id}": {
+        "get": {
+          "tags": [
+            "User Request"
+          ],
+          "summary": "Get User with given ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "description": "ID of the user that we want to match",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UserRequest"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Could not find user"
+            }
+          }
+        }
+      },
+      "/show/all": {
+        "get": {
+          "tags": [
+            "Show Request"
+          ],
+          "summary": "Return all Show",
+          "produces": [
+            "text/html"
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "text/html": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ShowRequests"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/show/{id}": {
+        "get": {
+          "tags": [
+            "Show Request"
+          ],
+          "summary": "Get Show with given ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "description": "ID of the show that we want to match",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ShowRequest"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Show not found"
+            }
+          }
+        },
+        "delete": {
+          "tags": [
+            "Show Request"
+          ],
+          "summary": "Delete Show with given ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "description": "ID of the show that we want to delete",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Deleted show successfully"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "post": {
+          "tags": [
+            "Show Request"
+          ],
+          "summary": "Edit Show with given ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "description": "ID of the show that we want to edit",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "Show Request Object",
+            "required": true,
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShowRequestPostBody"
+                }
+              }
+            }
+          },
+          "consumes": [
+            "multipart/form-data"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ShowRequest"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "URL not found!"
+            },
+            "500": {
+              "description": "Invalid data sent to edit show"
+            }
+          }
+        }
+      },
+      "/show/{slug}/archive": {
+        "get": {
+          "tags": [
+            "Show Request"
+          ],
+          "summary": "Get Show with given URL",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "slug",
+              "required": true,
+              "description": "Item Request URL",
+              "type": "string"
+            }
+          ],
+          "produces": [
+            "text/html"
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "text/html": {
+                  "schema": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "$ref": "#/components/schemas/item"
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Show not found"
+            }
+          }
+        }
+      },
+      "/show/add": {
+        "post": {
+          "tags": [
+            "Show Request"
+          ],
+          "summary": "Add a new Show",
+          "requestBody": {
+            "description": "Show Request Post Object",
+            "required": true,
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShowRequestPostBody"
+                }
+              }
+            }
+          },
+          "consumes": [
+            "multipart/form-data"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ShowRequest"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Invalid data sent to add show"
+            },
+            "503": {
+              "description": "Only accepts multipart/form-data for now, sorry"
+            }
+          }
+        }
+      },
+      "/item": {
+        "post": {
+          "tags": [
+            "Item Request"
+          ],
+          "summary": "Add a new Item",
+          "requestBody": {
+            "description": "Item Request",
+            "required": true,
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemRequestPostBody"
+                }
+              }
+            }
+          },
+          "consumes": [
+            "multipart/form-data"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ItemRequest"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Invalid data sent to add item"
+            },
+            "503": {
+              "description": "Only accepts multipart/form-data for now, sorry"
+            }
+          }
+        }
+      },
+      "/item/all": {
+        "get": {
+          "tags": [
+            "Item Request"
+          ],
+          "summary": "Return all Item",
+          "produces": [
+            "text/html"
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "text/html": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ItemRequests"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/item/{id}": {
+        "get": {
+          "tags": [
+            "Item Request"
+          ],
+          "summary": "Get Item with given ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "description": "Item Request ID",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ItemRequest"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Item not found"
+            }
+          }
+        },
+        "delete": {
+          "tags": [
+            "Item Request"
+          ],
+          "summary": "Delete Item with given ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "description": "Item Request ID",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "404": {
+              "description": "URL not found"
+            }
+          }
+        },
+        "post": {
+          "tags": [
+            "Item Request"
+          ],
+          "summary": "Edit Item with given ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "description": "Item Request ID",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "Item Request",
+            "required": true,
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemRequestPostBody"
+                }
+              }
+            }
+          },
+          "consumes": [
+            "multipart/form-data"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ItemRequest"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "URL not found."
+            },
+            "500": {
+              "description": "Invalid data sent to edit item"
+            }
+          }
+        }
+      },
+      "/item/{id}/listen": {
+        "get": {
+          "tags": [
+            "Item Request"
+          ],
+          "summary": "Listen Item with given ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "description": "Item Request ID",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "application/mp3": {
+                  "schema": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/item/{id}/download": {
+        "get": {
+          "tags": [
+            "Item Request"
+          ],
+          "summary": "Download Item with given ID",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "description": "Item Request ID",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ],
+          "responses": {
+            "302": {
+              "description": "OK"
+            },
+            "404": {
+              "description": "Failed. Item not found."
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "example": "1"
+        },
+        "url": {
+          "type": "string",
+          "example": "https://custom-listen-url.example.com/stream.mp3"
+        },
+        "user": {
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            }
+          }
+        },
+        "show": {
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "name": {
+              "type": "string"
+            }
+          }
+        },
+        "item": {
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "number": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "play_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "image_url": {
+              "type": "string"
+            },
+            "archived": {
+              "type": "boolean"
+            }
+          }
+        },
+        "UserRequest": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "active": {
+              "type": "boolean"
+            },
+            "butt_user": {
+              "type": "string"
+            },
+            "butt_pw": {
+              "type": "string",
+              "format": "password"
+            },
+            "email": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string",
+              "format": "password"
+            },
+            "roles": {
+              "type": "string"
+            },
+            "shows": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/show"
+              }
+            }
+          },
+          "example": {
+            "active": "true",
+            "butt_pw": "",
+            "butt_user": "",
+            "email": "example user email",
+            "id": "1",
+            "name": "example user name",
+            "password": "example user password",
+            "roles": "example user roles",
+            "shows": [
+              {
+                "id": "1",
+                "name": "show 1 name"
+              },
+              {
+                "id": "2",
+                "name": "show 2 name"
+              }
+            ]
+          }
+        },
+        "UserRequests": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/components/schemas/UserRequest"
+          }
+        },
+        "ShowRequest": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "active": {
+              "type": "boolean"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "language": {
+              "type": "string"
+            },
+            "cover_image_url": {
+              "type": "string"
+            },
+            "playlist_name": {
+              "type": "string"
+            },
+            "frequency": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "week": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "day": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "start": {
+              "type": "string"
+            },
+            "end": {
+              "type": "string"
+            },
+            "archive_lahmastore": {
+              "type": "boolean"
+            },
+            "archive_lahmastore_base_url": {
+              "type": "string"
+            },
+            "archive_mixcloud": {
+              "type": "boolean"
+            },
+            "archive_mixcloud_base_url": {
+              "type": "string"
+            },
+            "items": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/item"
+              }
+            },
+            "users": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/user"
+              }
+            }
+          }
+        },
+        "ShowRequests": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/components/schemas/ShowRequest"
+          }
+        },
+        "ShowRequestPostBody": {
+          "type": "object",
+          "properties": {
+            "active": {
+              "type": "boolean"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "language": {
+              "type": "string"
+            },
+            "playlist_name": {
+              "type": "string"
+            },
+            "frequency": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "week": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "day": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "start": {
+              "type": "string"
+            },
+            "end": {
+              "type": "string"
+            },
+            "archive_lahmastore": {
+              "type": "boolean"
+            },
+            "archive_mixcloud": {
+              "type": "boolean"
+            },
+            "users": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "user_name": {
+              "type": "string",
+              "example": "FÖLÖSLEGES"
+            },
+            "user_email": {
+              "type": "string",
+              "example": "FÖLÖSLEGES"
+            },
+            "image_file": {
+              "type": "file"
+            }
+          },
+          "example": {
+            "active": "true",
+            "name": "example show name",
+            "description": "example show description",
+            "language": "example show language",
+            "playlist_name": "example show playlist name",
+            "frequency": "1",
+            "week": "1",
+            "day": "1",
+            "start": "04:20",
+            "end": "06:00",
+            "archive_lahmastore": "true",
+            "archive_mixcloud": "true",
+            "users": "1",
+            "user_name": "example user name",
+            "user_email": "example user email"
+          }
+        },
+        "ItemRequest": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "number": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "language": {
+              "type": "string"
+            },
+            "play_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "image_url": {
+              "type": "string"
+            },
+            "play_file_name": {
+              "type": "string"
+            },
+            "live": {
+              "type": "boolean"
+            },
+            "broadcast": {
+              "type": "boolean"
+            },
+            "airing": {
+              "type": "boolean"
+            },
+            "archive_lahmastore": {
+              "type": "boolean"
+            },
+            "archive_lahmastore_canonical_url": {
+              "type": "string"
+            },
+            "archive_mixcloud": {
+              "type": "boolean"
+            },
+            "archive_mixcloud_canonical_url": {
+              "type": "string"
+            },
+            "archived": {
+              "type": "boolean"
+            },
+            "download_count": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "uploader": {
+              "type": "string"
+            },
+            "shows": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/show"
+              }
+            }
+          }
+        },
+        "ItemRequests": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/components/schemas/ItemRequest"
+          }
+        },
+        "ItemRequestPostBody": {
+          "type": "object",
+          "properties": {
+            "number": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "language": {
+              "type": "string"
+            },
+            "play_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "live": {
+              "type": "boolean"
+            },
+            "broadcast": {
+              "type": "boolean"
+            },
+            "archive_lahmastore": {
+              "type": "boolean"
+            },
+            "archive_mixcloud": {
+              "type": "boolean"
+            },
+            "uploader": {
+              "type": "string"
+            },
+            "shows": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "show_name": {
+              "type": "string",
+              "example": "FÖLÖSLEGES"
+            },
+            "image_file": {
+              "type": "file"
+            },
+            "play_file": {
+              "type": "file"
+            }
+          }
+        }
+      }
+    }
+  }
