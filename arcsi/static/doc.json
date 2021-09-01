@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
       "description": "Arcsi API doc",
-      "version": "0.9.0",
+      "version": "0.9.2",
       "title": "Arcsi",
       "contact": {
         "email": "it@lahmacun.hu"
@@ -555,23 +555,26 @@
         "id": {
           "type": "integer",
           "format": "int32",
-          "example": "1"
+          "example": 1
         },
         "url": {
           "type": "string",
-          "example": "https://custom-listen-url.example.com/stream.mp3"
+          "example": "https://www.lahmacun.hu"
         },
         "user": {
           "properties": {
             "id": {
               "type": "integer",
-              "format": "int32"
+              "format": "int32",
+              "example": 1
             },
             "name": {
-              "type": "string"
+              "type": "string",
+              "example": "user-name"
             },
             "email": {
-              "type": "string"
+              "type": "string",
+              "example": "user-email"
             }
           }
         },
@@ -579,10 +582,12 @@
           "properties": {
             "id": {
               "type": "integer",
-              "format": "int32"
+              "format": "int32",
+              "example": 1
             },
             "name": {
-              "type": "string"
+              "type": "string",
+              "example": "show-name"
             }
           }
         },
@@ -590,27 +595,34 @@
           "properties": {
             "id": {
               "type": "integer",
-              "format": "int32"
+              "format": "int32",
+              "example": 1
             },
             "number": {
               "type": "integer",
-              "format": "int32"
+              "format": "int32",
+              "example": 42
             },
             "name": {
-              "type": "string"
+              "type": "string",
+              "example": "item-name"
             },
             "description": {
-              "type": "string"
+              "type": "string",
+              "example": "item-description"
             },
             "play_date": {
               "type": "string",
-              "format": "date"
+              "format": "date",
+              "example": "2001-09-11"
             },
             "image_url": {
-              "type": "string"
+              "type": "string",
+              "example": "item-image_url"
             },
             "archived": {
-              "type": "boolean"
+              "type": "boolean",
+              "example": true
             }
           }
         },
@@ -652,22 +664,22 @@
             }
           },
           "example": {
-            "active": "true",
-            "butt_pw": "",
-            "butt_user": "",
-            "email": "example user email",
-            "id": "1",
-            "name": "example user name",
-            "password": "example user password",
-            "roles": "example user roles",
+            "active": true,
+            "butt_pw": "user-butt_pw",
+            "butt_user": "user-butt_user",
+            "email": "user-email",
+            "id": 1,
+            "name": "user-name",
+            "password": "user-password",
+            "roles": "user-roles",
             "shows": [
               {
-                "id": "1",
-                "name": "show 1 name"
+                "id": 1,
+                "name": "show_1-name"
               },
               {
-                "id": "2",
-                "name": "show 2 name"
+                "id": 2,
+                "name": "show_2-name"
               }
             ]
           }
@@ -757,76 +769,81 @@
           "type": "object",
           "properties": {
             "active": {
-              "type": "boolean"
+              "type": "boolean",
+              "example": true
             },
             "name": {
-              "type": "string"
+              "type": "string",
+              "example": "show-name"
             },
             "description": {
-              "type": "string"
+              "type": "string",
+              "example": "show-description"
             },
             "language": {
-              "type": "string"
+              "type": "string",
+              "example": "show-language"
             },
             "playlist_name": {
-              "type": "string"
+              "type": "string",
+              "example": "show-playlist_name"
             },
             "frequency": {
               "type": "integer",
-              "format": "int32"
+              "format": "int32",
+              "example": 1
             },
             "week": {
               "type": "integer",
-              "format": "int32"
+              "format": "int32",
+              "example": 1
             },
             "day": {
               "type": "integer",
-              "format": "int32"
+              "format": "int32",
+              "example": 1
             },
             "start": {
-              "type": "string"
+              "type": "string",
+              "example": "04:20"
             },
             "end": {
-              "type": "string"
+              "type": "string",
+              "example": "06:00"
             },
             "archive_lahmastore": {
-              "type": "boolean"
+              "type": "boolean",
+              "example": true
             },
             "archive_mixcloud": {
-              "type": "boolean"
+              "type": "boolean",
+              "example": true
             },
             "users": {
               "type": "integer",
-              "format": "int32"
-            },
-            "user_name": {
-              "type": "string",
-              "example": "FÖLÖSLEGES"
-            },
-            "user_email": {
-              "type": "string",
-              "example": "FÖLÖSLEGES"
+              "format": "int32",
+              "example": 1
             },
             "image_file": {
               "type": "file"
             }
           },
           "example": {
-            "active": "true",
-            "name": "example show name",
-            "description": "example show description",
-            "language": "example show language",
-            "playlist_name": "example show playlist name",
-            "frequency": "1",
-            "week": "1",
-            "day": "1",
+            "active": true,
+            "name": "show-name",
+            "description": "show-description",
+            "language": "show-language",
+            "playlist_name": "show-playlist_name",
+            "frequency": 1,
+            "week": 1,
+            "day": 1,
             "start": "04:20",
             "end": "06:00",
-            "archive_lahmastore": "true",
-            "archive_mixcloud": "true",
-            "users": "1",
-            "user_name": "example user name",
-            "user_email": "example user email"
+            "archive_lahmastore": true,
+            "archive_mixcloud": true,
+            "users": 1,
+            "user_name": "Arcsi",
+            "user_email": "arcsi@lahmacun.hu"
           }
         },
         "ItemRequest": {
@@ -909,39 +926,50 @@
           "properties": {
             "number": {
               "type": "integer",
-              "format": "int32"
+              "format": "int32",
+              "example": 42
             },
             "name": {
-              "type": "string"
+              "type": "string",
+              "example": "item-name"
             },
             "description": {
-              "type": "string"
+              "type": "string",
+              "example": "item-description"
             },
             "language": {
-              "type": "string"
+              "type": "string",
+              "example": "item-language"
             },
             "play_date": {
               "type": "string",
-              "format": "date"
+              "format": "date",
+              "example": "2001-09-11"
             },
             "live": {
-              "type": "boolean"
+              "type": "boolean",
+              "example": true
             },
             "broadcast": {
-              "type": "boolean"
+              "type": "boolean",
+              "example": true
             },
             "archive_lahmastore": {
-              "type": "boolean"
+              "type": "boolean",
+              "example": true
             },
             "archive_mixcloud": {
-              "type": "boolean"
+              "type": "boolean",
+              "example": true
             },
             "uploader": {
-              "type": "string"
+              "type": "string",
+              "example": "item-uploader"
             },
             "shows": {
               "type": "integer",
-              "format": "int32"
+              "format": "int32",
+              "example": 1
             },
             "show_name": {
               "type": "string",

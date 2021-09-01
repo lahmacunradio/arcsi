@@ -66,8 +66,8 @@ def create_app(config_file):
     app.register_blueprint(view.router)
 
     ### swagger specific ###
-    SWAGGER_URL = '/docs'
-    API_URL = '/static/docs.json'
+    SWAGGER_URL = '/doc'
+    API_URL = '/static/doc.json'
     SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
         SWAGGER_URL,
         API_URL,
