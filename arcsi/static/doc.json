@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
       "description": "Arcsi API doc",
-      "version": "0.9.2",
+      "version": "0.9.3",
       "title": "Arcsi",
       "contact": {
         "email": "it@lahmacun.hu"
@@ -175,58 +175,6 @@
               "description": "Internal Server Error"
             }
           }
-        },
-        "post": {
-          "tags": [
-            "Show Request"
-          ],
-          "summary": "Edit Show with given ID",
-          "parameters": [
-            {
-              "in": "path",
-              "name": "id",
-              "required": true,
-              "description": "ID of the show that we want to edit",
-              "schema": {
-                "$ref": "#/components/schemas/id"
-              }
-            }
-          ],
-          "requestBody": {
-            "description": "Show Request Object",
-            "required": true,
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "$ref": "#/components/schemas/ShowRequestPostBody"
-                }
-              }
-            }
-          },
-          "consumes": [
-            "multipart/form-data"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/ShowRequest"
-                  }
-                }
-              }
-            },
-            "404": {
-              "description": "URL not found!"
-            },
-            "500": {
-              "description": "Invalid data sent to edit show"
-            }
-          }
         }
       },
       "/show/{slug}/archive": {
@@ -263,92 +211,6 @@
             },
             "404": {
               "description": "Show not found"
-            }
-          }
-        }
-      },
-      "/show/add": {
-        "post": {
-          "tags": [
-            "Show Request"
-          ],
-          "summary": "Add a new Show",
-          "requestBody": {
-            "description": "Show Request Post Object",
-            "required": true,
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "$ref": "#/components/schemas/ShowRequestPostBody"
-                }
-              }
-            }
-          },
-          "consumes": [
-            "multipart/form-data"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/ShowRequest"
-                  }
-                }
-              }
-            },
-            "500": {
-              "description": "Invalid data sent to add show"
-            },
-            "503": {
-              "description": "Only accepts multipart/form-data for now, sorry"
-            }
-          }
-        }
-      },
-      "/item": {
-        "post": {
-          "tags": [
-            "Item Request"
-          ],
-          "summary": "Add a new Item",
-          "requestBody": {
-            "description": "Item Request",
-            "required": true,
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemRequestPostBody"
-                }
-              }
-            }
-          },
-          "consumes": [
-            "multipart/form-data"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/ItemRequest"
-                  }
-                }
-              }
-            },
-            "500": {
-              "description": "Invalid data sent to add item"
-            },
-            "503": {
-              "description": "Only accepts multipart/form-data for now, sorry"
             }
           }
         }
@@ -431,58 +293,6 @@
             },
             "404": {
               "description": "URL not found"
-            }
-          }
-        },
-        "post": {
-          "tags": [
-            "Item Request"
-          ],
-          "summary": "Edit Item with given ID",
-          "parameters": [
-            {
-              "in": "path",
-              "name": "id",
-              "required": true,
-              "description": "Item Request ID",
-              "schema": {
-                "$ref": "#/components/schemas/id"
-              }
-            }
-          ],
-          "requestBody": {
-            "description": "Item Request",
-            "required": true,
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemRequestPostBody"
-                }
-              }
-            }
-          },
-          "consumes": [
-            "multipart/form-data"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/ItemRequest"
-                  }
-                }
-              }
-            },
-            "404": {
-              "description": "URL not found."
-            },
-            "500": {
-              "description": "Invalid data sent to edit item"
             }
           }
         }
@@ -824,6 +634,14 @@
               "format": "int32",
               "example": 1
             },
+            "user_name": {
+              "type": "string",
+              "example": "show-user_name"
+            },
+            "user_email": {
+              "type": "string",
+              "example": "show-user_email"
+            },
             "image_file": {
               "type": "file"
             }
@@ -973,7 +791,7 @@
             },
             "show_name": {
               "type": "string",
-              "example": "FÖLÖSLEGES"
+              "example": "item-show_name"
             },
             "image_file": {
               "type": "file"
