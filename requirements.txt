@@ -76,3 +76,4 @@ watchdog==0.10.2
 Werkzeug==0.16.0
 wrapt==1.11.2
 WTForms==2.3.1
+flask_swagger_ui==3.25.0

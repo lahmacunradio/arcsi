@@ -4,6 +4,7 @@ import os
 from flask import Flask
 from flask_security import Security, SQLAlchemySessionUserDatastore
 from flask_migrate import Migrate
+from flask_swagger_ui import get_swaggerui_blueprint
 from sqlalchemy.exc import ProgrammingError
 
 from arcsi.model import db, item, role, show, user
@@ -63,5 +64,17 @@ def create_app(config_file):
 
     app.register_blueprint(api.arcsi)
     app.register_blueprint(view.router)
+
+    ### swagger specific ###
+    SWAGGER_URL = '/doc'
+    API_URL = '/static/doc.json'
+    SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
+        SWAGGER_URL,
+        API_URL,
+        config={
+            'app_name': "Arcsi"
+        }
+    )
+    app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 
     return app
