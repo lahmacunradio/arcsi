@@ -11,7 +11,7 @@ class Show(db.Model):
     language = db.Column(db.String(5), default="hu_hu")
     # TODO rename to image_url
     cover_image_url = db.Column(db.String())
-    playlist_name = db.Column(db.String(), unique=True)
+    playlist_name = db.Column(db.String())
     frequency = db.Column(db.Integer, nullable=False, default=1)
     week = db.Column(db.Integer, nullable=False)
     day = db.Column(db.Integer, nullable=False)
