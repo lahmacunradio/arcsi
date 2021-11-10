@@ -6,6 +6,7 @@ import io
 from datetime import datetime, timedelta
 from flask import flash, jsonify, make_response, request, url_for
 from flask import current_app as app
+from arcsi.api.item import ItemDetailsSchema
 from marshmallow import fields, post_load, Schema, ValidationError
 from werkzeug import secure_filename
 
@@ -66,6 +67,9 @@ class ShowDetailsSchema(Schema):
 show_details_schema = ShowDetailsSchema()
 show_details_partial_schema = ShowDetailsSchema(partial=True)
 many_show_details_schema = ShowDetailsSchema(many=True)
+many_show_details_basic_schema = ShowDetailsSchema(many=True, only=("id", "active", "name", "description",
+"week", "day", "start", "end",
+"cover_image_url", "archive_lahmastore_base_url"))
 
 headers = {"Content-Type": "application/json"}
 
@@ -80,8 +84,7 @@ def list_shows():
             show.cover_image_url = do.download(
                 show.archive_lahmastore_base_url, show.cover_image_url
             )
-    return many_show_details_schema.dumps(shows)
-
+    return many_show_details_basic_schema.dumps(shows)
 
 @arcsi.route("/show/<id>", methods=["GET"])
 def view_show(id):
