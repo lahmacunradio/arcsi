@@ -2,6 +2,7 @@ import json
 import os
 import requests
 import io
+from arcsi.model import secondary
 
 from mutagen.id3 import APIC, ID3
 from mutagen.mp3 import MP3
@@ -21,6 +22,7 @@ from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.item import Item
 from arcsi.model.show import Show
+from arcsi.model.secondary import items_shows
 
 
 class ItemDetailsSchema(Schema):
@@ -402,3 +404,15 @@ def edit_item(id):
                 jsonify(item_details_partial_schema.dump(item)), 200, headers
             )
         return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
+
+
+@arcsi.route("/<string:show_slug>/<episode_number>", methods=["GET"])
+def view_episode_archive(show_slug, episode_number):
+    do = DoArchive()
+    # TODO instead of json filtering,
+    # write actual query
+    # joining shows and items
+    # so we can limit date etc.
+    item_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug).join(Item, Show.items).filter_by(number=episode_number).first().items
+    item = item_query.first_or_404()
+    return jsonify(item_details_schema.dump(item))

@@ -108,7 +108,7 @@ def view_show(id):
 
 
 @arcsi.route("/show/<string:slug>/archive", methods=["GET"])
-def view_archive(slug):
+def view_show_archive(slug):
     do = DoArchive()
     # TODO instead of json filtering,
     # write actual query
