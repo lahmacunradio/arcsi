@@ -15,6 +15,7 @@ from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.user import User
+from arcsi.api.item import many_item_details_schema
 
 
 class ShowDetailsSchema(Schema):
@@ -106,30 +107,13 @@ def view_show(id):
         return make_response("Show not found", 404, headers)
 
 
-@arcsi.route("/show/<string:slug>/archive", methods=["GET"])
-def view_show_archive(slug):
-    do = DoArchive()
-    # TODO instead of json filtering,
-    # write actual query
-    # joining shows and items
-    # so we can limit date etc.
-    show_query = Show.query.filter_by(archive_lahmastore_base_url=slug)
-    # item_query = Item.query.filter_by(parent_show=)
+@arcsi.route("/<string:show_slug>/archive", methods=["GET"])
+def view_show_archive(show_slug):
+    show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first_or_404()
     if show:
-        show_json = show_details_schema.dump(show)
-        show_items = [
-            show_item
-            for show_item in show_json["items"]
-            if datetime.strptime(show_item.get("play_date"), "%Y-%m-%d")
-            + timedelta(days=1)
-            < datetime.today()
-        ]
-        for show_item in show_items:
-            show_item["image_url"] = do.download(
-                show.archive_lahmastore_base_url, show_item["image_url"]
-            )
-        return json.dumps(show_items)
+        show_items = show.items
+        return jsonify(many_item_details_schema.dumps(show_items))
     else:
         return make_response("Show not found", 404, headers)
 
