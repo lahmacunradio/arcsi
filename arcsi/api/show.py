@@ -6,7 +6,6 @@ import io
 from datetime import datetime, timedelta
 from flask import flash, jsonify, make_response, request, url_for
 from flask import current_app as app
-from arcsi.api.item import ItemDetailsSchema
 from marshmallow import fields, post_load, Schema, ValidationError
 from werkzeug import secure_filename
 
