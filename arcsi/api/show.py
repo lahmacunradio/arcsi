@@ -14,7 +14,6 @@ from .utils import archive, process, slug, sort_for
 from arcsi.api import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
-from arcsi.model.item import Item
 from arcsi.model.show import Show
 from arcsi.model.user import User
 
@@ -67,9 +66,10 @@ class ShowDetailsSchema(Schema):
 show_details_schema = ShowDetailsSchema()
 show_details_partial_schema = ShowDetailsSchema(partial=True)
 many_show_details_schema = ShowDetailsSchema(many=True)
-many_show_details_basic_schema = ShowDetailsSchema(many=True, only=("id", "active", "name", "description",
-"week", "day", "start", "end",
-"cover_image_url", "archive_lahmastore_base_url"))
+many_show_details_basic_schema = ShowDetailsSchema(many=True, 
+                                                   only=("id", "active", "name", "description",
+                                                         "week", "day", "start", "end",
+                                                         "cover_image_url", "archive_lahmastore_base_url"))
 
 headers = {"Content-Type": "application/json"}
 

@@ -2,7 +2,6 @@ import json
 import os
 import requests
 import io
-from arcsi.model import secondary
 
 from mutagen.id3 import APIC, ID3
 from mutagen.mp3 import MP3
@@ -22,7 +21,6 @@ from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.item import Item
 from arcsi.model.show import Show
-from arcsi.model.secondary import items_shows
 
 
 class ItemDetailsSchema(Schema):
