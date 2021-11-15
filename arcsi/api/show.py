@@ -15,7 +15,6 @@ from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.user import User
-from arcsi.api.item import many_item_details_schema
 
 
 class ShowDetailsSchema(Schema):
@@ -103,17 +102,6 @@ def view_show(id):
         serial_show["items"] = date_desc_episodes
 
         return serial_show
-    else:
-        return make_response("Show not found", 404, headers)
-
-
-@arcsi.route("/<string:show_slug>/archive", methods=["GET"])
-def view_show_archive(show_slug):
-    show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
-    show = show_query.first_or_404()
-    if show:
-        show_items = show.items
-        return jsonify(many_item_details_schema.dumps(show_items))
     else:
         return make_response("Show not found", 404, headers)
 

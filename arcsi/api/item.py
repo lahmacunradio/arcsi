@@ -402,14 +402,3 @@ def edit_item(id):
                 jsonify(item_details_partial_schema.dump(item)), 200, headers
             )
         return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
-
-
-@arcsi.route("/<string:show_slug>/ep_<string:episode_slug>", methods=["GET"])
-def view_episode_archive(show_slug, episode_slug):
-    episode_slug += ".mp3"
-    item_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug).join(Item, Show.items).first().items.filter_by(play_file_name=episode_slug)
-    item = item_query.first_or_404()
-    if item:
-        return jsonify(item_details_schema.dump(item))
-    else:
-        return make_response("Item not found", 404, headers)
