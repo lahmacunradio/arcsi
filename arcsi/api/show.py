@@ -15,6 +15,7 @@ from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.user import User
+from arcsi.api.item import Item, many_item_details_schema, item_details_schema
 
 
 class ShowDetailsSchema(Schema):
@@ -43,6 +44,7 @@ class ShowDetailsSchema(Schema):
                 "description",
                 "name",
                 "number",
+                "play_file_name",
                 "play_date",
                 "image_url",
             ),
@@ -262,3 +264,25 @@ def edit_show(id):
         return make_response(
             jsonify(show_details_partial_schema.dump(show)), 200, headers
         )
+
+
+@arcsi.route("show/<string:show_slug>/archive", methods=["GET"])
+def view_show_archive(show_slug):
+    show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
+    show = show_query.first_or_404()
+    if show:
+        show_items = show.items.filter(Item.play_date < datetime.today() - timedelta(days=1)).all()
+        return jsonify(many_item_details_schema.dumps(show_items))
+    else:
+        return make_response("Show not found", 404, headers)
+
+
+@arcsi.route("show/<string:show_slug>/episode/<string:episode_slug>", methods=["GET"])
+def view_episode_archive(show_slug, episode_slug):
+    episode_slug += ".mp3"
+    show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
+    show = show_query.first_or_404()
+    for i in show.items:
+        if i.play_file_name == episode_slug:
+            return item_details_schema.dump(i)
+    return make_response("Episode not found", 404, headers)
