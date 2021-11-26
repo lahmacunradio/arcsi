@@ -47,6 +47,7 @@ def view_item(id):
 
 
 @router.route("/item/<id>/edit", methods=["GET"])
+@roles_accepted("admin", "host", "guest")
 def edit_item(id):
     relpath = url_for("arcsi.edit_item", id=id)
     item = requests.get(app.config["APP_BASE_URL"] + relpath)
