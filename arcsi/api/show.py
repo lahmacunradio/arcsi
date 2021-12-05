@@ -272,7 +272,7 @@ def view_show_archive(show_slug):
     show = show_query.first_or_404()
     if show:
         show_items = show.items.filter(Item.play_date < datetime.today() - timedelta(days=1)).all()
-        return jsonify(many_item_details_schema.dumps(show_items))
+        return many_item_details_schema.dumps(show_items)
     else:
         return make_response("Show not found", 404, headers)
 
