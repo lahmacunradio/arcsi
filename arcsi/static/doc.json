@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "description": "Arcsi API doc",
-    "version": "0.9.4",
+    "version": "0.9.5",
     "title": "Arcsi",
     "contact": {
       "email": "it@lahmacun.hu"
@@ -97,7 +97,7 @@
         "tags": [
           "Show Request"
         ],
-        "summary": "Return all Show",
+        "summary": "Return Shows for Home and Schedule Page",
         "produces": [
           "text/html"
         ],
@@ -107,7 +107,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowBasicRequests"
+                  "$ref": "component.json#/components/schemas/ShowScheduleRequests"
                 }
               }
             }
@@ -115,12 +115,35 @@
         }
       }
     },
-    "/show/{show_slug}": {
+    "/shows/archive": {
       "get": {
         "tags": [
           "Show Request"
         ],
-        "summary": "Get Show subpage infos with Show slug",
+        "summary": "Return Shows for Shows Page",
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ShowArchiveRequests"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/show/{show_slug}/archive": {
+      "get": {
+        "tags": [
+          "Show Request"
+        ],
+        "summary": "Return Show for Show Subpage",
         "parameters": [
           {
             "in": "path",
@@ -155,7 +178,7 @@
         "tags": [
           "Item Request"
         ],
-        "summary": "Get Episode with Episode slug",
+        "summary": "Return Episode for Episode Subpage",
         "parameters": [
           {
             "in": "path",
@@ -197,7 +220,7 @@
         "tags": [
           "Item Request"
         ],
-        "summary": "Return all Item",
+        "summary": "Return Episodes for Archive Page",
         "produces": [
           "text/html"
         ],

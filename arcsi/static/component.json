@@ -139,7 +139,37 @@
                     "$ref": "#/components/schemas/UserRequest"
                 }
             },
-            "ShowBasicRequest": {
+            "ShowScheduleRequest": {
+                "type": "object",
+                "properties": {
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "cover_image_url": {
+                        "type": "string"
+                    },
+                    "day": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "start": {
+                        "type": "string"
+                    },
+                    "end": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "archive_lahmastore_base_url": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ShowArchiveRequest": {
                 "type": "object",
                 "properties": {
                     "active": {
@@ -202,10 +232,16 @@
                     }
                 }
             },
-            "ShowBasicRequests": {
+            "ShowScheduleRequests": {
                 "type": "object",
                 "additionalProperties": {
-                    "$ref": "#/components/schemas/ShowBasicRequest"
+                    "$ref": "#/components/schemas/ShowScheduleRequest"
+                }
+            },
+            "ShowArchiveRequests": {
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/components/schemas/ShowArchiveRequest"
                 }
             },
             "ShowRequests": {

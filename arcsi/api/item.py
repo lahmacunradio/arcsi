@@ -58,12 +58,12 @@ class ItemDetailsSchema(Schema):
         return Item(**data)
 
 
-item_details_schema = ItemDetailsSchema()
-item_basic_details_schema = ItemDetailsSchema(only = ("name", "number", "play_date", "language", 
+item_schema = ItemDetailsSchema()
+item_archive_schema = ItemDetailsSchema(only = ("name", "number", "play_date", "language", 
                                              "description", "image_url", "play_file_name", "download_count"))
-item_details_partial_schema = ItemDetailsSchema(partial=True,)
-many_item_details_schema = ItemDetailsSchema(many=True)
-many_item_details_basic_schema = ItemDetailsSchema(many=True, 
+item_partial_schema = ItemDetailsSchema(partial=True,)
+items_schema = ItemDetailsSchema(many=True)
+items_basic_schema = ItemDetailsSchema(many=True, 
                                                    only=("name", "description",
                                                          "play_date", "play_file_name",
                                                          "image_url", "download_count"))
@@ -81,7 +81,7 @@ def list_items():
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
-    return many_item_details_basic_schema.dumps(items)
+    return items_basic_schema.dumps(items)
 
 
 @arcsi.route("/item/<id>", methods=["GET"])
@@ -94,7 +94,7 @@ def view_item(id):
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
-        return item_details_schema.dump(item)
+        return item_schema.dump(item)
     else:
         return make_response("Item not found", 404, headers)
 
@@ -114,13 +114,13 @@ def add_item():
     ]
     item_metadata.pop("show_name", None)
     # validate payload
-    err = item_details_schema.validate(item_metadata)
+    err = item_schema.validate(item_metadata)
     if err:
         return make_response(
             jsonify("Invalid data sent to add item, see: {}".format(err)), 500, headers
         )
     else:
-        item_metadata = item_details_schema.load(item_metadata)
+        item_metadata = item_schema.load(item_metadata)
         download_count = 0
         length = 0
         archived = False
@@ -241,7 +241,7 @@ def add_item():
         # TODO no_error is just bandaid for proper exc handling
         if no_error:
             return make_response(
-                jsonify(item_details_schema.dump(new_item)),
+                jsonify(item_schema.dump(new_item)),
                 200,
                 headers,
             )
@@ -300,7 +300,7 @@ def edit_item(id):
     # validate payload
     # TODO handle what happens on f.e: empty payload?
     # if err: -- need to check files {put IMG, put AUDIO} first
-    err = item_details_schema.validate(item_metadata)
+    err = item_schema.validate(item_metadata)
     if err:
         return make_response(
             jsonify("Invalid data sent to edit item, see: {}".format(err)),
@@ -310,7 +310,7 @@ def edit_item(id):
     else:
         # TODO edit uploaded media -- remove re-up etc.
         # TODO broadcast / airing
-        item_metadata = item_details_schema.load(item_metadata)
+        item_metadata = item_schema.load(item_metadata)
         item.number = item_metadata.number
         item.name = item_metadata.name
         item.description = item_metadata.description
@@ -404,6 +404,6 @@ def edit_item(id):
         db.session.commit()
         if no_error:
             return make_response(
-                jsonify(item_details_partial_schema.dump(item)), 200, headers
+                jsonify(item_partial_schema.dump(item)), 200, headers
             )
         return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."

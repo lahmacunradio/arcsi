@@ -15,7 +15,7 @@ from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.user import User
-from arcsi.api.item import item_basic_details_schema
+from arcsi.api.item import item_archive_schema
 
 
 class ShowDetailsSchema(Schema):
@@ -62,15 +62,19 @@ class ShowDetailsSchema(Schema):
         return Show(**data)
 
 
-show_details_schema = ShowDetailsSchema()
-show_details_basic_schema = ShowDetailsSchema(only=("name", "cover_image_url", 
+show_schema = ShowDetailsSchema()
+show_archive_schema = ShowDetailsSchema(only=("name", "cover_image_url", 
                                                     "day", "start", "end",
                                                     "frequency", "language",
                                                     "active", "description",
                                                     "items"))
-show_details_partial_schema = ShowDetailsSchema(partial=True)
-many_show_details_schema = ShowDetailsSchema(many=True)
-many_show_basic_details_schema = ShowDetailsSchema(many=True, 
+show_partial_schema = ShowDetailsSchema(partial=True)
+shows_schema = ShowDetailsSchema(many=True)
+shows_schedule_schema = ShowDetailsSchema(many=True, 
+                                                   only=("active", "name", "cover_image_url",
+                                                         "day", "start", "end",
+                                                         "description", "archive_lahmastore_base_url"))
+shows_archive_schema = ShowDetailsSchema(many=True, 
                                                    only=("active", "name", "cover_image_url",
                                                    "description", "archive_lahmastore_base_url"))
 
@@ -87,8 +91,19 @@ def list_shows():
             show.cover_image_url = do.download(
                 show.archive_lahmastore_base_url, show.cover_image_url
             )
-    return many_show_basic_details_schema.dumps(shows)
+    return shows_schedule_schema.dumps(shows)
 
+
+@arcsi.route("/shows/archive", methods=["GET"])
+def list_shows_archive():
+    do = DoArchive()
+    shows = Show.query.all()
+    for show in shows:
+        if show.cover_image_url:
+            show.cover_image_url = do.download(
+                show.archive_lahmastore_base_url, show.cover_image_url
+            )
+    return shows_archive_schema.dumps(shows)
 
 # TODO /item/<uuid>/add route so that each upload has unique id to begin with
 # no need for different methods for `POST` & `PUT`
@@ -112,14 +127,14 @@ def add_show():
     show_metadata.pop("user_email", None)
 
     # validate payload
-    err = show_details_schema.validate(show_metadata)
+    err = show_schema.validate(show_metadata)
     if err:
         return make_response(
             jsonify("Invalid data sent to add show, see: {}".format(err)), 500, headers
         )
     else:
         # host = User.query.filter_by(id=show_metadata["users"]).first()
-        show_metadata = show_details_schema.load(show_metadata)
+        show_metadata = show_schema.load(show_metadata)
         new_show = Show(
             active=show_metadata.active,
             name=show_metadata.name,
@@ -161,7 +176,7 @@ def add_show():
         db.session.commit()
 
         return make_response(
-            jsonify(show_details_schema.dump(new_show)),
+            jsonify(show_schema.dump(new_show)),
             200,
             headers,
         )
@@ -195,7 +210,7 @@ def edit_show(id):
     show_metadata.pop("user_email", None)
 
     # validate payload
-    err = show_details_partial_schema.validate(show_metadata)
+    err = show_partial_schema.validate(show_metadata)
     if err:
         return make_response(
             jsonify("Invalid data sent to edit show, see: {}".format(err)),
@@ -204,7 +219,7 @@ def edit_show(id):
         )
     else:
         # TODO edit uploaded media
-        show_metadata = show_details_schema.load(show_metadata)
+        show_metadata = show_schema.load(show_metadata)
         show.active = show_metadata.active
         show.name = show_metadata.name
         show.description = show_metadata.description
@@ -244,15 +259,15 @@ def edit_show(id):
 
         db.session.commit()
         return make_response(
-            jsonify(show_details_partial_schema.dump(show)), 200, headers
+            jsonify(show_partial_schema.dump(show)), 200, headers
         )
 
-@arcsi.route("show/<string:show_slug>", methods=["GET"])
-def view_show(show_slug):
+@arcsi.route("show/<string:show_slug>/archive", methods=["GET"])
+def view_show_archive(show_slug):
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first()
     if show:
-        return show_details_basic_schema.dump(show)
+        return show_archive_schema.dump(show)
     else:
         return make_response("Show not found", 404, headers)
 
@@ -264,5 +279,5 @@ def view_episode_archive(show_slug, episode_slug):
     show = show_query.first_or_404()
     for i in show.items:
         if i.play_file_name == episode_slug:
-            return item_basic_details_schema.dump(i)
+            return item_archive_schema.dump(i)
     return make_response("Episode not found", 404, headers)
