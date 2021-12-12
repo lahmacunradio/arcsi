@@ -9,11 +9,7 @@ from flask import current_app as app
 from marshmallow import fields, post_load, Schema, ValidationError
 from werkzeug import secure_filename
 
-<<<<<<< HEAD
-from .utils import archive, get_shows, process, slug, sort_for
-=======
-from .utils import archive, save_file, slug, sort_for
->>>>>>> 45c5145 (fix(api): Create new filenames on reupload)
+from .utils import archive, get_shows, save_file, slug, sort_for
 from arcsi.api import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
@@ -289,7 +285,7 @@ def view_show(id):
 def view_show_archive(show_slug):
     do = DoArchive()
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
-    show = show_query.first_or_404()
+    show = show_query.first()
     if show:
         show_json = show_schema.dump(show)
         show_items = [
