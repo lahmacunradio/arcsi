@@ -92,7 +92,7 @@
         }
       }
     },
-    "/shows/all": {
+    "/show/all": {
       "get": {
         "tags": [
           "Show Request"
@@ -115,7 +115,7 @@
         }
       }
     },
-    "/shows/archive": {
+    "/show/archive": {
       "get": {
         "tags": [
           "Show Request"

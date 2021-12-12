@@ -82,7 +82,7 @@ headers = {"Content-Type": "application/json"}
 
 
 @arcsi.route("/show", methods=["GET"])
-@arcsi.route("/shows/all", methods=["GET"])
+@arcsi.route("/show/all", methods=["GET"])
 def list_shows():
     do = DoArchive()
     shows = Show.query.all()
@@ -94,7 +94,7 @@ def list_shows():
     return shows_schedule_schema.dumps(shows)
 
 
-@arcsi.route("/shows/archive", methods=["GET"])
+@arcsi.route("/show/archive", methods=["GET"])
 def list_shows_archive():
     do = DoArchive()
     shows = Show.query.all()
