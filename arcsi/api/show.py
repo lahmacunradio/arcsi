@@ -9,7 +9,7 @@ from flask import current_app as app
 from marshmallow import fields, post_load, Schema, ValidationError
 from werkzeug import secure_filename
 
-from .utils import archive, process, slug, sort_for
+from .utils import archive, save_file, slug, sort_for
 from arcsi.api import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
@@ -163,7 +163,7 @@ def add_show():
 
         if request.files:
             if request.files["image_file"]:
-                cover_image_name = process(
+                cover_image_name = save_file(
                     archive_base=new_show.archive_lahmastore_base_url,
                     archive_idx=0,
                     archive_file=request.files["image_file"],
@@ -247,7 +247,7 @@ def edit_show(id):
 
         if request.files:
             if request.files["image_file"]:
-                cover_image_name = process(
+                cover_image_name = save_file(
                     archive_base=show.archive_lahmastore_base_url,
                     archive_idx=0,
                     archive_file=request.files["image_file"],
