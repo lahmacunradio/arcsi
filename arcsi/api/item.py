@@ -75,13 +75,15 @@ headers = {"Content-Type": "application/json"}
 @arcsi.route("/item/all", methods=["GET"])
 def list_items():
     do = DoArchive()
-    items = Item.query.all()
-    for item in items:
+    page = request.args.get('page', 1, type=int)
+    items = Item.query.order_by(Item.play_date.desc()).paginate(
+        page, app.config['PAGE_SIZE'], False)
+    for item in items.items:
         if item.image_url:
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
-    return items_basic_schema.dumps(items)
+    return items_basic_schema.dumps(items.items)
 
 
 @arcsi.route("/item/<id>", methods=["GET"])
