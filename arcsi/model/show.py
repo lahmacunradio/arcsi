@@ -1,5 +1,5 @@
-from .secondary import items_shows
 from . import db
+from .secondary import items_shows, tags_shows
 
 
 class Show(db.Model):
@@ -29,7 +29,12 @@ class Show(db.Model):
         # TODO why is this not working? see item.shows assignment in api/item
         cascade_backrefs=False,
     )
-    # categories eg noice-jazz-core-salsa
+    tags = db.relationship(
+        "Tag",
+        secondary=tags_shows,
+        backref=db.backref("shows"),
+        lazy="dynamic",
+    )
 
     def __repr__(self):
         return "<Show #{}>".format(self.name)
