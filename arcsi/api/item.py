@@ -7,6 +7,7 @@ from mutagen.id3 import APIC, ID3
 from mutagen.mp3 import MP3
 
 from flask import flash, jsonify, make_response, request, send_file, url_for, redirect
+from flask import current_app as app
 from marshmallow import fields, post_load, Schema, ValidationError
 
 from .utils import (
@@ -58,10 +59,14 @@ class ItemDetailsSchema(Schema):
 
 
 item_details_schema = ItemDetailsSchema()
-item_details_partial_schema = ItemDetailsSchema(
-    partial=True,
-)
+item_basic_details_schema = ItemDetailsSchema(only = ("name", "number", "play_date", "language", 
+                                             "description", "image_url", "play_file_name", "download_count"))
+item_details_partial_schema = ItemDetailsSchema(partial=True,)
 many_item_details_schema = ItemDetailsSchema(many=True)
+many_item_details_basic_schema = ItemDetailsSchema(many=True, 
+                                                   only=("name", "description",
+                                                         "play_date", "play_file_name",
+                                                         "image_url", "download_count"))
 
 headers = {"Content-Type": "application/json"}
 
@@ -76,7 +81,7 @@ def list_items():
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
-    return many_item_details_schema.dumps(items)
+    return many_item_details_basic_schema.dumps(items)
 
 
 @arcsi.route("/item/<id>", methods=["GET"])

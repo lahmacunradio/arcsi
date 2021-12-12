@@ -92,7 +92,7 @@
         }
       }
     },
-    "/show/all": {
+    "/shows/all": {
       "get": {
         "tags": [
           "Show Request"
@@ -107,7 +107,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowRequests"
+                  "$ref": "component.json#/components/schemas/ShowBasicRequests"
                 }
               }
             }
@@ -115,80 +115,18 @@
         }
       }
     },
-    "/show/{id}": {
+    "/show/{show_slug}": {
       "get": {
         "tags": [
           "Show Request"
         ],
-        "summary": "Get Show with given ID",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "ID of the show that we want to match",
-            "schema": {
-              "$ref": "component.json#/components/schemas/id"
-            }
-          }
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "component.json#/components/schemas/ShowRequest"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Show not found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Show Request"
-        ],
-        "summary": "Delete Show with given ID",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "ID of the show that we want to delete",
-            "schema": {
-              "$ref": "component.json#/components/schemas/id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Deleted show successfully"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/show/{show_slug}/archive": {
-      "get": {
-        "tags": [
-          "Show Request"
-        ],
-        "summary": "Get Show with given URL",
+        "summary": "Get Show subpage infos with Show slug",
         "parameters": [
           {
             "in": "path",
             "name": "show_slug",
             "required": true,
-            "description": "Show's archive_lahmastore_base_url",
+            "description": "Show.archive_lahmastore_base_url",
             "type": "string"
           }
         ],
@@ -201,7 +139,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ItemRequests"
+                  "$ref": "component.json#/components/schemas/ShowRequest"
                 }
               }
             }
@@ -217,20 +155,20 @@
         "tags": [
           "Item Request"
         ],
-        "summary": "Get Item with given URL",
+        "summary": "Get Episode with Episode slug",
         "parameters": [
           {
             "in": "path",
             "name": "show_slug",
             "required": true,
-            "description": "Show's archive_lahmastore_base_url",
+            "description": "Show.archive_lahmastore_base_url",
             "type": "string"
           },
           {
             "in": "path",
             "name": "episode_slug",
             "required": true,
-            "description": "Item's play_file_name without the .mp3 extension",
+            "description": "Item.play_file_name + '.mp3'",
             "type": "string"
           }
         ],

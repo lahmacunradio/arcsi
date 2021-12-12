@@ -15,7 +15,7 @@ from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.user import User
-from arcsi.api.item import Item, many_item_details_schema, item_details_schema
+from arcsi.api.item import item_basic_details_schema
 
 
 class ShowDetailsSchema(Schema):
@@ -39,14 +39,12 @@ class ShowDetailsSchema(Schema):
         fields.Nested(
             "ItemDetailsSchema",
             only=(
-                "id",
-                "archived",
                 "description",
                 "name",
-                "number",
                 "play_file_name",
                 "play_date",
                 "image_url",
+                "download_count"
             ),
         ),
         dump_only=True,
@@ -65,18 +63,22 @@ class ShowDetailsSchema(Schema):
 
 
 show_details_schema = ShowDetailsSchema()
+show_details_basic_schema = ShowDetailsSchema(only=("name", "cover_image_url", 
+                                                    "day", "start", "end",
+                                                    "frequency", "language",
+                                                    "active", "description",
+                                                    "items"))
 show_details_partial_schema = ShowDetailsSchema(partial=True)
 many_show_details_schema = ShowDetailsSchema(many=True)
-many_show_details_basic_schema = ShowDetailsSchema(many=True, 
-                                                   only=("id", "active", "name", "description",
-                                                         "week", "day", "start", "end",
-                                                         "cover_image_url", "archive_lahmastore_base_url"))
+many_show_basic_details_schema = ShowDetailsSchema(many=True, 
+                                                   only=("active", "name", "cover_image_url",
+                                                   "description", "archive_lahmastore_base_url"))
 
 headers = {"Content-Type": "application/json"}
 
 
 @arcsi.route("/show", methods=["GET"])
-@arcsi.route("/show/all", methods=["GET"])
+@arcsi.route("/shows/all", methods=["GET"])
 def list_shows():
     do = DoArchive()
     shows = Show.query.all()
@@ -85,27 +87,7 @@ def list_shows():
             show.cover_image_url = do.download(
                 show.archive_lahmastore_base_url, show.cover_image_url
             )
-    return many_show_details_basic_schema.dumps(shows)
-
-@arcsi.route("/show/<id>", methods=["GET"])
-def view_show(id):
-    do = DoArchive()
-    show_query = Show.query.filter_by(id=id)
-    show = show_query.first_or_404()
-    if show:
-        if show.cover_image_url:
-            show.cover_image_url = do.download(
-                show.archive_lahmastore_base_url, show.cover_image_url
-            )
-        # Display episodes by date in descending order
-        # We need to sort nested: episode list of the full object then re-apply that part
-        serial_show = show_details_schema.dump(show)
-        date_desc_episodes = sort_for(serial_show["items"], "play_date", "desc")
-        serial_show["items"] = date_desc_episodes
-
-        return serial_show
-    else:
-        return make_response("Show not found", 404, headers)
+    return many_show_basic_details_schema.dumps(shows)
 
 
 # TODO /item/<uuid>/add route so that each upload has unique id to begin with
@@ -265,24 +247,22 @@ def edit_show(id):
             jsonify(show_details_partial_schema.dump(show)), 200, headers
         )
 
-
-@arcsi.route("show/<string:show_slug>/archive", methods=["GET"])
-def view_show_archive(show_slug):
+@arcsi.route("show/<string:show_slug>", methods=["GET"])
+def view_show(show_slug):
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
-    show = show_query.first_or_404()
+    show = show_query.first()
     if show:
-        show_items = show.items.filter(Item.play_date < datetime.today() - timedelta(days=1)).all()
-        return many_item_details_schema.dumps(show_items)
+        return show_details_basic_schema.dump(show)
     else:
         return make_response("Show not found", 404, headers)
 
 
 @arcsi.route("show/<string:show_slug>/episode/<string:episode_slug>", methods=["GET"])
 def view_episode_archive(show_slug, episode_slug):
-    episode_slug += ".mp3"
+    episode_slug = episode_slug + ".mp3"
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first_or_404()
     for i in show.items:
         if i.play_file_name == episode_slug:
-            return item_details_schema.dump(i)
+            return item_basic_details_schema.dump(i)
     return make_response("Episode not found", 404, headers)
