@@ -1,5 +1,5 @@
 from . import db
-
+from .secondary import tags_items
 
 class Item(db.Model):
     __tablename__ = "items"
@@ -25,8 +25,12 @@ class Item(db.Model):
     uploaded_at = db.Column(
         db.DateTime, default=db.func.current_timestamp(), nullable=False
     )
-    # TODO create separate media table
-    # TODO types talk-music-international
+    tags = db.relationship(
+        "Tag",
+        secondary=tags_items,
+        backref=db.backref("items"),
+        lazy="dynamic",
+    )
 
     def __repr__(self):
         return "<Episode #{} -- {} -- {}>".format(
