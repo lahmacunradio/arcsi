@@ -274,7 +274,7 @@ def view_show(id):
             )
         # Display episodes by date in descending order
         # We need to sort nested: episode list of the full object then re-apply that part
-        serial_show = show_details_schema.dump(show)
+        serial_show = show_schema.dump(show)
         date_desc_episodes = sort_for(serial_show["items"], "play_date", "desc")
         serial_show["items"] = date_desc_episodes
 
