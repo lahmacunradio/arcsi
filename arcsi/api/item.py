@@ -10,12 +10,14 @@ from flask import flash, jsonify, make_response, request, send_file, url_for, re
 from flask import current_app as app
 from marshmallow import fields, post_load, Schema, ValidationError
 
+from uuid import uuid4
+
 from .utils import (
     archive,
     broadcast_audio,
     dict_to_obj,
     media_path,
-    process,
+    save_file,
 )
 from arcsi.api import arcsi
 from arcsi.handler.upload import DoArchive
@@ -177,24 +179,37 @@ def add_item():
 
         # TODO get show cover img and set as fallback
         if request.files:
+            # Defend against possible duplicate files
+            name_occurrence = int(db.session.query(db.func.count()).filter(new_item.name == Item.name, new_item.number == Item.number).scalar())
+            version_pre = None
+
+            if name_occurrence:
+                version_prefix = uuid4()
+                item_name = "{}-{}".format(version_prefix, new_item.name)
+            else:
+                item_name = new_item.name
+
             # process files first
-            if request.files["image_file"]:
-                if request.files["image_file"] != "":
-                    image_file = request.files["image_file"]
-                    image_file_name = process(
-                        archive_base=new_item.shows[0].archive_lahmastore_base_url,
-                        archive_idx=new_item.number,
-                        archive_file=image_file,
-                        archive_name=(new_item.shows[0].name, new_item.name),
-                    )
             if request.files["play_file"]:
                 if request.files["play_file"] != "":
-                    play_file = request.files["play_file"]
-                    new_item.play_file_name = process(
+                    play_file = request.files["play_file"]  
+
+                    new_item.play_file_name = save_file(
                         archive_base=new_item.shows[0].archive_lahmastore_base_url,
                         archive_idx=new_item.number,
                         archive_file=play_file,
-                        archive_name=(new_item.shows[0].name, new_item.name),
+                        archive_name=(new_item.shows[0].name, item_name),
+                    )
+
+            if request.files["image_file"]:
+                if request.files["image_file"] != "":
+                    image_file = request.files["image_file"]
+
+                    image_file_name = save_file(
+                        archive_base=new_item.shows[0].archive_lahmastore_base_url,
+                        archive_idx=new_item.number,
+                        archive_file=image_file,
+                        archive_name=(new_item.shows[0].name, item_name),
                     )
 
             if new_item.broadcast:
@@ -205,6 +220,7 @@ def add_item():
             else: 
                 if not image_file_name:
                     no_error = False
+
         # archive files if asked
         if new_item.archive_lahmastore:
             if no_error and (play_file or image_file):
@@ -228,6 +244,7 @@ def add_item():
                         new_item.archived = True
                     else:  # Upload didn't succeed
                         no_error = False
+
         # broadcast episode if asked
         if new_item.broadcast and no_error:
             if not (play_file and image_file):
@@ -347,25 +364,37 @@ def edit_item(id):
         db.session.flush()
 
         if request.files:
+            # Defend against possible duplicate files
+            name_occurrence = int(db.session.query(db.func.count()).filter(item.name == Item.name, item.number == Item.number).scalar())
+            version_pre = None
+
+            if name_occurrence:
+                version_prefix = uuid4()
+                item_name = "{}-{}".format(version_prefix, item.name)
+            else:
+                item_name = item.name
+
             # process files first
             if request.files["image_file"]:
                 if request.files["image_file"] != "":
                     image_file = request.files["image_file"]
-                    image_file_name = process(
+
+                    image_file_name = save_file(
                         archive_base=item.shows[0].archive_lahmastore_base_url,
                         archive_idx=item.number,
                         archive_file=image_file,
-                        archive_name=(item.shows[0].name, item.name),
+                        archive_name=(item.shows[0].name, item_name),
                     )
 
             if request.files["play_file"]:
                 if request.files["play_file"] != "":
                     play_file = request.files["play_file"]
-                    item.play_file_name = process(
+
+                    item.play_file_name = save_file(
                         archive_base=item.shows[0].archive_lahmastore_base_url,
                         archive_idx=item.number,
                         archive_file=play_file,
-                        archive_name=(item.shows[0].name, item.name),
+                        archive_name=(item.shows[0].name, item_name),
                     )
             if item.broadcast:
                 # we require both image and audio if broadcast (Azuracast) is set

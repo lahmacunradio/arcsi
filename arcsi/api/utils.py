@@ -119,19 +119,19 @@ def broadcast_audio(
     return False
 
 
-def process(archive_base, archive_idx, archive_file, archive_name):
-    archive_file_name = form_filename(archive_file, archive_name)
+def save_file(archive_base, archive_idx, archive_file, archive_file_name):
+    formed_file_name = form_filename(archive_file, archive_file_name)
     if not allowed_file(archive_file_name):
         return None
     else:
-        if archive_file_name == "":
+        if formed_file_name == "":
             return None
         else:
             archive_file_path = media_path(
-                archive_base, str(archive_idx), archive_file_name
+                archive_base, str(archive_idx), formed_file_name
             )
             archive_file.save(archive_file_path)
-            return archive_file_name
+            return formed_file_name
 
 
 def archive(archive_base, archive_file_name, archive_idx):
