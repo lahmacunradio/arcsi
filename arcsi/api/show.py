@@ -15,7 +15,7 @@ from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.user import User
-from arcsi.api.item import item_archive_schema, many_item_details_basic_schema
+from arcsi.api.item import item_archive_schema, items_basic_schema
 
 
 class ShowDetailsSchema(Schema):
@@ -288,7 +288,7 @@ def view_show_archive(show_slug):
     show = show_query.first()
     if show:
         show_items = show.items.filter(Item.play_date < datetime.today() - timedelta(days=1)).all()
-        return many_item_details_basic_schema.dump(show)
+        return items_basic_schema.dump(show)
     else:
         return make_response("Show not found", 404, headers)
 
