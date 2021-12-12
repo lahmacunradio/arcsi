@@ -71,7 +71,7 @@ show_archive_schema = ShowDetailsSchema(only=("name", "cover_image_url",
 show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
 shows_schedule_schema = ShowDetailsSchema(many=True, 
-                                                   only=("active", "name", "cover_image_url",
+                                                   only=("id", "active", "name", "cover_image_url",
                                                          "day", "start", "end",
                                                          "description", "archive_lahmastore_base_url"))
 shows_archive_schema = ShowDetailsSchema(many=True, 
