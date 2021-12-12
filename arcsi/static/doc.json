@@ -115,14 +115,23 @@
         }
       }
     },
-    "/show/archive": {
+    "/show/{id}": {
       "get": {
         "tags": [
           "Show Request"
         ],
         "summary": "Return Shows for Shows Page",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Show.id",
+            "type": "string"
+          }
+        ],
         "produces": [
-          "text/html"
+          "application/json"
         ],
         "responses": {
           "200": {
@@ -130,7 +139,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowArchiveRequests"
+                  "$ref": "component.json#/components/schemas/ItemRequest"
                 }
               }
             }
@@ -154,7 +163,7 @@
           }
         ],
         "produces": [
-          "text/html"
+          "application/json"
         ],
         "responses": {
           "200": {
