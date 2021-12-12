@@ -15,7 +15,7 @@ from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.user import User
-from arcsi.api.item import item_archive_schema
+from arcsi.api.item import item_archive_schema, many_item_details_basic_schema
 
 
 class ShowDetailsSchema(Schema):
@@ -262,12 +262,33 @@ def edit_show(id):
             jsonify(show_partial_schema.dump(show)), 200, headers
         )
 
+@arcsi.route("show/<id>", methods=["GET"])
+def view_show(id):
+    do = DoArchive()
+    show_query = Show.query.filter_by(id=id)
+    show = show_query.first()
+    if show:
+        if show.cover_image_url:
+            show.cover_image_url = do.download(
+                show.archive_lahmastore_base_url, show.cover_image_url
+            )
+        # Display episodes by date in descending order
+        # We need to sort nested: episode list of the full object then re-apply that part
+        serial_show = show_details_schema.dump(show)
+        date_desc_episodes = sort_for(serial_show["items"], "play_date", "desc")
+        serial_show["items"] = date_desc_episodes
+
+        return serial_show
+    else:
+        return make_response("Show not found", 404, headers)
+
 @arcsi.route("show/<string:show_slug>/archive", methods=["GET"])
 def view_show_archive(show_slug):
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first()
     if show:
-        return show_archive_schema.dump(show)
+        show_items = show.items.filter(Item.play_date < datetime.today() - timedelta(days=1)).all()
+        return many_item_details_basic_schema.dump(show)
     else:
         return make_response("Show not found", 404, headers)
 
