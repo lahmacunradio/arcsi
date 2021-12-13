@@ -37,7 +37,7 @@
         "tags": [
           "User Request"
         ],
-        "summary": "Return all User",
+        "summary": "Return Users for Arcsi",
         "produces": [
           "text/html"
         ],
@@ -60,7 +60,7 @@
         "tags": [
           "User Request"
         ],
-        "summary": "Get User with given ID",
+        "summary": "Return User for Arcsi",
         "parameters": [
           {
             "in": "path",
@@ -97,7 +97,30 @@
         "tags": [
           "Show Request"
         ],
-        "summary": "Return Shows for Home and Schedule Page",
+        "summary": "Return Shows for Arcsi Show Archive",
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ShowRequests"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/show/all_schedule": {
+      "get": {
+        "tags": [
+          "Show Request"
+        ],
+        "summary": "Return Shows for Ananasz Home and Schedule Page",
         "produces": [
           "text/html"
         ],
@@ -115,12 +138,35 @@
         }
       }
     },
+    "/show/all_minimal": {
+      "get": {
+        "tags": [
+          "Show Request"
+        ],
+        "summary": "Return Shows for Ananasz Shows Page",
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ShowArchiveRequests"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/show/{id}": {
       "get": {
         "tags": [
           "Show Request"
         ],
-        "summary": "Return Shows for Shows Page",
+        "summary": "Return Show for Arcsi Show Page",
         "parameters": [
           {
             "in": "path",
@@ -139,7 +185,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ItemRequest"
+                  "$ref": "component.json#/components/schemas/ShowRequest"
                 }
               }
             }
@@ -150,9 +196,44 @@
     "/show/{show_slug}/archive": {
       "get": {
         "tags": [
+          "Item Request"
+        ],
+        "summary": "Return Items for old WP Show Page",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "show_slug",
+            "required": true,
+            "description": "Show.archive_lahmastore_base_url",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ItemBasicRequests"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Show not found"
+          }
+        }
+      }
+    },
+    "/show/{show_slug}/minimal": {
+      "get": {
+        "tags": [
           "Show Request"
         ],
-        "summary": "Return Show for Show Subpage",
+        "summary": "Return Show for Ananasz Show Subpage",
         "parameters": [
           {
             "in": "path",
@@ -171,7 +252,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowRequest"
+                  "$ref": "component.json#/components/schemas/ShowSubPageRequest"
                 }
               }
             }
@@ -187,7 +268,7 @@
         "tags": [
           "Item Request"
         ],
-        "summary": "Return Episode for Episode Subpage",
+        "summary": "Return Episode for Ananasz Episode Subpage",
         "parameters": [
           {
             "in": "path",
@@ -213,7 +294,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ItemRequest"
+                  "$ref": "component.json#/components/schemas/ItemSubPageRequest"
                 }
               }
             }
@@ -229,7 +310,7 @@
         "tags": [
           "Item Request"
         ],
-        "summary": "Return Episodes for Archive Page",
+        "summary": "Return Episodes for Arcsi Items Archive",
         "produces": [
           "text/html"
         ],
@@ -247,12 +328,51 @@
         }
       }
     },
+    "/item/all_minimal/?size={size}&?page={page}": {
+      "get": {
+        "tags": [
+          "Item Request"
+        ],
+        "summary": "Return Latest Episodes for Ananasz Home and Archive Page",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "size",
+            "required": true,
+            "description": "page_size, default: 12",
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "page",
+            "required": true,
+            "description": "page_number, default: 1",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ItemArchiveRequests"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/item/{id}": {
       "get": {
         "tags": [
           "Item Request"
         ],
-        "summary": "Get Item with given ID",
+        "summary": "Return Episode for Arcsi Episode Page",
         "parameters": [
           {
             "in": "path",
