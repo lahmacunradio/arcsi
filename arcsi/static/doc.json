@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "description": "Arcsi API doc",
-    "version": "0.9.4",
+    "version": "0.9.5",
     "title": "Arcsi",
     "contact": {
       "email": "it@lahmacun.hu"
@@ -97,7 +97,7 @@
         "tags": [
           "Show Request"
         ],
-        "summary": "Return all Show",
+        "summary": "Return Shows for Home and Schedule Page",
         "produces": [
           "text/html"
         ],
@@ -107,7 +107,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowRequests"
+                  "$ref": "component.json#/components/schemas/ShowScheduleRequests"
                 }
               }
             }
@@ -120,16 +120,14 @@
         "tags": [
           "Show Request"
         ],
-        "summary": "Get Show with given ID",
+        "summary": "Return Shows for Shows Page",
         "parameters": [
           {
             "in": "path",
             "name": "id",
             "required": true,
-            "description": "ID of the show that we want to match",
-            "schema": {
-              "$ref": "component.json#/components/schemas/id"
-            }
+            "description": "Show.id",
+            "type": "string"
           }
         ],
         "produces": [
@@ -139,40 +137,12 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/json": {
+              "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowRequest"
+                  "$ref": "component.json#/components/schemas/ItemRequest"
                 }
               }
             }
-          },
-          "404": {
-            "description": "Show not found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Show Request"
-        ],
-        "summary": "Delete Show with given ID",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "ID of the show that we want to delete",
-            "schema": {
-              "$ref": "component.json#/components/schemas/id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Deleted show successfully"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }
@@ -182,18 +152,18 @@
         "tags": [
           "Show Request"
         ],
-        "summary": "Get Show with given URL",
+        "summary": "Return Show for Show Subpage",
         "parameters": [
           {
             "in": "path",
             "name": "show_slug",
             "required": true,
-            "description": "Show's archive_lahmastore_base_url",
+            "description": "Show.archive_lahmastore_base_url",
             "type": "string"
           }
         ],
         "produces": [
-          "text/html"
+          "application/json"
         ],
         "responses": {
           "200": {
@@ -201,7 +171,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ItemRequests"
+                  "$ref": "component.json#/components/schemas/ShowRequest"
                 }
               }
             }
@@ -217,20 +187,20 @@
         "tags": [
           "Item Request"
         ],
-        "summary": "Get Item with given URL",
+        "summary": "Return Episode for Episode Subpage",
         "parameters": [
           {
             "in": "path",
             "name": "show_slug",
             "required": true,
-            "description": "Show's archive_lahmastore_base_url",
+            "description": "Show.archive_lahmastore_base_url",
             "type": "string"
           },
           {
             "in": "path",
             "name": "episode_slug",
             "required": true,
-            "description": "Item's play_file_name without the .mp3 extension",
+            "description": "Item.play_file_name + '.mp3'",
             "type": "string"
           }
         ],
@@ -259,7 +229,7 @@
         "tags": [
           "Item Request"
         ],
-        "summary": "Return all Item",
+        "summary": "Return Episodes for Archive Page",
         "produces": [
           "text/html"
         ],
