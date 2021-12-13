@@ -6,7 +6,5 @@ def get_or_create(model, **kwargs):
     return get
   else:
     row = model(**kwargs)
-    db.session.add(row)
-    db.session.commit()
     return row
   
