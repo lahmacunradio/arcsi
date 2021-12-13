@@ -43,7 +43,12 @@
       <option id="hu_hu" value="hu_hu" selected>Magyar</option>
       <option id="en_uk" value="en_uk">English</option>
     </select>
-</div>
+  </div>
+
+  <div>
+    <label for="taglist">Show tag list (separate with commas)</label>
+    <input name="taglist" id="taglist" value="{% for tag in show.tags.all() %} {{tag.display_name}} {% endfor %}">
+  </div>
 
   <div>
     <label for="playlist_name">Playlist name</label>
