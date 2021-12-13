@@ -1,4 +1,3 @@
-
 from flask import make_response
 from marshmallow import fields, post_load, Schema
 
