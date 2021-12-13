@@ -7,7 +7,7 @@ from flask_migrate import Migrate
 from flask_swagger_ui import get_swaggerui_blueprint
 from sqlalchemy.exc import ProgrammingError
 
-from arcsi.model import db, item, role, show, user
+from arcsi.model import db, item, role, show, tag, user
 from arcsi.view.forms.register import ButtRegisterForm
 
 migrate = Migrate()

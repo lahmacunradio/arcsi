@@ -1,7 +1,6 @@
 from . import db
 from .secondary import items_shows, tags_shows
 
-
 class Show(db.Model):
     __tablename__ = "shows"
     id = db.Column(db.Integer, primary_key=True)

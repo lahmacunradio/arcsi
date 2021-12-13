@@ -38,6 +38,16 @@
     </li>    
     {% endfor %}
     </ul> 
+<p>Show tags:</p>
+<ul>
+    {% for tag in show["tags"] %}
+    <li>
+        <b>
+            {{tag.display_name}}
+        </b>
+    </li>
+    {% endfor %}
+</ul>
  <hr> 
 <p><a href="{{ url_for('router.edit_show', id=show['id']) }}">Edit show</a> || <a
         href="{{ url_for('arcsi.delete_show', id=show['id']) }}">Delete show</a>
