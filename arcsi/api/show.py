@@ -165,7 +165,7 @@ def add_show():
             .filter(User.id.in_((user.id for user in show_metadata.users)))
             .all(),
             tags=(
-                get_or_create(Tag, tag, normalise(tag)) for tag in show_metadata["tags"]
+                get_or_create(Tag, display_name=tag["display_name"], clean_name=normalise(tag["display_name"])) for tag in show_metadata["tags"]
             )
         )
 
@@ -256,7 +256,7 @@ def edit_show(id):
             .all()
         )
         show.tags = (
-                get_or_create(Tag, tag, normalise(tag)) for tag in show_metadata["tags"]
+                get_or_create(Tag, display_name=tag["display_name"], clean=normalise(tag["display_name"])) for tag in show_metadata["tags"]
             )
 
         db.session.add(show)
