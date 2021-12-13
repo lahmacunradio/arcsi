@@ -59,7 +59,10 @@ class ShowDetailsSchema(Schema):
         required=True,
     )
     tags = fields.List(
-        fields.Str()
+        fields.Nested(
+            "TagDetailsSchema",
+            only=("display_name",),
+        )
     )
 
     @post_load
