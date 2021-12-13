@@ -51,11 +51,11 @@ class ItemDetailsSchema(Schema):
             only=("id", "name"),
         ),
         required=True,
-    ),
+    )
     tags = fields.List(
         fields.Nested(
             "TagDetailsSchema",
-            only=("display_name"),
+            only=("display_name",),
         )
     )
 
