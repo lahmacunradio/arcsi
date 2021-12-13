@@ -182,7 +182,7 @@ def add_show():
     show_metadata["tags"] = [{"display_name": dis_name} for dis_name in show_metadata["taglist"].split(",")]
     show_metadata.pop("taglist", None)
 
-    show_metadata["tags"] = show_metadata["taglist"].split(",")
+    show_metadata["tags"] = [{"display_name": dis_name} for dis_name in show_metadata["taglist"].split(",")]
     show_metadata.pop("taglist", None)
 
     # validate payload
