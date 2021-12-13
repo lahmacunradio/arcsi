@@ -12,4 +12,3 @@ def get_or_create(model, **kwargs):
   else:
     row = model(**kwargs)
     return row
-  
