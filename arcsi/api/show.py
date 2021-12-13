@@ -177,7 +177,6 @@ def add_show():
     ]
     show_metadata.pop("user_name", None)
     show_metadata.pop("user_email", None)
-
     show_metadata["tags"] = [{"display_name": dis_name} for dis_name in show_metadata["taglist"].split(",")]
     show_metadata.pop("taglist", None)
 
@@ -208,7 +207,7 @@ def add_show():
             .filter(User.id.in_((user.id for user in show_metadata.users)))
             .all(),
             tags=(
-                get_or_create(Tag, display_name=tag["display_name"], clean_name=normalise(tag["display_name"])) for tag in show_metadata["tags"]
+                get_or_create(Tag, display_name=tag.display_name, clean_name=normalise(tag.display_name)) for tag in show_metadata.tags
             )
         )
 
