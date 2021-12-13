@@ -180,9 +180,6 @@ def add_show():
     show_metadata["tags"] = [{"display_name": dis_name} for dis_name in show_metadata["taglist"].split(",")]
     show_metadata.pop("taglist", None)
 
-    show_metadata["tags"] = [{"display_name": dis_name} for dis_name in show_metadata["taglist"].split(",")]
-    show_metadata.pop("taglist", None)
-
     # validate payload
     err = show_schema.validate(show_metadata)
     if err:
