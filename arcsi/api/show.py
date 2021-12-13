@@ -255,7 +255,7 @@ def edit_show(id):
             .all()
         )
         show.tags = (
-                get_or_create(Tag, display_name=tag["display_name"], clean_name=normalise(tag["display_name"])) for tag in show_metadata["tags"]
+                get_or_create(Tag, display_name=tag.display_name, clean_name=normalise(tag.display_name)) for tag in show_metadata.tags
             )
 
         db.session.add(show)
