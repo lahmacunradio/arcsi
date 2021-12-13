@@ -138,7 +138,7 @@
         }
       }
     },
-    "/show/all_minimal": {
+    "/show/all_page": {
       "get": {
         "tags": [
           "Show Request"
@@ -228,7 +228,7 @@
         }
       }
     },
-    "/show/{show_slug}/minimal": {
+    "/show/{show_slug}/page": {
       "get": {
         "tags": [
           "Show Request"
@@ -328,7 +328,7 @@
         }
       }
     },
-    "/item/all_minimal/?size={size}&?page={page}": {
+    "/item/all_latest/?size={size}&?page={page}": {
       "get": {
         "tags": [
           "Item Request"

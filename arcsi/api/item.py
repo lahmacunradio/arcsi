@@ -59,11 +59,11 @@ class ItemDetailsSchema(Schema):
 
 
 item_schema = ItemDetailsSchema()
-item_minimal_schema = ItemDetailsSchema(only = ("name", "number", "play_date", "language", 
+item_archive_schema = ItemDetailsSchema(only = ("name", "number", "play_date", "language", 
                                              "description", "image_url", "play_file_name", "download_count"))
 item_partial_schema = ItemDetailsSchema(partial=True,)
 items_schema = ItemDetailsSchema(many=True)
-items_minimal_schema = ItemDetailsSchema(many=True, 
+items_archive_schema = ItemDetailsSchema(many=True, 
                                                    only=("name", "description",
                                                          "play_date", "play_file_name",
                                                          "image_url", "download_count"))
@@ -83,8 +83,8 @@ def list_items():
             )
     return items_schema.dumps(items)
 
-@arcsi.route("/item/all_minimal/", methods=["GET"])
-def list_items_minimal():
+@arcsi.route("/item/all_latest/", methods=["GET"])
+def list_items_latest():
     do = DoArchive()
     page = request.args.get('page', 1, type=int)
     size = request.args.get('size', 12, type=int)
@@ -95,7 +95,7 @@ def list_items_minimal():
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
-    return items_minimal_schema.dumps(items.items)
+    return items_archive_schema.dumps(items.items)
 
 
 @arcsi.route("/item/<id>", methods=["GET"])

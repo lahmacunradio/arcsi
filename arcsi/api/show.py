@@ -15,7 +15,7 @@ from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.user import User
-from arcsi.api.item import items_schema, item_minimal_schema, Item
+from arcsi.api.item import items_schema, item_archive_schema, Item
 
 
 class ShowDetailsSchema(Schema):
@@ -67,7 +67,7 @@ show_schema = ShowDetailsSchema(only=("id", "name", "active", "description",
                                     "cover_image_url", "playlist_name", "items",
                                     "language", "frequency", "day", "start",
                                     "end", "archive_lahmastore_base_url", "users"))
-show_minimal_schema = ShowDetailsSchema(only=("name", "cover_image_url", 
+show_archive_schema = ShowDetailsSchema(only=("name", "cover_image_url", 
                                                     "day", "start", "end",
                                                     "frequency", "language",
                                                     "active", "description",
@@ -78,7 +78,7 @@ shows_schedule_schema = ShowDetailsSchema(many=True,
                                                    only=("active", "name", "cover_image_url",
                                                          "day", "start", "end",
                                                          "description", "archive_lahmastore_base_url"))
-shows_minimal_schema = ShowDetailsSchema(many=True, 
+shows_archive_schema = ShowDetailsSchema(many=True, 
                                                    only=("active", "name", "cover_image_url",
                                                    "description", "archive_lahmastore_base_url"))
 
@@ -109,8 +109,8 @@ def list_shows_for_schedule():
     return shows_schedule_schema.dumps(shows)
 
 
-@arcsi.route("/show/all_minimal", methods=["GET"])
-def list_shows_minimal():
+@arcsi.route("/show/all_page", methods=["GET"])
+def list_shows_page():
     do = DoArchive()
     shows = Show.query.all()
     for show in shows:
@@ -118,7 +118,7 @@ def list_shows_minimal():
             show.cover_image_url = do.download(
                 show.archive_lahmastore_base_url, show.cover_image_url
             )
-    return shows_minimal_schema.dumps(shows)
+    return shows_archive_schema.dumps(shows)
 
 # TODO /item/<uuid>/add route so that each upload has unique id to begin with
 # no need for different methods for `POST` & `PUT`
@@ -327,15 +327,15 @@ def view_show_archive(show_slug):
     #    return make_response("Show episodes not found", 404, headers)
 
 # This will be the one that we are gonna use at the new page 
-@arcsi.route("show/<string:show_slug>/minimal", methods=["GET"])
-def view_show_minimal(show_slug):
+@arcsi.route("show/<string:show_slug>/page", methods=["GET"])
+def view_show_page(show_slug):
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first()
     if show:
         # subquery = session.query(Item.id).filter(blabla -timedelta(day=1)).all().subquery()
         # query = session.query(Show).filter_by(blabla).(Item.id.in_(subquery))
         show.items.filter(Item.play_date < datetime.today() - timedelta(days=1)).all()
-        return show_minimal_schema.dump(show)
+        return show_archive_schema.dump(show)
     else:
         return make_response("Show not found", 404, headers)
 
@@ -347,5 +347,5 @@ def view_episode_archive(show_slug, episode_slug):
     show = show_query.first_or_404()
     for i in show.items:
         if i.play_file_name == episode_slug:
-            return item_minimal_schema.dump(i)
+            return item_archive_schema.dump(i)
     return make_response("Episode not found", 404, headers)
