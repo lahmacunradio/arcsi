@@ -27,6 +27,7 @@
         <p>Show end: {{show.end}}</p>
         <p>Show archive lahmastore base URL: {{show.archive_lahmastore_base_url}}</p>
         <p>Show ID: <a href="{{ url_for('router.view_show', id=show.id) }}">{{show.id}}</a></p>
+        <p>Show tags: <ul> {% for tag in show["tags"] %} <li> * {{tag.display_name}} </li> {% endfor %} </ul> </p>
     </div>
     {% endfor %}    
 </div>  

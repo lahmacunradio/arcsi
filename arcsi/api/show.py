@@ -13,7 +13,9 @@ from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.user import User
-from arcsi.api.item import item_archive_schema
+from arcsi.model.tag import Tag
+from arcsi.model.utils import get_or_create
+from arcsi.api.item import Item, many_item_details_schema, items_schema, item_archive_schema, item_details_schema
 
 
 class ShowDetailsSchema(Schema):
@@ -56,6 +58,9 @@ class ShowDetailsSchema(Schema):
             only=("id", "name", "email"),
         ),
         required=True,
+    )
+    tags = fields.List(
+        fields.Str()
     )
 
     @post_load
@@ -170,6 +175,9 @@ def add_show():
     show_metadata.pop("user_name", None)
     show_metadata.pop("user_email", None)
 
+    show_metadata["tags"] = show_metadata["taglist"].split(",")
+    show_metadata.pop("taglist", None)
+
     # validate payload
     err = show_schema.validate(show_metadata)
     if err:
@@ -196,6 +204,9 @@ def add_show():
             users=db.session.query(User)
             .filter(User.id.in_((user.id for user in show_metadata.users)))
             .all(),
+            tags=(
+                get_or_create(Tag, tag, normalise(tag)) for tag in show_metadata["tags"]
+            )
         )
 
         db.session.add(new_show)
@@ -254,6 +265,9 @@ def edit_show(id):
     show_metadata.pop("user_name", None)
     show_metadata.pop("user_email", None)
 
+    show_metadata["tags"] = show_metadata["taglist"].split(",")
+    show_metadata.pop("taglist", None)
+
     # validate payload
     err = show_partial_schema.validate(show_metadata)
     if err:
@@ -283,6 +297,9 @@ def edit_show(id):
             .filter(User.id.in_((user.id for user in show_metadata.users)))
             .all()
         )
+        show.tags = (
+                get_or_create(Tag, tag, normalise(tag)) for tag in show_metadata["tags"]
+            )
 
         db.session.add(show)
         db.session.flush()
