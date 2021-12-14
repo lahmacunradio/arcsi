@@ -228,7 +228,7 @@
         }
       }
     },
-    "/show/{show_slug}/page": {
+    "/show/{show_slug}/subpages": {
       "get": {
         "tags": [
           "Show Request"
