@@ -9,7 +9,7 @@ from flask import current_app as app
 from marshmallow import fields, post_load, Schema, ValidationError
 from werkzeug import secure_filename
 
-from .utils import archive, process, slug, sort_for
+from .utils import archive, get_shows, process, slug, sort_for
 from arcsi.api import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
@@ -88,37 +88,16 @@ headers = {"Content-Type": "application/json"}
 @arcsi.route("/show", methods=["GET"])
 @arcsi.route("/show/all", methods=["GET"])
 def list_shows():
-    do = DoArchive()
-    shows = Show.query.all()
-    for show in shows:
-        if show.cover_image_url:
-            show.cover_image_url = do.download(
-                show.archive_lahmastore_base_url, show.cover_image_url
-            )
-    return shows_schema.dumps(shows)
+    return shows_schema.dumps(get_shows)
 
-@arcsi.route("/show/all_schedule", methods=["GET"])
+@arcsi.route("/show/schedule", methods=["GET"])
 def list_shows_for_schedule():
-    do = DoArchive()
-    shows = Show.query.all()
-    for show in shows:
-        if show.cover_image_url:
-            show.cover_image_url = do.download(
-                show.archive_lahmastore_base_url, show.cover_image_url
-            )
-    return shows_schedule_schema.dumps(shows)
+    return shows_schedule_schema.dumps(get_shows)
 
 
-@arcsi.route("/show/all_page", methods=["GET"])
+@arcsi.route("/show/subpages", methods=["GET"])
 def list_shows_page():
-    do = DoArchive()
-    shows = Show.query.all()
-    for show in shows:
-        if show.cover_image_url:
-            show.cover_image_url = do.download(
-                show.archive_lahmastore_base_url, show.cover_image_url
-            )
-    return shows_archive_schema.dumps(shows)
+    return shows_archive_schema.dumps(get_shows)
 
 # TODO /item/<uuid>/add route so that each upload has unique id to begin with
 # no need for different methods for `POST` & `PUT`
@@ -327,7 +306,7 @@ def view_show_archive(show_slug):
     #    return make_response("Show episodes not found", 404, headers)
 
 # This will be the one that we are gonna use at the new page 
-@arcsi.route("show/<string:show_slug>/page", methods=["GET"])
+@arcsi.route("show/<string:show_slug>/subpages", methods=["GET"])
 def view_show_page(show_slug):
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first()

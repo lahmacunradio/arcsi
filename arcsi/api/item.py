@@ -83,7 +83,7 @@ def list_items():
             )
     return items_schema.dumps(items)
 
-@arcsi.route("/item/all_latest/", methods=["GET"])
+@arcsi.route("/item/latest/", methods=["GET"])
 def list_items_latest():
     do = DoArchive()
     page = request.args.get('page', 1, type=int)

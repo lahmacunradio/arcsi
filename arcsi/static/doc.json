@@ -115,7 +115,7 @@
         }
       }
     },
-    "/show/all_schedule": {
+    "/show/schedule": {
       "get": {
         "tags": [
           "Show Request"
@@ -138,7 +138,7 @@
         }
       }
     },
-    "/show/all_page": {
+    "/show/subpages": {
       "get": {
         "tags": [
           "Show Request"
@@ -228,7 +228,7 @@
         }
       }
     },
-    "/show/{show_slug}/page": {
+    "/show/{show_slug}/subpages": {
       "get": {
         "tags": [
           "Show Request"
@@ -328,7 +328,7 @@
         }
       }
     },
-    "/item/all_latest/?size={size}&?page={page}": {
+    "/item/latest/?size={size}&?page={page}": {
       "get": {
         "tags": [
           "Item Request"

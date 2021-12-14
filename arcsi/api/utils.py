@@ -141,3 +141,13 @@ def archive(archive_base, archive_file_name, archive_idx):
     archive_url = do.upload(archive_file_path, archive_base, archive_idx)
 
     return archive_url
+
+def get_shows():
+    do = DoArchive()
+    shows = Show.query.all()
+    for show in shows:
+        if show.cover_image_url:
+            show.cover_image_url = do.download(
+                show.archive_lahmastore_base_url, show.cover_image_url
+            )
+    return shows
