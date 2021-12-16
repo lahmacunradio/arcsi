@@ -159,7 +159,7 @@ def add_show():
                     archive_base=new_show.archive_lahmastore_base_url,
                     archive_idx=0,
                     archive_file=request.files["image_file"],
-                    archive_name=(new_show.name, "cover"),
+                    archive_file_name=(new_show.name, "cover"),
                 )
                 if cover_image_name:
                     new_show.cover_image_url = archive(
@@ -243,7 +243,7 @@ def edit_show(id):
                     archive_base=show.archive_lahmastore_base_url,
                     archive_idx=0,
                     archive_file=request.files["image_file"],
-                    archive_name=(show.name, "cover"),
+                    archive_file_name=(show.name, "cover"),
                 )
                 if cover_image_name:
                     show.cover_image_url = archive(
