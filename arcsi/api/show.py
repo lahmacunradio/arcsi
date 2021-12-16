@@ -9,23 +9,24 @@ from flask import current_app as app
 from marshmallow import fields, post_load, Schema, ValidationError
 from werkzeug import secure_filename
 
-from .utils import archive, save_file, slug, sort_for
+from .utils import archive, get_shows, save_file, slug, sort_for
 from arcsi.api import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.user import User
-from arcsi.api.item import item_archive_schema, items_basic_schema
+from arcsi.api.item import items_schema, item_archive_schema, Item
 
 
 class ShowDetailsSchema(Schema):
     id = fields.Int()
+    name = fields.Str(required=True)
     active = fields.Boolean(required=True)
     name = fields.Str(required=True)
     description = fields.Str(required=True)
+    cover_image_url = fields.Str(dump_only=True)
     language = fields.Str(max=5)
     playlist_name = fields.Str()
-    cover_image_url = fields.Str(dump_only=True)
     frequency = fields.Int(min=1, max=1)
     week = fields.Int()
     day = fields.Int()
@@ -62,7 +63,10 @@ class ShowDetailsSchema(Schema):
         return Show(**data)
 
 
-show_schema = ShowDetailsSchema()
+show_schema = ShowDetailsSchema(only=("id", "name", "active", "description",
+                                    "cover_image_url", "playlist_name", "items",
+                                    "language", "frequency", "day", "start",
+                                    "end", "archive_lahmastore_base_url", "users"))
 show_archive_schema = ShowDetailsSchema(only=("name", "cover_image_url", 
                                                     "day", "start", "end",
                                                     "frequency", "language",
@@ -71,7 +75,7 @@ show_archive_schema = ShowDetailsSchema(only=("name", "cover_image_url",
 show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
 shows_schedule_schema = ShowDetailsSchema(many=True, 
-                                                   only=("id", "active", "name", "cover_image_url",
+                                                   only=("active", "name", "cover_image_url",
                                                          "day", "start", "end",
                                                          "description", "archive_lahmastore_base_url"))
 shows_archive_schema = ShowDetailsSchema(many=True, 
@@ -82,28 +86,19 @@ headers = {"Content-Type": "application/json"}
 
 
 @arcsi.route("/show", methods=["GET"])
+# We use this route on the legacy for a massive shows query
 @arcsi.route("/show/all", methods=["GET"])
 def list_shows():
-    do = DoArchive()
-    shows = Show.query.all()
-    for show in shows:
-        if show.cover_image_url:
-            show.cover_image_url = do.download(
-                show.archive_lahmastore_base_url, show.cover_image_url
-            )
-    return shows_schedule_schema.dumps(shows)
+    return shows_schema.dumps(get_shows)
 
+@arcsi.route("/show/schedule", methods=["GET"])
+def list_shows_for_schedule():
+    return shows_schedule_schema.dumps(get_shows)
 
-@arcsi.route("/show/archive", methods=["GET"])
-def list_shows_archive():
-    do = DoArchive()
-    shows = Show.query.all()
-    for show in shows:
-        if show.cover_image_url:
-            show.cover_image_url = do.download(
-                show.archive_lahmastore_base_url, show.cover_image_url
-            )
-    return shows_archive_schema.dumps(shows)
+# We are gonna use this on the new page as the show/all
+@arcsi.route("/show/list", methods=["GET"])
+def list_shows_page():
+    return shows_archive_schema.dumps(get_shows)
 
 # TODO /item/<uuid>/add route so that each upload has unique id to begin with
 # no need for different methods for `POST` & `PUT`
@@ -282,13 +277,45 @@ def view_show(id):
     else:
         return make_response("Show not found", 404, headers)
 
+# We use this route on the legacy front-end show page
 @arcsi.route("show/<string:show_slug>/archive", methods=["GET"])
 def view_show_archive(show_slug):
+    do = DoArchive()
+    show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
+    show = show_query.first_or_404()
+    if show:
+        show_json = show_schema.dump(show)
+        show_items = [
+            show_item
+            for show_item in show_json["items"]
+            if datetime.strptime(show_item.get("play_date"), "%Y-%m-%d")
+            + timedelta(days=1)
+            < datetime.today()
+        ]
+        for show_item in show_items:
+            show_item["image_url"] = do.download(
+                show.archive_lahmastore_base_url, show_item["image_url"]
+            )
+        return json.dumps(show_items)
+    else:
+        return make_response("Show not found", 404, headers)
+    #show = show_query.first()
+    #if show:
+    #    show_items = show.items.filter(Item.play_date < datetime.today() - timedelta(days=1)).all()
+    #    return items_schema.dump(show_items)
+    #else:
+    #    return make_response("Show episodes not found", 404, headers)
+
+# This will be the one that we are gonna use at the new page 
+@arcsi.route("show/<string:show_slug>/page", methods=["GET"])
+def view_show_page(show_slug):
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first()
     if show:
-        show_items = show.items.filter(Item.play_date < datetime.today() - timedelta(days=1)).all()
-        return items_basic_schema.dump(show)
+        # subquery = session.query(Item.id).filter(blabla -timedelta(day=1)).all().subquery()
+        # query = session.query(Show).filter_by(blabla).(Item.id.in_(subquery))
+        show.items.filter(Item.play_date < datetime.today() - timedelta(days=1)).all()
+        return show_archive_schema.dump(show)
     else:
         return make_response("Show not found", 404, headers)
 
