@@ -198,7 +198,7 @@ def add_item():
                         archive_base=new_item.shows[0].archive_lahmastore_base_url,
                         archive_idx=new_item.number,
                         archive_file=play_file,
-                        archive_name=(new_item.shows[0].name, item_name),
+                        archive_file_name=(new_item.shows[0].name, item_name),
                     )
 
             if request.files["image_file"]:
@@ -209,7 +209,7 @@ def add_item():
                         archive_base=new_item.shows[0].archive_lahmastore_base_url,
                         archive_idx=new_item.number,
                         archive_file=image_file,
-                        archive_name=(new_item.shows[0].name, item_name),
+                        archive_file_name=(new_item.shows[0].name, item_name),
                     )
 
             if new_item.broadcast:
@@ -383,7 +383,7 @@ def edit_item(id):
                         archive_base=item.shows[0].archive_lahmastore_base_url,
                         archive_idx=item.number,
                         archive_file=image_file,
-                        archive_name=(item.shows[0].name, item_name),
+                        archive_file_name=(item.shows[0].name, item_name),
                     )
 
             if request.files["play_file"]:
@@ -394,7 +394,7 @@ def edit_item(id):
                         archive_base=item.shows[0].archive_lahmastore_base_url,
                         archive_idx=item.number,
                         archive_file=play_file,
-                        archive_name=(item.shows[0].name, item_name),
+                        archive_file_name=(item.shows[0].name, item_name),
                     )
             if item.broadcast:
                 # we require both image and audio if broadcast (Azuracast) is set
