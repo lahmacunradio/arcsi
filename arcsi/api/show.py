@@ -86,6 +86,7 @@ headers = {"Content-Type": "application/json"}
 
 
 @arcsi.route("/show", methods=["GET"])
+# We use this route on the legacy for a massive shows query
 @arcsi.route("/show/all", methods=["GET"])
 def list_shows():
     return shows_schema.dumps(get_shows)
@@ -94,8 +95,8 @@ def list_shows():
 def list_shows_for_schedule():
     return shows_schedule_schema.dumps(get_shows)
 
-
-@arcsi.route("/show/subpages", methods=["GET"])
+# We are gonna use this on the new page as the show/all
+@arcsi.route("/show/list", methods=["GET"])
 def list_shows_page():
     return shows_archive_schema.dumps(get_shows)
 
@@ -306,7 +307,7 @@ def view_show_archive(show_slug):
     #    return make_response("Show episodes not found", 404, headers)
 
 # This will be the one that we are gonna use at the new page 
-@arcsi.route("show/<string:show_slug>/subpages", methods=["GET"])
+@arcsi.route("show/<string:show_slug>/page", methods=["GET"])
 def view_show_page(show_slug):
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first()
