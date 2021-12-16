@@ -89,16 +89,16 @@ headers = {"Content-Type": "application/json"}
 # We use this route on the legacy for a massive shows query
 @arcsi.route("/show/all", methods=["GET"])
 def list_shows():
-    return shows_schema.dumps(get_shows)
+    return shows_schema.dumps(get_shows())
 
 @arcsi.route("/show/schedule", methods=["GET"])
 def list_shows_for_schedule():
-    return shows_schedule_schema.dumps(get_shows)
+    return shows_schedule_schema.dumps(get_shows())
 
 # We are gonna use this on the new page as the show/all
 @arcsi.route("/show/list", methods=["GET"])
 def list_shows_page():
-    return shows_archive_schema.dumps(get_shows)
+    return shows_archive_schema.dumps(get_shows())
 
 # TODO /item/<uuid>/add route so that each upload has unique id to begin with
 # no need for different methods for `POST` & `PUT`
