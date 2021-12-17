@@ -40,7 +40,9 @@ class ShowDetailsSchema(Schema):
         fields.Nested(
             "ItemDetailsSchema",
             only=(
+                "id",
                 "description",
+                "number",
                 "name",
                 "play_file_name",
                 "play_date",
