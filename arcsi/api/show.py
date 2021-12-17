@@ -248,11 +248,15 @@ def edit_show(id):
                     archive_file_name=(show.name, "cover"),
                 )
                 if cover_image_name:
+                    app.logger.debug("STATUS: Cover image name: {}".format(cover_image_name))
                     show.cover_image_url = archive(
                         archive_base=show.archive_lahmastore_base_url,
                         archive_idx=0,
                         archive_file_name=cover_image_name,
                     )
+                    app.logger.debug("STATUS: Cover image url: {}".format(show.cover_image_url))
+                else:
+                    app.logger.debug("ERROR: Error while uploading cover image.")
 
         db.session.commit()
         return make_response(

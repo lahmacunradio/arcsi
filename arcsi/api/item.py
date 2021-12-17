@@ -216,10 +216,13 @@ def add_item():
                 # we require both image and audio if broadcast (Azuracast) is set
                 if not (image_file_name and new_item.play_file_name):
                     no_error = False
+                    app.logger.debug("ERROR: Both image and audio input are required if broadcast (Azuracast) is set")
             # this branch is typically used for pre-uploading live episodes (no audio)
             else: 
                 if not image_file_name:
                     no_error = False
+                    app.logger.debug("ERROR: You need to add at least an image")
+                    
 
         # archive files if asked
         if new_item.archive_lahmastore:
@@ -232,6 +235,8 @@ def add_item():
                     )
                     if not new_item.image_url:
                         no_error = False
+                        app.logger.debug("ERROR: Image could not be uploaded to storage")
+
                 if new_item.play_file_name:
                     new_item.archive_lahmastore_canonical_url = archive(
                         archive_base=new_item.shows[0].archive_lahmastore_base_url,
@@ -244,6 +249,8 @@ def add_item():
                         new_item.archived = True
                     else:  # Upload didn't succeed
                         no_error = False
+                        app.logger.debug("ERROR: Audio could not be uploaded to storage")
+
 
         # broadcast episode if asked
         if new_item.broadcast and no_error:
@@ -261,6 +268,8 @@ def add_item():
                 )
                 if not new_item.airing:
                     no_error = False
+                    app.logger.debug("ERROR: Item could not be uploaded to Azuracast")
+
 
             # TODO some mp3 error
             # TODO Maybe I used vanilla mp3 not from azuracast
