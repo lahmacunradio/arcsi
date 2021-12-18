@@ -40,7 +40,9 @@ class ShowDetailsSchema(Schema):
         fields.Nested(
             "ItemDetailsSchema",
             only=(
+                "id",
                 "description",
+                "number",
                 "name",
                 "play_file_name",
                 "play_date",
@@ -65,8 +67,9 @@ class ShowDetailsSchema(Schema):
 
 show_schema = ShowDetailsSchema(only=("id", "name", "active", "description",
                                     "cover_image_url", "playlist_name", "items",
-                                    "language", "frequency", "day", "start",
-                                    "end", "archive_lahmastore_base_url", "users"))
+                                    "language", "frequency", "week", "day", "start",
+                                    "end", "archive_lahmastore", "archive_lahmastore_base_url", 
+                                    "archive_mixcloud", "users"))
 show_archive_schema = ShowDetailsSchema(only=("name", "cover_image_url", 
                                                     "day", "start", "end",
                                                     "frequency", "language",
