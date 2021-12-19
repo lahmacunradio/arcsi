@@ -310,7 +310,7 @@ def view_show_archive(show_slug):
     #    return make_response("Show episodes not found", 404, headers)
 
 # This will be the one that we are gonna use at the new page 
-@arcsi.route("show/<string:show_slug>/subpages", methods=["GET"])
+@arcsi.route("show/<string:show_slug>/page", methods=["GET"])
 def view_show_page(show_slug):
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first()
