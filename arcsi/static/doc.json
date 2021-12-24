@@ -305,6 +305,52 @@
         }
       }
     },
+    "/show/search?size={size}&?page={page}?param={param}": {
+      "get": {
+        "tags": [
+          "Show Request"
+        ],
+        "summary": "Return Shows that contain param in their name/description",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "size",
+            "required": true,
+            "description": "page_size, default: 12",
+            "type": "number"
+          },
+          {
+            "in": "path",
+            "name": "page",
+            "required": true,
+            "description": "page_number, default: 1",
+            "type": "number"
+          },
+          {
+            "in": "path",
+            "name": "param",
+            "required": true,
+            "description": "searched_param, default: ''",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ShowArchiveRequests"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/item/all": {
       "get": {
         "tags": [
@@ -328,7 +374,7 @@
         }
       }
     },
-    "/item/latest/?size={size}&?page={page}": {
+    "/item/latest?size={size}&?page={page}": {
       "get": {
         "tags": [
           "Item Request"
@@ -487,6 +533,52 @@
           },
           "404": {
             "description": "Failed. Item not found."
+          }
+        }
+      }
+    },
+    "/item/search?size={size}&?page={page}?param={param}": {
+      "get": {
+        "tags": [
+          "Item Request"
+        ],
+        "summary": "Return Episodes that contain param in their name/description",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "size",
+            "required": true,
+            "description": "page_size, default: 12",
+            "type": "number"
+          },
+          {
+            "in": "path",
+            "name": "page",
+            "required": true,
+            "description": "page_number, default: 1",
+            "type": "number"
+          },
+          {
+            "in": "path",
+            "name": "param",
+            "required": true,
+            "description": "searched_param, default: ''",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ItemArchiveRequests"
+                }
+              }
+            }
           }
         }
       }

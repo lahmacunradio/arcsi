@@ -1,11 +1,13 @@
 import json
 import os
+import re
 import requests
 import io
 
 from datetime import datetime, timedelta
 from flask import flash, jsonify, make_response, request, url_for
 from flask import current_app as app
+from sqlalchemy import func
 from marshmallow import fields, post_load, Schema, ValidationError
 from werkzeug import secure_filename
 
@@ -260,7 +262,7 @@ def edit_show(id):
             jsonify(show_partial_schema.dump(show)), 200, headers
         )
 
-@arcsi.route("show/<id>", methods=["GET"])
+@arcsi.route("/show/<id>", methods=["GET"])
 def view_show(id):
     do = DoArchive()
     show_query = Show.query.filter_by(id=id)
@@ -281,7 +283,7 @@ def view_show(id):
         return make_response("Show not found", 404, headers)
 
 # We use this route on the legacy front-end show page
-@arcsi.route("show/<string:show_slug>/archive", methods=["GET"])
+@arcsi.route("/show/<string:show_slug>/archive", methods=["GET"])
 def view_show_archive(show_slug):
     do = DoArchive()
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
@@ -310,7 +312,7 @@ def view_show_archive(show_slug):
     #    return make_response("Show episodes not found", 404, headers)
 
 # This will be the one that we are gonna use at the new page 
-@arcsi.route("show/<string:show_slug>/page", methods=["GET"])
+@arcsi.route("/show/<string:show_slug>/page", methods=["GET"])
 def view_show_page(show_slug):
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first()
@@ -323,7 +325,7 @@ def view_show_page(show_slug):
         return make_response("Show not found", 404, headers)
 
 
-@arcsi.route("show/<string:show_slug>/episode/<string:episode_slug>", methods=["GET"])
+@arcsi.route("/show/<string:show_slug>/episode/<string:episode_slug>", methods=["GET"])
 def view_episode_archive(show_slug, episode_slug):
     episode_slug = episode_slug + ".mp3"
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
@@ -332,3 +334,18 @@ def view_episode_archive(show_slug, episode_slug):
         if i.play_file_name == episode_slug:
             return item_archive_schema.dump(i)
     return make_response("Episode not found", 404, headers)
+
+@arcsi.route("/show/search", methods=["GET"])
+def search_show():
+    do = DoArchive()
+    page = request.args.get('page', 1, type=int)
+    size = request.args.get('size', 12, type=int)
+    param = request.args.get('param', "", type=str)
+    shows = Show.query.filter(func.lower(Show.name).contains(func.lower(param)) | func.lower(Show.description).contains(func.lower(param))).paginate(
+        page, size, False)
+    for show in shows.items:
+        if show.cover_image_url:
+            show.cover_image_url = do.download(
+                show.archive_lahmastore_base_url, show.cover_image_url
+            )
+    return shows_archive_schema.dumps(shows.items)

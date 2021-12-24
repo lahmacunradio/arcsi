@@ -8,6 +8,7 @@ from mutagen.mp3 import MP3
 
 from flask import flash, jsonify, make_response, request, send_file, url_for, redirect
 from flask import current_app as app
+from sqlalchemy import func
 from marshmallow import fields, post_load, Schema, ValidationError
 
 from .utils import (
@@ -83,7 +84,7 @@ def list_items():
             )
     return items_schema.dumps(items)
 
-@arcsi.route("/item/latest/", methods=["GET"])
+@arcsi.route("/item/latest", methods=["GET"])
 def list_items_latest():
     do = DoArchive()
     page = request.args.get('page', 1, type=int)
@@ -263,7 +264,7 @@ def add_item():
             return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
 
 
-@arcsi.route("item/<id>/listen", methods=["GET"])
+@arcsi.route("/item/<id>/listen", methods=["GET"])
 def listen_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)
@@ -421,3 +422,18 @@ def edit_item(id):
                 jsonify(item_partial_schema.dump(item)), 200, headers
             )
         return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
+
+@arcsi.route("/item/search", methods=["GET"])
+def search_item():
+    do = DoArchive()
+    page = request.args.get('page', 1, type=int)
+    size = request.args.get('size', 12, type=int)
+    param = request.args.get('param', "", type=str)
+    items = Item.query.filter(func.lower(Item.name).contains(func.lower(param)) | func.lower(Item.description).contains(func.lower(param))).paginate(
+        page, size, False)
+    for item in items.items:
+        if item.image_url:
+            item.image_url = do.download(
+                item.shows[0].archive_lahmastore_base_url, item.image_url
+            )
+    return items_archive_schema.dumps(items.items)
