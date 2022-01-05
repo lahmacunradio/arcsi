@@ -49,7 +49,7 @@ class ItemDetailsSchema(Schema):
     shows = fields.List(
         fields.Nested(
             "ShowDetailsSchema",
-            only=("id", "name"),
+            only=("id", "name", "playlist_name"),
         ),
         required=True,
     )
@@ -61,7 +61,8 @@ class ItemDetailsSchema(Schema):
 
 item_schema = ItemDetailsSchema()
 item_archive_schema = ItemDetailsSchema(only = ("name", "number", "play_date", "language", 
-                                             "description", "image_url", "play_file_name", "download_count"))
+                                             "description", "image_url", "play_file_name",
+                                             "download_count", "shows"))
 item_partial_schema = ItemDetailsSchema(partial=True,)
 items_schema = ItemDetailsSchema(many=True)
 items_archive_schema = ItemDetailsSchema(many=True, 

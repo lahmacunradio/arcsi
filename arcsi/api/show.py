@@ -7,17 +7,18 @@ import io
 from datetime import datetime, timedelta
 from flask import flash, jsonify, make_response, request, url_for
 from flask import current_app as app
-from sqlalchemy import func
+from sqlalchemy import func, desc
 from marshmallow import fields, post_load, Schema, ValidationError
 from werkzeug import secure_filename
 
 from .utils import archive, get_shows, process, slug, sort_for
-from arcsi.api import arcsi
+from . import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.user import User
-from arcsi.api.item import items_schema, item_archive_schema, Item
+from arcsi.model.item import Item
+from .item import items_schema, item_archive_schema
 
 
 class ShowDetailsSchema(Schema):
@@ -47,7 +48,7 @@ class ShowDetailsSchema(Schema):
                 "number",
                 "name",
                 "play_file_name",
-                "play_date",
+                "play_date", 
                 "image_url",
                 "download_count"
             ),
@@ -81,8 +82,8 @@ show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
 shows_schedule_schema = ShowDetailsSchema(many=True, 
                                                    only=("active", "name", "cover_image_url",
-                                                         "day", "start", "end",
-                                                         "description", "archive_lahmastore_base_url"))
+                                                         "day", "start", "end", "description",
+                                                         "archive_lahmastore_base_url", "items"))
 shows_archive_schema = ShowDetailsSchema(many=True, 
                                                    only=("active", "name", "cover_image_url",
                                                    "description", "archive_lahmastore_base_url"))
@@ -98,7 +99,10 @@ def list_shows():
 
 @arcsi.route("/show/schedule", methods=["GET"])
 def list_shows_for_schedule():
-    return shows_schedule_schema.dumps(get_shows())
+    shows = get_shows()
+    for show in shows:
+        show.items = [show.items][0]
+    return shows_schedule_schema.dumps(shows)
 
 # We are gonna use this on the new page as the show/all
 @arcsi.route("/show/list", methods=["GET"])
