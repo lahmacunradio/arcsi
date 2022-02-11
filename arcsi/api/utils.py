@@ -121,7 +121,7 @@ def broadcast_audio(
 
 def save_file(archive_base, archive_idx, archive_file, archive_file_name):
     formed_file_name = form_filename(archive_file, archive_file_name)
-    if not allowed_file(archive_file_name):
+    if not allowed_file(formed_file_name):
         return None
     else:
         if formed_file_name == "":
