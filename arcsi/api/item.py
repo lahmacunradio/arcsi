@@ -174,6 +174,9 @@ def add_item():
             shows=shows,
         )
 
+        name_occurrence = int(db.session.query(db.func.count()).filter(new_item.name == Item.name, new_item.number == Item.number).scalar())
+        app.logger.debug("Name_occurence (duplicate detection before flush): {}".format(name_occurrence))
+
         db.session.add(new_item)
         db.session.flush()
 
@@ -181,7 +184,7 @@ def add_item():
         if request.files:
             # Defend against possible duplicate files
             name_occurrence = int(db.session.query(db.func.count()).filter(new_item.name == Item.name, new_item.number == Item.number).scalar())
-            version_pre = None
+            app.logger.debug("Name_occurence (duplicate detection): {}".format(name_occurrence))
 
             if name_occurrence:
                 version_prefix = uuid4()
@@ -360,13 +363,17 @@ def edit_item(id):
             .filter(Show.id.in_((show.id for show in item_metadata.shows)))
             .all()
         )
+        
+        name_occurrence = int(db.session.query(db.func.count()).filter(item.name == Item.name, item.number == Item.number).scalar())
+        app.logger.debug("Name_occurence (duplicate detection before flush): {}".format(name_occurrence))
+        
         db.session.add(item)
         db.session.flush()
 
         if request.files:
             # Defend against possible duplicate files
-            name_occurrence = int(db.session.query(db.func.count()).filter(item.name == Item.name, item.number == Item.number).scalar())
-            version_pre = None
+            name_occurrence = int(db.session.query(db.func.count()).filter(new_item.name == Item.name, new_item.number == Item.number).scalar())
+            app.logger.debug("Name_occurence (duplicate detection): {}".format(name_occurrence))
 
             if name_occurrence:
                 version_prefix = uuid4()
