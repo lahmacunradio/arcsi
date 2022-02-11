@@ -175,7 +175,7 @@ def add_item():
         )
 
         name_occurrence = int(db.session.query(db.func.count()).filter(new_item.name == Item.name, new_item.number == Item.number).scalar())
-        app.logger.debug("Name_occurence (duplicate detection before flush): {}".format(name_occurrence))
+        app.logger.debug("Name_occurence (duplicate detection): {}".format(name_occurrence))
 
         db.session.add(new_item)
         db.session.flush()
@@ -183,9 +183,6 @@ def add_item():
         # TODO get show cover img and set as fallback
         if request.files:
             # Defend against possible duplicate files
-            name_occurrence = int(db.session.query(db.func.count()).filter(new_item.name == Item.name, new_item.number == Item.number).scalar())
-            app.logger.debug("Name_occurence (duplicate detection): {}".format(name_occurrence))
-
             if name_occurrence:
                 version_prefix = uuid4()
                 item_name = "{}-{}".format(version_prefix, new_item.name)
@@ -365,16 +362,13 @@ def edit_item(id):
         )
         
         name_occurrence = int(db.session.query(db.func.count()).filter(item.name == Item.name, item.number == Item.number).scalar())
-        app.logger.debug("Name_occurence (duplicate detection before flush): {}".format(name_occurrence))
+        app.logger.debug("Name_occurence (duplicate detection): {}".format(name_occurrence))
         
         db.session.add(item)
         db.session.flush()
 
         if request.files:
             # Defend against possible duplicate files
-            name_occurrence = int(db.session.query(db.func.count()).filter(new_item.name == Item.name, new_item.number == Item.number).scalar())
-            app.logger.debug("Name_occurence (duplicate detection): {}".format(name_occurrence))
-
             if name_occurrence:
                 version_prefix = uuid4()
                 item_name = "{}-{}".format(version_prefix, item.name)
