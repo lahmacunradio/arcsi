@@ -174,7 +174,8 @@ def add_item():
             shows=shows,
         )
 
-        name_occurrence = int(db.session.query(db.func.count()).filter(new_item.name == Item.name, new_item.number == Item.number).scalar())
+        #Check for duplicate files
+        name_occurrence = int(db.session.query(db.func.count()).filter(Item.name == new_item.name, Item.number == new_item.number).scalar())
         app.logger.debug("Name_occurence (duplicate detection): {}".format(name_occurrence))
 
         db.session.add(new_item)
@@ -320,8 +321,10 @@ def edit_item(id):
 
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
+
     # work around ImmutableDict type
     item_metadata = request.form.to_dict()
+
     # TODO if we could send JSON payloads w/ ajax then this prevalidation isn't needed
     item_metadata["shows"] = [
         {"id": item_metadata["shows"], "name": item_metadata["show_name"]}
@@ -342,6 +345,11 @@ def edit_item(id):
         # TODO edit uploaded media -- remove re-up etc.
         # TODO broadcast / airing
         item_metadata = item_schema.load(item_metadata)
+
+        #Check for duplicate files (before item is updated!)
+        name_occurrence = int(db.session.query(db.func.count()).filter(Item.name == item_metadata.name, Item.number == item_metadata.number).scalar())
+        app.logger.debug("Name_occurence (duplicate detection): {}".format(name_occurrence))
+
         item.number = item_metadata.number
         item.name = item_metadata.name
         item.description = item_metadata.description
@@ -360,9 +368,6 @@ def edit_item(id):
             .filter(Show.id.in_((show.id for show in item_metadata.shows)))
             .all()
         )
-        
-        name_occurrence = int(db.session.query(db.func.count()).filter(item.name == Item.name, item.number == Item.number).scalar())
-        app.logger.debug("Name_occurence (duplicate detection): {}".format(name_occurrence))
         
         db.session.add(item)
         db.session.flush()
