@@ -185,7 +185,7 @@ def add_item():
             # Defend against possible duplicate files
             if name_occurrence:
                 version_prefix = uuid4()
-                item_name = "{}-{}".format(version_prefix, new_item.name)
+                item_name = "{}-{}".format(new_item.name,version_prefix)
             else:
                 item_name = new_item.name
 
@@ -371,7 +371,7 @@ def edit_item(id):
             # Defend against possible duplicate files
             if name_occurrence:
                 version_prefix = uuid4()
-                item_name = "{}-{}".format(version_prefix, item.name)
+                item_name = "{}-{}".format(item.name,version_prefix)
             else:
                 item_name = item.name
 
