@@ -18,6 +18,7 @@ from .utils import (
     dict_to_obj,
     media_path,
     save_file,
+    item_duplications_number
 )
 from arcsi.api import arcsi
 from arcsi.handler.upload import DoArchive
@@ -175,8 +176,7 @@ def add_item():
         )
 
         #Check for duplicate files
-        name_occurrence = int(db.session.query(db.func.count()).filter(Item.name == new_item.name, Item.number == new_item.number).scalar())
-        app.logger.debug("Name_occurence (duplicate detection): {}".format(name_occurrence))
+        name_occurrence = item_duplications_number(new_item)
 
         db.session.add(new_item)
         db.session.flush()
@@ -347,8 +347,7 @@ def edit_item(id):
         item_metadata = item_schema.load(item_metadata)
 
         #Check for duplicate files (before item is updated!)
-        name_occurrence = int(db.session.query(db.func.count()).filter(Item.name == item_metadata.name, Item.number == item_metadata.number).scalar())
-        app.logger.debug("Name_occurence (duplicate detection): {}".format(name_occurrence))
+        name_occurrence = item_duplications_number(item_metadata)
 
         item.number = item_metadata.number
         item.name = item_metadata.name

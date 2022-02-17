@@ -47,6 +47,7 @@ class ShowDetailsSchema(Schema):
                 "play_file_name",
                 "play_date",
                 "image_url",
+                "archived",
                 "download_count"
             ),
         ),
