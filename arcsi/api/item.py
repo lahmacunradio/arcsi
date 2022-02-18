@@ -62,14 +62,14 @@ class ItemDetailsSchema(Schema):
 
 
 item_schema = ItemDetailsSchema()
-item_archive_schema = ItemDetailsSchema(only = ("name", "number", "play_date", "language", 
-                                             "description", "image_url", "play_file_name", "download_count"))
-item_partial_schema = ItemDetailsSchema(partial=True,)
-items_schema = ItemDetailsSchema(many=True)
-items_archive_schema = ItemDetailsSchema(many=True, 
-                                                   only=("name", "description",
-                                                         "play_date", "play_file_name",
-                                                         "image_url", "download_count"))
+item_archive_schema = ItemDetailsSchema(
+                only = ("id", "number", "name", "description", "language", "play_date",
+                        "image_url", "play_file_name", "archived", "download_count", "shows"))
+item_partial_schema = ItemDetailsSchema(partial = True,)
+items_schema = ItemDetailsSchema(many = True)
+items_archive_schema = ItemDetailsSchema(many = True, 
+                only = ("id", "number", "name", "description", "language", "play_date",
+                        "image_url", "play_file_name", "archived", "download_count", "shows"))
 
 headers = {"Content-Type": "application/json"}
 

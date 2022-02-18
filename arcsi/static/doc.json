@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "description": "Arcsi API doc",
-    "version": "0.9.5",
+    "version": "0.9.6",
     "title": "Arcsi",
     "contact": {
       "email": "it@lahmacun.hu"
@@ -107,53 +107,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowRequests"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/show/schedule": {
-      "get": {
-        "tags": [
-          "Show Request"
-        ],
-        "summary": "Return Shows for Ananasz Home and Schedule Page",
-        "produces": [
-          "text/html"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "$ref": "component.json#/components/schemas/ShowScheduleRequests"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/show/list": {
-      "get": {
-        "tags": [
-          "Show Request"
-        ],
-        "summary": "Return Shows for Ananasz Shows Page",
-        "produces": [
-          "text/html"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "$ref": "component.json#/components/schemas/ShowArchiveRequests"
+                  "$ref": "component.json#/components/schemas/ShowResponseBodies"
                 }
               }
             }
@@ -185,7 +139,190 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowRequest"
+                  "$ref": "component.json#/components/schemas/ShowResponseBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Show not found"
+          }
+        }
+      }
+    },
+    "/show/list": {
+      "get": {
+        "tags": [
+          "Show Request"
+        ],
+        "summary": "Return Shows for Ananasz Shows Page",
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ShowsPageResponseBodies"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/show/schedule": {
+      "get": {
+        "tags": [
+          "Show Request"
+        ],
+        "summary": "Return Shows for Ananasz Home and Schedule Page",
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ShowScheduleRequests"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/show/{show_slug}/page": {
+      "get": {
+        "tags": [
+          "Show Request"
+        ],
+        "summary": "Return Show for Ananasz Show Subpage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "show_slug",
+            "required": true,
+            "description": "Show.archive_lahmastore_base_url",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ShowSubPageRequest"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Show not found"
+          }
+        }
+      }
+    },
+    "/item/all": {
+      "get": {
+        "tags": [
+          "Item Request"
+        ],
+        "summary": "Return Episodes for Arcsi Items Archive",
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ItemResponseBodies"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/item/{id}": {
+      "get": {
+        "tags": [
+          "Item Request"
+        ],
+        "summary": "Return Episode for Arcsi Episode Page",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Item Request ID",
+            "schema": {
+              "$ref": "component.json#/components/schemas/id"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ItemResponseBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item not found"
+          }
+        }
+      }
+    },
+    "/item/latest/?size={size}&?page={page}": {
+      "get": {
+        "tags": [
+          "Item Request"
+        ],
+        "summary": "Return Latest Episodes for Ananasz Home and Archive Page",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "size",
+            "required": true,
+            "description": "page_size, default: 12",
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "page",
+            "required": true,
+            "description": "page_number, default: 1",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ItemArchiveResponseBodies"
                 }
               }
             }
@@ -218,41 +355,6 @@
               "text/html": {
                 "schema": {
                   "$ref": "component.json#/components/schemas/ItemBasicRequests"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Show not found"
-          }
-        }
-      }
-    },
-    "/show/{show_slug}/page": {
-      "get": {
-        "tags": [
-          "Show Request"
-        ],
-        "summary": "Return Show for Ananasz Show Subpage",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "show_slug",
-            "required": true,
-            "description": "Show.archive_lahmastore_base_url",
-            "type": "string"
-          }
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "$ref": "component.json#/components/schemas/ShowSubPageRequest"
                 }
               }
             }
@@ -301,130 +403,6 @@
           },
           "404": {
             "description": "Episode not found"
-          }
-        }
-      }
-    },
-    "/item/all": {
-      "get": {
-        "tags": [
-          "Item Request"
-        ],
-        "summary": "Return Episodes for Arcsi Items Archive",
-        "produces": [
-          "text/html"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "$ref": "component.json#/components/schemas/ItemRequests"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/item/latest/?size={size}&?page={page}": {
-      "get": {
-        "tags": [
-          "Item Request"
-        ],
-        "summary": "Return Latest Episodes for Ananasz Home and Archive Page",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "size",
-            "required": true,
-            "description": "page_size, default: 12",
-            "type": "string"
-          },
-          {
-            "in": "path",
-            "name": "page",
-            "required": true,
-            "description": "page_number, default: 1",
-            "type": "string"
-          }
-        ],
-        "produces": [
-          "text/html"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "$ref": "component.json#/components/schemas/ItemArchiveRequests"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/item/{id}": {
-      "get": {
-        "tags": [
-          "Item Request"
-        ],
-        "summary": "Return Episode for Arcsi Episode Page",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "Item Request ID",
-            "schema": {
-              "$ref": "component.json#/components/schemas/id"
-            }
-          }
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "component.json#/components/schemas/ItemRequest"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Item not found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Item Request"
-        ],
-        "summary": "Delete Item with given ID",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "Item Request ID",
-            "schema": {
-              "$ref": "component.json#/components/schemas/id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "URL not found"
           }
         }
       }

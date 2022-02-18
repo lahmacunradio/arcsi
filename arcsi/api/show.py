@@ -20,7 +20,6 @@ from arcsi.api.item import items_schema, item_archive_schema, Item
 
 class ShowDetailsSchema(Schema):
     id = fields.Int()
-    name = fields.Str(required=True)
     active = fields.Boolean(required=True)
     name = fields.Str(required=True)
     description = fields.Str(required=True)
@@ -83,8 +82,8 @@ shows_schedule_schema = ShowDetailsSchema(many=True,
                                                          "day", "start", "end",
                                                          "description", "archive_lahmastore_base_url"))
 shows_archive_schema = ShowDetailsSchema(many=True, 
-                                                   only=("active", "name", "cover_image_url",
-                                                   "description", "archive_lahmastore_base_url"))
+                                                   only=("id", "active", "name", "description", "cover_image_url",
+                                                   "playlist_name", "archive_lahmastore_base_url"))
 
 headers = {"Content-Type": "application/json"}
 
