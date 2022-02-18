@@ -252,7 +252,10 @@ class AzuraArchive(object):
                 if playlist["name"] == self.playlist_name:
                     self.playlist_id = str(playlist["id"])
                     return True
+                    app.logger.debug("Add to playlist request returned {}".format(r.status_code))
+            app.logger.debug("ERROR: Couldn't find playlist ID in Azuracast response.")
             return False
+        app.logger.debug("ERROR: Azuracast request for playlist ID didn't succeed.")
         return False
 
     def empty_playlist(self):
