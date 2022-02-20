@@ -173,6 +173,52 @@
         }
       }
     },
+    "/show/search/?size={size}&page={page}&param={param}": {
+      "get": {
+        "tags": [
+          "Show Request"
+        ],
+        "summary": "Return Shows which name or description contains the parameter",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "size",
+            "required": true,
+            "description": "page_size, default: 12",
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "page",
+            "required": true,
+            "description": "page_number, default: 1",
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "param",
+            "required": true,
+            "description": "search_parameter, default: 1",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ShowResponseBodies"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/show/schedule": {
       "get": {
         "tags": [
@@ -291,7 +337,7 @@
         }
       }
     },
-    "/item/latest/?size={size}&?page={page}": {
+    "/item/latest/?size={size}&page={page}": {
       "get": {
         "tags": [
           "Item Request"
@@ -310,6 +356,52 @@
             "name": "page",
             "required": true,
             "description": "page_number, default: 1",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ItemArchiveResponseBodies"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/item/search/?size={size}&page={page}&param={param}": {
+      "get": {
+        "tags": [
+          "Item Request"
+        ],
+        "summary": "Return Items which name or description contains the parameter",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "size",
+            "required": true,
+            "description": "page_size, default: 12",
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "page",
+            "required": true,
+            "description": "page_number, default: 1",
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "param",
+            "required": true,
+            "description": "search_parameter, default: 1",
             "type": "string"
           }
         ],
