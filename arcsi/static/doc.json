@@ -173,7 +173,7 @@
         }
       }
     },
-    "/show/search/?size={size}&page={page}&param={param}": {
+    "/show/search?size={size}&page={page}&param={param}": {
       "get": {
         "tags": [
           "Show Request"
@@ -337,7 +337,7 @@
         }
       }
     },
-    "/item/latest/?size={size}&page={page}": {
+    "/item/latest?size={size}&page={page}": {
       "get": {
         "tags": [
           "Item Request"
@@ -376,7 +376,7 @@
         }
       }
     },
-    "/item/search/?size={size}&page={page}&param={param}": {
+    "/item/search?size={size}&page={page}&param={param}": {
       "get": {
         "tags": [
           "Item Request"

@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import json
 import os
 import requests
@@ -88,12 +89,12 @@ def list_items():
     return items_schema.dumps(items)
 
 
-@arcsi.route("/item/latest/", methods=["GET"])
+@arcsi.route("/item/latest", methods=["GET"])
 def list_items_latest():
     do = DoArchive()
     page = request.args.get('page', 1, type=int)
     size = request.args.get('size', 12, type=int)
-    items = Item.query.order_by(Item.play_date.desc()).paginate(
+    items = Item.query.filter(Item.play_date < datetime.today() - timedelta(days=1)).order_by(Item.play_date.desc()).paginate(
         page, size, False)
     for item in items.items:
         if item.image_url:

@@ -66,22 +66,16 @@ class ShowDetailsSchema(Schema):
         return Show(**data)
 
 
-show_schema = ShowDetailsSchema(only=("id", "name", "active", "description",
-                                    "cover_image_url", "playlist_name", "items",
-                                    "language", "frequency", "week", "day", "start",
-                                    "end", "archive_lahmastore", "archive_lahmastore_base_url", 
-                                    "archive_mixcloud", "users"))
-show_archive_schema = ShowDetailsSchema(only=("name", "cover_image_url", 
-                                                    "day", "start", "end",
-                                                    "frequency", "language",
-                                                    "active", "description",
-                                                    "items"))
+show_schema = ShowDetailsSchema()
+show_archive_schema = ShowDetailsSchema(only=("id", "active", "name", "description", "cover_image_url", 
+                                                    "day", "start", "end", "frequency", "language",
+                                                    "archive_lahmastore_base_url", "items"))
 show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
 shows_schedule_schema = ShowDetailsSchema(many=True, 
-                                                   only=("active", "name", "cover_image_url",
+                                                   only=("id", "active", "name", "description", "cover_image_url",
                                                          "day", "start", "end",
-                                                         "description", "archive_lahmastore_base_url"))
+                                                         "archive_lahmastore_base_url", "items"))
 shows_archive_schema = ShowDetailsSchema(many=True, 
                                                    only=("id", "active", "name", "description", "cover_image_url",
                                                    "playlist_name", "archive_lahmastore_base_url"))
@@ -98,7 +92,23 @@ def list_shows():
 
 @arcsi.route("/show/schedule", methods=["GET"])
 def list_shows_for_schedule():
-    return shows_schedule_schema.dumps(get_shows())
+    do = DoArchive()
+    shows = Show.query.all()
+    for show in shows:
+        if show.cover_image_url:
+            show.cover_image_url = do.download(
+                show.archive_lahmastore_base_url, show.cover_image_url
+            )
+        if show.items[0]:
+            app.logger.error(type(show))
+            app.logger.error(show)
+            app.logger.error(type(show.items))
+            app.logger.error(show.items)
+            app.logger.error(type(show.items[0]))
+            app.logger.error(show.items[0])
+            app.logger.error(type(show.items.first()))
+            app.logger.error(show.items.first())
+    return shows_schedule_schema.dumps(shows)
 
 
 # We are gonna use this on the new page as the show/all
