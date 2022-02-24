@@ -92,23 +92,7 @@ def list_shows():
 
 @arcsi.route("/show/schedule", methods=["GET"])
 def list_shows_for_schedule():
-    do = DoArchive()
-    shows = Show.query.all()
-    for show in shows:
-        if show.cover_image_url:
-            show.cover_image_url = do.download(
-                show.archive_lahmastore_base_url, show.cover_image_url
-            )
-        if show.items[0]:
-            app.logger.error(type(show))
-            app.logger.error(show)
-            app.logger.error(type(show.items))
-            app.logger.error(show.items)
-            app.logger.error(type(show.items[0]))
-            app.logger.error(show.items[0])
-            app.logger.error(type(show.items.first()))
-            app.logger.error(show.items.first())
-    return shows_schedule_schema.dumps(shows)
+    return shows_schedule_schema.dumps(get_shows())
 
 
 # We are gonna use this on the new page as the show/all
