@@ -94,8 +94,10 @@ def list_items_latest():
     do = DoArchive()
     page = request.args.get('page', 1, type=int)
     size = request.args.get('size', 12, type=int)
-    items = Item.query.filter(Item.play_date < datetime.today() - timedelta(days=1)).order_by(Item.play_date.desc()).paginate(
-        page, size, False)
+    items = Item.query.filter(Item.play_date < datetime.today() - timedelta(days=1)
+                ).filter(Item.archived == True
+                ).order_by(Item.play_date.desc()
+                ).paginate(page, size, False)
     for item in items.items:
         if item.image_url:
             item.image_url = do.download(
@@ -466,8 +468,10 @@ def search_item():
     page = request.args.get('page', 1, type=int)
     size = request.args.get('size', 12, type=int)
     param = request.args.get('param', "", type=str)
-    items = Item.query.filter(func.lower(Item.name).contains(func.lower(param)) | func.lower(Item.description).contains(func.lower(param))).paginate(
-        page, size, False)
+    items = Item.query.filter(func.lower(Item.name).contains(func.lower(param)) | 
+                func.lower(Item.description).contains(func.lower(param))
+                ).filter(Item.play_date < datetime.today() - timedelta(days=1)
+                ).order_by(Item.play_date.desc()).paginate(page, size, False)
     for item in items.items:
         if item.image_url:
             item.image_url = do.download(
