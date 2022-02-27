@@ -72,13 +72,10 @@ show_archive_schema = ShowDetailsSchema(only=("id", "active", "name", "descripti
                                                     "archive_lahmastore_base_url", "items"))
 show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
-shows_schedule_schema = ShowDetailsSchema(many=True, 
-                                                   only=("id", "active", "name", "description", "cover_image_url",
-                                                         "day", "start", "end", "frequency", "language",
-                                                         "archive_lahmastore_base_url", "items"))
+shows_schedule_schema = ShowDetailsSchema(many=True, exclude=("items",))
 shows_archive_schema = ShowDetailsSchema(many=True, 
-                                                   only=("id", "active", "name", "description", "cover_image_url",
-                                                   "playlist_name", "archive_lahmastore_base_url"))
+                                                    only=("id", "active", "name", "description", "cover_image_url",
+                                                    "playlist_name", "archive_lahmastore_base_url"))
 
 headers = {"Content-Type": "application/json"}
 
