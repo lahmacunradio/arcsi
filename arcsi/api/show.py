@@ -73,6 +73,10 @@ show_archive_schema = ShowDetailsSchema(only=("id", "active", "name", "descripti
 show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
 shows_schedule_schema = ShowDetailsSchema(many=True, exclude=("items",))
+shows_schedule2_schema = ShowDetailsSchema(many=True, 
+                                                    only=("id", "active", "name", "description", "cover_image_url", 
+                                                    "day", "start", "end", "frequency", "language",
+                                                    "archive_lahmastore_base_url", "items"))
 shows_archive_schema = ShowDetailsSchema(many=True, 
                                                     only=("id", "active", "name", "description", "cover_image_url",
                                                     "playlist_name", "archive_lahmastore_base_url"))
@@ -96,7 +100,7 @@ def list_shows_for_schedule():
 def list_shows_for_schedule2():
     do = DoArchive()
     shows = Show.query.all()
-    shows_json = shows_schema.dump(shows)
+    shows_json = shows_schedule2_schema.dump(shows)
     # iterate through shows
     for show_json in shows_json:
         if show_json["items"]:
