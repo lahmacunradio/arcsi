@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from flask import flash, jsonify, make_response, request, url_for
 from flask import current_app as app
 from marshmallow import fields, post_load, Schema, ValidationError
-from sqlalchemy import func
+from sqlalchemy import false, func
 from werkzeug import secure_filename
 
 from .utils import archive, get_shows, save_file, slug, sort_for
@@ -90,6 +90,32 @@ def list_shows():
 @arcsi.route("/show/schedule", methods=["GET"])
 def list_shows_for_schedule():
     return shows_schedule_schema.dumps(get_shows())
+
+
+@arcsi.route("/show/schedule2", methods=["GET"])
+def list_shows_for_schedule2():
+    do = DoArchive()
+    shows = Show.query.all()
+    shows_json = shows_schema.dump(shows)
+    # iterate through shows
+    for show_json in shows_json:
+        if show_json["items"]:
+            latest_item_found = False
+            # iterate through show's items
+            for item in show_json["items"]:
+                # search for the first one which is archived & already aired
+                if (latest_item_found == False and
+                item["archived"] == True and
+                ((datetime.strptime(item["play_date"], "%Y-%m-%d") + timedelta(days=1)) < datetime.today())):
+                    latest_item_found = True
+                    item["image_url"] = do.download(
+                            show_json["archive_lahmastore_base_url"], item["image_url"]
+                    )
+                    show_json["items"] = item
+            # if there is no archived show return empty array
+            if (latest_item_found == False):
+                show_json["items"] = []
+    return json.dumps(shows_json)
 
 
 # We are gonna use this on the new page as the show/all
