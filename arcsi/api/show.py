@@ -10,7 +10,7 @@ from marshmallow import fields, post_load, Schema, ValidationError
 from sqlalchemy import false, func
 from werkzeug import secure_filename
 
-from .utils import archive, get_shows, save_file, slug, sort_for
+from .utils import archive, get_shows, save_file, slug, sort_for, normalise
 from . import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
@@ -121,6 +121,30 @@ def list_shows_for_schedule2():
                 show_json["items"] = []
     return json.dumps(shows_json)
 
+@arcsi.route("/show/schedule3", methods=["GET"])
+def list_shows_for_schedule3():
+    do = DoArchive()
+    shows = Show.query.all()
+    shows_json = shows_schedule2_schema.dump(shows)
+    # iterate through shows
+    for show_json in shows_json:
+        if show_json["items"]:
+            latest_item_found = False
+            # iterate through show's items
+            for item in show_json["items"]:
+                # search for the first one which is archived & already aired
+                if (latest_item_found == False and
+                item["archived"] == True and
+                ((datetime.strptime(item["play_date"], "%Y-%m-%d") + timedelta(days=1)) < datetime.today())):
+                    latest_item_found = True
+                    item["image_url"] = do.download(
+                            show_json["archive_lahmastore_base_url"], item["image_url"]
+                    )
+                    show_json["items"] = item
+            # if there is no archived show return empty array
+            if (latest_item_found == False):
+                show_json["items"] = []
+    return json.dumps(shows_json)
 
 # We are gonna use this on the new page as the show/all
 @arcsi.route("/show/list", methods=["GET"])
@@ -357,6 +381,15 @@ def view_episode_archive(show_slug, episode_slug):
     show = show_query.first_or_404()
     for i in show.items:
         if i.play_file_name == episode_slug:
+            return item_archive_schema.dump(i)
+    return make_response("Episode not found", 404, headers)
+
+@arcsi.route("show/<string:show_slug>/episode2/<string:episode_slug>", methods=["GET"])
+def view_episode_archive2(show_slug, episode_slug):
+    show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
+    show = show_query.first_or_404()
+    for i in show.items:
+        if (normalise(i.name) == episode_slug):
             return item_archive_schema.dump(i)
     return make_response("Episode not found", 404, headers)
 
