@@ -355,9 +355,10 @@ def view_show_page(show_slug):
 def view_episode_archive(show_slug, item_slug):
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first_or_404()
-    for i in show.items:
-        if (normalise(i.name) == item_slug):
-            return item_archive_schema.dump(i)
+    for item in show.items:
+        if (normalise(item.name) == item_slug):
+            item.name_slug=item_slug
+            return item_archive_schema.dump(item)
     return make_response("Episode not found", 404, headers)
 
 
