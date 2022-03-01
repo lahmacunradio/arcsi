@@ -89,11 +89,15 @@ headers = {"Content-Type": "application/json"}
 # We use this route on the legacy for a massive shows query
 @arcsi.route("/show/all", methods=["GET"])
 def list_shows():
-    return shows_schema.dumps(get_shows())
+    return shows_schedule_schema.dumps(get_shows())
 
 
 @arcsi.route("/show/schedule", methods=["GET"])
 def list_shows_for_schedule():
+    return shows_schema.dumps(get_shows())    
+
+@arcsi.route("/show/schedule2", methods=["GET"])
+def list_shows_for_schedule2():
     do = DoArchive()
     shows = Show.query.all()
     shows_json = shows_schedule2_schema.dump(shows)
