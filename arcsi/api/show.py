@@ -44,6 +44,7 @@ class ShowDetailsSchema(Schema):
                 "description",
                 "number",
                 "name",
+                "name_slug",
                 "play_file_name",
                 "play_date",
                 "image_url",
@@ -93,11 +94,6 @@ def list_shows():
 
 @arcsi.route("/show/schedule", methods=["GET"])
 def list_shows_for_schedule():
-    return shows_schedule_schema.dumps(get_shows())
-
-
-@arcsi.route("/show/schedule2", methods=["GET"])
-def list_shows_for_schedule2():
     do = DoArchive()
     shows = Show.query.all()
     shows_json = shows_schedule2_schema.dump(shows)
@@ -115,36 +111,13 @@ def list_shows_for_schedule2():
                     item["image_url"] = do.download(
                             show_json["archive_lahmastore_base_url"], item["image_url"]
                     )
+                    item["name_slug"] = normalise(item["name"])
                     show_json["items"] = item
             # if there is no archived show return empty array
             if (latest_item_found == False):
                 show_json["items"] = []
     return json.dumps(shows_json)
 
-@arcsi.route("/show/schedule3", methods=["GET"])
-def list_shows_for_schedule3():
-    do = DoArchive()
-    shows = Show.query.all()
-    shows_json = shows_schedule2_schema.dump(shows)
-    # iterate through shows
-    for show_json in shows_json:
-        if show_json["items"]:
-            latest_item_found = False
-            # iterate through show's items
-            for item in show_json["items"]:
-                # search for the first one which is archived & already aired
-                if (latest_item_found == False and
-                item["archived"] == True and
-                ((datetime.strptime(item["play_date"], "%Y-%m-%d") + timedelta(days=1)) < datetime.today())):
-                    latest_item_found = True
-                    item["image_url"] = do.download(
-                            show_json["archive_lahmastore_base_url"], item["image_url"]
-                    )
-                    show_json["items"] = item
-            # if there is no archived show return empty array
-            if (latest_item_found == False):
-                show_json["items"] = []
-    return json.dumps(shows_json)
 
 # We are gonna use this on the new page as the show/all
 @arcsi.route("/show/list", methods=["GET"])
@@ -374,22 +347,12 @@ def view_show_page(show_slug):
         return make_response("Show not found", 404, headers)
 
 
-@arcsi.route("show/<string:show_slug>/episode/<string:episode_slug>", methods=["GET"])
-def view_episode_archive(show_slug, episode_slug):
-    episode_slug = episode_slug + ".mp3"
+@arcsi.route("show/<string:show_slug>/item/<string:item_slug>", methods=["GET"])
+def view_episode_archive(show_slug, item_slug):
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first_or_404()
     for i in show.items:
-        if i.play_file_name == episode_slug:
-            return item_archive_schema.dump(i)
-    return make_response("Episode not found", 404, headers)
-
-@arcsi.route("show/<string:show_slug>/episode2/<string:episode_slug>", methods=["GET"])
-def view_episode_archive2(show_slug, episode_slug):
-    show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
-    show = show_query.first_or_404()
-    for i in show.items:
-        if (normalise(i.name) == episode_slug):
+        if (normalise(i.name) == item_slug):
             return item_archive_schema.dump(i)
     return make_response("Episode not found", 404, headers)
 

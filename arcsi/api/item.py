@@ -19,6 +19,7 @@ from .utils import (
     broadcast_audio,
     dict_to_obj,
     media_path,
+    normalise,
     save_file,
     item_duplications_number
 )
@@ -35,6 +36,7 @@ class ItemDetailsSchema(Schema):
         required=True
     )  # TODO value can't be 0 -- reserved for show itself
     name = fields.Str(required=True, min=1)
+    name_slug = fields.Str(dump_only=True)
     description = fields.Str()
     language = fields.Str(max=5)
     play_date = fields.Date(required=True)
@@ -65,12 +67,12 @@ class ItemDetailsSchema(Schema):
 
 item_schema = ItemDetailsSchema()
 item_archive_schema = ItemDetailsSchema(
-                only = ("id", "number", "name", "description", "language", "play_date",
+                only = ("id", "number", "name", "name_slug", "description", "language", "play_date",
                         "image_url", "play_file_name", "archived", "download_count", "shows"))
 item_partial_schema = ItemDetailsSchema(partial = True,)
 items_schema = ItemDetailsSchema(many = True)
 items_archive_schema = ItemDetailsSchema(many = True, 
-                only = ("id", "number", "name", "description", "language", "play_date",
+                only = ("id", "number", "name", "name_slug", "description", "language", "play_date",
                         "image_url", "play_file_name", "archived", "download_count", "shows"))
 
 headers = {"Content-Type": "application/json"}
@@ -86,6 +88,7 @@ def list_items():
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
+        item.name_slug=normalise(item.name)
     return items_schema.dumps(items)
 
 
@@ -103,6 +106,7 @@ def list_items_latest():
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
+        item.name_slug=normalise(item.name)
     return items_archive_schema.dumps(items.items)
 
 
@@ -116,6 +120,7 @@ def view_item(id):
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
+        item.name_slug=normalise(item.name)
         return item_schema.dump(item)
     else:
         return make_response("Item not found", 404, headers)
@@ -477,4 +482,5 @@ def search_item():
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
+        item.name_slug=normalise(item.name)
     return items_schema.dumps(items.items)
