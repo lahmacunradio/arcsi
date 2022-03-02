@@ -302,6 +302,8 @@ def view_show(id):
         serial_show = show_schema.dump(show)
         date_desc_episodes = sort_for(serial_show["items"], "play_date", "desc")
         serial_show["items"] = date_desc_episodes
+        for item in serial_show["items"]:
+            item["name_slug"] = normalise(item["name"])
 
         return serial_show
     else:
@@ -327,6 +329,7 @@ def view_show_archive(show_slug):
             show_item["image_url"] = do.download(
                 show.archive_lahmastore_base_url, show_item["image_url"]
             )
+            show_item["name_slug"]=normalise(show_item["name"])
         return json.dumps(show_items)
     else:
         return make_response("Show not found", 404, headers)
@@ -340,13 +343,21 @@ def view_show_archive(show_slug):
 # This will be the one that we are gonna use at the new page 
 @arcsi.route("show/<string:show_slug>/page", methods=["GET"])
 def view_show_page(show_slug):
+    do = DoArchive()
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first()
     if show:
         # subquery = session.query(Item.id).filter(blabla -timedelta(day=1)).all().subquery()
         # query = session.query(Show).filter_by(blabla).(Item.id.in_(subquery))
+        if show.cover_image_url:
+            show.cover_image_url = do.download(
+                show.archive_lahmastore_base_url, show.cover_image_url
+            )
         show.items.filter(Item.play_date < datetime.today() - timedelta(days=1)).all()
-        return show_archive_schema.dump(show)
+        serial_show = show_archive_schema.dump(show)
+        for item in serial_show["items"]:
+            item["name_slug"]=normalise(item["name"])
+        return serial_show
     else:
         return make_response("Show not found", 404, headers)
 
