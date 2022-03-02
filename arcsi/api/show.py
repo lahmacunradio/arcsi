@@ -353,8 +353,15 @@ def view_show_page(show_slug):
             show.cover_image_url = do.download(
                 show.archive_lahmastore_base_url, show.cover_image_url
             )
-        show.items.filter(Item.play_date < datetime.today() - timedelta(days=1)).all()
         serial_show = show_archive_schema.dump(show)
+        show_items = [
+            show_item
+            for show_item in serial_show["items"]
+            if datetime.strptime(show_item.get("play_date"), "%Y-%m-%d")
+            + timedelta(days=1)
+            < datetime.today()
+        ]
+        serial_show["items"]=show_items
         for item in serial_show["items"]:
             item["name_slug"]=normalise(item["name"])
         return serial_show
