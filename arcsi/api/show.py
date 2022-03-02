@@ -363,6 +363,9 @@ def view_show_page(show_slug):
         ]
         serial_show["items"]=show_items
         for item in serial_show["items"]:
+            item["image_url"] = do.download(
+                show.archive_lahmastore_base_url, item["image_url"]
+            )
             item["name_slug"]=normalise(item["name"])
         return serial_show
     else:
@@ -371,10 +374,14 @@ def view_show_page(show_slug):
 
 @arcsi.route("show/<string:show_slug>/item/<string:item_slug>", methods=["GET"])
 def view_episode_archive(show_slug, item_slug):
+    do = DoArchive()
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first_or_404()
     for item in show.items:
         if (normalise(item.name) == item_slug):
+            item.image_url = do.download(
+                show.archive_lahmastore_base_url, item.image_url
+            )
             item.name_slug=item_slug
             return item_archive_schema.dump(item)
     return make_response("Episode not found", 404, headers)
