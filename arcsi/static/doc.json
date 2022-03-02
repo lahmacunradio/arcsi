@@ -465,7 +465,7 @@
         }
       }
     },
-    "/show/{show_slug}/episode/{episode_slug}": {
+    "/show/{show_slug}/item/{episode_slug}": {
       "get": {
         "tags": [
           "Item Requests for frontend"
