@@ -37,6 +37,10 @@
                     "name": {
                         "type": "string",
                         "example": "show-name"
+                    },
+                    "archive_lahmastore_base_url": {
+                        "type": "string",
+                        "example": "show-archive_lahmastore_base_url"
                     }
                 }
             },
@@ -47,6 +51,10 @@
                         "example": true
                     },
                     "name": {
+                        "type": "string",
+                        "example": "item-name"
+                    },
+                    "name_slug": {
                         "type": "string",
                         "example": "item-name"
                     },
@@ -337,6 +345,10 @@
                     "end": {
                         "type": "string"
                     },
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
                     "day": {
                         "type": "integer",
                         "format": "int32"
@@ -348,7 +360,7 @@
                     "items": {
                         "type": "object",
                         "additionalProperties": {
-                            "$ref": "#/components/schemas/ItemBasicRequest"
+                            "$ref": "#/components/schemas/item"
                         }
                     }
                 }
@@ -484,6 +496,9 @@
                     "name": {
                         "type": "string"
                     },
+                    "name_slug": {
+                        "type": "string"
+                    },
                     "description": {
                         "type": "string"
                     },
@@ -538,6 +553,9 @@
                     "name": {
                         "type": "string"
                     },
+                    "name_slug": {
+                        "type": "string"
+                    },
                     "description": {
                         "type": "string"
                     },
@@ -581,6 +599,9 @@
                         "type":"boolean"
                     },
                     "name": {
+                        "type": "string"
+                    },
+                    "name_slug": {
                         "type": "string"
                     },
                     "description": {

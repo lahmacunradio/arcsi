@@ -250,6 +250,38 @@
         }
       }
     },
+    "/show/schedule_by?day={day}": {
+      "get": {
+        "tags": [
+          "Show Requests for frontend"
+        ],
+        "summary": "Return Shows for Ananasz Home and Schedule Page",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "day",
+            "required": true,
+            "description": "day, default: 1",
+            "type": "number"
+          }
+        ],
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ShowScheduleResponseBodies"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/show/{show_slug}/page": {
       "get": {
         "tags": [
@@ -483,7 +515,7 @@
             "in": "path",
             "name": "episode_slug",
             "required": true,
-            "description": "Item.play_file_name + '.mp3'",
+            "description": "normalize(Item.name) --> name_slug",
             "type": "string"
           }
         ],
