@@ -92,6 +92,10 @@ def list_shows():
     return shows_schema.dumps(get_shows())
 
 
+@arcsi.route("/show/all_without_items", methods=["GET"])
+def list_shows_without_items():
+    return shows_schedule_schema.dumps(get_shows())   
+
 @arcsi.route("/show/schedule", methods=["GET"])
 def list_shows_for_schedule():
     do = DoArchive()
@@ -411,4 +415,4 @@ def search_show():
             show.cover_image_url = do.download(
                 show.archive_lahmastore_base_url, show.cover_image_url
             )
-    return shows_archive_schema.dumps(shows.items)
+    return shows_schedule_schema.dumps(shows.items)
