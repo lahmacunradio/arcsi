@@ -25,4 +25,3 @@ docs/_build/
 *override.yml
 pg-data
 nginx/arcsi.conf
-*.sql
