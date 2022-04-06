@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import json
 import os
 import requests
@@ -9,6 +10,7 @@ from mutagen.mp3 import MP3
 from flask import flash, jsonify, make_response, request, send_file, url_for, redirect
 from flask import current_app as app
 from marshmallow import fields, post_load, Schema, ValidationError
+from sqlalchemy import func
 
 from uuid import uuid4
 
@@ -17,10 +19,11 @@ from .utils import (
     broadcast_audio,
     dict_to_obj,
     media_path,
+    normalise,
     save_file,
     item_duplications_number
 )
-from arcsi.api import arcsi
+from . import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.item import Item
@@ -33,6 +36,7 @@ class ItemDetailsSchema(Schema):
         required=True
     )  # TODO value can't be 0 -- reserved for show itself
     name = fields.Str(required=True, min=1)
+    name_slug = fields.Str(dump_only=True)
     description = fields.Str()
     language = fields.Str(max=5)
     play_date = fields.Date(required=True)
@@ -51,7 +55,7 @@ class ItemDetailsSchema(Schema):
     shows = fields.List(
         fields.Nested(
             "ShowDetailsSchema",
-            only=("id", "name"),
+            only=("id", "name", "archive_lahmastore_base_url"),
         ),
         required=True,
     )
@@ -62,14 +66,14 @@ class ItemDetailsSchema(Schema):
 
 
 item_schema = ItemDetailsSchema()
-item_archive_schema = ItemDetailsSchema(only = ("name", "number", "play_date", "language", 
-                                             "description", "image_url", "play_file_name", "download_count"))
-item_partial_schema = ItemDetailsSchema(partial=True,)
-items_schema = ItemDetailsSchema(many=True)
-items_archive_schema = ItemDetailsSchema(many=True, 
-                                                   only=("name", "description",
-                                                         "play_date", "play_file_name",
-                                                         "image_url", "download_count"))
+item_archive_schema = ItemDetailsSchema(
+                only = ("id", "number", "name", "name_slug", "description", "language", "play_date",
+                        "image_url", "play_file_name", "archived", "download_count", "shows"))
+item_partial_schema = ItemDetailsSchema(partial = True,)
+items_schema = ItemDetailsSchema(many = True)
+items_archive_schema = ItemDetailsSchema(many = True, 
+                only = ("id", "number", "name", "name_slug", "description", "language", "play_date",
+                        "image_url", "play_file_name", "archived", "download_count", "shows"))
 
 headers = {"Content-Type": "application/json"}
 
@@ -84,20 +88,25 @@ def list_items():
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
+        item.name_slug=normalise(item.name)
     return items_schema.dumps(items)
 
-@arcsi.route("/item/latest/", methods=["GET"])
+
+@arcsi.route("/item/latest", methods=["GET"])
 def list_items_latest():
     do = DoArchive()
     page = request.args.get('page', 1, type=int)
     size = request.args.get('size', 12, type=int)
-    items = Item.query.order_by(Item.play_date.desc()).paginate(
-        page, size, False)
+    items = Item.query.filter(Item.play_date < datetime.today() - timedelta(days=1)
+                ).filter(Item.archived == True
+                ).order_by(Item.play_date.desc()
+                ).paginate(page, size, False)
     for item in items.items:
         if item.image_url:
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
+        item.name_slug=normalise(item.name)
     return items_archive_schema.dumps(items.items)
 
 
@@ -111,6 +120,7 @@ def view_item(id):
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
+        item.name_slug=normalise(item.name)
         return item_schema.dump(item)
     else:
         return make_response("Item not found", 404, headers)
@@ -455,3 +465,22 @@ def edit_item(id):
                 jsonify(item_partial_schema.dump(item)), 200, headers
             )
         return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
+
+
+@arcsi.route("/item/search", methods=["GET"])
+def search_item():
+    do = DoArchive()
+    page = request.args.get('page', 1, type=int)
+    size = request.args.get('size', 12, type=int)
+    param = request.args.get('param', "", type=str)
+    items = Item.query.filter(func.lower(Item.name).contains(func.lower(param)) | 
+                func.lower(Item.description).contains(func.lower(param))
+                ).filter(Item.play_date < datetime.today() - timedelta(days=1)
+                ).order_by(Item.play_date.desc()).paginate(page, size, False)
+    for item in items.items:
+        if item.image_url:
+            item.image_url = do.download(
+                item.shows[0].archive_lahmastore_base_url, item.image_url
+            )
+        item.name_slug=normalise(item.name)
+    return items_schema.dumps(items.items)
