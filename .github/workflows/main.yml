@@ -13,6 +13,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    environment: dev
+
     strategy:
       matrix:
         postgres-version: [12]
