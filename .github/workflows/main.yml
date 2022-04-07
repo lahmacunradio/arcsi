@@ -84,7 +84,6 @@ jobs:
         FLASK_APP: run_ci.py
         FLASK_DEBUG: 1
         FLASK_ENV: development
-        APP_ENV: development
         UPLOAD_FOLDER: "uploads"
         ARCHIVE_REGION: ${{ secrets.ARCHIVE_REGION }}
         ARCHIVE_HOST_BASE_URL: ${{ secrets.ARCHIVE_HOST_BASE_URL }}
