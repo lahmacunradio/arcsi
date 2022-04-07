@@ -21,7 +21,8 @@
 							"});\r",
 							"\r",
 							"var show = JSON.parse(responseBody)\r",
-							"pm.environment.set(\"new_show_id\", show.id);pm.test(\"ResponseBody is OK!\", function() {\r",
+							"pm.environment.set(\"new_show_id\", show.id);\r",
+							"pm.test(\"ResponseBody is OK!\", function() {\r",
 							"    pm.expect(show).to.be.an(\"object\")\r",
 							"    pm.expect(show.users).to.be.an(\"array\")\r",
 							"    show.users.forEach(function(user) {\r",
@@ -167,6 +168,7 @@
 							"});\r",
 							"\r",
 							"var item = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"new_item_id\", item.id);\r",
 							"pm.test(\"ResponseBody is OK!\", function() {\r",
 							"    pm.expect(item).to.be.an(\"object\");\r",
 							"    pm.expect(item.shows).to.be.an(\"array\");\r",
@@ -194,9 +196,7 @@
 							"    pm.expect(item.download_count).to.be.an(\"number\");\r",
 							"    pm.expect(item.id).to.be.an(\"number\");\r",
 							"    pm.expect(item.number).to.be.an(\"number\");\r",
-							"});\r",
-							"\r",
-							"pm.environment.set(\"new_item_id\", item.id);"
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -304,6 +304,7 @@
 							"});\r",
 							"\r",
 							"var item = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"new_item_id\", item.id);\r",
 							"pm.test(\"ResponseBody is OK!\", function() {\r",
 							"    pm.expect(item).to.be.an(\"object\");\r",
 							"    pm.expect(item.shows).to.be.an(\"array\");\r",
@@ -331,9 +332,7 @@
 							"    pm.expect(item.download_count).to.be.an(\"number\");\r",
 							"    pm.expect(item.id).to.be.an(\"number\");\r",
 							"    pm.expect(item.number).to.be.an(\"number\");\r",
-							"});\r",
-							"\r",
-							"pm.environment.set(\"new_item_id\", item.id);"
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -441,6 +440,7 @@
 							"});\r",
 							"\r",
 							"var item = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"new_item_id\", item.id);\r",
 							"pm.test(\"ResponseBody is OK!\", function() {\r",
 							"    pm.expect(item).to.be.an(\"object\");\r",
 							"    pm.expect(item.shows).to.be.an(\"array\");\r",
@@ -470,9 +470,7 @@
 							"    pm.expect(item.download_count).to.be.an(\"number\");\r",
 							"    pm.expect(item.id).to.be.an(\"number\");\r",
 							"    pm.expect(item.number).to.be.an(\"number\");\r",
-							"});\r",
-							"\r",
-							"pm.environment.set(\"new_item_id\", item.id);"
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -580,6 +578,7 @@
 							"});\r",
 							"\r",
 							"var item = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"new_item_id\", item.id);\r",
 							"pm.test(\"ResponseBody is OK!\", function() {\r",
 							"    pm.expect(item).to.be.an(\"object\");\r",
 							"    pm.expect(item.shows).to.be.an(\"array\");\r",
@@ -607,9 +606,7 @@
 							"    pm.expect(item.download_count).to.be.an(\"number\");\r",
 							"    pm.expect(item.id).to.be.an(\"number\");\r",
 							"    pm.expect(item.number).to.be.an(\"number\");\r",
-							"});\r",
-							"\r",
-							"pm.environment.set(\"new_item_id\", item.id);"
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -730,6 +727,7 @@
 							"});\r",
 							"\r",
 							"var item = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"new_item_id\", item.id);\r",
 							"pm.test(\"ResponseBody is OK!\", function() {\r",
 							"    pm.expect(item).to.be.an(\"object\");\r",
 							"    pm.expect(item.shows).to.be.an(\"array\");\r",
@@ -757,9 +755,7 @@
 							"    pm.expect(item.download_count).to.be.an(\"number\");\r",
 							"    pm.expect(item.id).to.be.an(\"number\");\r",
 							"    pm.expect(item.number).to.be.an(\"number\");\r",
-							"});\r",
-							"\r",
-							"pm.environment.set(\"new_item_id\", item.id);"
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -867,6 +863,7 @@
 							"});\r",
 							"\r",
 							"var item = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"new_item_id\", item.id);\r",
 							"pm.test(\"ResponseBody is OK!\", function() {\r",
 							"    pm.expect(item).to.be.an(\"object\");\r",
 							"    pm.expect(item.shows).to.be.an(\"array\");\r",
@@ -894,9 +891,7 @@
 							"    pm.expect(item.download_count).to.be.an(\"number\");\r",
 							"    pm.expect(item.id).to.be.an(\"number\");\r",
 							"    pm.expect(item.number).to.be.an(\"number\");\r",
-							"});\r",
-							"\r",
-							"pm.environment.set(\"new_item_id\", item.id);"
+							"});"
 						],
 						"type": "text/javascript"
 					}
