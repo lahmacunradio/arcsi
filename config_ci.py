@@ -41,4 +41,4 @@ else:
     PREFERRED_URL_SCHEME = "http"
 
 PORT = 5000  # The application port nginx proxy is passing to
-APP_BASE_URL = "http://{}:{}".format(HOST, PORT)
+APP_BASE_URL = "https://{}:{}".format(HOST, PORT)
