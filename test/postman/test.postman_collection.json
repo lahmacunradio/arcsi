@@ -31,6 +31,7 @@
 							"pm.environment.set(\"new_show_id\", show.id);\r",
 							"pm.test(\"ResponseBody is OK!\", function() {\r",
 							"    pm.expect(show).to.be.an(\"object\")\r",
+							"    pm.expect(show.items).to.be.an(\"array\")\r",
 							"    pm.expect(show.users).to.be.an(\"array\")\r",
 							"    show.users.forEach(function(user) {\r",
 							"        pm.expect(user).to.be.an(\"object\")\r",
@@ -347,7 +348,7 @@
 			"response": []
 		},
 		{
-			"name": "add_item() 1 new broadcast",
+			"name": "add_item() 1 new live",
 			"event": [
 				{
 					"listen": "test",
@@ -431,7 +432,7 @@
 						},
 						{
 							"key": "description",
-							"value": "new broadcast item 1",
+							"value": "new live item 1",
 							"type": "text"
 						},
 						{
@@ -446,12 +447,12 @@
 						},
 						{
 							"key": "live",
-							"value": "false",
+							"value": "true",
 							"type": "text"
 						},
 						{
 							"key": "broadcast",
-							"value": "true",
+							"value": "false",
 							"type": "text"
 						},
 						{
@@ -477,7 +478,7 @@
 						{
 							"key": "play_file",
 							"type": "file",
-							"src": "testaudio.mp3"
+							"src": []
 						}
 					]
 				},
@@ -641,7 +642,7 @@
 			"response": []
 		},
 		{
-			"name": "add_item() 3 live",
+			"name": "add_item() 3 new live",
 			"event": [
 				{
 					"listen": "test",
@@ -950,7 +951,7 @@
 			"response": []
 		},
 		{
-			"name": "add_item() 2 new broadcast 2",
+			"name": "add_item() 2 broadcast override",
 			"event": [
 				{
 					"listen": "test",
@@ -1097,7 +1098,7 @@
 			"response": []
 		},
 		{
-			"name": "edit_item(id) 2 broadcast",
+			"name": "edit_item(id) 2 broadcast edit",
 			"event": [
 				{
 					"listen": "test",
