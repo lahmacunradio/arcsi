@@ -32,3 +32,13 @@ ARCHIVE_API_KEY = os.getenv("ARCHIVE_API_KEY")
 ARCHIVE_SECRET_KEY = os.getenv("ARCHIVE_SECRET_KEY")
 AZURACAST_BASE_URL = os.getenv("AZURACAST_BASE_URL")
 AZURACAST_API_KEY = os.getenv("AZURACAST_API_KEY")
+
+if os.getenv("APP_ENV") == "development" or os.getenv("APP_ENV") == "production":
+    HOST = "127.0.0.1"  # The service name for docker networking
+    PREFERRED_URL_SCHEME = "https"
+else:
+    HOST = "localhost"
+    PREFERRED_URL_SCHEME = "http"
+
+PORT = 5666  # The application port nginx proxy is passing to
+APP_BASE_URL = "http://{}:{}".format(HOST, PORT)
