@@ -75,19 +75,15 @@ jobs:
       run: |
         psql -f test/empty_dump.sql postgresql://postgres:p0stgr3s@localhost:5432/arcsi
 
-    - name: Run the API
+    - name: Run the API and Postman's tests
       run: |
-        ./entrypoint_ci.sh
-        
-    - name: Run the Postman's tests
-      run: |
+        flask run & sleep 15
         cd test/postman/ && newman run test.postman_collection.json -e test.postman_environment.json --verbose
         kill -9 `lsof -i:5000 -t`
       env:
         FLASK_APP: run_ci.py
         FLASK_DEBUG: 1
         FLASK_ENV: development
-        APP_ENV: development
         UPLOAD_FOLDER: "uploads"
         ARCHIVE_REGION: ${{ secrets.ARCHIVE_REGION }}
         ARCHIVE_HOST_BASE_URL: ${{ secrets.ARCHIVE_HOST_BASE_URL }}
