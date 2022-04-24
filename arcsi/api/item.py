@@ -282,11 +282,7 @@ def add_item():
         db.session.commit()
         # TODO no_error is just bandaid for proper exc handling
         if no_error:
-            return make_response(
-                jsonify(item_schema.dump(new_item)),
-                200,
-                headers,
-            )
+            return item_schema.dump(new_item)
         else:
             return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
 
@@ -461,9 +457,7 @@ def edit_item(id):
 
         db.session.commit()
         if no_error:
-            return make_response(
-                jsonify(item_partial_schema.dump(item)), 200, headers
-            )
+            return item_partial_schema.dump(item)
         return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
 
 

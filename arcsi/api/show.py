@@ -215,11 +215,7 @@ def add_show():
 
         db.session.commit()
 
-        return make_response(
-            jsonify(show_schema.dump(new_show)),
-            200,
-            headers,
-        )
+        return show_schema.dump(new_show)
 
 
 @arcsi.route("/show/<id>", methods=["DELETE"])
@@ -298,9 +294,7 @@ def edit_show(id):
                     )
 
         db.session.commit()
-        return make_response(
-            jsonify(show_partial_schema.dump(show)), 200, headers
-        )
+        return show_partial_schema.dump(show)
 
 
 @arcsi.route("show/<id>", methods=["GET"])
