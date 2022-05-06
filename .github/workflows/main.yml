@@ -10,17 +10,12 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequantially or in parallel
 jobs:
-  build:
+  postgres:
     runs-on: ubuntu-latest
-
-    environment: dev
 
     strategy:
       matrix:
         postgres-version: [12]
-        python-version: [3.8]
-        node-version: [14]
-        nginx-version: [1.18]
 
     services:
       postgres:
@@ -39,6 +34,18 @@ jobs:
           --health-retries 5
 
     # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Run migrations
+      run: |
+        psql -f test/empty_dump.sql postgresql://postgres:p0stgr3s@localhost:5432/arcsi
+
+  python:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.8]
+    
     steps:
     - name: Git checkout
       uses: actions/checkout@v3
@@ -63,7 +70,15 @@ jobs:
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
         pip install -r requirements.txt
+  
+  node:
+    runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [14]
+
+    steps:
     - name: Set up Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
@@ -72,9 +87,14 @@ jobs:
     - name: Install newman
       run: npm install -g newman
 
-    - name: Run migrations
-      run: |
-        psql -f test/empty_dump.sql postgresql://postgres:p0stgr3s@localhost:5432/arcsi
+  test:
+    needs: [postgres, python, node]
+
+    runs-on: ubuntu-latest
+    
+    environment: dev
+
+    steps:
 
     - name: Run the API and Postman's tests
       run: |
@@ -97,3 +117,4 @@ jobs:
         POSTGRES_PASSWORD: p0stgr3s
         POSTGRES_DB: arcsi
         CI: true
+
