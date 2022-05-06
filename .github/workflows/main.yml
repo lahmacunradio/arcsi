@@ -10,7 +10,16 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequantially or in parallel
 jobs:
+  checkout:
+    runs-on: ubuntu-latest
+  
+  steps:
+    - name: Git checkout
+      uses: actions/checkout@v3
+
   postgres:
+    needs: checkout
+    
     runs-on: ubuntu-latest
 
     strategy:
@@ -40,15 +49,13 @@ jobs:
         psql -f test/empty_dump.sql postgresql://postgres:p0stgr3s@localhost:5432/arcsi
 
   python:
+    needs: checkout
+
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         python-version: [3.8]
-    
-    steps:
-    - name: Git checkout
-      uses: actions/checkout@v3
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
