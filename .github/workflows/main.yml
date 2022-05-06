@@ -12,7 +12,6 @@ on:
 jobs:
 
   postgres:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -38,14 +37,13 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - name: Git checkout
-        uses: actions/checkout@v3
+      uses: actions/checkout@v3
 
     - name: Run migrations
       run: |
         psql -f test/empty_dump.sql postgresql://postgres:p0stgr3s@localhost:5432/arcsi
 
   python:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -54,7 +52,7 @@ jobs:
 
     steps:
     - name: Git checkout
-        uses: actions/checkout@v3
+      uses: actions/checkout@v3
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
@@ -104,7 +102,7 @@ jobs:
     steps:
 
     - name: Git checkout
-        uses: actions/checkout@v3
+      uses: actions/checkout@v3
 
     - name: Run the API and Postman's tests
       run: |
