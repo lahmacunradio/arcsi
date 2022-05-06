@@ -13,13 +13,13 @@ jobs:
   checkout:
     runs-on: ubuntu-latest
   
-  steps:
-    - name: Git checkout
-      uses: actions/checkout@v3
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
 
   postgres:
     needs: checkout
-    
+
     runs-on: ubuntu-latest
 
     strategy:
