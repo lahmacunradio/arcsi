@@ -10,15 +10,8 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequantially or in parallel
 jobs:
-  checkout:
-    runs-on: ubuntu-latest
-  
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v3
 
   postgres:
-    needs: checkout
 
     runs-on: ubuntu-latest
 
@@ -44,12 +37,14 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - name: Git checkout
+        uses: actions/checkout@v3
+
     - name: Run migrations
       run: |
         psql -f test/empty_dump.sql postgresql://postgres:p0stgr3s@localhost:5432/arcsi
 
   python:
-    needs: checkout
 
     runs-on: ubuntu-latest
 
@@ -58,6 +53,9 @@ jobs:
         python-version: [3.8]
 
     steps:
+    - name: Git checkout
+        uses: actions/checkout@v3
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
@@ -87,6 +85,7 @@ jobs:
         node-version: [14]
 
     steps:
+
     - name: Set up Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
@@ -103,6 +102,9 @@ jobs:
     environment: dev
 
     steps:
+
+    - name: Git checkout
+        uses: actions/checkout@v3
 
     - name: Run the API and Postman's tests
       run: |
