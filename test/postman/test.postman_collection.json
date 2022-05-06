@@ -123,6 +123,7 @@
 							"\r",
 							"var show = JSON.parse(responseBody)\r",
 							"pm.environment.set(\"new_show_id\", show.id);\r",
+							"pm.environment.set(\"new_show_name\", show.name);\r",
 							"pm.test(\"ResponseBody is OK!\", function() {\r",
 							"    pm.expect(show).to.be.an(\"object\")\r",
 							"    pm.expect(show.items).to.be.an(\"array\")\r",
@@ -185,7 +186,7 @@
 						},
 						{
 							"key": "name",
-							"value": "example-show",
+							"value": "a-test-show-about-{{$randomWord}}",
 							"type": "text"
 						},
 						{
@@ -601,7 +602,7 @@
 						},
 						{
 							"key": "show_name",
-							"value": "example-show",
+							"value": "{{new_show_name}}",
 							"type": "text"
 						},
 						{
@@ -834,7 +835,7 @@
 						},
 						{
 							"key": "show_name",
-							"value": "example-show",
+							"value": "{{new_show_name}}",
 							"type": "text"
 						},
 						{
@@ -1067,7 +1068,7 @@
 						},
 						{
 							"key": "show_name",
-							"value": "example-show",
+							"value": "{{new_show_name}}",
 							"type": "text"
 						},
 						{
@@ -1216,7 +1217,7 @@
 						},
 						{
 							"key": "show_name",
-							"value": "example-show",
+							"value": "{{new_show_name}}",
 							"type": "text"
 						},
 						{
@@ -1462,7 +1463,7 @@
 						},
 						{
 							"key": "show_name",
-							"value": "example-show",
+							"value": "{{new_show_name}}",
 							"type": "text"
 						},
 						{
@@ -1611,7 +1612,7 @@
 						},
 						{
 							"key": "show_name",
-							"value": "example-show",
+							"value": "{{new_show_name}}",
 							"type": "text"
 						},
 						{
