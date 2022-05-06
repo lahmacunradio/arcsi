@@ -41,10 +41,6 @@ jobs:
     - name: Git checkout
       uses: actions/checkout@v3
 
-    - name: Run migrations
-      run: |
-        psql -f test/empty_dump.sql postgresql://postgres:p0stgr3s@localhost:5432/arcsi
-
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
@@ -62,7 +58,6 @@ jobs:
           ${{ runner.os }}-
 
     - name: Install dependencies
-      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         pip install -r requirements.txt
 
@@ -73,6 +68,10 @@ jobs:
 
     - name: Install newman
       run: npm install -g newman
+
+    - name: Run migrations
+      run: |
+        psql -f test/empty_dump.sql postgresql://postgres:p0stgr3s@localhost:5432/arcsi
 
     - name: Run the API and Postman's tests
       run: |
