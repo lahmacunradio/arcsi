@@ -77,7 +77,7 @@ jobs:
 
     - name: Run the API and Postman's tests
       run: |
-        gunicorn -b localhost:5000 -w 4 "arcsi:create_app('../config_ci.py')"
+        gunicorn -b localhost:5000 -w 4 "arcsi:create_app('../config_ci.py')" --daemon
         cd test/postman/ && newman run test.postman_collection.json -e test.postman_environment.json --verbose -k
         kill -9 `lsof -i:5000 -t`
       env:
