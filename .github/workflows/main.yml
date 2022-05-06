@@ -78,7 +78,7 @@ jobs:
     - name: Run the API and Postman's tests
       run: |
         flask run & sleep 15
-        cd test/postman/ && newman run test.postman_collection.json -e test.postman_environment.json --verbose -k
+        cd test/postman/ && newman run test.postman_collection.json -e test.postman_environment.json --verbose --timeout-request 0 -k
         kill -9 `lsof -i:5000 -t`
       env:
         FLASK_APP: run_ci.py
