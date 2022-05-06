@@ -68,7 +68,6 @@ jobs:
       uses: actions/setup-node@v3
       with:
         python-version: ${{ matrix.node-version }}
-        cache: 'npm'
 
     - name: Install newman
       run: npm install -g newman
