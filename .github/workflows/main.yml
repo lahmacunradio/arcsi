@@ -10,7 +10,6 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequantially or in parallel
 jobs:
-
   build:
     runs-on: ubuntu-latest
     environment: dev
@@ -58,6 +57,7 @@ jobs:
           ${{ runner.os }}-
 
     - name: Install dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         pip install -r requirements.txt
 
@@ -94,4 +94,3 @@ jobs:
         POSTGRES_PASSWORD: p0stgr3s
         POSTGRES_DB: arcsi
         CI: true
-
