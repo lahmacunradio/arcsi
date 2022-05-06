@@ -11,12 +11,14 @@ on:
 # A workflow run is made up of one or more jobs that can run sequantially or in parallel
 jobs:
 
-  postgres:
+  build:
     runs-on: ubuntu-latest
-
+    environment: dev
     strategy:
       matrix:
         postgres-version: [12]
+        python-version: [3.8]
+        node-version: [14]
 
     services:
       postgres:
@@ -43,17 +45,6 @@ jobs:
       run: |
         psql -f test/empty_dump.sql postgresql://postgres:p0stgr3s@localhost:5432/arcsi
 
-  python:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        python-version: [3.8]
-
-    steps:
-    - name: Git checkout
-      uses: actions/checkout@v3
-
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
@@ -74,15 +65,6 @@ jobs:
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
         pip install -r requirements.txt
-  
-  node:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [14]
-
-    steps:
 
     - name: Set up Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
@@ -91,18 +73,6 @@ jobs:
 
     - name: Install newman
       run: npm install -g newman
-
-  test:
-    needs: [postgres, python, node]
-
-    runs-on: ubuntu-latest
-    
-    environment: dev
-
-    steps:
-
-    - name: Git checkout
-      uses: actions/checkout@v3
 
     - name: Run the API and Postman's tests
       run: |
