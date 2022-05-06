@@ -49,14 +49,26 @@ jobs:
         python-version: ${{ matrix.python-version }}
         cache: 'pip'
 
+    - name: Git cache
+      id: cache
+      uses: actions/cache@v3
+      with:
+        path: ${{ env.pythonLocation }}/lib/python${{ matrix.python-version }}/site-packages/*
+        key: ${{ runner.os }}-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+          ${{ runner.os }}-
+
     - name: Install dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         pip install -r requirements.txt
 
     - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         python-version: ${{ matrix.node-version }}
+        cache: npm
 
     - name: Install newman
       run: npm install -g newman
