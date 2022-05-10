@@ -1,0 +1,84 @@
+name: CI - Integration test
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequantially or in parallel
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: dev
+    strategy:
+      matrix:
+        postgres-version: [12]
+        python-version: [3.8]
+        node-version: [14]
+
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres-version }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: p0stgr3s
+          POSTGRES_DB: arcsi
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        python-version: ${{ matrix.node-version }}
+
+    - name: Install newman
+      run: npm install -g newman
+
+    - name: Run migrations
+      run: |
+        psql -f test/empty_dump.sql postgresql://postgres:p0stgr3s@localhost:5432/arcsi
+
+    - name: Run the API and Postman's tests
+      run: |
+        gunicorn -b localhost:5000 -w 4 "arcsi:create_app('../config_ci.py')" --daemon
+        cd test/postman/ && newman run test.postman_collection.json -e test.postman_environment.json -k
+      env:
+        FLASK_APP: run_ci.py
+        FLASK_DEBUG: 1
+        FLASK_ENV: development
+        UPLOAD_FOLDER: "uploads"
+        ARCHIVE_REGION: ${{ secrets.ARCHIVE_REGION }}
+        ARCHIVE_HOST_BASE_URL: ${{ secrets.ARCHIVE_HOST_BASE_URL }}
+        ARCHIVE_ENDPOINT: ${{ secrets.ARCHIVE_ENDPOINT }}
+        ARCHIVE_API_KEY: ${{ secrets.ARCHIVE_API_KEY }}
+        ARCHIVE_SECRET_KEY: ${{ secrets.ARCHIVE_SECRET_KEY }}
+        AZURACAST_BASE_URL: ${{ secrets.AZURACAST_BASE_URL }}
+        AZURACAST_API_KEY: ${{ secrets.AZURACAST_API_KEY }}
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: p0stgr3s
+        POSTGRES_DB: arcsi
+        CI: true
