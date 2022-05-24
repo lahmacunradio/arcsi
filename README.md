@@ -39,3 +39,9 @@ Hit http://localhost in your browser
 ## Further notes
    * You may need to comment out following line in `docker-compose.yml`: `/etc/letsencrypt:/etc/letsencrypt`
    * FOR DEVELOPERS: You may want to add the `--reload` option for Gunicorn on [line]( https://github.com/mmmnmnm/lahmacun_arcsi/blob/42c0cbf3056af1dfdf49ba02f184db62a633c4dc/entrypoint.sh#L3) for "on-the-fly" application of changes to Python files (you don't need to down and up docker for the changes to apply). Use it only during development!
+
+## CI workflow summary
+   * We started to use GitHub Actions and develop some automatic testcases in order to prevent breaking commits sneaking into our repo.
+   * During the workflow we build up a test env similar to our dev and prod environment. Basically we run a Postgres DB locally on the VM, bring up the Flask application and run Newman with a Postman collection. This collection contains real life usecases (adding/editing shows & episodes and get the data of them) and runs tests on their responses. If any of the requests failing it will cause a failing workflow.
+   * Here is a little picture about the actual steps of the workflow (note that they are running sequentially not parallelly, but it looks better this way:)
+   ![](https://github.com/lahmacunradio/arcsi/blob/master/docs/arcsi_ci.jpg)
