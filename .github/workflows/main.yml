@@ -67,8 +67,6 @@ jobs:
         gunicorn -b localhost:5000 -w 4 "arcsi:create_app('../config_ci.py')" --daemon
         cd test/postman/ && newman run test.postman_collection.json -e test.postman_environment.json -k
       env:
-        FLASK_APP: run_ci.py
-        FLASK_DEBUG: 1
         FLASK_ENV: development
         UPLOAD_FOLDER: "uploads"
         ARCHIVE_REGION: ${{ secrets.ARCHIVE_REGION }}
@@ -81,4 +79,3 @@ jobs:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: p0stgr3s
         POSTGRES_DB: arcsi
-        CI: true
