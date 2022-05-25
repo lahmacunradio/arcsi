@@ -313,6 +313,11 @@
 							"key": "image_file",
 							"type": "file",
 							"src": "testlogo.jpg"
+						},
+						{
+							"key": "taglist",
+							"value": "example_tag1,example_tag2,example_tag3",
+							"type": "text"
 						}
 					]
 				},
