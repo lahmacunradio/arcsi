@@ -2,10 +2,9 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 12.5 (Debian 12.5-1.pgdg100+1)
--- Dumped by pg_dump version 12.5 (Debian 12.5-1.pgdg100+1)
+-- Dumped from database version 12.7 (Debian 12.7-1.pgdg100+1)
+-- Dumped by pg_dump version 12.7 (Debian 12.7-1.pgdg100+1)
 
-SET session_replication_role = 'replica';
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -20,6 +19,17 @@ SET row_security = off;
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: alembic_version; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.alembic_version (
+    version_num character varying(32) NOT NULL
+);
+
+
+ALTER TABLE public.alembic_version OWNER TO postgres;
 
 --
 -- Name: items; Type: TABLE; Schema: public; Owner: postgres
@@ -193,6 +203,67 @@ CREATE TABLE public.shows_users (
 ALTER TABLE public.shows_users OWNER TO postgres;
 
 --
+-- Name: tags; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tags (
+    id integer NOT NULL,
+    display_name character varying(66) NOT NULL,
+    clean_name character varying(66) NOT NULL,
+    icon character varying,
+    created_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.tags OWNER TO postgres;
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.tags_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tags_id_seq OWNER TO postgres;
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.tags_id_seq OWNED BY public.tags.id;
+
+
+--
+-- Name: tags_items; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tags_items (
+    item_id integer,
+    tag_id integer
+);
+
+
+ALTER TABLE public.tags_items OWNER TO postgres;
+
+--
+-- Name: tags_shows; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tags_shows (
+    show_id integer,
+    tag_id integer
+);
+
+
+ALTER TABLE public.tags_shows OWNER TO postgres;
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -253,10 +324,26 @@ ALTER TABLE ONLY public.shows ALTER COLUMN id SET DEFAULT nextval('public.shows_
 
 
 --
+-- Name: tags id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tags ALTER COLUMN id SET DEFAULT nextval('public.tags_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.alembic_version (version_num) FROM stdin;
+dc07c1e13d6e
+\.
 
 
 --
@@ -276,6 +363,28 @@ COPY public.roles (id, name, description) FROM stdin;
 
 COPY public.roles_users (user_id, role_id) FROM stdin;
 1	1
+
+--
+-- Data for Name: tags; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.tags (id, display_name, clean_name, icon, created_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: tags_items; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.tags_items (item_id, tag_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: tags_shows; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.tags_shows (show_id, tag_id) FROM stdin;
 \.
 
 
@@ -286,6 +395,49 @@ COPY public.roles_users (user_id, role_id) FROM stdin;
 COPY public.users (id, name, email, butt_user, butt_pw, password, active) FROM stdin;
 1	testuser	testuser@lahmacun.hu	buttuser	buttpw	testpassword	t
 \.
+
+
+--
+-- Name: items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.items_id_seq', 1, true);
+
+
+--
+-- Name: roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.roles_id_seq', 1, true);
+
+
+--
+-- Name: shows_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.shows_id_seq', 1, true);
+
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.tags_id_seq', 1, false);
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 1, true);
+
+
+--
+-- Name: alembic_version alembic_version_pkc; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.alembic_version
+    ADD CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num);
 
 
 --
@@ -329,11 +481,19 @@ ALTER TABLE ONLY public.shows
 
 
 --
--- Name: shows shows_playlist_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: tags tags_display_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.shows
-    ADD CONSTRAINT shows_playlist_name_key UNIQUE (playlist_name);
+ALTER TABLE ONLY public.tags
+    ADD CONSTRAINT tags_display_name_key UNIQUE (display_name);
+
+
+--
+-- Name: tags tags_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tags
+    ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
 
 
 --
@@ -409,6 +569,38 @@ ALTER TABLE ONLY public.shows_users
 
 
 --
+-- Name: tags_items tags_items_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tags_items
+    ADD CONSTRAINT tags_items_item_id_fkey FOREIGN KEY (item_id) REFERENCES public.items(id);
+
+
+--
+-- Name: tags_items tags_items_tag_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tags_items
+    ADD CONSTRAINT tags_items_tag_id_fkey FOREIGN KEY (tag_id) REFERENCES public.tags(id);
+
+
+--
+-- Name: tags_shows tags_shows_show_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tags_shows
+    ADD CONSTRAINT tags_shows_show_id_fkey FOREIGN KEY (show_id) REFERENCES public.shows(id);
+
+
+--
+-- Name: tags_shows tags_shows_tag_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tags_shows
+    ADD CONSTRAINT tags_shows_tag_id_fkey FOREIGN KEY (tag_id) REFERENCES public.tags(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
-SET session_replication_role = 'origin';
+

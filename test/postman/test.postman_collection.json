@@ -2,7 +2,8 @@
 	"info": {
 		"_postman_id": "35ab0ff9-55a1-4746-879e-f2ba1e6e0fec",
 		"name": "CI test",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19378201"
 	},
 	"item": [
 		{
@@ -243,6 +244,11 @@
 							"key": "image_file",
 							"type": "file",
 							"src": "testlogo.jpg"
+						},
+						{
+							"key": "taglist",
+							"value": "example_tag1,example_tag2,example_tag3",
+							"type": "text"
 						}
 					]
 				},
