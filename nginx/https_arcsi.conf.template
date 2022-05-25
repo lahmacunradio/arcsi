@@ -97,7 +97,7 @@ server {
 
         proxy_pass http://arcsi;
     }
-    if ( $request_method !~ ^(GET|POST|HEAD)$ ) {
+    if ( $request_method !~ ^(GET|POST|HEAD|OPTIONS)$ ) {
         return 405;
     }
 

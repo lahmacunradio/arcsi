@@ -37,22 +37,24 @@
                     "name": {
                         "type": "string",
                         "example": "show-name"
+                    },
+                    "archive_lahmastore_base_url": {
+                        "type": "string",
+                        "example": "show-archive_lahmastore_base_url"
                     }
                 }
             },
             "item": {
                 "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int32",
-                        "example": 1
-                    },
-                    "number": {
-                        "type": "integer",
-                        "format": "int32",
-                        "example": 42
+                    "archived": {
+                        "type": "boolean",
+                        "example": true
                     },
                     "name": {
+                        "type": "string",
+                        "example": "item-name"
+                    },
+                    "name_slug": {
                         "type": "string",
                         "example": "item-name"
                     },
@@ -69,9 +71,24 @@
                         "type": "string",
                         "example": "item-image_url"
                     },
-                    "archived": {
-                        "type": "boolean",
-                        "example": true
+                    "play_file_name": {
+                        "type": "string",
+                        "example": "item-play_file_name"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 1
+                    },
+                    "number": {
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 42
+                    },
+                    "download_count": {
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 420
                     }
                 }
             },
@@ -139,21 +156,38 @@
                     "$ref": "#/components/schemas/UserRequest"
                 }
             },
-            "ShowScheduleRequest": {
+            "ShowResponseBody": {
                 "type": "object",
                 "properties": {
                     "active": {
                         "type": "boolean"
                     },
+                    "archive_lahmastore": {
+                        "type": "boolean"
+                    },
+                    "archive_mixcloud": {
+                        "type": "boolean"
+                    },
                     "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "language": {
+                        "type": "string"
+                    },
+                    "playlist_name": {
+                        "type": "string"
+                    },
+                    "archive_lahmastore_base_url": {
+                        "type": "string"
+                    },
+                    "archive_mixcloud_base_url": {
                         "type": "string"
                     },
                     "cover_image_url": {
                         "type": "string"
-                    },
-                    "day": {
-                        "type": "integer",
-                        "format": "int32"
                     },
                     "start": {
                         "type": "string"
@@ -161,68 +195,27 @@
                     "end": {
                         "type": "string"
                     },
-                    "description": {
-                        "type": "string"
-                    },
-                    "archive_lahmastore_base_url": {
-                        "type": "string"
-                    }
-                }
-            },
-            "ShowArchiveRequest": {
-                "type": "object",
-                "properties": {
-                    "active": {
-                        "type": "boolean"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "cover_image_url": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "archive_lahmastore_base_url": {
-                        "type": "string"
-                    }
-                }
-            },
-            "ShowRequest": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "cover_image_url": {
-                        "type": "string"
-                    },
                     "day": {
                         "type": "integer",
                         "format": "int32"
-                    },
-                    "start": {
-                        "type": "string"
-                    },
-                    "end": {
-                        "type": "string"
                     },
                     "frequency": {
                         "type": "integer",
                         "format": "int32"
                     },
-                    "language": {
-                        "type": "string"
+                    "week": {
+                        "type": "integer",
+                        "format": "int32"
                     },
-                    "active": {
-                        "type": "boolean"
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
                     },
-                    "description": {
-                        "type": "string"
-                    },
-                    "archive_lahmastore": {
-                        "type": "boolean"
+                    "users": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/user"
+                        }
                     },
                     "items": {
                         "type": "object",
@@ -232,25 +225,165 @@
                     }
                 }
             },
-            "ShowScheduleRequests": {
+            "ShowsPageResponseBody": {
                 "type": "object",
-                "additionalProperties": {
-                    "$ref": "#/components/schemas/ShowScheduleRequest"
+                "properties": {
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "playlist_name": {
+                        "type": "string"
+                    },
+                    "archive_lahmastore_base_url": {
+                        "type": "string"
+                    },
+                    "cover_image_url": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
                 }
             },
-            "ShowArchiveRequests": {
+            "ShowScheduleResponseBody": {
                 "type": "object",
-                "additionalProperties": {
-                    "$ref": "#/components/schemas/ShowArchiveRequest"
+                "properties": {
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "archive_lahmastore": {
+                        "type": "boolean"
+                    },
+                    "archive_mixcloud": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "language": {
+                        "type": "string"
+                    },
+                    "playlist_name": {
+                        "type": "string"
+                    },
+                    "archive_lahmastore_base_url": {
+                        "type": "string"
+                    },
+                    "archive_mixcloud_base_url": {
+                        "type": "string"
+                    },
+                    "cover_image_url": {
+                        "type": "string"
+                    },
+                    "start": {
+                        "type": "string"
+                    },
+                    "end": {
+                        "type": "string"
+                    },
+                    "day": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "frequency": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "week": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "users": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/user"
+                        }
+                    }
                 }
             },
-            "ShowRequests": {
+            "ShowSubPageResponseBody": {
                 "type": "object",
-                "additionalProperties": {
-                    "$ref": "#/components/schemas/ShowRequest"
+                "properties": {
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "language": {
+                        "type": "string"
+                    },
+                    "playlist_name": {
+                        "type": "string"
+                    },
+                    "archive_lahmastore_base_url": {
+                        "type": "string"
+                    },
+                    "cover_image_url": {
+                        "type": "string"
+                    },
+                    "start": {
+                        "type": "string"
+                    },
+                    "end": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "day": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "frequency": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/item"
+                        }
+                    }
                 }
             },
-            "ShowRequestPostBody": {
+            "ShowResponseBodies": {
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/components/schemas/ShowResponseBody"
+                }
+            },
+            "ShowsPageResponseBodies": {
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/components/schemas/ShowsPageResponseBody"
+                }
+            },
+            "ShowScheduleResponseBodies": {
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/components/schemas/ShowScheduleResponseBody"
+                }
+            },
+            "ShowRequestBody": {
                 "type": "object",
                 "properties": {
                     "active": {
@@ -339,46 +472,99 @@
                     "user_email": "arcsi@lahmacun.hu"
                 }
             },
-            "ItemBasicRequest": {
+            "ItemResponseBody": {
                 "type": "object",
                 "properties": {
+                    "live": {
+                        "type":"boolean"
+                    },
+                    "broadcast": {
+                        "type":"boolean"
+                    },
+                    "airing": {
+                        "type":"boolean"
+                    },
+                    "archived": {
+                        "type":"boolean"
+                    },
+                    "archive_lahmastore": {
+                        "type":"boolean"
+                    },
+                    "archive_mixcloud": {
+                        "type":"boolean"
+                    },
                     "name": {
                         "type": "string"
                     },
+                    "name_slug": {
+                        "type": "string"
+                    },
                     "description": {
+                        "type": "string"
+                    },
+                    "language": {
                         "type": "string"
                     },
                     "play_date": {
                         "type": "string",
                         "format": "date"
                     },
+                    "archive_lahmastore_canonical_url": {
+                        "type": "string"
+                    },
+                    "archive_mixcloud_canonical_url": {
+                        "type": "string"
+                    },
                     "image_url": {
                         "type": "string"
                     },
                     "play_file_name": {
                         "type": "string"
-                    }
-                }
-            },
-            "ItemRequest": {
-                "type": "object",
-                "properties": {
-                    "name": {
+                    },
+                    "uploader": {
                         "type": "string"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
                     },
                     "number": {
                         "type": "integer",
                         "format": "int32"
                     },
-                    "play_date": {
-                        "type": "string",
-                        "format": "date"
+                    "download_count": {
+                        "type": "integer",
+                        "format": "int32"
                     },
-                    "language": {
+                    "shows": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/show"
+                        }
+                    }
+                }
+            },
+            "ItemArchiveResponseBody": {
+                "type": "object",
+                "properties": {
+                    "archived": {
+                        "type":"boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "name_slug": {
                         "type": "string"
                     },
                     "description": {
                         "type": "string"
+                    },
+                    "language": {
+                        "type": "string"
+                    },
+                    "play_date": {
+                        "type": "string",
+                        "format": "date"
                     },
                     "image_url": {
                         "type": "string"
@@ -386,25 +572,93 @@
                     "play_file_name": {
                         "type": "string"
                     },
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "number": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
                     "download_count": {
                         "type": "integer",
                         "format": "int32"
+                    },
+                    "shows": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/show"
+                        }
                     }
                 }
             },
-            "ItemBasicRequests": {
+            "ItemSubPageResponseBody": {
                 "type": "object",
-                "additionalProperties": {
-                    "$ref": "#/components/schemas/ItemBasicRequest"
+                "properties": {
+                    "archived": {
+                        "type":"boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "name_slug": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "language": {
+                        "type": "string"
+                    },
+                    "play_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "image_url": {
+                        "type": "string"
+                    },
+                    "play_file_name": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "number": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "download_count": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "shows": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/show"
+                        }
+                    }
                 }
             },
-            "ItemRequests": {
+            "ItemResponseBodies": {
                 "type": "object",
                 "additionalProperties": {
-                    "$ref": "#/components/schemas/ItemRequest"
+                    "$ref": "#/components/schemas/ItemResponseBody"
                 }
             },
-            "ItemRequestPostBody": {
+            "ItemArchiveResponseBodies": {
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/components/schemas/ItemArchiveResponseBody"
+                }
+            },
+            "ShowNestedItemResponsebodies": {
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/components/schemas/item"
+                }
+            },
+            "ItemRequestBody": {
                 "type": "object",
                 "properties": {
                     "number": {

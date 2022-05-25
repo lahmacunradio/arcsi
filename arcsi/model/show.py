@@ -24,6 +24,7 @@ class Show(db.Model):
         "Item",
         secondary=items_shows,
         backref=db.backref("shows"),
+        order_by="Item.play_date.desc()",
         lazy="dynamic",
         # TODO why is this not working? see item.shows assignment in api/item
         cascade_backrefs=False,

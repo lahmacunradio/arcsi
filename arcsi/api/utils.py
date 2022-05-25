@@ -3,6 +3,7 @@ import os
 from arcsi.handler.upload import AzuraArchive, DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
+from arcsi.model.item import Item
 from flask import current_app as app
 from slugify import slugify
 from werkzeug import secure_filename
@@ -119,19 +120,19 @@ def broadcast_audio(
     return False
 
 
-def process(archive_base, archive_idx, archive_file, archive_name):
-    archive_file_name = form_filename(archive_file, archive_name)
-    if not allowed_file(archive_file_name):
+def save_file(archive_base, archive_idx, archive_file, archive_file_name):
+    formed_file_name = form_filename(archive_file, archive_file_name)
+    if not allowed_file(formed_file_name):
         return None
     else:
-        if archive_file_name == "":
+        if formed_file_name == "":
             return None
         else:
             archive_file_path = media_path(
-                archive_base, str(archive_idx), archive_file_name
+                archive_base, str(archive_idx), formed_file_name
             )
             archive_file.save(archive_file_path)
-            return archive_file_name
+            return formed_file_name
 
 
 def archive(archive_base, archive_file_name, archive_idx):
@@ -141,3 +142,18 @@ def archive(archive_base, archive_file_name, archive_idx):
     archive_url = do.upload(archive_file_path, archive_base, archive_idx)
 
     return archive_url
+
+def get_shows():
+    do = DoArchive()
+    shows = Show.query.all()
+    for show in shows:
+        if show.cover_image_url:
+            show.cover_image_url = do.download(
+                show.archive_lahmastore_base_url, show.cover_image_url
+            )
+    return shows
+
+def item_duplications_number(item):
+    name_occurrence = int(db.session.query(db.func.count()).filter(Item.name == item.name, Item.number == item.number).scalar())
+    app.logger.error("Name_occurence (duplicate detection): {}".format(name_occurrence))
+    return name_occurrence
