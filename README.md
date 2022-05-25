@@ -42,6 +42,9 @@ Hit http://localhost in your browser
 
 ## CI workflow summary
    * We started to use GitHub Actions and develop automatic testcases in order to prevent breaking commits sneaking into our repo.
-   * During the [workflow]( https://github.com/lahmacunradio/arcsi/blob/master/.github/workflows/main.yml) we build up a test environment similar to our dev and prod env. Basically we bring up a Postgres DB locally on the VM run a [migration script]( https://github.com/lahmacunradio/arcsi/blob/master/test/empty_dump.sql), start the Flask application on localhost with the following [config]( https://github.com/lahmacunradio/arcsi/blob/master/config_ci.py) and run Newman with a Postman collection. This [collection]( https://github.com/lahmacunradio/arcsi/blob/master/test/postman/test.postman_collection.json) contains API requests with real life use cases (adding/editing shows & episodes and getting the data of them) and runs multiple tests on their responses. If any of the requests or tests are failing it will cause an unsuccessful workflow run.
+   * During the [workflow]( https://github.com/lahmacunradio/arcsi/blob/master/.github/workflows/main.yml) we build up a test environment similar to our dev and prod env: 
+      * Setup a Postgres DB locally on the VM and run this [migration script]( https://github.com/lahmacunradio/arcsi/blob/master/test/empty_dump.sql)
+      * Start the Flask application on localhost with the following [config]( https://github.com/lahmacunradio/arcsi/blob/master/config_ci.py)
+      * Run Newman with this Postman [collection]( https://github.com/lahmacunradio/arcsi/blob/master/test/postman/test.postman_collection.json). It contains API requests with real life use cases (adding/editing shows & episodes and getting the data of them) and runs multiple tests on their responses. If any of the requests or tests are failing it will cause an unsuccessful workflow run.
    * Here is a little diagram about the actual steps of the workflow (note that they are running sequentially not parallelly, but it looks better this way:):
    ![](https://github.com/lahmacunradio/arcsi/blob/master/docs/arcsi_ci.jpg)
