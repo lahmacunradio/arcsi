@@ -62,7 +62,7 @@ jobs:
       run: |
         psql -f test/empty_dump.sql postgresql://postgres:p0stgr3s@localhost:5432/arcsi
 
-    - name: Run the API and Postman's tests
+    - name: Run the application and Postman's tests
       run: |
         gunicorn -b localhost:5000 -w 4 "arcsi:create_app('../config_ci.py')" --daemon
         cd test/postman/ && newman run test.postman_collection.json -e test.postman_environment.json -k
