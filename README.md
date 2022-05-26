@@ -40,7 +40,7 @@ Hit http://localhost in your browser
    * You may need to comment out following line in `docker-compose.yml`: `/etc/letsencrypt:/etc/letsencrypt`
    * FOR DEVELOPERS: You may want to add the `--reload` option for Gunicorn on [line]( https://github.com/lahmacunradio/arcsi/blob/master/entrypoint.sh#L3) for "on-the-fly" application of changes to Python files (you don't need to down and up docker for the changes to apply). Use it only during development!
 
-## CI workflow summary
+# CI workflow summary
    * We started to use GitHub Actions and develop automatic testcases in order to prevent breaking commits sneaking into our repo.
    * During the [workflow]( https://github.com/lahmacunradio/arcsi/blob/master/.github/workflows/main.yml) it builds up a test environment similar to our dev and prod env: 
       * Setup a Postgres DB locally on the VM and run this [migration script]( https://github.com/lahmacunradio/arcsi/blob/master/test/empty_dump.sql). This will create an empty database with all of the neccessary tables and relations.
