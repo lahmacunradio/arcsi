@@ -3,6 +3,7 @@ import os
 from arcsi.handler.upload import AzuraArchive, DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
+from arcsi.model.item import Item
 from flask import current_app as app
 from slugify import slugify
 from werkzeug import secure_filename
@@ -156,3 +157,8 @@ def get_shows():
                 show.archive_lahmastore_base_url, show.cover_image_url
             )
     return shows
+
+def item_duplications_number(item):
+    name_occurrence = int(db.session.query(db.func.count()).filter(Item.name == item.name, Item.number == item.number).scalar())
+    app.logger.error("Name_occurence (duplicate detection): {}".format(name_occurrence))
+    return name_occurrence
