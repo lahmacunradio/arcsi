@@ -1,19 +1,16 @@
-from sqlalchemy import true
 from flask_security import UserMixin
-from flask_praetorian import SQLAlchemyUserMixin
 
 from . import db
 from .secondary import roles_users, shows_users
 
 
-class User(db.Model, SQLAlchemyUserMixin):
+class User(db.Model, UserMixin):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), unique=True)
     email = db.Column(db.String(), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
     active = db.Column(db.Boolean, default=True)
-    is_active = db.Column(db.Boolean, default=True)
     butt_user = db.Column(db.String())
     butt_pw = db.Column(db.String(128))
     roles = db.relationship(
@@ -27,18 +24,6 @@ class User(db.Model, SQLAlchemyUserMixin):
         # TODO will this work ?
         cascade_backrefs=False,
     )
-
-    def is_active(self):
-        return self.active
-
-    def get_id(self):
-        return self.id
-
-    def has_role(self, role):
-        if (role in self.roles.all()):
-            return True
-        else:
-            return False
 
     def __repr__(self):
         return "<Host {}>".format(self.name)
