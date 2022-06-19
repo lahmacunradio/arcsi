@@ -52,6 +52,11 @@
   </select>
 </div>
 
+  <div>
+    <label for="taglist">Item tag list (separate with commas)</label>
+    <input name="taglist" id="taglist" value="{% for tag in item.tags %} {{tag.display_name}} {% endfor %}">
+  </div>
+
 <div>
   <label for="play_date">Play date</label>
   <input type="date" name="play_date" id="play_date" value="{{ item.play_date }}">
