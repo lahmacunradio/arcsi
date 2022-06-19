@@ -30,6 +30,16 @@
 <p>Episode D/L count: {{item["download_count"]}}</p>
 <p>Episode uploader: {{item["uploader"]}}</p>
 <p>Episode uploaded at: {{item["uploaded_at"]}}</p>
+<p>Item tags:</p>
+<ul>
+  {% for tag in item["tags"] %}
+  <li>
+    <b>
+      {{tag.display_name}}
+    </b>
+  </li>
+  {% endfor %}
+</ul>
 <hr>
 <p><a href="{{ url_for('router.edit_item', id=item['id']) }}">Edit Episode</a> || <a
         href="{{ url_for('arcsi.delete_item', id=item['id']) }}">Delete Episode</a></p>
