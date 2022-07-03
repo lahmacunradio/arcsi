@@ -6,7 +6,7 @@ from arcsi.model.tag import Tag
 
 class TagDetailsSchema(Schema):
     id = fields.Int()
-    display_name = fields.Str(required=True)
+    display_name = fields.Str(required=True, min=3)
     
     @post_load
     def make_tag(self, data, **kwargs):
