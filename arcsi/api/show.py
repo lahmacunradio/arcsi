@@ -70,7 +70,7 @@ class ShowDetailsSchema(Schema):
 show_schema = ShowDetailsSchema()
 show_archive_schema = ShowDetailsSchema(only=("id", "active", "name", "description", "cover_image_url", 
                                                     "day", "start", "end", "frequency", "language",
-                                                    "playlist_name", "archive_lahmastore_base_url", "items"))
+                                                    "playlist_name", "archive_lahmastore_base_url", "archive_mixcloud_base_url", "items"))
 show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
 shows_schedule_schema = ShowDetailsSchema(many=True, exclude=("items",))
