@@ -2640,7 +2640,7 @@
 							"pm.test(\"Content-Type is text/html\", function() {\r",
 							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
 							"})\r",
-							"\r",
+							"/*\r",
 							"const jsonData = JSON.parse(responseBody)\r",
 							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
 							"    if (pm.expect(jsonData).to.be.an(\"array\")) {\r",
@@ -2714,7 +2714,8 @@
 							"    else {\r",
 							"        pm.expect(jsonData).to.be.equal(\"[]\")\r",
 							"    }\r",
-							"})"
+							"})\r",
+							"*/"
 						],
 						"type": "text/javascript"
 					}
