@@ -453,467 +453,6 @@
 			"response": []
 		},
 		{
-			"name": "list_shows_page()",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200)\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Content-Type is text/html\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
-							"})\r",
-							"\r",
-							"const jsonData = JSON.parse(responseBody)\r",
-							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
-							"    pm.expect(jsonData).to.be.an(\"array\")\r",
-							"    jsonData.forEach(function(show) {\r",
-							"        pm.expect(show).to.be.an(\"object\")\r",
-							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
-							"        pm.expect(show.name).to.be.an(\"string\")\r",
-							"        pm.expect(show.description).to.be.an(\"string\")\r",
-							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
-							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"        if (show.archive_mixcloud_base_url != null) {\r",
-							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
-							"        }\r",
-							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
-							"        pm.expect(show.id).to.be.an(\"number\")\r",
-							"    })\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/show/list",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"show",
-						"list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "list_shows_without_items()",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200)\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Content-Type is text/html\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
-							"})\r",
-							"\r",
-							"const jsonData = JSON.parse(responseBody)\r",
-							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
-							"    pm.expect(jsonData).to.be.an(\"array\")\r",
-							"    jsonData.forEach(function(show) {\r",
-							"        pm.expect(show).to.be.an(\"object\")\r",
-							"        pm.expect(show.users).to.be.an(\"array\")\r",
-							"        show.users.forEach(function(user) {\r",
-							"            pm.expect(user).to.be.an(\"object\")\r",
-							"            pm.expect(user.name).to.be.an(\"string\")\r",
-							"            pm.expect(user.email).to.be.an(\"string\")\r",
-							"            pm.expect(user.id).to.be.an(\"number\")\r",
-							"        })\r",
-							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
-							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
-							"        pm.expect(show.name).to.be.an(\"string\")\r",
-							"        pm.expect(show.description).to.be.an(\"string\")\r",
-							"        pm.expect(show.language).to.be.an(\"string\")\r",
-							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
-							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"        if (show.archive_mixcloud_base_url != null) {\r",
-							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
-							"        }\r",
-							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
-							"        pm.expect(show.start).to.be.an(\"string\")\r",
-							"        pm.expect(show.end).to.be.an(\"string\")\r",
-							"        pm.expect(show.day).to.be.an(\"number\")\r",
-							"        pm.expect(show.frequency).to.be.an(\"number\")\r",
-							"        pm.expect(show.week).to.be.an(\"number\")\r",
-							"        pm.expect(show.id).to.be.an(\"number\")\r",
-							"    })\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/show/all_without_items",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"show",
-						"all_without_items"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "search_show()",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200)\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Content-Type is text/html\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
-							"})\r",
-							"\r",
-							"const jsonData = JSON.parse(responseBody)\r",
-							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
-							"    pm.expect(jsonData).to.be.an(\"array\")\r",
-							"    jsonData.forEach(function(show) {\r",
-							"        pm.expect(show).to.be.an(\"object\")\r",
-							"        pm.expect(show.users).to.be.an(\"array\")\r",
-							"        show.users.forEach(function(user) {\r",
-							"            pm.expect(user).to.be.an(\"object\")\r",
-							"            pm.expect(user.name).to.be.an(\"string\")\r",
-							"            pm.expect(user.email).to.be.an(\"string\")\r",
-							"            pm.expect(user.id).to.be.an(\"number\")\r",
-							"        })\r",
-							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
-							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
-							"        pm.expect(show.name).to.be.an(\"string\")\r",
-							"        pm.expect(show.description).to.be.an(\"string\")\r",
-							"        pm.expect(show.language).to.be.an(\"string\")\r",
-							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
-							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"        if (show.archive_mixcloud_base_url != null) {\r",
-							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
-							"        }\r",
-							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
-							"        pm.expect(show.start).to.be.an(\"string\")\r",
-							"        pm.expect(show.end).to.be.an(\"string\")\r",
-							"        pm.expect(show.day).to.be.an(\"number\")\r",
-							"        pm.expect(show.frequency).to.be.an(\"number\")\r",
-							"        pm.expect(show.week).to.be.an(\"number\")\r",
-							"        pm.expect(show.id).to.be.an(\"number\")\r",
-							"    })\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/show/search?param=show&page=1&size=12",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"show",
-						"search"
-					],
-					"query": [
-						{
-							"key": "param",
-							"value": "show"
-						},
-						{
-							"key": "page",
-							"value": "1"
-						},
-						{
-							"key": "size",
-							"value": "12"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "list_shows_for_schedule()",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200)\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Content-Type is text/html\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
-							"})\r",
-							"\r",
-							"const jsonData = JSON.parse(responseBody)\r",
-							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
-							"    pm.expect(jsonData).to.be.an(\"array\")\r",
-							"    jsonData.forEach(function(show) {\r",
-							"        pm.expect(show).to.be.an(\"object\")\r",
-							"        pm.expect(show.users).to.be.an(\"array\")\r",
-							"        show.users.forEach(function(user) {\r",
-							"            pm.expect(user).to.be.an(\"object\")\r",
-							"            pm.expect(user.name).to.be.an(\"string\")\r",
-							"            pm.expect(user.email).to.be.an(\"string\")\r",
-							"            pm.expect(user.id).to.be.an(\"number\")\r",
-							"        })\r",
-							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
-							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
-							"        pm.expect(show.name).to.be.an(\"string\")\r",
-							"        pm.expect(show.description).to.be.an(\"string\")\r",
-							"        pm.expect(show.language).to.be.an(\"string\")\r",
-							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
-							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"        if (show.archive_mixcloud_base_url != null) {\r",
-							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
-							"        }\r",
-							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
-							"        pm.expect(show.start).to.be.an(\"string\")\r",
-							"        pm.expect(show.end).to.be.an(\"string\")\r",
-							"        pm.expect(show.day).to.be.an(\"number\")\r",
-							"        pm.expect(show.frequency).to.be.an(\"number\")\r",
-							"        pm.expect(show.week).to.be.an(\"number\")\r",
-							"        pm.expect(show.id).to.be.an(\"number\")\r",
-							"    })\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/show/schedule",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"show",
-						"schedule"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "list_shows_for_schedule_by()",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200)\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Content-Type is text/html\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
-							"})\r",
-							"\r",
-							"const jsonData = JSON.parse(responseBody)\r",
-							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
-							"    if (pm.expect(jsonData).to.be.an(\"array\")) {\r",
-							"        jsonData.forEach(function(show) {\r",
-							"            pm.expect(show).to.be.an(\"object\")\r",
-							"            if (show.items != null) {\r",
-							"                const latestEpisode = show.items\r",
-							"                pm.expect(latestEpisode).to.be.an(\"object\")\r",
-							"                pm.expect(latestEpisode.archived).to.be.an(\"boolean\")\r",
-							"                pm.expect(latestEpisode.name).to.be.an(\"string\")\r",
-							"                pm.expect(latestEpisode.name_slug).to.be.an(\"string\")\r",
-							"                pm.expect(latestEpisode.description).to.be.an(\"string\")\r",
-							"                pm.expect(latestEpisode.play_date).to.be.an(\"string\")\r",
-							"                pm.expect(latestEpisode.image_url).to.be.an(\"string\")\r",
-							"                if (latestEpisode.play_file_name != null) {\r",
-							"                    pm.expect(latestEpisode.play_file_name).to.be.an(\"string\")\r",
-							"                }\r",
-							"                pm.expect(latestEpisode.id).to.be.an(\"number\")\r",
-							"                pm.expect(latestEpisode.number).to.be.an(\"number\")\r",
-							"                pm.expect(latestEpisode.download_count).to.be.an(\"number\")\r",
-							"            }\r",
-							"            pm.expect(show.active).to.be.an(\"boolean\")\r",
-							"            pm.expect(show.name).to.be.an(\"string\")\r",
-							"            pm.expect(show.description).to.be.an(\"string\")\r",
-							"            pm.expect(show.playlist_name).to.be.an(\"string\")\r",
-							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"            if (show.archive_mixcloud_base_url != null) {\r",
-							"                pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
-							"            }\r",
-							"            pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
-							"            pm.expect(show.start).to.be.an(\"string\")\r",
-							"            pm.expect(show.end).to.be.an(\"string\")\r",
-							"            pm.expect(show.day).to.be.an(\"number\")\r",
-							"            pm.expect(show.frequency).to.be.an(\"number\")\r",
-							"            pm.expect(show.id).to.be.an(\"number\")\r",
-							"        })\r",
-							"    }\r",
-							"    else if (pm.expect(jsonData).to.be.an(\"object\")) {\r",
-							"        const show = jsonData\r",
-							"        if (show.items != null) {\r",
-							"            const latestEpisode = show.items\r",
-							"            pm.expect(latestEpisode).to.be.an(\"object\")\r",
-							"            pm.expect(latestEpisode.archived).to.be.an(\"boolean\")\r",
-							"            pm.expect(latestEpisode.name).to.be.an(\"string\")\r",
-							"            pm.expect(latestEpisode.name_slug).to.be.an(\"string\")\r",
-							"            pm.expect(latestEpisode.description).to.be.an(\"string\")\r",
-							"            pm.expect(latestEpisode.play_date).to.be.an(\"string\")\r",
-							"            pm.expect(latestEpisode.image_url).to.be.an(\"string\")\r",
-							"            if (latestEpisode.play_file_name != null) {\r",
-							"                pm.expect(latestEpisode.play_file_name).to.be.an(\"string\")\r",
-							"            }\r",
-							"            pm.expect(latestEpisode.id).to.be.an(\"number\")\r",
-							"            pm.expect(latestEpisode.number).to.be.an(\"number\")\r",
-							"            pm.expect(latestEpisode.download_count).to.be.an(\"number\")\r",
-							"        }\r",
-							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
-							"        pm.expect(show.name).to.be.an(\"string\")\r",
-							"        pm.expect(show.description).to.be.an(\"string\")\r",
-							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
-							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"        if (show.archive_mixcloud_base_url != null) {\r",
-							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
-							"        }\r",
-							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
-							"        pm.expect(show.start).to.be.an(\"string\")\r",
-							"        pm.expect(show.end).to.be.an(\"string\")\r",
-							"        pm.expect(show.day).to.be.an(\"number\")\r",
-							"        pm.expect(show.frequency).to.be.an(\"number\")\r",
-							"        pm.expect(show.id).to.be.an(\"number\")\r",
-							"    }\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/show/schedule_by?day=1",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"show",
-						"schedule_by"
-					],
-					"query": [
-						{
-							"key": "day",
-							"value": "1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "view_show_page(show_slug)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200)\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Content-Type is application/json\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
-							"})\r",
-							"\r",
-							"const jsonData = JSON.parse(responseBody)\r",
-							"pm.test(\"ResponseBody is OK!\", function() {\r",
-							"    pm.expect(jsonData).to.be.an(\"object\")\r",
-							"    pm.expect(jsonData.items).to.be.an(\"array\")\r",
-							"    jsonData.items.forEach(function(item) {\r",
-							"        pm.expect(item).to.be.an(\"object\")\r",
-							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.name).to.be.an(\"string\")\r",
-							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
-							"        pm.expect(item.description).to.be.an(\"string\")\r",
-							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
-							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
-							"        if (item.play_file_name != null) {\r",
-							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
-							"        }\r",
-							"        pm.expect(item.id).to.be.an(\"number\")\r",
-							"        pm.expect(item.number).to.be.an(\"number\")\r",
-							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
-							"    })\r",
-							"    pm.expect(jsonData.active).to.be.an(\"boolean\")\r",
-							"    pm.expect(jsonData.name).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.description).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.language).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.playlist_name).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.cover_image_url).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.start).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.end).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.day).to.be.an(\"number\")\r",
-							"    pm.expect(jsonData.frequency).to.be.an(\"number\")\r",
-							"    pm.expect(jsonData.id).to.be.an(\"number\")\r",
-							"})\r",
-							"\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/show/:show_slug/page",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"show",
-						":show_slug",
-						"page"
-					],
-					"variable": [
-						{
-							"key": "show_slug",
-							"value": "example-show"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "list_items()",
 			"event": [
 				{
@@ -2814,6 +2353,467 @@
 						{
 							"key": "item_slug",
 							"value": "example_item1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_shows_page()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(jsonData).to.be.an(\"array\")\r",
+							"    jsonData.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        if (show.archive_mixcloud_base_url != null) {\r",
+							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/show/list",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_shows_without_items()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(jsonData).to.be.an(\"array\")\r",
+							"    jsonData.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.users).to.be.an(\"array\")\r",
+							"        show.users.forEach(function(user) {\r",
+							"            pm.expect(user).to.be.an(\"object\")\r",
+							"            pm.expect(user.name).to.be.an(\"string\")\r",
+							"            pm.expect(user.email).to.be.an(\"string\")\r",
+							"            pm.expect(user.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.language).to.be.an(\"string\")\r",
+							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        if (show.archive_mixcloud_base_url != null) {\r",
+							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.start).to.be.an(\"string\")\r",
+							"        pm.expect(show.end).to.be.an(\"string\")\r",
+							"        pm.expect(show.day).to.be.an(\"number\")\r",
+							"        pm.expect(show.frequency).to.be.an(\"number\")\r",
+							"        pm.expect(show.week).to.be.an(\"number\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/show/all_without_items",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						"all_without_items"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search_show()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(jsonData).to.be.an(\"array\")\r",
+							"    jsonData.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.users).to.be.an(\"array\")\r",
+							"        show.users.forEach(function(user) {\r",
+							"            pm.expect(user).to.be.an(\"object\")\r",
+							"            pm.expect(user.name).to.be.an(\"string\")\r",
+							"            pm.expect(user.email).to.be.an(\"string\")\r",
+							"            pm.expect(user.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.language).to.be.an(\"string\")\r",
+							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        if (show.archive_mixcloud_base_url != null) {\r",
+							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.start).to.be.an(\"string\")\r",
+							"        pm.expect(show.end).to.be.an(\"string\")\r",
+							"        pm.expect(show.day).to.be.an(\"number\")\r",
+							"        pm.expect(show.frequency).to.be.an(\"number\")\r",
+							"        pm.expect(show.week).to.be.an(\"number\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/show/search?param=show&page=1&size=12",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						"search"
+					],
+					"query": [
+						{
+							"key": "param",
+							"value": "show"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "size",
+							"value": "12"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_shows_for_schedule()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(jsonData).to.be.an(\"array\")\r",
+							"    jsonData.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.users).to.be.an(\"array\")\r",
+							"        show.users.forEach(function(user) {\r",
+							"            pm.expect(user).to.be.an(\"object\")\r",
+							"            pm.expect(user.name).to.be.an(\"string\")\r",
+							"            pm.expect(user.email).to.be.an(\"string\")\r",
+							"            pm.expect(user.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.language).to.be.an(\"string\")\r",
+							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        if (show.archive_mixcloud_base_url != null) {\r",
+							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.start).to.be.an(\"string\")\r",
+							"        pm.expect(show.end).to.be.an(\"string\")\r",
+							"        pm.expect(show.day).to.be.an(\"number\")\r",
+							"        pm.expect(show.frequency).to.be.an(\"number\")\r",
+							"        pm.expect(show.week).to.be.an(\"number\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/show/schedule",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						"schedule"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_shows_for_schedule_by()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    if (pm.expect(jsonData).to.be.an(\"array\")) {\r",
+							"        jsonData.forEach(function(show) {\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            if (show.items != null) {\r",
+							"                const latestEpisode = show.items\r",
+							"                pm.expect(latestEpisode).to.be.an(\"object\")\r",
+							"                pm.expect(latestEpisode.archived).to.be.an(\"boolean\")\r",
+							"                pm.expect(latestEpisode.name).to.be.an(\"string\")\r",
+							"                pm.expect(latestEpisode.name_slug).to.be.an(\"string\")\r",
+							"                pm.expect(latestEpisode.description).to.be.an(\"string\")\r",
+							"                pm.expect(latestEpisode.play_date).to.be.an(\"string\")\r",
+							"                pm.expect(latestEpisode.image_url).to.be.an(\"string\")\r",
+							"                if (latestEpisode.play_file_name != null) {\r",
+							"                    pm.expect(latestEpisode.play_file_name).to.be.an(\"string\")\r",
+							"                }\r",
+							"                pm.expect(latestEpisode.id).to.be.an(\"number\")\r",
+							"                pm.expect(latestEpisode.number).to.be.an(\"number\")\r",
+							"                pm.expect(latestEpisode.download_count).to.be.an(\"number\")\r",
+							"            }\r",
+							"            pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.description).to.be.an(\"string\")\r",
+							"            pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            if (show.archive_mixcloud_base_url != null) {\r",
+							"                pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"            }\r",
+							"            pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.start).to.be.an(\"string\")\r",
+							"            pm.expect(show.end).to.be.an(\"string\")\r",
+							"            pm.expect(show.day).to.be.an(\"number\")\r",
+							"            pm.expect(show.frequency).to.be.an(\"number\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"    }\r",
+							"    else if (pm.expect(jsonData).to.be.an(\"object\")) {\r",
+							"        const show = jsonData\r",
+							"        if (show.items != null) {\r",
+							"            const latestEpisode = show.items\r",
+							"            pm.expect(latestEpisode).to.be.an(\"object\")\r",
+							"            pm.expect(latestEpisode.archived).to.be.an(\"boolean\")\r",
+							"            pm.expect(latestEpisode.name).to.be.an(\"string\")\r",
+							"            pm.expect(latestEpisode.name_slug).to.be.an(\"string\")\r",
+							"            pm.expect(latestEpisode.description).to.be.an(\"string\")\r",
+							"            pm.expect(latestEpisode.play_date).to.be.an(\"string\")\r",
+							"            pm.expect(latestEpisode.image_url).to.be.an(\"string\")\r",
+							"            if (latestEpisode.play_file_name != null) {\r",
+							"                pm.expect(latestEpisode.play_file_name).to.be.an(\"string\")\r",
+							"            }\r",
+							"            pm.expect(latestEpisode.id).to.be.an(\"number\")\r",
+							"            pm.expect(latestEpisode.number).to.be.an(\"number\")\r",
+							"            pm.expect(latestEpisode.download_count).to.be.an(\"number\")\r",
+							"        }\r",
+							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        if (show.archive_mixcloud_base_url != null) {\r",
+							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.start).to.be.an(\"string\")\r",
+							"        pm.expect(show.end).to.be.an(\"string\")\r",
+							"        pm.expect(show.day).to.be.an(\"number\")\r",
+							"        pm.expect(show.frequency).to.be.an(\"number\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    }\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/show/schedule_by?day=1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						"schedule_by"
+					],
+					"query": [
+						{
+							"key": "day",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "view_show_page(show_slug)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"})\r",
+							"\r",
+							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody is OK!\", function() {\r",
+							"    pm.expect(jsonData).to.be.an(\"object\")\r",
+							"    pm.expect(jsonData.items).to.be.an(\"array\")\r",
+							"    jsonData.items.forEach(function(item) {\r",
+							"        pm.expect(item).to.be.an(\"object\")\r",
+							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.name).to.be.an(\"string\")\r",
+							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"        pm.expect(item.description).to.be.an(\"string\")\r",
+							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"        if (item.play_file_name != null) {\r",
+							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(item.id).to.be.an(\"number\")\r",
+							"        pm.expect(item.number).to.be.an(\"number\")\r",
+							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
+							"    })\r",
+							"    pm.expect(jsonData.active).to.be.an(\"boolean\")\r",
+							"    pm.expect(jsonData.name).to.be.an(\"string\")\r",
+							"    pm.expect(jsonData.description).to.be.an(\"string\")\r",
+							"    pm.expect(jsonData.language).to.be.an(\"string\")\r",
+							"    pm.expect(jsonData.playlist_name).to.be.an(\"string\")\r",
+							"    pm.expect(jsonData.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"    pm.expect(jsonData.cover_image_url).to.be.an(\"string\")\r",
+							"    pm.expect(jsonData.start).to.be.an(\"string\")\r",
+							"    pm.expect(jsonData.end).to.be.an(\"string\")\r",
+							"    pm.expect(jsonData.day).to.be.an(\"number\")\r",
+							"    pm.expect(jsonData.frequency).to.be.an(\"number\")\r",
+							"    pm.expect(jsonData.id).to.be.an(\"number\")\r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/show/:show_slug/page",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						":show_slug",
+						"page"
+					],
+					"variable": [
+						{
+							"key": "show_slug",
+							"value": "example-show"
 						}
 					]
 				}
