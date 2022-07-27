@@ -125,6 +125,7 @@
 							"var show = JSON.parse(responseBody)\r",
 							"pm.environment.set(\"new_show_id\", show.id);\r",
 							"pm.environment.set(\"new_show_name\", show.name);\r",
+							"pm.environment.set(\"new_show_slug\", show.archive_lahmastore_base_url);\r",
 							"pm.test(\"ResponseBody is OK!\", function() {\r",
 							"    pm.expect(show).to.be.an(\"object\")\r",
 							"    pm.expect(show.items).to.be.an(\"array\")\r",
@@ -244,11 +245,6 @@
 							"key": "image_file",
 							"type": "file",
 							"src": "testlogo.jpg"
-						},
-						{
-							"key": "taglist",
-							"value": "example_tag1,example_tag2,example_tag3",
-							"type": "text"
 						}
 					]
 				},
@@ -2348,7 +2344,7 @@
 					"variable": [
 						{
 							"key": "show_slug",
-							"value": "example-show"
+							"value": "{{new_show_slug}}"
 						},
 						{
 							"key": "item_slug",
@@ -2813,7 +2809,7 @@
 					"variable": [
 						{
 							"key": "show_slug",
-							"value": "example-show"
+							"value": "{{new_show_slug}}"
 						}
 					]
 				}
