@@ -2711,6 +2711,9 @@
 							"        pm.expect(show.frequency).to.be.an(\"number\")\r",
 							"        pm.expect(show.id).to.be.an(\"number\")\r",
 							"    }\r",
+							"    else {\r",
+							"        pm.expect(jsonData).to.be.equal(\"[]\")\r",
+							"    }\r",
 							"})"
 						],
 						"type": "text/javascript"
