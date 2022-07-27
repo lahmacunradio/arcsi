@@ -1,11 +1,105 @@
 {
 	"info": {
-		"_postman_id": "2f92fc2f-ab45-41f0-b9d3-18960cdd4623",
-		"name": "Test Collection",
+		"_postman_id": "35ab0ff9-55a1-4746-879e-f2ba1e6e0fec",
+		"name": "CI test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "19378201"
 	},
 	"item": [
+		{
+			"name": "list_shows()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const shows = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(shows).to.be.an(\"array\")\r",
+							"    shows.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.items).to.be.an(\"array\")\r",
+							"        show.items.forEach(function(item) {\r",
+							"            pm.expect(item).to.be.an(\"object\")\r",
+							"            pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"            pm.expect(item.name).to.be.an(\"string\")\r",
+							"            pm.expect(item.description).to.be.an(\"string\")\r",
+							"            pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"            pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"            if (item.play_file_name != null) {\r",
+							"                pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"            }\r",
+							"            pm.expect(item.id).to.be.an(\"number\")\r",
+							"            pm.expect(item.number).to.be.an(\"number\")\r",
+							"            pm.expect(item.download_count).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(show.users).to.be.an(\"array\")\r",
+							"        show.users.forEach(function(user) {\r",
+							"            pm.expect(user).to.be.an(\"object\")\r",
+							"            pm.expect(user.name).to.be.an(\"string\")\r",
+							"            pm.expect(user.email).to.be.an(\"string\")\r",
+							"            pm.expect(user.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.language).to.be.an(\"string\")\r",
+							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        if (show.archive_mixcloud_base_url != null) {\r",
+							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.start).to.be.an(\"string\")\r",
+							"        pm.expect(show.end).to.be.an(\"string\")\r",
+							"        pm.expect(show.day).to.be.an(\"number\")\r",
+							"        pm.expect(show.frequency).to.be.an(\"number\")\r",
+							"        pm.expect(show.week).to.be.an(\"number\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Shows number is 0\", function() {\r",
+							"    pm.expect(shows.length).to.equal(0)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/show/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
 		{
 			"name": "add_show()",
 			"event": [
@@ -21,8 +115,45 @@
 							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
 							"});\r",
 							"\r",
-							"var jsonData = JSON.parse(responseBody)\r",
-							"pm.environment.set(\"new_show_id\", jsonData.id);"
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"var show = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"new_show_id\", show.id);\r",
+							"pm.environment.set(\"new_show_name\", show.name);\r",
+							"pm.test(\"ResponseBody is OK!\", function() {\r",
+							"    pm.expect(show).to.be.an(\"object\")\r",
+							"    pm.expect(show.items).to.be.an(\"array\")\r",
+							"    pm.expect(show.users).to.be.an(\"array\")\r",
+							"    show.users.forEach(function(user) {\r",
+							"        pm.expect(user).to.be.an(\"object\")\r",
+							"        pm.expect(user.name).to.be.an(\"string\")\r",
+							"        pm.expect(user.email).to.be.an(\"string\")\r",
+							"        pm.expect(user.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"    pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"    pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"    pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"    pm.expect(show.name).to.be.an(\"string\")\r",
+							"    pm.expect(show.description).to.be.an(\"string\")\r",
+							"    pm.expect(show.language).to.be.an(\"string\")\r",
+							"    pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"    pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"    if (show.archive_mixcloud_base_url != null) {\r",
+							"        pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"    }\r",
+							"    pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"    pm.expect(show.start).to.be.an(\"string\")\r",
+							"    pm.expect(show.end).to.be.an(\"string\")\r",
+							"    pm.expect(show.day).to.be.an(\"number\")\r",
+							"    pm.expect(show.frequency).to.be.an(\"number\")\r",
+							"    pm.expect(show.week).to.be.an(\"number\")\r",
+							"    pm.expect(show.id).to.be.an(\"number\")\r",
+							"})"
 						],
 						"type": "text/javascript"
 					}
@@ -56,7 +187,7 @@
 						},
 						{
 							"key": "name",
-							"value": "example-show",
+							"value": "a-test-show-about-{{$randomWord}}",
 							"type": "text"
 						},
 						{
@@ -113,6 +244,11 @@
 							"key": "image_file",
 							"type": "file",
 							"src": "testlogo.jpg"
+						},
+						{
+							"key": "taglist",
+							"value": "example_tag1,example_tag2,example_tag3",
+							"type": "text"
 						}
 					]
 				},
@@ -124,1162 +260,6 @@
 					"path": [
 						"show",
 						"add"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "add_item() 1 new broadcast",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"var jsonData = JSON.parse(responseBody)\r",
-							"pm.test(\"ResponseBody is OK!\", function() {\r",
-							"    pm.expect(jsonData).to.be.an(\"object\");\r",
-							"    pm.expect(jsonData.shows).to.be.an(\"array\");\r",
-							"    pm.expect(jsonData.airing).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.archive_lahmastore).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.archive_mixcloud).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.archived).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.broadcast).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.live).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.description).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.image_url).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.language).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.name).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.play_date).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.play_file_name).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.uploader).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.download_count).to.be.an(\"number\");\r",
-							"    pm.expect(jsonData.id).to.be.an(\"number\");\r",
-							"    pm.expect(jsonData.number).to.be.an(\"number\");\r",
-							"});\r",
-							"\r",
-							"pm.environment.set(\"new_item_id\", jsonData.id);"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "shows",
-							"value": "{{new_show_id}}",
-							"type": "text"
-						},
-						{
-							"key": "show_name",
-							"value": "example-show",
-							"type": "text"
-						},
-						{
-							"key": "number",
-							"value": "1",
-							"type": "text"
-						},
-						{
-							"key": "name",
-							"value": "example-item1",
-							"type": "text"
-						},
-						{
-							"key": "description",
-							"value": "new broadcast item 1",
-							"type": "text"
-						},
-						{
-							"key": "language",
-							"value": "hu_hu",
-							"type": "text"
-						},
-						{
-							"key": "play_date",
-							"value": "2023-01-01",
-							"type": "text"
-						},
-						{
-							"key": "live",
-							"value": "false",
-							"type": "text"
-						},
-						{
-							"key": "broadcast",
-							"value": "true",
-							"type": "text"
-						},
-						{
-							"key": "archive_lahmastore",
-							"value": "true",
-							"type": "text"
-						},
-						{
-							"key": "archive_mixcloud",
-							"value": "false",
-							"type": "text"
-						},
-						{
-							"key": "uploader",
-							"value": "1",
-							"type": "text"
-						},
-						{
-							"key": "image_file",
-							"type": "file",
-							"src": "testlogo.jpg"
-						},
-						{
-							"key": "play_file",
-							"type": "file",
-							"src": "testaudio.mp3"
-						}
-					]
-				},
-				"url": {
-					"raw": "{{url}}/item",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"item"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "add_item() 2 new broadcast",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"var jsonData = JSON.parse(responseBody)\r",
-							"pm.test(\"ResponseBody is OK!\", function() {\r",
-							"    pm.expect(jsonData).to.be.an(\"object\");\r",
-							"    pm.expect(jsonData.shows).to.be.an(\"array\");\r",
-							"    pm.expect(jsonData.airing).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.archive_lahmastore).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.archive_mixcloud).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.archived).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.broadcast).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.live).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.description).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.image_url).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.language).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.name).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.play_date).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.play_file_name).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.uploader).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.download_count).to.be.an(\"number\");\r",
-							"    pm.expect(jsonData.id).to.be.an(\"number\");\r",
-							"    pm.expect(jsonData.number).to.be.an(\"number\");\r",
-							"});\r",
-							"\r",
-							"pm.environment.set(\"new_item_id\", jsonData.id);"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "shows",
-							"value": "{{new_show_id}}",
-							"type": "text"
-						},
-						{
-							"key": "show_name",
-							"value": "example-show",
-							"type": "text"
-						},
-						{
-							"key": "number",
-							"value": "2",
-							"type": "text"
-						},
-						{
-							"key": "name",
-							"value": "example-item2",
-							"type": "text"
-						},
-						{
-							"key": "description",
-							"value": "new broadcast item 2",
-							"type": "text"
-						},
-						{
-							"key": "language",
-							"value": "hu_hu",
-							"type": "text"
-						},
-						{
-							"key": "play_date",
-							"value": "2023-01-01",
-							"type": "text"
-						},
-						{
-							"key": "live",
-							"value": "false",
-							"type": "text"
-						},
-						{
-							"key": "broadcast",
-							"value": "true",
-							"type": "text"
-						},
-						{
-							"key": "archive_lahmastore",
-							"value": "true",
-							"type": "text"
-						},
-						{
-							"key": "archive_mixcloud",
-							"value": "false",
-							"type": "text"
-						},
-						{
-							"key": "uploader",
-							"value": "1",
-							"type": "text"
-						},
-						{
-							"key": "image_file",
-							"type": "file",
-							"src": "testlogo.jpg"
-						},
-						{
-							"key": "play_file",
-							"type": "file",
-							"src": "testaudio.mp3"
-						}
-					]
-				},
-				"url": {
-					"raw": "{{url}}/item",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"item"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "add_item() 3 live",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"var jsonData = JSON.parse(responseBody)\r",
-							"pm.test(\"ResponseBody is OK!\", function() {\r",
-							"    pm.expect(jsonData).to.be.an(\"object\");\r",
-							"    pm.expect(jsonData.shows).to.be.an(\"array\");\r",
-							"    pm.expect(jsonData.airing).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.archive_lahmastore).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.archive_mixcloud).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.archived).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.broadcast).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.live).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.description).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.image_url).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.language).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.name).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.play_date).to.be.an(\"string\");\r",
-							"    if (jsonData.play_file_name != null) {\r",
-							"        pm.expect(jsonData.play_file_name).to.be.an(\"string\");\r",
-							"    }\r",
-							"    pm.expect(jsonData.uploader).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.download_count).to.be.an(\"number\");\r",
-							"    pm.expect(jsonData.id).to.be.an(\"number\");\r",
-							"    pm.expect(jsonData.number).to.be.an(\"number\");\r",
-							"});\r",
-							"\r",
-							"pm.environment.set(\"new_item_id\", jsonData.id);"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "shows",
-							"value": "{{new_show_id}}",
-							"type": "text"
-						},
-						{
-							"key": "show_name",
-							"value": "example-show",
-							"type": "text"
-						},
-						{
-							"key": "number",
-							"value": "3",
-							"type": "text"
-						},
-						{
-							"key": "name",
-							"value": "example-item3",
-							"type": "text"
-						},
-						{
-							"key": "description",
-							"value": "new live item 3",
-							"type": "text"
-						},
-						{
-							"key": "language",
-							"value": "hu_hu",
-							"type": "text"
-						},
-						{
-							"key": "play_date",
-							"value": "2023-01-01",
-							"type": "text"
-						},
-						{
-							"key": "live",
-							"value": "true",
-							"type": "text"
-						},
-						{
-							"key": "broadcast",
-							"value": "false",
-							"type": "text"
-						},
-						{
-							"key": "archive_lahmastore",
-							"value": "true",
-							"type": "text"
-						},
-						{
-							"key": "archive_mixcloud",
-							"value": "false",
-							"type": "text"
-						},
-						{
-							"key": "uploader",
-							"value": "1",
-							"type": "text"
-						},
-						{
-							"key": "image_file",
-							"type": "file",
-							"src": "testlogo.jpg"
-						},
-						{
-							"key": "play_file",
-							"type": "file",
-							"src": [],
-							"disabled": true
-						}
-					]
-				},
-				"url": {
-					"raw": "{{url}}/item",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"item"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "edit_item(id) 3 live -> broadcast",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Content-Type is application/json\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "shows",
-							"value": "{{new_show_id}}",
-							"type": "text"
-						},
-						{
-							"key": "show_name",
-							"value": "example-show",
-							"type": "text"
-						},
-						{
-							"key": "number",
-							"value": "3",
-							"type": "text"
-						},
-						{
-							"key": "name",
-							"value": "example-item3",
-							"type": "text"
-						},
-						{
-							"key": "description",
-							"value": "edit live item 3 to broadcast",
-							"type": "text"
-						},
-						{
-							"key": "language",
-							"value": "hu_en",
-							"type": "text"
-						},
-						{
-							"key": "play_date",
-							"value": "2023-10-10",
-							"type": "text"
-						},
-						{
-							"key": "live",
-							"value": "false",
-							"type": "text"
-						},
-						{
-							"key": "broadcast",
-							"value": "true",
-							"type": "text"
-						},
-						{
-							"key": "airing",
-							"value": "true",
-							"type": "text",
-							"disabled": true
-						},
-						{
-							"key": "uploader",
-							"value": "1",
-							"type": "text"
-						},
-						{
-							"key": "archive_lahmastore",
-							"value": "true",
-							"type": "text"
-						},
-						{
-							"key": "archive_mixcloud",
-							"value": "false",
-							"type": "text"
-						},
-						{
-							"key": "image_file",
-							"type": "file",
-							"src": "testlogo.jpg"
-						},
-						{
-							"key": "play_file",
-							"type": "file",
-							"src": "testaudio.mp3"
-						}
-					]
-				},
-				"url": {
-					"raw": "{{url}}/item/:id",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"item",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "{{new_item_id}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "add_item() 2 new broadcast 2",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"var jsonData = JSON.parse(responseBody)\r",
-							"pm.test(\"ResponseBody is OK!\", function() {\r",
-							"    pm.expect(jsonData).to.be.an(\"object\");\r",
-							"    pm.expect(jsonData.shows).to.be.an(\"array\");\r",
-							"    pm.expect(jsonData.airing).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.archive_lahmastore).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.archive_mixcloud).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.archived).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.broadcast).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.live).to.be.an(\"boolean\");\r",
-							"    pm.expect(jsonData.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.description).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.image_url).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.language).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.name).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.play_date).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.play_file_name).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.uploader).to.be.an(\"string\");\r",
-							"    pm.expect(jsonData.download_count).to.be.an(\"number\");\r",
-							"    pm.expect(jsonData.id).to.be.an(\"number\");\r",
-							"    pm.expect(jsonData.number).to.be.an(\"number\");\r",
-							"});\r",
-							"\r",
-							"pm.environment.set(\"new_item_id\", jsonData.id);"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "shows",
-							"value": "{{new_show_id}}",
-							"type": "text"
-						},
-						{
-							"key": "show_name",
-							"value": "example-show",
-							"type": "text"
-						},
-						{
-							"key": "number",
-							"value": "2",
-							"type": "text"
-						},
-						{
-							"key": "name",
-							"value": "example-item2",
-							"type": "text"
-						},
-						{
-							"key": "description",
-							"value": "new broadcast item 2 with hash",
-							"type": "text"
-						},
-						{
-							"key": "language",
-							"value": "hu_hu",
-							"type": "text"
-						},
-						{
-							"key": "play_date",
-							"value": "2023-01-01",
-							"type": "text"
-						},
-						{
-							"key": "live",
-							"value": "false",
-							"type": "text"
-						},
-						{
-							"key": "broadcast",
-							"value": "true",
-							"type": "text"
-						},
-						{
-							"key": "archive_lahmastore",
-							"value": "true",
-							"type": "text"
-						},
-						{
-							"key": "archive_mixcloud",
-							"value": "false",
-							"type": "text"
-						},
-						{
-							"key": "uploader",
-							"value": "1",
-							"type": "text"
-						},
-						{
-							"key": "image_file",
-							"type": "file",
-							"src": "testlogo.jpg"
-						},
-						{
-							"key": "play_file",
-							"type": "file",
-							"src": "testaudio.mp3"
-						}
-					]
-				},
-				"url": {
-					"raw": "{{url}}/item",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"item"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "edit_item(id) 2 broadcast",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Content-Type is application/json\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "shows",
-							"value": "{{new_show_id}}",
-							"type": "text"
-						},
-						{
-							"key": "show_name",
-							"value": "example-show",
-							"type": "text"
-						},
-						{
-							"key": "number",
-							"value": "2",
-							"type": "text"
-						},
-						{
-							"key": "name",
-							"value": "example-item2",
-							"type": "text"
-						},
-						{
-							"key": "description",
-							"value": "edit broadcast item 2 with hash",
-							"type": "text"
-						},
-						{
-							"key": "language",
-							"value": "hu_en",
-							"type": "text"
-						},
-						{
-							"key": "play_date",
-							"value": "2023-10-10",
-							"type": "text"
-						},
-						{
-							"key": "live",
-							"value": "false",
-							"type": "text"
-						},
-						{
-							"key": "broadcast",
-							"value": "true",
-							"type": "text"
-						},
-						{
-							"key": "airing",
-							"value": "true",
-							"type": "text",
-							"disabled": true
-						},
-						{
-							"key": "uploader",
-							"value": "1",
-							"type": "text"
-						},
-						{
-							"key": "archive_lahmastore",
-							"value": "true",
-							"type": "text"
-						},
-						{
-							"key": "archive_mixcloud",
-							"value": "false",
-							"type": "text"
-						},
-						{
-							"key": "image_file",
-							"type": "file",
-							"src": "testlogo.jpg"
-						},
-						{
-							"key": "play_file",
-							"type": "file",
-							"src": "testaudio.mp3"
-						}
-					]
-				},
-				"url": {
-					"raw": "{{url}}/item/:id",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"item",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "{{new_item_id}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "list_items()",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200)\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Content-Type is text/html\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
-							"})\r",
-							"\r",
-							"const jsonData = JSON.parse(responseBody)\r",
-							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
-							"    pm.expect(jsonData).to.be.an(\"array\")\r",
-							"    jsonData.forEach(function(item) {\r",
-							"        pm.expect(item).to.be.an(\"object\")\r",
-							"        pm.expect(item.shows).to.be.an(\"array\")\r",
-							"        item.shows.forEach(function(show){\r",
-							"            pm.expect(show).to.be.an(\"object\")\r",
-							"            pm.expect(show.name).to.be.an(\"string\")\r",
-							"            pm.expect(show.id).to.be.an(\"number\")\r",
-							"        })\r",
-							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
-							"        if (item.airing != null) {\r",
-							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
-							"        }\r",
-							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.name).to.be.an(\"string\")\r",
-							"        pm.expect(item.description).to.be.an(\"string\")\r",
-							"        pm.expect(item.language).to.be.an(\"string\")\r",
-							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
-							"        if (item.play_file_name != null) {\r",
-							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
-							"        }\r",
-							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
-							"        pm.expect(item.id).to.be.an(\"number\")\r",
-							"        pm.expect(item.number).to.be.an(\"number\")\r",
-							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
-							"    })\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/item/all",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"item",
-						"all"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "view_item(id)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200)\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Content-Type is application/json\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
-							"})\r",
-							"\r",
-							"const jsonData = JSON.parse(responseBody)\r",
-							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
-							"    pm.expect(jsonData).to.be.an(\"object\")\r",
-							"    pm.expect(jsonData.shows).to.be.an(\"array\")\r",
-							"    jsonData.shows.forEach(function(show) {\r",
-							"        pm.expect(show).to.be.an(\"object\")\r",
-							"        pm.expect(show.name).to.be.an(\"string\")\r",
-							"        pm.expect(show.id).to.be.an(\"number\")\r",
-							"    })\r",
-							"    pm.expect(jsonData.live).to.be.an(\"boolean\")\r",
-							"    pm.expect(jsonData.broadcast).to.be.an(\"boolean\")\r",
-							"    if (jsonData.airing != null) {\r",
-							"        pm.expect(jsonData.airing).to.be.an(\"boolean\")\r",
-							"    }\r",
-							"    pm.expect(jsonData.archived).to.be.an(\"boolean\")\r",
-							"    pm.expect(jsonData.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"    pm.expect(jsonData.archive_mixcloud).to.be.an(\"boolean\")\r",
-							"    pm.expect(jsonData.name).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.description).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.language).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.play_date).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.image_url).to.be.an(\"string\")\r",
-							"    if (jsonData.play_file_name != null) {\r",
-							"        pm.expect(jsonData.play_file_name).to.be.an(\"string\")\r",
-							"    }\r",
-							"    pm.expect(jsonData.uploader).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.id).to.be.an(\"number\")\r",
-							"    pm.expect(jsonData.number).to.be.an(\"number\")\r",
-							"    pm.expect(jsonData.download_count).to.be.an(\"number\")\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/item/:id",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"item",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "{{new_item_id}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "list_items_latest()",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200)\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Content-Type is text/html\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
-							"})\r",
-							"\r",
-							"const jsonData = JSON.parse(responseBody)\r",
-							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
-							"    pm.expect(jsonData).to.be.an(\"array\")\r",
-							"    jsonData.forEach(function(item) {\r",
-							"        pm.expect(item).to.be.an(\"object\")\r",
-							"        pm.expect(item.shows).to.be.an(\"array\")\r",
-							"        item.shows.forEach(function(show){\r",
-							"            pm.expect(show).to.be.an(\"object\")\r",
-							"            pm.expect(show.name).to.be.an(\"string\")\r",
-							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"            pm.expect(show.id).to.be.an(\"number\")\r",
-							"        })\r",
-							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.name).to.be.an(\"string\")\r",
-							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
-							"        pm.expect(item.description).to.be.an(\"string\")\r",
-							"        pm.expect(item.language).to.be.an(\"string\")\r",
-							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
-							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
-							"        if (item.play_file_name != null) {\r",
-							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
-							"        }\r",
-							"        pm.expect(item.id).to.be.an(\"number\")\r",
-							"        pm.expect(item.number).to.be.an(\"number\")\r",
-							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
-							"    })\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/item/latest?page=1&size=12",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"item",
-						"latest"
-					],
-					"query": [
-						{
-							"key": "page",
-							"value": "1"
-						},
-						{
-							"key": "size",
-							"value": "12"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "search_item()",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200)\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Content-Type is text/html\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200)\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Content-Type is text/html; charset=utf-8\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
-							"})\r",
-							"\r",
-							"const jsonData = JSON.parse(responseBody)\r",
-							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
-							"    pm.expect(jsonData).to.be.an(\"array\")\r",
-							"    jsonData.forEach(function(item) {\r",
-							"        pm.expect(item).to.be.an(\"object\")\r",
-							"        pm.expect(item.shows).to.be.an(\"array\")\r",
-							"        item.shows.forEach(function(show){\r",
-							"            pm.expect(show).to.be.an(\"object\")\r",
-							"            pm.expect(show.name).to.be.an(\"string\")\r",
-							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"            pm.expect(show.id).to.be.an(\"number\")\r",
-							"        })\r",
-							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
-							"        if (item.airing != null) {\r",
-							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
-							"        }\r",
-							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.name).to.be.an(\"string\")\r",
-							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
-							"        pm.expect(item.description).to.be.an(\"string\")\r",
-							"        pm.expect(item.language).to.be.an(\"string\")\r",
-							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
-							"        if (item.play_file_name != null) {\r",
-							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
-							"        }\r",
-							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
-							"        pm.expect(item.id).to.be.an(\"number\")\r",
-							"        pm.expect(item.number).to.be.an(\"number\")\r",
-							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
-							"    })\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/item/search?param=item&page=1&size=12",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"item",
-						"search"
-					],
-					"query": [
-						{
-							"key": "param",
-							"value": "item"
-						},
-						{
-							"key": "page",
-							"value": "1"
-						},
-						{
-							"key": "size",
-							"value": "12"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "view_episode_archive(show_slug, item_slug)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200)\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Content-Type is application/json\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
-							"})\r",
-							"\r",
-							"const item = JSON.parse(responseBody)\r",
-							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
-							"    pm.expect(item).to.be.an(\"object\")\r",
-							"    pm.expect(item.shows).to.be.an(\"array\")\r",
-							"    item.shows.forEach(function(show){\r",
-							"        pm.expect(show).to.be.an(\"object\")\r",
-							"        pm.expect(show.name).to.be.an(\"string\")\r",
-							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"        pm.expect(show.id).to.be.an(\"number\")\r",
-							"    })\r",
-							"    pm.expect(item.archived).to.be.an(\"boolean\")\r",
-							"    pm.expect(item.name).to.be.an(\"string\")\r",
-							"    pm.expect(item.name_slug).to.be.an(\"string\")\r",
-							"    pm.expect(item.description).to.be.an(\"string\")\r",
-							"    pm.expect(item.language).to.be.an(\"string\")\r",
-							"    pm.expect(item.play_date).to.be.an(\"string\")\r",
-							"    pm.expect(item.image_url).to.be.an(\"string\")\r",
-							"    if (item.play_file_name != null) {\r",
-							"        pm.expect(item.play_file_name).to.be.an(\"string\")\r",
-							"    }\r",
-							"    pm.expect(item.id).to.be.an(\"number\")\r",
-							"    pm.expect(item.number).to.be.an(\"number\")\r",
-							"    pm.expect(item.download_count).to.be.an(\"number\")\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/show/:show_slug/item/:item_slug",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"show",
-						":show_slug",
-						"item",
-						":item_slug"
-					],
-					"variable": [
-						{
-							"key": "show_slug",
-							"value": "example-show"
-						},
-						{
-							"key": "item_slug",
-							"value": "example_item1"
-						}
 					]
 				}
 			},
@@ -1300,10 +280,17 @@
 							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
 							"})\r",
 							"\r",
-							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const shows = JSON.parse(responseBody)\r",
 							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
-							"    pm.expect(jsonData).to.be.an(\"array\")\r",
-							"    jsonData.forEach(function(show) {\r",
+							"    pm.expect(shows).to.be.an(\"array\")\r",
+							"    shows.forEach(function(show) {\r",
 							"        pm.expect(show).to.be.an(\"object\")\r",
 							"        pm.expect(show.items).to.be.an(\"array\")\r",
 							"        show.items.forEach(function(item) {\r",
@@ -1346,6 +333,10 @@
 							"        pm.expect(show.week).to.be.an(\"number\")\r",
 							"        pm.expect(show.id).to.be.an(\"number\")\r",
 							"    })\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Shows number is 1\", function() {\r",
+							"    pm.expect(shows.length).to.equal(1)\r",
 							"})"
 						],
 						"type": "text/javascript"
@@ -1383,11 +374,18 @@
 							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
 							"})\r",
 							"\r",
-							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const show = JSON.parse(responseBody)\r",
 							"pm.test(\"ResponseBody is OK!\", function() {\r",
-							"    pm.expect(jsonData).to.be.an(\"object\")\r",
-							"    pm.expect(jsonData.items).to.be.an(\"array\")\r",
-							"    jsonData.items.forEach(function(item) {\r",
+							"    pm.expect(show).to.be.an(\"object\")\r",
+							"    pm.expect(show.items).to.be.an(\"array\")\r",
+							"    show.items.forEach(function(item) {\r",
 							"        pm.expect(item).to.be.an(\"object\")\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
@@ -1401,34 +399,32 @@
 							"        pm.expect(item.number).to.be.an(\"number\")\r",
 							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
 							"    })\r",
-							"    pm.expect(jsonData.users).to.be.an(\"array\")\r",
-							"    jsonData.users.forEach(function(user) {\r",
+							"    pm.expect(show.users).to.be.an(\"array\")\r",
+							"    show.users.forEach(function(user) {\r",
 							"        pm.expect(user).to.be.an(\"object\")\r",
 							"        pm.expect(user.name).to.be.an(\"string\")\r",
 							"        pm.expect(user.email).to.be.an(\"string\")\r",
 							"        pm.expect(user.id).to.be.an(\"number\")\r",
 							"    })\r",
-							"    pm.expect(jsonData.active).to.be.an(\"boolean\")\r",
-							"    pm.expect(jsonData.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"    pm.expect(jsonData.archive_mixcloud).to.be.an(\"boolean\")\r",
-							"    pm.expect(jsonData.name).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.description).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.language).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.playlist_name).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"    if (jsonData.archive_mixcloud_base_url != null) {\r",
-							"        pm.expect(jsonData.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"    pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"    pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"    pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"    pm.expect(show.name).to.be.an(\"string\")\r",
+							"    pm.expect(show.description).to.be.an(\"string\")\r",
+							"    pm.expect(show.language).to.be.an(\"string\")\r",
+							"    pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"    pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"    if (show.archive_mixcloud_base_url != null) {\r",
+							"        pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
 							"    }\r",
-							"    pm.expect(jsonData.cover_image_url).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.start).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.end).to.be.an(\"string\")\r",
-							"    pm.expect(jsonData.day).to.be.an(\"number\")\r",
-							"    pm.expect(jsonData.frequency).to.be.an(\"number\")\r",
-							"    pm.expect(jsonData.week).to.be.an(\"number\")\r",
-							"    pm.expect(jsonData.id).to.be.an(\"number\")\r",
-							"})\r",
-							"\r",
-							""
+							"    pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"    pm.expect(show.start).to.be.an(\"string\")\r",
+							"    pm.expect(show.end).to.be.an(\"string\")\r",
+							"    pm.expect(show.day).to.be.an(\"number\")\r",
+							"    pm.expect(show.frequency).to.be.an(\"number\")\r",
+							"    pm.expect(show.week).to.be.an(\"number\")\r",
+							"    pm.expect(show.id).to.be.an(\"number\")\r",
+							"})"
 						],
 						"type": "text/javascript"
 					}
@@ -1746,7 +742,41 @@
 							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
 							"    if (pm.expect(jsonData).to.be.an(\"array\")) {\r",
 							"        jsonData.forEach(function(show) {\r",
-							"        pm.expect(show).to.be.an(\"object\")\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            if (show.items != null) {\r",
+							"                const latestEpisode = show.items\r",
+							"                pm.expect(latestEpisode).to.be.an(\"object\")\r",
+							"                pm.expect(latestEpisode.archived).to.be.an(\"boolean\")\r",
+							"                pm.expect(latestEpisode.name).to.be.an(\"string\")\r",
+							"                pm.expect(latestEpisode.name_slug).to.be.an(\"string\")\r",
+							"                pm.expect(latestEpisode.description).to.be.an(\"string\")\r",
+							"                pm.expect(latestEpisode.play_date).to.be.an(\"string\")\r",
+							"                pm.expect(latestEpisode.image_url).to.be.an(\"string\")\r",
+							"                if (latestEpisode.play_file_name != null) {\r",
+							"                    pm.expect(latestEpisode.play_file_name).to.be.an(\"string\")\r",
+							"                }\r",
+							"                pm.expect(latestEpisode.id).to.be.an(\"number\")\r",
+							"                pm.expect(latestEpisode.number).to.be.an(\"number\")\r",
+							"                pm.expect(latestEpisode.download_count).to.be.an(\"number\")\r",
+							"            }\r",
+							"            pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.description).to.be.an(\"string\")\r",
+							"            pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            if (show.archive_mixcloud_base_url != null) {\r",
+							"                pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"            }\r",
+							"            pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.start).to.be.an(\"string\")\r",
+							"            pm.expect(show.end).to.be.an(\"string\")\r",
+							"            pm.expect(show.day).to.be.an(\"number\")\r",
+							"            pm.expect(show.frequency).to.be.an(\"number\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"    }\r",
+							"    else if (pm.expect(jsonData).to.be.an(\"object\")) {\r",
+							"        const show = jsonData\r",
 							"        if (show.items != null) {\r",
 							"            const latestEpisode = show.items\r",
 							"            pm.expect(latestEpisode).to.be.an(\"object\")\r",
@@ -1777,7 +807,6 @@
 							"        pm.expect(show.day).to.be.an(\"number\")\r",
 							"        pm.expect(show.frequency).to.be.an(\"number\")\r",
 							"        pm.expect(show.id).to.be.an(\"number\")\r",
-							"        })\r",
 							"    }\r",
 							"})"
 						],
@@ -1878,6 +907,1913 @@
 						{
 							"key": "show_slug",
 							"value": "example-show"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_items()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const items = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(items).to.be.an(\"array\")\r",
+							"    items.forEach(function(item) {\r",
+							"        pm.expect(item).to.be.an(\"object\")\r",
+							"        pm.expect(item.shows).to.be.an(\"array\")\r",
+							"        item.shows.forEach(function(show){\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
+							"        if (item.airing != null) {\r",
+							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
+							"        }\r",
+							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.name).to.be.an(\"string\")\r",
+							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"        pm.expect(item.description).to.be.an(\"string\")\r",
+							"        pm.expect(item.language).to.be.an(\"string\")\r",
+							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"        if (item.play_file_name != null) {\r",
+							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
+							"        pm.expect(item.id).to.be.an(\"number\")\r",
+							"        pm.expect(item.number).to.be.an(\"number\")\r",
+							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
+							"    })\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Episodes number is 0\", function() {\r",
+							"    pm.expect(items.length).to.equal(0)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/item/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add_item() 1 new live",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API responds within 10 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 10000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"var item = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"new_item_id\", item.id);\r",
+							"pm.test(\"ResponseBody is OK!\", function() {\r",
+							"    pm.expect(item).to.be.an(\"object\");\r",
+							"    pm.expect(item.shows).to.be.an(\"array\");\r",
+							"    item.shows.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"    pm.expect(item.airing).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_lahmastore).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_mixcloud).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archived).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.broadcast).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.live).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.description).to.be.an(\"string\");\r",
+							"    pm.expect(item.image_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.language).to.be.an(\"string\");\r",
+							"    pm.expect(item.name).to.be.an(\"string\");\r",
+							"    pm.expect(item.play_date).to.be.an(\"string\");\r",
+							"    if (item.play_file_name != null) {\r",
+							"        pm.expect(item.play_file_name).to.be.an(\"string\");\r",
+							"    }\r",
+							"    pm.expect(item.uploader).to.be.an(\"string\");\r",
+							"    pm.expect(item.download_count).to.be.an(\"number\");\r",
+							"    pm.expect(item.id).to.be.an(\"number\");\r",
+							"    pm.expect(item.number).to.be.an(\"number\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "shows",
+							"value": "{{new_show_id}}",
+							"type": "text"
+						},
+						{
+							"key": "show_name",
+							"value": "{{new_show_name}}",
+							"type": "text"
+						},
+						{
+							"key": "number",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "example-item1",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "new live item 1",
+							"type": "text"
+						},
+						{
+							"key": "language",
+							"value": "hu_hu",
+							"type": "text"
+						},
+						{
+							"key": "play_date",
+							"value": "2023-01-01",
+							"type": "text"
+						},
+						{
+							"key": "live",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "broadcast",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "archive_lahmastore",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "archive_mixcloud",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "uploader",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "image_file",
+							"type": "file",
+							"src": "testlogo.jpg"
+						},
+						{
+							"key": "play_file",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/item",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_items()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const items = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(items).to.be.an(\"array\")\r",
+							"    items.forEach(function(item) {\r",
+							"        pm.expect(item).to.be.an(\"object\")\r",
+							"        pm.expect(item.shows).to.be.an(\"array\")\r",
+							"        item.shows.forEach(function(show){\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
+							"        if (item.airing != null) {\r",
+							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
+							"        }\r",
+							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.name).to.be.an(\"string\")\r",
+							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"        pm.expect(item.description).to.be.an(\"string\")\r",
+							"        pm.expect(item.language).to.be.an(\"string\")\r",
+							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"        if (item.play_file_name != null) {\r",
+							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
+							"        pm.expect(item.id).to.be.an(\"number\")\r",
+							"        pm.expect(item.number).to.be.an(\"number\")\r",
+							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
+							"    })\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Episodes number is 1\", function() {\r",
+							"    pm.expect(items.length).to.equal(1)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/item/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit_item(id) 1 live -> broadcast",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API responds within 10 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 10000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"var item = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"new_item_id\", item.id);\r",
+							"pm.test(\"ResponseBody is OK!\", function() {\r",
+							"    pm.expect(item).to.be.an(\"object\");\r",
+							"    pm.expect(item.shows).to.be.an(\"array\");\r",
+							"    item.shows.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"    pm.expect(item.airing).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_lahmastore).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_mixcloud).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archived).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.broadcast).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.live).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.description).to.be.an(\"string\");\r",
+							"    pm.expect(item.image_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.language).to.be.an(\"string\");\r",
+							"    pm.expect(item.name).to.be.an(\"string\");\r",
+							"    pm.expect(item.play_date).to.be.an(\"string\");\r",
+							"    if (item.play_file_name != null) {\r",
+							"        pm.expect(item.play_file_name).to.be.an(\"string\");\r",
+							"    }\r",
+							"    pm.expect(item.uploader).to.be.an(\"string\");\r",
+							"    pm.expect(item.download_count).to.be.an(\"number\");\r",
+							"    pm.expect(item.id).to.be.an(\"number\");\r",
+							"    pm.expect(item.number).to.be.an(\"number\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "shows",
+							"value": "{{new_show_id}}",
+							"type": "text"
+						},
+						{
+							"key": "show_name",
+							"value": "{{new_show_name}}",
+							"type": "text"
+						},
+						{
+							"key": "number",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "example-item1",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "edit live item 1 to broadcast",
+							"type": "text"
+						},
+						{
+							"key": "language",
+							"value": "hu_en",
+							"type": "text"
+						},
+						{
+							"key": "play_date",
+							"value": "2023-01-01",
+							"type": "text"
+						},
+						{
+							"key": "live",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "broadcast",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "airing",
+							"value": "true",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "uploader",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "archive_lahmastore",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "archive_mixcloud",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "image_file",
+							"type": "file",
+							"src": "testlogo.jpg"
+						},
+						{
+							"key": "play_file",
+							"type": "file",
+							"src": "testaudio.mp3"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/item/:id",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{new_item_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add_item() 2 new broadcast",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API responds within 10 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 10000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"var item = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody is OK!\", function() {\r",
+							"    pm.expect(item).to.be.an(\"object\");\r",
+							"    pm.expect(item.shows).to.be.an(\"array\");\r",
+							"    item.shows.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"    pm.expect(item.airing).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_lahmastore).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_mixcloud).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archived).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.broadcast).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.live).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.description).to.be.an(\"string\");\r",
+							"    pm.expect(item.image_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.language).to.be.an(\"string\");\r",
+							"    pm.expect(item.name).to.be.an(\"string\");\r",
+							"    pm.expect(item.play_date).to.be.an(\"string\");\r",
+							"    if (item.play_file_name != null) {\r",
+							"        pm.expect(item.play_file_name).to.be.an(\"string\");\r",
+							"    }\r",
+							"    pm.expect(item.uploader).to.be.an(\"string\");\r",
+							"    pm.expect(item.download_count).to.be.an(\"number\");\r",
+							"    pm.expect(item.id).to.be.an(\"number\");\r",
+							"    pm.expect(item.number).to.be.an(\"number\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "shows",
+							"value": "{{new_show_id}}",
+							"type": "text"
+						},
+						{
+							"key": "show_name",
+							"value": "{{new_show_name}}",
+							"type": "text"
+						},
+						{
+							"key": "number",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "example-item2",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "new broadcast item 2",
+							"type": "text"
+						},
+						{
+							"key": "language",
+							"value": "hu_hu",
+							"type": "text"
+						},
+						{
+							"key": "play_date",
+							"value": "2023-01-02",
+							"type": "text"
+						},
+						{
+							"key": "live",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "broadcast",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "archive_lahmastore",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "archive_mixcloud",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "uploader",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "image_file",
+							"type": "file",
+							"src": "testlogo.jpg"
+						},
+						{
+							"key": "play_file",
+							"type": "file",
+							"src": "testaudio.mp3"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/item",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_items()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const items = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(items).to.be.an(\"array\")\r",
+							"    items.forEach(function(item) {\r",
+							"        pm.expect(item).to.be.an(\"object\")\r",
+							"        pm.expect(item.shows).to.be.an(\"array\")\r",
+							"        item.shows.forEach(function(show){\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
+							"        if (item.airing != null) {\r",
+							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
+							"        }\r",
+							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.name).to.be.an(\"string\")\r",
+							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"        pm.expect(item.description).to.be.an(\"string\")\r",
+							"        pm.expect(item.language).to.be.an(\"string\")\r",
+							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"        if (item.play_file_name != null) {\r",
+							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
+							"        pm.expect(item.id).to.be.an(\"number\")\r",
+							"        pm.expect(item.number).to.be.an(\"number\")\r",
+							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
+							"    })\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Episodes number is 2\", function() {\r",
+							"    pm.expect(items.length).to.equal(2)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/item/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add_item() 2 broadcast override",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API responds within 10 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 10000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"var item = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody is OK!\", function() {\r",
+							"    pm.expect(item).to.be.an(\"object\");\r",
+							"    pm.expect(item.shows).to.be.an(\"array\");\r",
+							"    item.shows.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"    pm.expect(item.airing).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_lahmastore).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_mixcloud).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archived).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.broadcast).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.live).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.description).to.be.an(\"string\");\r",
+							"    pm.expect(item.image_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.language).to.be.an(\"string\");\r",
+							"    pm.expect(item.name).to.be.an(\"string\");\r",
+							"    pm.expect(item.play_date).to.be.an(\"string\");\r",
+							"    if (item.play_file_name != null) {\r",
+							"        pm.expect(item.play_file_name).to.be.an(\"string\");\r",
+							"    }\r",
+							"    pm.expect(item.uploader).to.be.an(\"string\");\r",
+							"    pm.expect(item.download_count).to.be.an(\"number\");\r",
+							"    pm.expect(item.id).to.be.an(\"number\");\r",
+							"    pm.expect(item.number).to.be.an(\"number\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "shows",
+							"value": "{{new_show_id}}",
+							"type": "text"
+						},
+						{
+							"key": "show_name",
+							"value": "{{new_show_name}}",
+							"type": "text"
+						},
+						{
+							"key": "number",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "example-item2",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "new broadcast item 2 with hash",
+							"type": "text"
+						},
+						{
+							"key": "language",
+							"value": "hu_hu",
+							"type": "text"
+						},
+						{
+							"key": "play_date",
+							"value": "2023-01-02",
+							"type": "text"
+						},
+						{
+							"key": "live",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "broadcast",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "archive_lahmastore",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "archive_mixcloud",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "uploader",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "image_file",
+							"type": "file",
+							"src": "testlogo.jpg"
+						},
+						{
+							"key": "play_file",
+							"type": "file",
+							"src": "testaudio.mp3"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/item",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_items()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const items = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(items).to.be.an(\"array\")\r",
+							"    items.forEach(function(item) {\r",
+							"        pm.expect(item).to.be.an(\"object\")\r",
+							"        pm.expect(item.shows).to.be.an(\"array\")\r",
+							"        item.shows.forEach(function(show){\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
+							"        if (item.airing != null) {\r",
+							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
+							"        }\r",
+							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.name).to.be.an(\"string\")\r",
+							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"        pm.expect(item.description).to.be.an(\"string\")\r",
+							"        pm.expect(item.language).to.be.an(\"string\")\r",
+							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"        if (item.play_file_name != null) {\r",
+							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
+							"        pm.expect(item.id).to.be.an(\"number\")\r",
+							"        pm.expect(item.number).to.be.an(\"number\")\r",
+							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
+							"    })\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Episodes number is 3\", function() {\r",
+							"    pm.expect(items.length).to.equal(3)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/item/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add_item() 3 new live",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API responds within 10 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 10000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"var item = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"new_item_id\", item.id);\r",
+							"pm.test(\"ResponseBody is OK!\", function() {\r",
+							"    pm.expect(item).to.be.an(\"object\");\r",
+							"    pm.expect(item.shows).to.be.an(\"array\");\r",
+							"    item.shows.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"    pm.expect(item.airing).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_lahmastore).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_mixcloud).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archived).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.broadcast).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.live).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.description).to.be.an(\"string\");\r",
+							"    pm.expect(item.image_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.language).to.be.an(\"string\");\r",
+							"    pm.expect(item.name).to.be.an(\"string\");\r",
+							"    pm.expect(item.play_date).to.be.an(\"string\");\r",
+							"    if (item.play_file_name != null) {\r",
+							"        pm.expect(item.play_file_name).to.be.an(\"string\");\r",
+							"    }\r",
+							"    pm.expect(item.uploader).to.be.an(\"string\");\r",
+							"    pm.expect(item.download_count).to.be.an(\"number\");\r",
+							"    pm.expect(item.id).to.be.an(\"number\");\r",
+							"    pm.expect(item.number).to.be.an(\"number\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "shows",
+							"value": "{{new_show_id}}",
+							"type": "text"
+						},
+						{
+							"key": "show_name",
+							"value": "{{new_show_name}}",
+							"type": "text"
+						},
+						{
+							"key": "number",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "example-item3",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "new live item 3",
+							"type": "text"
+						},
+						{
+							"key": "language",
+							"value": "hu_hu",
+							"type": "text"
+						},
+						{
+							"key": "play_date",
+							"value": "2023-01-03",
+							"type": "text"
+						},
+						{
+							"key": "live",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "broadcast",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "archive_lahmastore",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "archive_mixcloud",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "uploader",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "image_file",
+							"type": "file",
+							"src": "testlogo.jpg"
+						},
+						{
+							"key": "play_file",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/item",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_items()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const items = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(items).to.be.an(\"array\")\r",
+							"    items.forEach(function(item) {\r",
+							"        pm.expect(item).to.be.an(\"object\")\r",
+							"        pm.expect(item.shows).to.be.an(\"array\")\r",
+							"        item.shows.forEach(function(show){\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
+							"        if (item.airing != null) {\r",
+							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
+							"        }\r",
+							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.name).to.be.an(\"string\")\r",
+							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"        pm.expect(item.description).to.be.an(\"string\")\r",
+							"        pm.expect(item.language).to.be.an(\"string\")\r",
+							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"        if (item.play_file_name != null) {\r",
+							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
+							"        pm.expect(item.id).to.be.an(\"number\")\r",
+							"        pm.expect(item.number).to.be.an(\"number\")\r",
+							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
+							"    })\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Episodes number is 4\", function() {\r",
+							"    pm.expect(items.length).to.equal(4)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/item/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit_item(id) 3 live -> broadcast",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API responds within 10 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 10000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"var item = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"new_item_id\", item.id);\r",
+							"pm.test(\"ResponseBody is OK!\", function() {\r",
+							"    pm.expect(item).to.be.an(\"object\");\r",
+							"    pm.expect(item.shows).to.be.an(\"array\");\r",
+							"    item.shows.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"    pm.expect(item.airing).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_lahmastore).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_mixcloud).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archived).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.broadcast).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.live).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.description).to.be.an(\"string\");\r",
+							"    pm.expect(item.image_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.language).to.be.an(\"string\");\r",
+							"    pm.expect(item.name).to.be.an(\"string\");\r",
+							"    pm.expect(item.play_date).to.be.an(\"string\");\r",
+							"    if (item.play_file_name != null) {\r",
+							"        pm.expect(item.play_file_name).to.be.an(\"string\");\r",
+							"    }\r",
+							"    pm.expect(item.uploader).to.be.an(\"string\");\r",
+							"    pm.expect(item.download_count).to.be.an(\"number\");\r",
+							"    pm.expect(item.id).to.be.an(\"number\");\r",
+							"    pm.expect(item.number).to.be.an(\"number\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "shows",
+							"value": "{{new_show_id}}",
+							"type": "text"
+						},
+						{
+							"key": "show_name",
+							"value": "{{new_show_name}}",
+							"type": "text"
+						},
+						{
+							"key": "number",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "example-item3",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "edit live item 3 to broadcast",
+							"type": "text"
+						},
+						{
+							"key": "language",
+							"value": "hu_en",
+							"type": "text"
+						},
+						{
+							"key": "play_date",
+							"value": "2023-01-03",
+							"type": "text"
+						},
+						{
+							"key": "live",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "broadcast",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "airing",
+							"value": "true",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "uploader",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "archive_lahmastore",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "archive_mixcloud",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "image_file",
+							"type": "file",
+							"src": "testlogo.jpg"
+						},
+						{
+							"key": "play_file",
+							"type": "file",
+							"src": "testaudio.mp3"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/item/:id",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{new_item_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit_item(id) 3 broadcast edit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API responds within 10 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 10000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"var item = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"new_item_id\", item.id);\r",
+							"pm.test(\"ResponseBody is OK!\", function() {\r",
+							"    pm.expect(item).to.be.an(\"object\");\r",
+							"    pm.expect(item.shows).to.be.an(\"array\");\r",
+							"    item.shows.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"    pm.expect(item.airing).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_lahmastore).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_mixcloud).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archived).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.broadcast).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.live).to.be.an(\"boolean\");\r",
+							"    pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.description).to.be.an(\"string\");\r",
+							"    pm.expect(item.image_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.language).to.be.an(\"string\");\r",
+							"    pm.expect(item.name).to.be.an(\"string\");\r",
+							"    pm.expect(item.play_date).to.be.an(\"string\");\r",
+							"    if (item.play_file_name != null) {\r",
+							"        pm.expect(item.play_file_name).to.be.an(\"string\");\r",
+							"    }\r",
+							"    pm.expect(item.uploader).to.be.an(\"string\");\r",
+							"    pm.expect(item.download_count).to.be.an(\"number\");\r",
+							"    pm.expect(item.id).to.be.an(\"number\");\r",
+							"    pm.expect(item.number).to.be.an(\"number\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "shows",
+							"value": "{{new_show_id}}",
+							"type": "text"
+						},
+						{
+							"key": "show_name",
+							"value": "{{new_show_name}}",
+							"type": "text"
+						},
+						{
+							"key": "number",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "example-item3",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "edit broadcast item 3 with hash",
+							"type": "text"
+						},
+						{
+							"key": "language",
+							"value": "hu_en",
+							"type": "text"
+						},
+						{
+							"key": "play_date",
+							"value": "2023-01-03",
+							"type": "text"
+						},
+						{
+							"key": "live",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "broadcast",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "airing",
+							"value": "true",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "uploader",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "archive_lahmastore",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "archive_mixcloud",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "image_file",
+							"type": "file",
+							"src": "testlogo.jpg"
+						},
+						{
+							"key": "play_file",
+							"type": "file",
+							"src": "testaudio.mp3"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/item/:id",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{new_item_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_items()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const items = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(items).to.be.an(\"array\")\r",
+							"    items.forEach(function(item) {\r",
+							"        pm.expect(item).to.be.an(\"object\")\r",
+							"        pm.expect(item.shows).to.be.an(\"array\")\r",
+							"        item.shows.forEach(function(show){\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
+							"        if (item.airing != null) {\r",
+							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
+							"        }\r",
+							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.name).to.be.an(\"string\")\r",
+							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"        pm.expect(item.description).to.be.an(\"string\")\r",
+							"        pm.expect(item.language).to.be.an(\"string\")\r",
+							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"        if (item.play_file_name != null) {\r",
+							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
+							"        pm.expect(item.id).to.be.an(\"number\")\r",
+							"        pm.expect(item.number).to.be.an(\"number\")\r",
+							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
+							"    })\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Episodes number is 4\", function() {\r",
+							"    pm.expect(items.length).to.equal(4)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/item/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "view_item(id)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const item = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(item).to.be.an(\"object\")\r",
+							"    pm.expect(item.shows).to.be.an(\"array\")\r",
+							"    item.shows.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"    pm.expect(item.live).to.be.an(\"boolean\")\r",
+							"    pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
+							"    if (item.airing != null) {\r",
+							"        pm.expect(item.airing).to.be.an(\"boolean\")\r",
+							"    }\r",
+							"    pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"    pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"    pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"    pm.expect(item.name).to.be.an(\"string\")\r",
+							"    pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"    pm.expect(item.description).to.be.an(\"string\")\r",
+							"    pm.expect(item.language).to.be.an(\"string\")\r",
+							"    pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"    pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
+							"    pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"    pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"    if (item.play_file_name != null) {\r",
+							"        pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"    }\r",
+							"    pm.expect(item.uploader).to.be.an(\"string\")\r",
+							"    pm.expect(item.id).to.be.an(\"number\")\r",
+							"    pm.expect(item.number).to.be.an(\"number\")\r",
+							"    pm.expect(item.download_count).to.be.an(\"number\")\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/item/:id",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{new_item_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_items_latest()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(jsonData).to.be.an(\"array\")\r",
+							"    jsonData.forEach(function(item) {\r",
+							"        pm.expect(item).to.be.an(\"object\")\r",
+							"        pm.expect(item.shows).to.be.an(\"array\")\r",
+							"        item.shows.forEach(function(show){\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.name).to.be.an(\"string\")\r",
+							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"        pm.expect(item.description).to.be.an(\"string\")\r",
+							"        pm.expect(item.language).to.be.an(\"string\")\r",
+							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"        if (item.play_file_name != null) {\r",
+							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(item.id).to.be.an(\"number\")\r",
+							"        pm.expect(item.number).to.be.an(\"number\")\r",
+							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/item/latest?page=1&size=12",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"latest"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "size",
+							"value": "12"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search_item()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html; charset=utf-8\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(jsonData).to.be.an(\"array\")\r",
+							"    jsonData.forEach(function(item) {\r",
+							"        pm.expect(item).to.be.an(\"object\")\r",
+							"        pm.expect(item.shows).to.be.an(\"array\")\r",
+							"        item.shows.forEach(function(show){\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
+							"        if (item.airing != null) {\r",
+							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
+							"        }\r",
+							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.name).to.be.an(\"string\")\r",
+							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"        pm.expect(item.description).to.be.an(\"string\")\r",
+							"        pm.expect(item.language).to.be.an(\"string\")\r",
+							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"        if (item.play_file_name != null) {\r",
+							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
+							"        pm.expect(item.id).to.be.an(\"number\")\r",
+							"        pm.expect(item.number).to.be.an(\"number\")\r",
+							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/item/search?param=item&page=1&size=12",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"search"
+					],
+					"query": [
+						{
+							"key": "param",
+							"value": "item"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "size",
+							"value": "12"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "view_episode_archive(show_slug, item_slug)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"})\r",
+							"\r",
+							"const item = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(item).to.be.an(\"object\")\r",
+							"    pm.expect(item.shows).to.be.an(\"array\")\r",
+							"    item.shows.forEach(function(show){\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"    pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"    pm.expect(item.name).to.be.an(\"string\")\r",
+							"    pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"    pm.expect(item.description).to.be.an(\"string\")\r",
+							"    pm.expect(item.language).to.be.an(\"string\")\r",
+							"    pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"    pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"    if (item.play_file_name != null) {\r",
+							"        pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"    }\r",
+							"    pm.expect(item.id).to.be.an(\"number\")\r",
+							"    pm.expect(item.number).to.be.an(\"number\")\r",
+							"    pm.expect(item.download_count).to.be.an(\"number\")\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/show/:show_slug/item/:item_slug",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						":show_slug",
+						"item",
+						":item_slug"
+					],
+					"variable": [
+						{
+							"key": "show_slug",
+							"value": "example-show"
+						},
+						{
+							"key": "item_slug",
+							"value": "example_item1"
 						}
 					]
 				}
