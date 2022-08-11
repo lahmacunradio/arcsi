@@ -6,6 +6,7 @@ import io
 from datetime import datetime, timedelta
 from flask import flash, jsonify, make_response, request, url_for
 from flask import current_app as app
+from flask_praetorian import auth_required, roles_required
 from marshmallow import fields, post_load, Schema, ValidationError
 from sqlalchemy import false, func
 from werkzeug import secure_filename
@@ -88,15 +89,18 @@ headers = {"Content-Type": "application/json"}
 @arcsi.route("/show", methods=["GET"])
 # We use this route on the legacy for a massive shows query
 @arcsi.route("/show/all", methods=["GET"])
+@auth_required
 def list_shows():
     return shows_schema.dumps(get_shows())
 
 
 @arcsi.route("/show/all_without_items", methods=["GET"])
+@auth_required
 def list_shows_without_items():
     return shows_schedule_schema.dumps(get_shows())   
 
 @arcsi.route("/show/schedule", methods=["GET"])
+@auth_required
 def list_shows_for_schedule():
     do = DoArchive()
     shows = Show.query.filter(Show.active == True).all()
@@ -108,6 +112,7 @@ def list_shows_for_schedule():
     return shows_schedule_schema.dumps(shows)    
 
 @arcsi.route("/show/schedule_by", methods=["GET"])
+@auth_required
 def list_shows_for_schedule_by():
     do = DoArchive()
     day = request.args.get('day', 1, type=int)
@@ -141,6 +146,7 @@ def list_shows_for_schedule_by():
 
 # We are gonna use this on the new page as the show/all
 @arcsi.route("/show/list", methods=["GET"])
+@auth_required
 def list_shows_page():
     return shows_archive_schema.dumps(get_shows())
 
@@ -148,6 +154,7 @@ def list_shows_page():
 # TODO /item/<uuid>/add route so that each upload has unique id to begin with
 # no need for different methods for `POST` & `PUT`
 @arcsi.route("/show/add", methods=["POST"])
+@roles_required("admin")
 def add_show():
     if request.is_json:
         return make_response(
@@ -223,6 +230,7 @@ def add_show():
 
 
 @arcsi.route("/show/<id>", methods=["DELETE"])
+@roles_required("admin")
 def delete_show(id):
     show_query = Show.query.filter_by(id=id)
     show_query.delete()
@@ -231,6 +239,7 @@ def delete_show(id):
 
 
 @arcsi.route("/show/<id>", methods=["POST"])
+@roles_required("admin")
 def edit_show(id):
     show_query = Show.query.filter_by(id=id)
     show = show_query.first_or_404()
@@ -304,6 +313,7 @@ def edit_show(id):
 
 
 @arcsi.route("show/<id>", methods=["GET"])
+@auth_required
 def view_show(id):
     do = DoArchive()
     show_query = Show.query.filter_by(id=id)
@@ -328,6 +338,7 @@ def view_show(id):
 
 # We use this route on the legacy front-end show page
 @arcsi.route("show/<string:show_slug>/archive", methods=["GET"])
+@auth_required
 def view_show_archive(show_slug):
     do = DoArchive()
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
@@ -358,6 +369,7 @@ def view_show_archive(show_slug):
 
 # This will be the one that we are gonna use at the new page 
 @arcsi.route("show/<string:show_slug>/page", methods=["GET"])
+@auth_required
 def view_show_page(show_slug):
     do = DoArchive()
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
@@ -389,6 +401,7 @@ def view_show_page(show_slug):
 
 
 @arcsi.route("show/<string:show_slug>/item/<string:item_slug>", methods=["GET"])
+@auth_required
 def view_episode_archive(show_slug, item_slug):
     do = DoArchive()
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
@@ -404,6 +417,7 @@ def view_episode_archive(show_slug, item_slug):
 
 
 @arcsi.route("/show/search", methods=["GET"])
+@auth_required
 def search_show():
     do = DoArchive()
     page = request.args.get('page', 1, type=int)

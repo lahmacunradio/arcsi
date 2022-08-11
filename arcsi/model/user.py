@@ -38,16 +38,10 @@ class User2(db.Model, SQLAlchemyUserMixin):
 
     __tablename__ = "users2"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, unique=True)
-    password = db.Column(db.String, nullable=False)
-    roles = db.Column(db.String)
+    username = db.Column(db.Text, unique=True)
+    hashed_password = db.Column(db.Text)
+    roles = db.Column(db.Text)
     is_active = db.Column(db.Boolean, default=True, server_default="true")
-
-    def username(self):
-        return self.name
-
-    def hashed_password(self):
-        return self.password
 
     def is_valid(self):
         return self.is_active 
