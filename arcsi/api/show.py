@@ -92,9 +92,13 @@ headers = {"Content-Type": "application/json"}
 def list_shows():
     return shows_schema.dumps(get_shows())
 
+@arcsi.route("/show/all_token_required", methods=["GET"])
+@auth_token_required
+def list_shows_token_required():
+    return shows_schema.dumps(get_shows())
+
 
 @arcsi.route("/show/all_without_items", methods=["GET"])
-@auth_token_required
 def list_shows_without_items():
     return shows_schedule_schema.dumps(get_shows())   
 

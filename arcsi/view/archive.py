@@ -5,7 +5,6 @@ from flask import render_template, request, url_for, jsonify
 from flask_security import login_required
 from flask_login import current_user
 
-from arcsi.model import guard
 from arcsi.view import router
 
 
