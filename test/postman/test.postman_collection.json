@@ -13,16 +13,16 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"var response = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"api_token\", response.api_token);\r",
+							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Content-Type is application/json\", function() {\r",
 							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
-							"});\r",
-							"\r",
-							"var apiToken = JSON.parse(responseBody)\r",
-							"pm.environment.set(\"api_token\", apiToken.api_token);"
+							"});"
 						],
 						"type": "text/javascript"
 					}
