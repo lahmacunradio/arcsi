@@ -36,12 +36,12 @@
 					"formdata": [
 						{
 							"key": "name",
-							"value": "endre",
+							"value": "testuser",
 							"type": "text"
 						},
 						{
 							"key": "password",
-							"value": "YhhU8Z4W2dVbKNf",
+							"value": "testpassword",
 							"type": "text"
 						}
 					]
