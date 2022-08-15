@@ -4,6 +4,7 @@ from arcsi.handler.upload import AzuraArchive, DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.item import Item
+from flask import request
 from flask import current_app as app
 from slugify import slugify
 from werkzeug.utils import secure_filename
@@ -68,7 +69,6 @@ def slug(namestring):
     slugs = slugify(namestring)
     return slugs
 
-
 def form_filename(file_obj, title_tuple):
     """
     Filename naming schema:
@@ -83,6 +83,8 @@ def form_filename(file_obj, title_tuple):
     norms_names = [norms_show_name, norms_ep_name]
     return "{}{}{}".format(DELIMITER.join(norms_names), DOT, ext)
 
+def find_request_params(param, default, type):
+    return request.args.get(param, default, type)
 
 def broadcast_audio(
     archive_base,
@@ -119,7 +121,6 @@ def broadcast_audio(
             return True
     return False
 
-
 def save_file(archive_base, archive_idx, archive_file, archive_file_name):
     formed_file_name = form_filename(archive_file, archive_file_name)
     app.logger.debug("STATUS/SAVE FILE: formed_file_name: {}".format(formed_file_name))
@@ -138,7 +139,6 @@ def save_file(archive_base, archive_idx, archive_file, archive_file_name):
             archive_file.save(archive_file_path)
             app.logger.debug("STATUS/SAVE FILE: archive_file: {}".format(archive_file))
             return formed_file_name
-
 
 def archive(archive_base, archive_file_name, archive_idx):
     do = DoArchive()
