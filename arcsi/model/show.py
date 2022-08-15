@@ -8,6 +8,7 @@ class Show(db.Model):
     active = db.Column(db.Boolean, nullable=False, default=True)
     name = db.Column(db.String(), unique=True, nullable=False)
     description = db.Column(db.String())
+    social_base_url = db.Column(db.String())
     contact_address = db.Column(db.String, unique=False, nullable=True)
     language = db.Column(db.String(5), default="hu_hu")
     # TODO rename to image_url
@@ -20,8 +21,6 @@ class Show(db.Model):
     end = db.Column(db.Time, nullable=False)
     archive_lahmastore = db.Column(db.Boolean, default=True)
     archive_lahmastore_base_url = db.Column(db.String())
-    archive_mixcloud = db.Column(db.Boolean, default=False)
-    archive_mixcloud_base_url = db.Column(db.String())
     items = db.relationship(
         "Item",
         secondary=items_shows,
