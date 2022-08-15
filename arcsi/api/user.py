@@ -3,6 +3,7 @@ import os
 
 from flask import flash, jsonify, make_response, request, url_for
 from flask import current_app as app
+from flask_security.utils import verify_password
 from marshmallow import fields, post_load, Schema, ValidationError
 
 from arcsi.api import arcsi
@@ -51,5 +52,37 @@ def view_user(id):
     user = user_query.first_or_404()
     if user:
         return jsonify(user_details_schema.dump(user))
+    else:
+        return make_response(jsonify("Could not find user", 404, headers))
+
+
+@arcsi.route("/users/get_api_token", methods=["POST"])
+def get_api_token():
+    if request.is_json:
+        return make_response(
+            jsonify("Only accepts multipart/form-data for now, sorry"), 503, headers
+        )
+    show_metadata = request.form.to_dict()
+    name = show_metadata['name']
+    password = show_metadata['password']
+    user_query = User.query.filter_by(name=name)
+    user = user_query.first_or_404()
+    if user and verify_password(password, user.password):
+        token=user.get_auth_token()
+        ret = {"api_token": token}
+        return make_response(jsonify(ret), 200, headers)
+    else:
+        return make_response(jsonify("Could not find user", 404, headers))
+
+
+# just for testing
+@arcsi.route("/users/get_api_token_hardcoded", methods=["GET"])
+def get_api_token_hardcoded():
+    user_query = User.query.filter_by(name="your_local_username")
+    user = user_query.first_or_404()
+    if user and verify_password("your_local_password", user.password):
+        token=user.get_auth_token()
+        ret = {"api_token": token}
+        return make_response(jsonify(ret), 200, headers)
     else:
         return make_response(jsonify("Could not find user", 404, headers))
