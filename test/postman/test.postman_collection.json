@@ -2527,21 +2527,15 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "Authentication-Token",
-						"value": "WyI2IiwiJDUkcm91bmRzPTUzNTAwMCRhY2ZaSnAyRnhEUlVlalc3JG1rM3dFcG5XdFMyWUJ2QnliOGdENWJ3dVFvb1BoWk1QZHEvZ3NlcmQ2cTAiXQ.YvpPOw.hQJYWdFN-j2u4wjYTnRCeLYNqi0",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"url": {
-					"raw": "{{url}}/show/all_token_required",
+					"raw": "{{url}}/show/all_without_items",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"show",
-						"all_token_required"
+						"all_without_items"
 					]
 				}
 			},
