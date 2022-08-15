@@ -22,7 +22,11 @@
 							"\r",
 							"pm.test(\"Content-Type is application/json\", function() {\r",
 							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
-							"});"
+							"});\r",
+							"\r",
+							"pm.test(\"API token has been set up: \" + pm.environment.get(\"api_token\"), function() {\r",
+							"    pm.expect(pm.environment.get(\"api_token\")).not.equal(\"\")\r",
+							"})"
 						],
 						"type": "text/javascript"
 					}
