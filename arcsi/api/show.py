@@ -89,6 +89,7 @@ headers = {"Content-Type": "application/json"}
 @arcsi.route("/show", methods=["GET"])
 # We use this route on the legacy for a massive shows query
 @arcsi.route("/show/all", methods=["GET"])
+@auth_token_required
 def list_shows():
     return shows_schema.dumps(get_shows())
 
@@ -338,6 +339,11 @@ def view_show_archive(show_slug):
     do = DoArchive()
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first()
+    #if show:
+    #    show_items = show.items.filter(Item.play_date < datetime.today() - timedelta(days=1)).all()
+    #    return items_schema.dump(show_items)
+    #else:
+    #    return make_response("Show episodes not found", 404, headers)
     if show:
         show_json = show_schema.dump(show)
         show_items = [
@@ -355,12 +361,7 @@ def view_show_archive(show_slug):
         return json.dumps(show_items)
     else:
         return make_response("Show not found", 404, headers)
-    #show = show_query.first()
-    #if show:
-    #    show_items = show.items.filter(Item.play_date < datetime.today() - timedelta(days=1)).all()
-    #    return items_schema.dump(show_items)
-    #else:
-    #    return make_response("Show episodes not found", 404, headers)
+    
 
 # This will be the one that we are gonna use at the new page 
 @arcsi.route("show/<string:show_slug>/page", methods=["GET"])

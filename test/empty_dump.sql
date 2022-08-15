@@ -284,7 +284,7 @@ COPY public.roles_users (user_id, role_id) FROM stdin;
 --
 
 COPY public.users (id, name, email, butt_user, butt_pw, password, active) FROM stdin;
-1	testuser	testuser@lahmacun.hu	buttuser	buttpw	testpassword	t
+1	testuser	testuser@lahmacun.hu	buttuser	buttpw	$2a$10$9mkJT627hjF2wW6Vr.SNm.f6EbnxMW8NtCipNoahlatTH86POpnfu	t
 \.
 
 
