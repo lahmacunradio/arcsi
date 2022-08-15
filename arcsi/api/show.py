@@ -34,8 +34,7 @@ class ShowDetailsSchema(Schema):
     end = fields.Time()
     archive_lahmastore = fields.Boolean(required=True)
     archive_lahmastore_base_url = fields.Str(dump_only=True)
-    archive_mixcloud = fields.Boolean(required=True)
-    archive_mixcloud_base_url = fields.Str(dump_only=True)
+    social_base_url = fields.Str(dump_only=True)
     items = fields.List(
         fields.Nested(
             "ItemDetailsSchema",
@@ -70,7 +69,7 @@ class ShowDetailsSchema(Schema):
 show_schema = ShowDetailsSchema()
 show_archive_schema = ShowDetailsSchema(only=("id", "active", "name", "description", "cover_image_url", 
                                                     "day", "start", "end", "frequency", "language",
-                                                    "playlist_name", "archive_lahmastore_base_url", "archive_mixcloud_base_url", "items"))
+                                                    "playlist_name", "archive_lahmastore_base_url", "social_base_url", "items"))
 show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
 shows_schedule_schema = ShowDetailsSchema(many=True, exclude=("items",))
@@ -79,7 +78,7 @@ shows_schedule_by_schema = ShowDetailsSchema(many=True,
                                                     "day", "start", "end", "frequency", "language",
                                                     "playlist_name", "archive_lahmastore_base_url", "items"))
 shows_archive_schema = ShowDetailsSchema(many=True, 
-                                                    only=("id", "active", "name", "description", "cover_image_url",
+                                                    only=("id", "active", "name", "description", "social_base_url", "cover_image_url",
                                                     "playlist_name", "archive_lahmastore_base_url"))
 
 headers = {"Content-Type": "application/json"}
@@ -179,6 +178,7 @@ def add_show():
             active=show_metadata.active,
             name=show_metadata.name,
             description=show_metadata.description,
+            social_base_url=social_base_url,
             language=show_metadata.language,
             playlist_name=show_metadata.playlist_name,
             frequency=show_metadata.frequency,
@@ -188,8 +188,6 @@ def add_show():
             end=show_metadata.end,
             archive_lahmastore=show_metadata.archive_lahmastore,
             archive_lahmastore_base_url=slug(show_metadata.name),
-            archive_mixcloud=show_metadata.archive_mixcloud,
-            # archive_mixcloud_base_url=archive_mixcloud_base_url,
             users=db.session.query(User)
             .filter(User.id.in_((user.id for user in show_metadata.users)))
             .all(),
@@ -263,6 +261,7 @@ def edit_show(id):
         show.active = show_metadata.active
         show.name = show_metadata.name
         show.description = show_metadata.description
+        show.social_base_url=social_base_url
         show.language = show_metadata.language
         show.playlist_name = show_metadata.playlist_name
         show.frequency = show_metadata.frequency
@@ -272,7 +271,6 @@ def edit_show(id):
         show.end = show_metadata.end
         show.archive_lahmastore = show_metadata.archive_lahmastore
         show.archive_lahmastore_base_url = slug(show_metadata.name)
-        show.archive_mixcloud = show_metadata.archive_mixcloud
         show.users = (
             db.session.query(User)
             .filter(User.id.in_((user.id for user in show_metadata.users)))

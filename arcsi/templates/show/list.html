@@ -17,6 +17,7 @@
             {% endfor %}</p>
         <p>Show description: {{show.description}}</p>
         <p><img src="{{show.cover_image_url}}" style="max-width: 100%;"></p>
+        <p>Show social base URL: {{show.social_base_url}}</p>
         <p>Show language: {{show.language}}</p>
         <p>Show playlist name: {{show.playlist_name}}</p>
         <p>Show frequency: {{show.frequency}}</p>
@@ -25,8 +26,6 @@
         <p>Show start: {{show.start}}</p>
         <p>Show end: {{show.end}}</p>
         <p>Show archive lahmastore base URL: {{show.archive_lahmastore_base_url}}</p>
-        <p>Show archive mixcloud: {{show.archive_mixcloud}}</p>
-        <p>Show archive mixcloud base URL: {{show.archive_mixcloud_base_url}}</p>
         <p>Show ID: <a href="{{ url_for('router.view_show', id=show.id) }}">{{show.id}}</a></p>
     </div>
     {% endfor %}    

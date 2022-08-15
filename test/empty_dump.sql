@@ -148,8 +148,7 @@ CREATE TABLE public.shows (
     "end" time without time zone NOT NULL,
     archive_lahmastore boolean,
     archive_lahmastore_base_url character varying,
-    archive_mixcloud boolean,
-    archive_mixcloud_base_url character varying,
+    social_base_url character varying,
     frequency integer NOT NULL,
     language character varying(5),
     active boolean NOT NULL
