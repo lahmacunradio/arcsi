@@ -7,7 +7,7 @@ from flask_migrate import Migrate
 from flask_swagger_ui import get_swaggerui_blueprint
 from sqlalchemy.exc import ProgrammingError
 
-from arcsi.model import db, item, role, show, user, guard
+from arcsi.model import db, item, role, show, user
 from arcsi.view.forms.register import ButtRegisterForm
 
 migrate = Migrate()
@@ -35,12 +35,10 @@ def create_app(config_file):
     # TODO w/ user_store can create_role() etc.
     # https://pythonhosted.org/Flask-Security/api.html#flask_security.datastore.SQLAlchemyUserDatastore
     security = Security(app, user_store, register_form=ButtRegisterForm)
-    guard.init_app(app, user.User2)
 
     with app.app_context():
         db.init_app(app)
         migrate.init_app(app, db)
-
 
         '''
         The application factory runs when `flask db upgrade` is called

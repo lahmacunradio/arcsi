@@ -39,7 +39,6 @@
           <div class="adminmenu">
             {% if current_user.is_authenticated %}
             <a href="{{ url_for('router.api_key_admin') }}">API key admin</a>
-            <a href="{{ url_for('router.api_key_nemadmin') }}">API key nemadmin</a>
             <a href="{{ url_for('router.view_user') }}" title="Profile"><i class="far fa-user-circle"></i></a>
             <a href="{{ url_for('security.logout') }}" title="Logout"><i class="fas fa-sign-out-alt"></i></a>
             {% else %}

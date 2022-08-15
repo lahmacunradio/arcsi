@@ -3,7 +3,6 @@ import os
 
 from flask import flash, jsonify, make_response, request, url_for
 from flask import current_app as app
-from flask_security import login_required
 from marshmallow import fields, post_load, Schema, ValidationError
 
 from arcsi.api import arcsi
@@ -41,7 +40,6 @@ headers = {"Content-Type": "application/json"}
 
 @arcsi.route("/users", methods=["GET"])
 @arcsi.route("/users/all", methods=["GET"])
-@login_required
 def list_users():
     users = User.query.all()
     return many_user_details_schema.dumps(users)

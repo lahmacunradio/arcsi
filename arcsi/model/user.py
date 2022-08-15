@@ -1,5 +1,4 @@
 from flask_security import UserMixin
-from flask_praetorian import SQLAlchemyUserMixin
 
 from . import db
 from .secondary import roles_users, shows_users
@@ -28,20 +27,3 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return "<Host {}>".format(self.name)
-
-class User2(db.Model, SQLAlchemyUserMixin):
-    """
-    A generic user model that might be used by an app powered by flask-praetorian.
-    Extends the SQLAlchemyUserMixin so that required methods and properties are already
-    well defined
-    """
-
-    __tablename__ = "users2"
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.Text, unique=True)
-    hashed_password = db.Column(db.Text)
-    roles = db.Column(db.Text)
-    is_active = db.Column(db.Boolean, default=True, server_default="true")
-
-    def is_valid(self):
-        return self.is_active 
