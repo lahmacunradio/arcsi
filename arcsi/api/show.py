@@ -157,7 +157,6 @@ def list_shows_page():
 # TODO /item/<uuid>/add route so that each upload has unique id to begin with
 # no need for different methods for `POST` & `PUT`
 @arcsi.route("/show/add", methods=["POST"])
-@roles_required("admin")
 def add_show():
     if request.is_json:
         return make_response(
