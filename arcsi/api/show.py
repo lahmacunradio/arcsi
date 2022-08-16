@@ -93,10 +93,12 @@ headers = {"Content-Type": "application/json"}
 def list_shows():
     return shows_schema.dumps(get_shows())
 
+# draft, just for testing
 @arcsi.route("/show/all_token_required", methods=["GET"])
 @auth_token_required
 def list_shows_token_required():
     return shows_schema.dumps(get_shows())
+# draft, just for testing
 
 
 @arcsi.route("/show/all_without_items", methods=["GET"])
@@ -339,11 +341,6 @@ def view_show_archive(show_slug):
     do = DoArchive()
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first()
-    #if show:
-    #    show_items = show.items.filter(Item.play_date < datetime.today() - timedelta(days=1)).all()
-    #    return items_schema.dump(show_items)
-    #else:
-    #    return make_response("Show episodes not found", 404, headers)
     if show:
         show_json = show_schema.dump(show)
         show_items = [
@@ -361,6 +358,11 @@ def view_show_archive(show_slug):
         return json.dumps(show_items)
     else:
         return make_response("Show not found", 404, headers)
+    #if show:
+    #    show_items = show.items.filter(Item.play_date < datetime.today() - timedelta(days=1)).all()
+    #    return items_schema.dump(show_items)
+    #else:
+    #    return make_response("Show episodes not found", 404, headers)
     
 
 # This will be the one that we are gonna use at the new page 

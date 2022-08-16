@@ -75,7 +75,7 @@ def get_api_token():
         return make_response(jsonify("Could not find user", 404, headers))
 
 
-# just for testing
+# draft, just for testing
 @arcsi.route("/users/get_api_token_hardcoded", methods=["GET"])
 def get_api_token_hardcoded():
     user_query = User.query.filter_by(name="your_local_username")
@@ -86,3 +86,4 @@ def get_api_token_hardcoded():
         return make_response(jsonify(ret), 200, headers)
     else:
         return make_response(jsonify("Could not find user", 404, headers))
+# draft, just for testing

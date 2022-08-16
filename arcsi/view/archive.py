@@ -16,10 +16,11 @@ def archive():
         "archive/list_archive.html"
     )
 
-@router.route("/api_key_admin")
+# draft, just for testing
+@router.route("/api_token_admin")
 @login_required
-def api_key_admin():
-    user=current_user
-    token=user.get_auth_token()
+def api_token_admin():
+    token=current_user.get_auth_token()
     ret = {"access_token": token}
     return (jsonify(ret), 200)
+# draft, just for testing
