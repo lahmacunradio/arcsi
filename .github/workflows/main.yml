@@ -66,10 +66,9 @@ jobs:
     - name: Run the application and Postman's tests
       run: |
         gunicorn -b localhost:5000 -w 4 "arcsi:create_app('../config_ci.py')" --daemon
-        curl --location --request POST 'http://127.0.0.1:5000/arcsi/users/get_api_token' \
-        --form 'name="testuser"' \
-        --form 'password="testpassword"' > api_token
-        cd test/postman/ && newman run test.postman_collection.json -e test.postman_environment.json -k --env-var "api_token=$(<api_token)"
+        cd test/postman/
+        newman run apitoken.postman_collection.json -e test.postman_environment.json -k --export-environment test.postman_environment.json
+        newman run test.postman_collection.json -e test.postman_environment.json -k
       env:
         FLASK_ENV: development
         UPLOAD_FOLDER: "uploads"
