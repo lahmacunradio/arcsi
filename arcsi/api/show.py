@@ -358,12 +358,12 @@ def view_show_archive(show_slug):
         return json.dumps(show_items)
     else:
         return make_response("Show not found", 404, headers)
+    #show = show_query.first()
     #if show:
     #    show_items = show.items.filter(Item.play_date < datetime.today() - timedelta(days=1)).all()
     #    return items_schema.dump(show_items)
     #else:
     #    return make_response("Show episodes not found", 404, headers)
-    
 
 # This will be the one that we are gonna use at the new page 
 @arcsi.route("show/<string:show_slug>/page", methods=["GET"])
