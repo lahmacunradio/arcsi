@@ -3,14 +3,15 @@ import requests
 from flask import current_app as app
 from flask import render_template, request, url_for
 from flask_login import current_user
-from flask_security import roles_accepted, roles_required
+from flask_security import roles_accepted, roles_required, http_auth_required
 
 from arcsi.view import router
 
 
 @router.route("/show/all")
 def list_shows():
-    result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_shows"))
+    result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_shows"), headers = {"Authentication-Token": current_user.get_auth_token()})
+    app.logger.error(result)
     shows = result.json()
     return render_template("show/list.html", shows=shows)
 
