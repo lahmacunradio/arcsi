@@ -58,7 +58,6 @@ jobs:
     - name: Install newman
       run: |
         npm install -g newman
-        apt-get install curl
 
     - name: Run migrations
       run: |
