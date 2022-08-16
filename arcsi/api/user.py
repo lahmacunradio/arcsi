@@ -69,8 +69,7 @@ def get_api_token():
     user = user_query.first_or_404()
     if user and verify_password(password, user.password):
         token=user.get_auth_token()
-        ret = {"api_token": token}
-        return make_response(jsonify(ret), 200, headers)
+        return make_response(token, 200, headers)
     else:
         return make_response(jsonify("Could not find user", 404, headers))
 
