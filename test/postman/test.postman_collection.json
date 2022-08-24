@@ -143,13 +143,7 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "Authentication-Token",
-						"value": "{{api_token}}",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "{{url}}/show/all",
 					"host": [
@@ -410,13 +404,7 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "Authentication-Token",
-						"value": "{{api_token}}",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "{{url}}/show/all",
 					"host": [

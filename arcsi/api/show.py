@@ -89,7 +89,6 @@ headers = {"Content-Type": "application/json"}
 @arcsi.route("/show", methods=["GET"])
 # We use this route on the legacy for a massive shows query
 @arcsi.route("/show/all", methods=["GET"])
-@auth_token_required
 def list_shows():
     return shows_schema.dumps(get_shows())
 
