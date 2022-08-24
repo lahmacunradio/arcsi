@@ -6,7 +6,7 @@ import io
 from datetime import datetime, timedelta
 from flask import flash, jsonify, make_response, request, url_for
 from flask import current_app as app
-from flask_security import current_user, auth_token_required, roles_required
+from flask_security import current_user, login_required, auth_token_required, roles_required
 from marshmallow import fields, post_load, Schema, ValidationError
 from sqlalchemy import false, func
 from werkzeug.utils import secure_filename
@@ -156,79 +156,19 @@ def list_shows_page():
 
 # TODO /item/<uuid>/add route so that each upload has unique id to begin with
 # no need for different methods for `POST` & `PUT`
-@arcsi.route("/show/add", methods=["POST"])
-def add_show():
-    if request.is_json:
-        return make_response(
-            jsonify("Only accepts multipart/form-data for now, sorry"), 503, headers
-        )
-    # work around ImmutableDict type
-    show_metadata = request.form.to_dict()
-    # TODO see item.py same line
-    show_metadata["users"] = [
-        {
-            "id": show_metadata["users"],
-            "name": show_metadata["user_name"],
-            "email": show_metadata["user_email"],
-        }
-    ]
-    show_metadata.pop("user_name", None)
-    show_metadata.pop("user_email", None)
+@arcsi.route("/show/add_arcsi", methods=["POST"])
+@login_required
+@roles_required("admin")
+def add_show_arcsi():
+    return add_show()
 
-    # validate payload
-    err = show_schema.validate(show_metadata)
-    if err:
-        return make_response(
-            jsonify("Invalid data sent to add show, see: {}".format(err)), 500, headers
-        )
-    else:
-        # host = User.query.filter_by(id=show_metadata["users"]).first()
-        show_metadata = show_schema.load(show_metadata)
-        new_show = Show(
-            active=show_metadata.active,
-            name=show_metadata.name,
-            description=show_metadata.description,
-            language=show_metadata.language,
-            playlist_name=show_metadata.playlist_name,
-            frequency=show_metadata.frequency,
-            week=show_metadata.week,
-            day=show_metadata.day,
-            start=show_metadata.start,
-            end=show_metadata.end,
-            archive_lahmastore=show_metadata.archive_lahmastore,
-            archive_lahmastore_base_url=slug(show_metadata.name),
-            archive_mixcloud=show_metadata.archive_mixcloud,
-            # archive_mixcloud_base_url=archive_mixcloud_base_url,
-            users=db.session.query(User)
-            .filter(User.id.in_((user.id for user in show_metadata.users)))
-            .all(),
-        )
-
-        db.session.add(new_show)
-        db.session.flush()
-
-        if request.files:
-            if request.files["image_file"]:
-                cover_image_name = save_file(
-                    archive_base=new_show.archive_lahmastore_base_url,
-                    archive_idx=0,
-                    archive_file=request.files["image_file"],
-                    archive_file_name=(new_show.name, "cover"),
-                )
-                if cover_image_name:
-                    new_show.cover_image_url = archive(
-                        archive_base=new_show.archive_lahmastore_base_url,
-                        archive_idx=0,
-                        archive_file_name=cover_image_name,
-                    )
-
-        db.session.commit()
-
-        return make_response(
-            jsonify(show_schema.dump(new_show)),
-            200,
-            headers,
-        )
+# TODO /item/<uuid>/add route so that each upload has unique id to begin with
+# no need for different methods for `POST` & `PUT`
+@arcsi.route("/show/add_api", methods=["POST"])
+@auth_token_required
+@roles_required("admin")
+def add_show_api():
+    return add_show()
 
 
 @arcsi.route("/show/<id>", methods=["DELETE"])
@@ -425,3 +365,76 @@ def search_show():
                 show.archive_lahmastore_base_url, show.cover_image_url
             )
     return shows_schedule_schema.dumps(shows.items)
+
+def add_show():
+    if request.is_json:
+        return make_response(
+            jsonify("Only accepts multipart/form-data for now, sorry"), 503, headers
+        )
+    # work around ImmutableDict type
+    show_metadata = request.form.to_dict()
+    # TODO see item.py same line
+    show_metadata["users"] = [
+        {
+            "id": show_metadata["users"],
+            "name": show_metadata["user_name"],
+            "email": show_metadata["user_email"],
+        }
+    ]
+    show_metadata.pop("user_name", None)
+    show_metadata.pop("user_email", None)
+
+    # validate payload
+    err = show_schema.validate(show_metadata)
+    if err:
+        return make_response(
+            jsonify("Invalid data sent to add show, see: {}".format(err)), 500, headers
+        )
+    else:
+        # host = User.query.filter_by(id=show_metadata["users"]).first()
+        show_metadata = show_schema.load(show_metadata)
+        new_show = Show(
+            active=show_metadata.active,
+            name=show_metadata.name,
+            description=show_metadata.description,
+            language=show_metadata.language,
+            playlist_name=show_metadata.playlist_name,
+            frequency=show_metadata.frequency,
+            week=show_metadata.week,
+            day=show_metadata.day,
+            start=show_metadata.start,
+            end=show_metadata.end,
+            archive_lahmastore=show_metadata.archive_lahmastore,
+            archive_lahmastore_base_url=slug(show_metadata.name),
+            archive_mixcloud=show_metadata.archive_mixcloud,
+            # archive_mixcloud_base_url=archive_mixcloud_base_url,
+            users=db.session.query(User)
+            .filter(User.id.in_((user.id for user in show_metadata.users)))
+            .all(),
+        )
+
+        db.session.add(new_show)
+        db.session.flush()
+
+        if request.files:
+            if request.files["image_file"]:
+                cover_image_name = save_file(
+                    archive_base=new_show.archive_lahmastore_base_url,
+                    archive_idx=0,
+                    archive_file=request.files["image_file"],
+                    archive_file_name=(new_show.name, "cover"),
+                )
+                if cover_image_name:
+                    new_show.cover_image_url = archive(
+                        archive_base=new_show.archive_lahmastore_base_url,
+                        archive_idx=0,
+                        archive_file_name=cover_image_name,
+                    )
+
+        db.session.commit()
+
+        return make_response(
+            jsonify(show_schema.dump(new_show)),
+            200,
+            headers,
+        )

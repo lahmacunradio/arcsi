@@ -225,7 +225,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -312,13 +318,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/show/add",
+					"raw": "{{url}}/show/add_api",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"show",
-						"add"
+						"add_api"
 					]
 				}
 			},
