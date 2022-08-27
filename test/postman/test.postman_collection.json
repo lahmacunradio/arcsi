@@ -656,7 +656,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -733,12 +739,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item",
+					"raw": "{{url}}/item/add_api",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
-						"item"
+						"item",
+						"add_api"
 					]
 				}
 			},
@@ -889,7 +896,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -972,18 +985,19 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id",
+					"raw": "{{url}}/item/edit_api/:id",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
+						"edit_api",
 						":id"
 					],
 					"variable": [
 						{
 							"key": "id",
-							"value": "{{new_item_id}}"
+							"value": null
 						}
 					]
 				}
@@ -1050,7 +1064,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -1127,12 +1147,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item",
+					"raw": "{{url}}/item/add_api",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
-						"item"
+						"item",
+						"add_api"
 					]
 				}
 			},
@@ -1282,7 +1303,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -1359,12 +1386,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item",
+					"raw": "{{url}}/item/add_api",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
-						"item"
+						"item",
+						"add_api"
 					]
 				}
 			},
@@ -1515,7 +1543,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -1592,12 +1626,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item",
+					"raw": "{{url}}/item/add_api",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
-						"item"
+						"item",
+						"add_api"
 					]
 				}
 			},
@@ -1748,7 +1783,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -1831,18 +1872,19 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id",
+					"raw": "{{url}}/item/edit_api/:id",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
+						"edit_api",
 						":id"
 					],
 					"variable": [
 						{
 							"key": "id",
-							"value": "{{new_item_id}}"
+							"value": null
 						}
 					]
 				}
@@ -1910,7 +1952,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -1993,18 +2041,19 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id",
+					"raw": "{{url}}/item/edit_api/:id",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
+						"edit_api",
 						":id"
 					],
 					"variable": [
 						{
 							"key": "id",
-							"value": "{{new_item_id}}"
+							"value": null
 						}
 					]
 				}
