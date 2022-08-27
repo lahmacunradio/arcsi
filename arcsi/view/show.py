@@ -9,14 +9,10 @@ from arcsi.view import router
 
 
 @router.route("/show/all")
+@roles_accepted("admin", "host", "guest")
 def list_shows():
-    # using auth token protected API in order to demonstrate how it's working in the view context 
-    # if not isinstance(current_user._get_current_object(), AnonymousUserMixin):
-    if (current_user.has_role("admin")):
-        result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_shows"), headers = {"Authentication-Token": current_user.get_auth_token()})
-        shows = result.json()
-    else:
-        shows = []
+    result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_shows"), headers = {"Authentication-Token": current_user.get_auth_token()})
+    shows = result.json()
     return render_template("show/list.html", shows=shows)
 
 
@@ -27,18 +23,16 @@ def add_show():
 
 
 @router.route("/show/<id>", methods=["GET"])
+@roles_accepted("admin", "host", "guest")
 def view_show(id):
-    if (current_user.has_role("admin")):
-        relpath = url_for("arcsi.view_show", id=id)
-        show = requests.get(app.config["APP_BASE_URL"] + relpath, headers = {"Authentication-Token": current_user.get_auth_token()})
-        show_json = show.json()
-    else:
-        show_json = []
+    relpath = url_for("arcsi.view_show", id=id)
+    show = requests.get(app.config["APP_BASE_URL"] + relpath, headers = {"Authentication-Token": current_user.get_auth_token()})
+    show_json = show.json()
     return render_template("show/view.html", show=show_json)
 
 
 @router.route("/show/<id>/edit", methods=["GET"])
-@roles_accepted("admin", "host", "guest")
+@roles_accepted("admin", "host")
 def edit_show(id):
     relpath = url_for("arcsi.view_show", id=id)
     show = requests.get(app.config["APP_BASE_URL"] + relpath, headers = {"Authentication-Token": current_user.get_auth_token()})

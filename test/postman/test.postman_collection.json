@@ -143,7 +143,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/all",
 					"host": [
@@ -404,7 +410,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/all",
 					"host": [
@@ -491,7 +503,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/:id",
 					"host": [
@@ -581,7 +599,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -821,7 +845,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -1229,7 +1259,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -1468,7 +1504,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -1708,7 +1750,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -2130,7 +2178,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -2207,7 +2261,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/:id",
 					"host": [
@@ -2276,7 +2336,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/latest?page=1&size=12",
 					"host": [
@@ -2367,7 +2433,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/search?param=item&page=1&size=12",
 					"host": [
@@ -2441,7 +2513,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/:show_slug/item/:item_slug",
 					"host": [
@@ -2506,7 +2584,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/list",
 					"host": [
@@ -2574,7 +2658,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/all_without_items",
 					"host": [
@@ -2642,7 +2732,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/search?param=show&page=1&size=12",
 					"host": [
@@ -2724,7 +2820,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/schedule",
 					"host": [
@@ -2835,7 +2937,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/schedule_by?day=1",
 					"host": [
@@ -2914,7 +3022,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/:show_slug/page",
 					"host": [
