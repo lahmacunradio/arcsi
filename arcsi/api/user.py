@@ -1,14 +1,8 @@
-import json
-import os
-
-from flask import flash, jsonify, make_response, request, url_for
-from flask import current_app as app
+from flask import jsonify, make_response, request
 from flask_security.utils import verify_password
-from marshmallow import fields, post_load, Schema, ValidationError
+from marshmallow import fields, post_load, Schema
 
 from arcsi.api import arcsi
-from arcsi.model import db
-from arcsi.model.show import Show
 from arcsi.model.user import User
 
 
@@ -73,17 +67,3 @@ def get_api_token():
         return make_response(jsonify(ret), 200, headers)
     else:
         return make_response(jsonify("Could not find user", 404, headers))
-
-
-# draft, just for testing
-@arcsi.route("/users/get_api_token_hardcoded", methods=["GET"])
-def get_api_token_hardcoded():
-    user_query = User.query.filter_by(name="your_local_username")
-    user = user_query.first_or_404()
-    if user and verify_password("your_local_password", user.password):
-        token=user.get_auth_token()
-        ret = {"api_token": token}
-        return make_response(jsonify(ret), 200, headers)
-    else:
-        return make_response(jsonify("Could not find user", 404, headers))
-# draft, just for testing

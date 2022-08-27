@@ -1,8 +1,4 @@
 from datetime import datetime, timedelta
-import json
-import os
-import requests
-import io
 
 from flask import jsonify, make_response, request, redirect
 from flask_security import login_required, auth_token_required, roles_required

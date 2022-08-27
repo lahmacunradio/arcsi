@@ -1,7 +1,4 @@
 import json
-import os
-import requests
-import io
 
 from datetime import datetime, timedelta
 from flask import jsonify, make_response, request
