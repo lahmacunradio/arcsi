@@ -997,7 +997,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": null
+							"value": "{{new_item_id}}"
 						}
 					]
 				}
@@ -1884,7 +1884,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": null
+							"value": "{{new_item_id}}"
 						}
 					]
 				}
@@ -2053,7 +2053,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": null
+							"value": "{{new_item_id}}"
 						}
 					]
 				}
