@@ -160,15 +160,15 @@ def delete_item(id):
     return make_response("Deleted item successfully", 200, headers)
 
 
-@arcsi.route("/item/edit_api/<id>", methods=["POST"])
-@auth_token_required
+@arcsi.route("/item/<id>/edit", methods=["POST"])
+@login_required
 @roles_required("admin")
 def edit_item(id):
     return _edit_item(id)
 
 
-@arcsi.route("/item/edit/<id>", methods=["POST"])
-@login_required
+@arcsi.route("/item/<id>/edit_api", methods=["POST"])
+@auth_token_required
 @roles_required("admin")
 def edit_item_api(id):
     return _edit_item(id)

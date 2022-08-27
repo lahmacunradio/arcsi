@@ -180,14 +180,14 @@ def delete_show(id):
     return make_response("Deleted show successfully", 200, headers)
 
 
-@arcsi.route("/show/edit/<id>", methods=["POST"])
+@arcsi.route("/show/<id>/edit", methods=["POST"])
 @login_required
 @roles_required("admin")
 def edit_show(id):
     return _edit_show(id)
 
 
-@arcsi.route("/show/edit_api/<id>", methods=["POST"])
+@arcsi.route("/show/<id>/edit_api", methods=["POST"])
 @auth_token_required
 @roles_required("admin")
 def edit_show_api(id):

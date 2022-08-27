@@ -985,14 +985,14 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/edit_api/:id",
+					"raw": "{{url}}/item/:id/edit_api",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
-						"edit_api",
-						":id"
+						":id",
+						"edit_api"
 					],
 					"variable": [
 						{
@@ -1872,14 +1872,14 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/edit_api/:id",
+					"raw": "{{url}}/item/:id/edit_api",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
-						"edit_api",
-						":id"
+						":id",
+						"edit_api"
 					],
 					"variable": [
 						{
@@ -2041,14 +2041,14 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/edit_api/:id",
+					"raw": "{{url}}/item/:id/edit_api",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
-						"edit_api",
-						":id"
+						":id",
+						"edit_api"
 					],
 					"variable": [
 						{

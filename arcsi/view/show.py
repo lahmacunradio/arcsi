@@ -1,9 +1,9 @@
 import requests
 
 from flask import current_app as app
-from flask import render_template, request, url_for
-from flask_login import current_user, AnonymousUserMixin
-from flask_security import roles_accepted, roles_required, http_auth_required
+from flask import render_template, url_for
+from flask_login import current_user
+from flask_security import roles_accepted
 
 from arcsi.view import router
 
