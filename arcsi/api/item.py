@@ -65,6 +65,7 @@ headers = {"Content-Type": "application/json"}
 
 @arcsi.route("/item", methods=["GET"])
 @arcsi.route("/item/all", methods=["GET"])
+@auth_token_required
 def list_items():
     do = DoArchive()
     items = Item.query.all()
@@ -78,6 +79,7 @@ def list_items():
 
 
 @arcsi.route("/item/latest", methods=["GET"])
+@auth_token_required
 def list_items_latest():
     do = DoArchive()
     page = request.args.get('page', 1, type=int)
@@ -96,6 +98,7 @@ def list_items_latest():
 
 
 @arcsi.route("/item/<id>", methods=["GET"])
+@auth_token_required
 def view_item(id):
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
@@ -126,6 +129,7 @@ def add_item_api():
 
 
 @arcsi.route("item/<id>/listen", methods=["GET"])
+@auth_token_required
 def listen_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)
@@ -137,6 +141,7 @@ def listen_play_file(id):
 
 
 @arcsi.route("/item/<id>/download", methods=["GET"])
+@auth_token_required
 def download_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)
@@ -148,6 +153,7 @@ def download_play_file(id):
 
 
 @arcsi.route("/item/<id>", methods=["DELETE"])
+@auth_token_required
 def delete_item(id):
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
@@ -171,6 +177,7 @@ def edit_item_api(id):
 
 
 @arcsi.route("/item/search", methods=["GET"])
+@auth_token_required
 def search_item():
     do = DoArchive()
     page = request.args.get('page', 1, type=int)
