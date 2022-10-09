@@ -10,6 +10,14 @@
                 "type": "string",
                 "example": "https://www.lahmacun.hu"
             },
+            "api_token": {
+                "type": "object",
+                "properties": {
+                    "api_token": {
+                        "type": "string"
+                    }
+                }
+            },
             "user": {
                 "properties": {
                     "id": {
@@ -154,6 +162,22 @@
                 "type": "object",
                 "additionalProperties": {
                     "$ref": "#/components/schemas/UserRequest"
+                }
+            },
+            "UserRequestBody": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password"
+                    }
+                },
+                "example": {
+                    "name": "user-name",
+                    "password": "user-password"
                 }
             },
             "ShowResponseBody": {
