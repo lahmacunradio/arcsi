@@ -7,6 +7,63 @@
 	},
 	"item": [
 		{
+			"name": "get_api_token()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"api_token\", response.api_token);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API token has been set up: \" + pm.environment.get(\"api_token\"), function() {\r",
+							"    pm.expect(pm.environment.get(\"api_token\")).not.equal(\"\")\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "testuser",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "YhhU8Z4W2dVbKNf",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/users/get_api_token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"get_api_token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "list_shows()",
 			"event": [
 				{
@@ -86,7 +143,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/all",
 					"host": [
@@ -162,7 +225,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -249,13 +318,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/show/add",
+					"raw": "{{url}}/show/add_api",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"show",
-						"add"
+						"add_api"
 					]
 				}
 			},
@@ -341,7 +410,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/all",
 					"host": [
@@ -428,7 +503,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/:id",
 					"host": [
@@ -518,7 +599,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -593,7 +680,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -670,12 +763,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item",
+					"raw": "{{url}}/item/add_api",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
-						"item"
+						"item",
+						"add_api"
 					]
 				}
 			},
@@ -751,7 +845,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -826,7 +926,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -909,13 +1015,14 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id",
+					"raw": "{{url}}/item/:id/edit_api",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
-						":id"
+						":id",
+						"edit_api"
 					],
 					"variable": [
 						{
@@ -987,7 +1094,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -1064,12 +1177,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item",
+					"raw": "{{url}}/item/add_api",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
-						"item"
+						"item",
+						"add_api"
 					]
 				}
 			},
@@ -1145,7 +1259,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -1219,7 +1339,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -1296,12 +1422,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item",
+					"raw": "{{url}}/item/add_api",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
-						"item"
+						"item",
+						"add_api"
 					]
 				}
 			},
@@ -1377,7 +1504,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -1452,7 +1585,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -1529,12 +1668,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item",
+					"raw": "{{url}}/item/add_api",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
-						"item"
+						"item",
+						"add_api"
 					]
 				}
 			},
@@ -1610,7 +1750,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -1685,7 +1831,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -1768,13 +1920,14 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id",
+					"raw": "{{url}}/item/:id/edit_api",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
-						":id"
+						":id",
+						"edit_api"
 					],
 					"variable": [
 						{
@@ -1847,7 +2000,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -1930,13 +2089,14 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id",
+					"raw": "{{url}}/item/:id/edit_api",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
-						":id"
+						":id",
+						"edit_api"
 					],
 					"variable": [
 						{
@@ -2018,7 +2178,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -2095,7 +2261,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/:id",
 					"host": [
@@ -2164,7 +2336,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/latest?page=1&size=12",
 					"host": [
@@ -2255,7 +2433,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/search?param=item&page=1&size=12",
 					"host": [
@@ -2329,7 +2513,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/:show_slug/item/:item_slug",
 					"host": [
@@ -2394,7 +2584,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/list",
 					"host": [
@@ -2462,7 +2658,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/all_without_items",
 					"host": [
@@ -2530,7 +2732,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/search?param=show&page=1&size=12",
 					"host": [
@@ -2612,7 +2820,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/schedule",
 					"host": [
@@ -2723,7 +2937,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/schedule_by?day=1",
 					"host": [
@@ -2802,7 +3022,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/:show_slug/page",
 					"host": [
