@@ -9,7 +9,7 @@ from arcsi.view import router
 
 
 @router.route("/show/all")
-@roles_accepted("admin", "host", "guest")
+@login_required
 def list_shows():
     result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_shows"), headers = {"Authentication-Token": current_user.get_auth_token()})
     shows = result.json()
@@ -23,7 +23,7 @@ def add_show():
 
 
 @router.route("/show/<id>", methods=["GET"])
-@roles_accepted("admin", "host", "guest")
+@login_required
 def view_show(id):
     relpath = url_for("arcsi.view_show", id=id)
     show = requests.get(app.config["APP_BASE_URL"] + relpath, headers = {"Authentication-Token": current_user.get_auth_token()})
