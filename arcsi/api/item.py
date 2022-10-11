@@ -63,134 +63,6 @@ items_archive_schema = ItemDetailsSchema(many = True,
 headers = {"Content-Type": "application/json"}
 
 
-@arcsi.route("/item", methods=["GET"])
-@arcsi.route("/item/all", methods=["GET"])
-@auth_token_required
-def list_items():
-    do = DoArchive()
-    items = Item.query.all()
-    for item in items:
-        if item.image_url:
-            item.image_url = do.download(
-                item.shows[0].archive_lahmastore_base_url, item.image_url
-            )
-        item.name_slug=normalise(item.name)
-    return items_schema.dumps(items)
-
-
-@arcsi.route("/item/latest", methods=["GET"])
-@auth_token_required
-def list_items_latest():
-    do = DoArchive()
-    page = request.args.get('page', 1, type=int)
-    size = request.args.get('size', 12, type=int)
-    items = Item.query.filter(Item.play_date < datetime.today() - timedelta(days=1)
-                ).filter(Item.archived == True
-                ).order_by(Item.play_date.desc()
-                ).paginate(page, size, False)
-    for item in items.items:
-        if item.image_url:
-            item.image_url = do.download(
-                item.shows[0].archive_lahmastore_base_url, item.image_url
-            )
-        item.name_slug=normalise(item.name)
-    return items_archive_schema.dumps(items.items)
-
-
-@arcsi.route("/item/<id>", methods=["GET"])
-@auth_token_required
-def view_item(id):
-    item_query = Item.query.filter_by(id=id)
-    item = item_query.first_or_404()
-    if item:
-        if item.image_url:
-            do = DoArchive()
-            item.image_url = do.download(
-                item.shows[0].archive_lahmastore_base_url, item.image_url
-            )
-        item.name_slug=normalise(item.name)
-        return item_schema.dump(item)
-    else:
-        return make_response("Item not found", 404, headers)
-
-
-@arcsi.route("/item/add", methods=["POST"])
-@login_required
-@roles_required("admin")
-def add_item():
-    return _add_item()
-
-@arcsi.route("/item/add_api", methods=["POST"])
-@auth_token_required
-@roles_required("admin")
-def add_item_api():
-    return _add_item()
-
-@arcsi.route("item/<id>/listen", methods=["GET"])
-@auth_token_required
-def listen_play_file(id):
-    do = DoArchive()
-    item_query = Item.query.filter_by(id=id)
-    item = item_query.first()
-    presigned = do.download(
-        item.shows[0].archive_lahmastore_base_url, item.archive_lahmastore_canonical_url
-    )
-    return presigned
-
-
-@arcsi.route("/item/<id>/download", methods=["GET"])
-@auth_token_required
-def download_play_file(id):
-    do = DoArchive()
-    item_query = Item.query.filter_by(id=id)
-    item = item_query.first_or_404()
-    presigned = do.download(
-        item.shows[0].archive_lahmastore_base_url, item.archive_lahmastore_canonical_url
-    )
-    return redirect(presigned, code=302)
-
-
-@arcsi.route("/item/<id>", methods=["DELETE"])
-@auth_token_required
-def delete_item(id):
-    item_query = Item.query.filter_by(id=id)
-    item = item_query.first_or_404()
-    item_query.delete()
-    db.session.commit()
-    return make_response("Deleted item successfully", 200, headers)
-
-
-@arcsi.route("/item/<id>/edit", methods=["POST"])
-@login_required
-@roles_required("admin")
-def edit_item(id):
-    return _edit_item(id)
-
-@arcsi.route("/item/<id>/edit_api", methods=["POST"])
-@auth_token_required
-@roles_required("admin")
-def edit_item_api(id):
-    return _edit_item(id)
-
-@arcsi.route("/item/search", methods=["GET"])
-@auth_token_required
-def search_item():
-    do = DoArchive()
-    page = request.args.get('page', 1, type=int)
-    size = request.args.get('size', 12, type=int)
-    param = request.args.get('param', "", type=str)
-    items = Item.query.filter(func.lower(Item.name).contains(func.lower(param)) | 
-                func.lower(Item.description).contains(func.lower(param))
-                ).filter(Item.play_date < datetime.today() - timedelta(days=1)
-                ).order_by(Item.play_date.desc()).paginate(page, size, False)
-    for item in items.items:
-        if item.image_url:
-            item.image_url = do.download(
-                item.shows[0].archive_lahmastore_base_url, item.image_url
-            )
-        item.name_slug=normalise(item.name)
-    return items_schema.dumps(items.items)
-
 def _add_item():
     no_error = True
     if request.is_json:
@@ -354,6 +226,7 @@ def _add_item():
         else:
             return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
 
+
 def _edit_item(id):
     no_error = True
     image_file = None
@@ -496,3 +369,132 @@ def _edit_item(id):
                 jsonify(item_partial_schema.dump(item)), 200, headers
             )
         return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
+
+
+@arcsi.route("/item", methods=["GET"])
+@arcsi.route("/item/all", methods=["GET"])
+@auth_token_required
+def list_items():
+    do = DoArchive()
+    items = Item.query.all()
+    for item in items:
+        if item.image_url:
+            item.image_url = do.download(
+                item.shows[0].archive_lahmastore_base_url, item.image_url
+            )
+        item.name_slug=normalise(item.name)
+    return items_schema.dumps(items)
+
+
+@arcsi.route("/item/latest", methods=["GET"])
+@auth_token_required
+def list_items_latest():
+    do = DoArchive()
+    page = request.args.get('page', 1, type=int)
+    size = request.args.get('size', 12, type=int)
+    items = Item.query.filter(Item.play_date < datetime.today() - timedelta(days=1)
+                ).filter(Item.archived == True
+                ).order_by(Item.play_date.desc()
+                ).paginate(page, size, False)
+    for item in items.items:
+        if item.image_url:
+            item.image_url = do.download(
+                item.shows[0].archive_lahmastore_base_url, item.image_url
+            )
+        item.name_slug=normalise(item.name)
+    return items_archive_schema.dumps(items.items)
+
+
+@arcsi.route("/item/<id>", methods=["GET"])
+@auth_token_required
+def view_item(id):
+    item_query = Item.query.filter_by(id=id)
+    item = item_query.first_or_404()
+    if item:
+        if item.image_url:
+            do = DoArchive()
+            item.image_url = do.download(
+                item.shows[0].archive_lahmastore_base_url, item.image_url
+            )
+        item.name_slug=normalise(item.name)
+        return item_schema.dump(item)
+    else:
+        return make_response("Item not found", 404, headers)
+
+
+@arcsi.route("/item/add", methods=["POST"])
+@login_required
+@roles_required("admin")
+def add_item():
+    return _add_item()
+
+@arcsi.route("/item/add_api", methods=["POST"])
+@auth_token_required
+@roles_required("admin")
+def add_item_api():
+    return _add_item()
+
+@arcsi.route("item/<id>/listen", methods=["GET"])
+@auth_token_required
+def listen_play_file(id):
+    do = DoArchive()
+    item_query = Item.query.filter_by(id=id)
+    item = item_query.first()
+    presigned = do.download(
+        item.shows[0].archive_lahmastore_base_url, item.archive_lahmastore_canonical_url
+    )
+    return presigned
+
+
+@arcsi.route("/item/<id>/download", methods=["GET"])
+@auth_token_required
+def download_play_file(id):
+    do = DoArchive()
+    item_query = Item.query.filter_by(id=id)
+    item = item_query.first_or_404()
+    presigned = do.download(
+        item.shows[0].archive_lahmastore_base_url, item.archive_lahmastore_canonical_url
+    )
+    return redirect(presigned, code=302)
+
+
+@arcsi.route("/item/<id>", methods=["DELETE"])
+@auth_token_required
+def delete_item(id):
+    item_query = Item.query.filter_by(id=id)
+    item = item_query.first_or_404()
+    item_query.delete()
+    db.session.commit()
+    return make_response("Deleted item successfully", 200, headers)
+
+
+@arcsi.route("/item/<id>/edit", methods=["POST"])
+@login_required
+@roles_required("admin")
+def edit_item(id):
+    return _edit_item(id)
+
+@arcsi.route("/item/<id>/edit_api", methods=["POST"])
+@auth_token_required
+@roles_required("admin")
+def edit_item_api(id):
+    return _edit_item(id)
+
+@arcsi.route("/item/search", methods=["GET"])
+@auth_token_required
+def search_item():
+    do = DoArchive()
+    page = request.args.get('page', 1, type=int)
+    size = request.args.get('size', 12, type=int)
+    param = request.args.get('param', "", type=str)
+    items = Item.query.filter(func.lower(Item.name).contains(func.lower(param)) | 
+                func.lower(Item.description).contains(func.lower(param))
+                ).filter(Item.play_date < datetime.today() - timedelta(days=1)
+                ).order_by(Item.play_date.desc()).paginate(page, size, False)
+    for item in items.items:
+        if item.image_url:
+            item.image_url = do.download(
+                item.shows[0].archive_lahmastore_base_url, item.image_url
+            )
+        item.name_slug=normalise(item.name)
+    return items_schema.dumps(items.items)
