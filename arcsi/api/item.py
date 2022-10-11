@@ -287,7 +287,6 @@ def add_item_api():
     return add_item()
 
 @arcsi.route("item/<id>/listen", methods=["GET"])
-@auth_token_required
 def listen_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)
@@ -299,7 +298,7 @@ def listen_play_file(id):
 
 
 @arcsi.route("/item/<id>/download", methods=["GET"])
-@auth_token_required
+@roles_required("admin", "host", "guest")
 def download_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)
