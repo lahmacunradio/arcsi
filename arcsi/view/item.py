@@ -3,13 +3,13 @@ import requests
 from flask import current_app as app
 from flask import render_template, url_for
 from flask_login import current_user
-from flask_security import roles_accepted
+from flask_security import login_required, roles_accepted
 
 from arcsi.view import router
 
 
 @router.route("/item/all")
-@roles_accepted("admin", "host", "guest")
+@login_required
 def list_items():
     result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_items"), headers = {"Authentication-Token": current_user.get_auth_token()})
     items = result.json()
@@ -34,7 +34,7 @@ def add_item():
 
 
 @router.route("/item/<id>", methods=["GET"])
-@roles_accepted("admin", "host", "guest")
+@login_required
 def view_item(id):
     relpath = url_for("arcsi.view_item", id=id)
     item = requests.get(app.config["APP_BASE_URL"] + relpath, headers = {"Authentication-Token": current_user.get_auth_token()})
