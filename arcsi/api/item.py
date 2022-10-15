@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from flask import jsonify, make_response, request, redirect
-from flask_security import login_required, auth_token_required, roles_required
+from flask_security import auth_token_required, roles_required
 from marshmallow import fields, post_load, Schema
 from sqlalchemy import func
 
@@ -115,7 +115,6 @@ def view_item(id):
 
 
 @arcsi.route("/item/add", methods=["POST"])
-@login_required
 @roles_required("admin")
 def add_item():
     no_error = True
@@ -280,13 +279,9 @@ def add_item():
         else:
             return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
 
-@arcsi.route("/item/add_api", methods=["POST"])
-@auth_token_required
-@roles_required("admin")
-def add_item_api():
-    return add_item()
 
 @arcsi.route("item/<id>/listen", methods=["GET"])
+@auth_token_required
 def listen_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)
@@ -298,7 +293,7 @@ def listen_play_file(id):
 
 
 @arcsi.route("/item/<id>/download", methods=["GET"])
-@roles_required("admin", "host", "guest")
+@auth_token_required
 def download_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)
@@ -310,7 +305,7 @@ def download_play_file(id):
 
 
 @arcsi.route("/item/<id>", methods=["DELETE"])
-@auth_token_required
+@roles_required("admin")
 def delete_item(id):
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
@@ -320,7 +315,6 @@ def delete_item(id):
 
 
 @arcsi.route("/item/<id>/edit", methods=["POST"])
-@login_required
 @roles_required("admin")
 def edit_item(id):
     no_error = True
@@ -465,12 +459,6 @@ def edit_item(id):
             )
         return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
 
-
-@arcsi.route("/item/<id>/edit_api", methods=["POST"])
-@auth_token_required
-@roles_required("admin")
-def edit_item_api(id):
-    return edit_item(id)
 
 @arcsi.route("/item/search", methods=["GET"])
 @auth_token_required

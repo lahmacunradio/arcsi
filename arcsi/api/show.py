@@ -2,7 +2,7 @@ import json
 
 from datetime import datetime, timedelta
 from flask import jsonify, make_response, request
-from flask_security import login_required, auth_token_required, roles_required
+from flask_security import auth_token_required, roles_required
 from marshmallow import fields, post_load, Schema
 from sqlalchemy import func
 
@@ -151,7 +151,6 @@ def list_shows_page():
 # TODO /item/<uuid>/add route so that each upload has unique id to begin with
 # no need for different methods for `POST` & `PUT`
 @arcsi.route("/show/add", methods=["POST"])
-@login_required
 @roles_required("admin")
 def add_show():
     if request.is_json:
@@ -227,16 +226,8 @@ def add_show():
         )
 
 
-# TODO /item/<uuid>/add route so that each upload has unique id to begin with
-# no need for different methods for `POST` & `PUT`
-@arcsi.route("/show/add_api", methods=["POST"])
-@auth_token_required
-@roles_required("admin")
-def add_show_api():
-    return add_show()
-
 @arcsi.route("/show/<id>", methods=["DELETE"])
-@auth_token_required
+@roles_required("admin")
 def delete_show(id):
     show_query = Show.query.filter_by(id=id)
     show_query.delete()
@@ -245,7 +236,6 @@ def delete_show(id):
 
 
 @arcsi.route("/show/<id>/edit", methods=["POST"])
-@login_required
 @roles_required("admin")
 def edit_show(id):
     show_query = Show.query.filter_by(id=id)
@@ -318,12 +308,6 @@ def edit_show(id):
             jsonify(show_partial_schema.dump(show)), 200, headers
         )
 
-
-@arcsi.route("/show/<id>/edit_api", methods=["POST"])
-@auth_token_required
-@roles_required("admin")
-def edit_show_api(id):
-    return edit_show(id)
 
 @arcsi.route("show/<id>", methods=["GET"])
 @auth_token_required

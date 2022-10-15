@@ -317,13 +317,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/show/add_api",
+					"raw": "{{url}}/show/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"show",
-						"add_api"
+						"add"
 					]
 				}
 			},
@@ -762,13 +762,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/add_api",
+					"raw": "{{url}}/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
-						"add_api"
+						"add"
 					]
 				}
 			},
@@ -1014,14 +1014,14 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id/edit_api",
+					"raw": "{{url}}/item/:id/edit",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
 						":id",
-						"edit_api"
+						"edit"
 					],
 					"variable": [
 						{
@@ -1176,13 +1176,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/add_api",
+					"raw": "{{url}}/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
-						"add_api"
+						"add"
 					]
 				}
 			},
@@ -1421,13 +1421,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/add_api",
+					"raw": "{{url}}/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
-						"add_api"
+						"add"
 					]
 				}
 			},
@@ -1667,13 +1667,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/add_api",
+					"raw": "{{url}}/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
-						"add_api"
+						"add"
 					]
 				}
 			},
@@ -1919,14 +1919,14 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id/edit_api",
+					"raw": "{{url}}/item/:id/edit",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
 						":id",
-						"edit_api"
+						"edit"
 					],
 					"variable": [
 						{
@@ -2088,14 +2088,14 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id/edit_api",
+					"raw": "{{url}}/item/:id/edit",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
 						":id",
-						"edit_api"
+						"edit"
 					],
 					"variable": [
 						{
