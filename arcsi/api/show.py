@@ -11,7 +11,7 @@ from sqlalchemy import false, func
 from werkzeug import secure_filename
 
 from .utils import archive, get_shows, save_file, slug, sort_for, normalise
-from . import arcsi
+from arcsi.api import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
