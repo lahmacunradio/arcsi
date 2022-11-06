@@ -13,6 +13,6 @@ class Tag(db.Model):
 
 
     def __repr__(self):
-        return "<Tag #{}>".format(
+        return "<Tag {}>".format(
             self.clean_name
         )
