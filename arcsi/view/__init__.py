@@ -7,3 +7,4 @@ from .archive import *
 from .item import *
 from .show import *
 from .user import *
+from .tag import *
