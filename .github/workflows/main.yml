@@ -64,7 +64,7 @@ jobs:
 
     - name: Run the API and Postman's tests
       run: |
-        gunicorn -b localhost:5000 -w 4 "arcsi:create_app('../config_ci.py')" --daemon
+        gunicorn -b localhost:5000 -w 4 "arcsi:create_app('../config_ci.py')" --daemon --log-file /app/aguni.log --log-level debug
         cd test/postman/ && newman run test.postman_collection.json -e test.postman_environment.json -k
       env:
         FLASK_APP: run_ci.py
