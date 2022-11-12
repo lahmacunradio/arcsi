@@ -53,7 +53,7 @@ jobs:
     - name: Set up Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
-        python-version: ${{ matrix.node-version }}
+        node-version: ${{ matrix.node-version }}
 
     - name: Install newman
       run: npm install -g newman
@@ -64,7 +64,7 @@ jobs:
 
     - name: Run the application and Postman's tests
       run: |
-        gunicorn -b localhost:5000 -w 4 "arcsi:create_app('../config_ci.py')" --daemon
+        gunicorn -b localhost:5000 -w 4 "arcsi:create_app('../config_ci.py')" --daemon --log-file aguni.log --log-level debug
         cd test/postman/ && newman run test.postman_collection.json -e test.postman_environment.json -k
       env:
         FLASK_ENV: development
@@ -79,3 +79,10 @@ jobs:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: p0stgr3s
         POSTGRES_DB: arcsi
+        CI: true
+
+    - name: Upload logs
+      uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        path: aguni.log
