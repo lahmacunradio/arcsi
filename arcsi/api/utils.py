@@ -6,7 +6,7 @@ from arcsi.model.show import Show
 from arcsi.model.item import Item
 from flask import current_app as app
 from slugify import slugify
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 
 CONNECTER = "_"
 DELIMITER = "-"
