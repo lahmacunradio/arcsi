@@ -82,3 +82,9 @@ jobs:
         POSTGRES_PASSWORD: p0stgr3s
         POSTGRES_DB: arcsi
         CI: true
+
+    - name: Upload logs
+      uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        path: aguni.log 
