@@ -19,7 +19,7 @@ email-validator==1.1.1
 filelock==3.0.12
 Flask==1.1.1
 Flask-BabelEx==0.9.4
-Flask-Login==0.5.0
+Flask-Login==0.6.0
 Flask-Mail==0.9.1
 flask-marshmallow==0.12.0
 Flask-Migrate==2.5.2
@@ -73,7 +73,7 @@ toml==0.10.0
 typed-ast==1.4.1
 urllib3==1.25.8
 watchdog==0.10.2
-Werkzeug==0.16.0
+Werkzeug==1.0.1
 wrapt==1.11.2
 WTForms==2.3.1
 flask_swagger_ui==3.25.0

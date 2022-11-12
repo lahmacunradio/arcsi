@@ -1,28 +1,13 @@
 from datetime import datetime, timedelta
-import json
-import os
-import requests
-import io
 
-from mutagen.id3 import APIC, ID3
-from mutagen.mp3 import MP3
-
-from flask import flash, jsonify, make_response, request, send_file, url_for, redirect
-from flask import current_app as app
-from marshmallow import fields, post_load, Schema, ValidationError
+from flask import jsonify, make_response, request, redirect
+from flask_security import auth_token_required, roles_required
+from marshmallow import fields, post_load, Schema
 from sqlalchemy import func
 
 from uuid import uuid4
 
-from .utils import (
-    archive,
-    broadcast_audio,
-    dict_to_obj,
-    media_path,
-    normalise,
-    save_file,
-    item_duplications_number
-)
+from .utils import archive, broadcast_audio, normalise, save_file, item_duplications_number
 from . import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
@@ -80,6 +65,7 @@ headers = {"Content-Type": "application/json"}
 
 @arcsi.route("/item", methods=["GET"])
 @arcsi.route("/item/all", methods=["GET"])
+@auth_token_required
 def list_items():
     do = DoArchive()
     items = Item.query.all()
@@ -93,6 +79,7 @@ def list_items():
 
 
 @arcsi.route("/item/latest", methods=["GET"])
+@auth_token_required
 def list_items_latest():
     do = DoArchive()
     page = request.args.get('page', 1, type=int)
@@ -111,6 +98,7 @@ def list_items_latest():
 
 
 @arcsi.route("/item/<id>", methods=["GET"])
+@auth_token_required
 def view_item(id):
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
@@ -126,7 +114,8 @@ def view_item(id):
         return make_response("Item not found", 404, headers)
 
 
-@arcsi.route("/item", methods=["POST"])
+@arcsi.route("/item/add", methods=["POST"])
+@roles_required("admin")
 def add_item():
     no_error = True
     if request.is_json:
@@ -301,6 +290,7 @@ def add_item():
 
 
 @arcsi.route("item/<id>/listen", methods=["GET"])
+@auth_token_required
 def listen_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)
@@ -312,6 +302,7 @@ def listen_play_file(id):
 
 
 @arcsi.route("/item/<id>/download", methods=["GET"])
+@auth_token_required
 def download_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)
@@ -323,6 +314,7 @@ def download_play_file(id):
 
 
 @arcsi.route("/item/<id>", methods=["DELETE"])
+@roles_required("admin")
 def delete_item(id):
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
@@ -331,7 +323,8 @@ def delete_item(id):
     return make_response("Deleted item successfully", 200, headers)
 
 
-@arcsi.route("/item/<id>", methods=["POST"])
+@arcsi.route("/item/<id>/edit", methods=["POST"])
+@roles_required("admin")
 def edit_item(id):
     no_error = True
     image_file = None
@@ -477,6 +470,7 @@ def edit_item(id):
 
 
 @arcsi.route("/item/search", methods=["GET"])
+@auth_token_required
 def search_item():
     do = DoArchive()
     page = request.args.get('page', 1, type=int)

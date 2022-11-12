@@ -100,6 +100,43 @@
         }
       }
     },
+    "/users/get_api_token": {
+      "post": {
+        "tags": [
+          "User Request"
+        ],
+        "summary": "Return API token for given User",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "requestBody": {
+          "schema":{
+            "$ref": "component.json#/components/schemas/UserRequestBody"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/api_token"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Could not find user"
+          },
+          "503": {
+            "description": "Only accepts multipart/form-data for now, sorry"
+          }
+        }
+      }
+    },
     "/show/all": {
       "get": {
         "tags": [
@@ -154,6 +191,172 @@
           },
           "404": {
             "description": "Show not found"
+          }
+        }
+      }
+    },
+    "/show/add": {
+      "post": {
+        "tags": [
+          "Show Requests for Arcsi"
+        ],
+        "summary": "Add Show to Arcsi (internal use)",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "requestBody": {
+          "schema":{
+            "$ref": "component.json#/components/schemas/ShowRequestBody"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ShowResponseBody"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Invalid data sent to add show"
+          },
+          "503": {
+            "description": "Only accepts multipart/form-data for now, sorry"
+          }
+        }
+      }
+    },
+    "/show/add_api": {
+      "post": {
+        "tags": [
+          "Show Requests for Arcsi"
+        ],
+        "summary": "Add Show to Arcsi (external use)",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "requestBody": {
+          "schema":{
+            "$ref": "component.json#/components/schemas/ShowRequestBody"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ShowResponseBody"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Invalid data sent to add show"
+          },
+          "503": {
+            "description": "Only accepts multipart/form-data for now, sorry"
+          }
+        }
+      }
+    },
+    "/show/{id}/edit": {
+      "post": {
+        "tags": [
+          "Show Requests for Arcsi"
+        ],
+        "summary": "Edit Show in Arcsi (internal use)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Show.id",
+            "type": "string"
+          }
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "requestBody": {
+          "schema":{
+            "$ref": "component.json#/components/schemas/ShowRequestBody"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ShowResponseBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Show not found"
+          },
+          "500": {
+            "description": "Invalid data sent to edit show"
+          }
+        }
+      }
+    },
+    "/show/{id}/edit_api": {
+      "post": {
+        "tags": [
+          "Show Requests for Arcsi"
+        ],
+        "summary": "Edit Show in Arcsi (external use)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Show.id",
+            "type": "string"
+          }
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "requestBody": {
+          "schema":{
+            "$ref": "component.json#/components/schemas/ShowRequestBody"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ShowResponseBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Show not found"
+          },
+          "500": {
+            "description": "Invalid data sent to edit show"
           }
         }
       }
@@ -396,6 +599,172 @@
           },
           "404": {
             "description": "Item not found"
+          }
+        }
+      }
+    },
+    "/item/add": {
+      "post": {
+        "tags": [
+          "Item Requests for Arcsi"
+        ],
+        "summary": "Add Item to Arcsi (internal use)",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "requestBody": {
+          "schema":{
+            "$ref": "component.json#/components/schemas/ItemRequestBody"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ItemResponseBody"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Invalid data sent to add item"
+          },
+          "503": {
+            "description": "Only accepts multipart/form-data for now, sorry"
+          }
+        }
+      }
+    },
+    "/item/add_api": {
+      "post": {
+        "tags": [
+          "Item Requests for Arcsi"
+        ],
+        "summary": "Add Item to Arcsi (external use)",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "requestBody": {
+          "schema":{
+            "$ref": "component.json#/components/schemas/ItemRequestBody"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ItemResponseBody"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Invalid data sent to add item"
+          },
+          "503": {
+            "description": "Only accepts multipart/form-data for now, sorry"
+          }
+        }
+      }
+    },
+    "/item/{id}/edit": {
+      "post": {
+        "tags": [
+          "Item Requests for Arcsi"
+        ],
+        "summary": "Edit Item in Arcsi (internal use)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Item.id",
+            "type": "string"
+          }
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "requestBody": {
+          "schema":{
+            "$ref": "component.json#/components/schemas/ItemRequestBody"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ItemResponseBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item not found"
+          },
+          "500": {
+            "description": "Invalid data sent to edit item"
+          }
+        }
+      }
+    },
+    "/item/{id}/edit_api": {
+      "post": {
+        "tags": [
+          "Item Requests for Arcsi"
+        ],
+        "summary": "Edit Item in Arcsi (external use)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Item.id",
+            "type": "string"
+          }
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "requestBody": {
+          "schema":{
+            "$ref": "component.json#/components/schemas/ItemRequestBody"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ItemResponseBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item not found"
+          },
+          "500": {
+            "description": "Invalid data sent to edit item"
           }
         }
       }

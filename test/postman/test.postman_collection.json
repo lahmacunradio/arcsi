@@ -1,10 +1,67 @@
 {
 	"info": {
-		"_postman_id": "35ab0ff9-55a1-4746-879e-f2ba1e6e0fec",
+		"_postman_id": "f8aeca05-6c90-4215-aa89-4977d913683a",
 		"name": "CI test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "get_api_token()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"api_token\", response.api_token);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API token has been set up: \" + pm.environment.get(\"api_token\"), function() {\r",
+							"    pm.expect(pm.environment.get(\"api_token\")).not.equal(\"\")\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "testuser",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "YhhU8Z4W2dVbKNf",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/users/get_api_token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"get_api_token"
+					]
+				}
+			},
+			"response": []
+		},
 		{
 			"name": "list_shows()",
 			"event": [
@@ -85,7 +142,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/all",
 					"host": [
@@ -124,6 +187,7 @@
 							"var show = JSON.parse(responseBody)\r",
 							"pm.environment.set(\"new_show_id\", show.id);\r",
 							"pm.environment.set(\"new_show_name\", show.name);\r",
+							"pm.environment.set(\"new_show_slug\", show.archive_lahmastore_base_url);\r",
 							"pm.test(\"ResponseBody is OK!\", function() {\r",
 							"    pm.expect(show).to.be.an(\"object\")\r",
 							"    pm.expect(show.items).to.be.an(\"array\")\r",
@@ -160,7 +224,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -339,7 +409,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/all",
 					"host": [
@@ -426,7 +502,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/show/:id",
 					"host": [
@@ -516,7 +598,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -546,7 +634,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"API responds within 10 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
-							"    const expectedTimeInMilliseconds = 10000;\r",
+							"    const expectedTimeInMilliseconds = 12500;\r",
 							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
 							"        expectedTimeInMilliseconds + 1,\r",
 							"        `Response came in ${pm.response.responseTime} ms`);\r",
@@ -591,7 +679,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -668,12 +762,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item",
+					"raw": "{{url}}/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
-						"item"
+						"item",
+						"add"
 					]
 				}
 			},
@@ -749,7 +844,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -779,7 +880,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"API responds within 10 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
-							"    const expectedTimeInMilliseconds = 10000;\r",
+							"    const expectedTimeInMilliseconds = 12500;\r",
 							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
 							"        expectedTimeInMilliseconds + 1,\r",
 							"        `Response came in ${pm.response.responseTime} ms`);\r",
@@ -824,7 +925,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -907,13 +1014,14 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id",
+					"raw": "{{url}}/item/:id/edit",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
-						":id"
+						":id",
+						"edit"
 					],
 					"variable": [
 						{
@@ -941,7 +1049,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"API responds within 10 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
-							"    const expectedTimeInMilliseconds = 10000;\r",
+							"    const expectedTimeInMilliseconds = 12500;\r",
 							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
 							"        expectedTimeInMilliseconds + 1,\r",
 							"        `Response came in ${pm.response.responseTime} ms`);\r",
@@ -985,7 +1093,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -1062,12 +1176,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item",
+					"raw": "{{url}}/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
-						"item"
+						"item",
+						"add"
 					]
 				}
 			},
@@ -1143,7 +1258,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -1173,7 +1294,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"API responds within 10 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
-							"    const expectedTimeInMilliseconds = 10000;\r",
+							"    const expectedTimeInMilliseconds = 12500;\r",
 							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
 							"        expectedTimeInMilliseconds + 1,\r",
 							"        `Response came in ${pm.response.responseTime} ms`);\r",
@@ -1217,7 +1338,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -1294,12 +1421,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item",
+					"raw": "{{url}}/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
-						"item"
+						"item",
+						"add"
 					]
 				}
 			},
@@ -1375,7 +1503,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -1405,7 +1539,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"API responds within 10 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
-							"    const expectedTimeInMilliseconds = 10000;\r",
+							"    const expectedTimeInMilliseconds = 12500;\r",
 							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
 							"        expectedTimeInMilliseconds + 1,\r",
 							"        `Response came in ${pm.response.responseTime} ms`);\r",
@@ -1450,7 +1584,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -1527,12 +1667,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item",
+					"raw": "{{url}}/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
-						"item"
+						"item",
+						"add"
 					]
 				}
 			},
@@ -1608,7 +1749,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -1638,7 +1785,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"API responds within 10 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
-							"    const expectedTimeInMilliseconds = 10000;\r",
+							"    const expectedTimeInMilliseconds = 12500;\r",
 							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
 							"        expectedTimeInMilliseconds + 1,\r",
 							"        `Response came in ${pm.response.responseTime} ms`);\r",
@@ -1683,7 +1830,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -1766,13 +1919,14 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id",
+					"raw": "{{url}}/item/:id/edit",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
-						":id"
+						":id",
+						"edit"
 					],
 					"variable": [
 						{
@@ -1800,7 +1954,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"API responds within 10 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
-							"    const expectedTimeInMilliseconds = 10000;\r",
+							"    const expectedTimeInMilliseconds = 12500;\r",
 							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
 							"        expectedTimeInMilliseconds + 1,\r",
 							"        `Response came in ${pm.response.responseTime} ms`);\r",
@@ -1845,7 +1999,13 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
@@ -1928,13 +2088,14 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id",
+					"raw": "{{url}}/item/:id/edit",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"item",
-						":id"
+						":id",
+						"edit"
 					],
 					"variable": [
 						{
@@ -2016,7 +2177,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/all",
 					"host": [
@@ -2093,7 +2260,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{url}}/item/:id",
 					"host": [
@@ -2107,6 +2280,768 @@
 						{
 							"key": "id",
 							"value": "{{new_item_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_items_latest()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(jsonData).to.be.an(\"array\")\r",
+							"    jsonData.forEach(function(item) {\r",
+							"        pm.expect(item).to.be.an(\"object\")\r",
+							"        pm.expect(item.shows).to.be.an(\"array\")\r",
+							"        item.shows.forEach(function(show){\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.name).to.be.an(\"string\")\r",
+							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"        pm.expect(item.description).to.be.an(\"string\")\r",
+							"        pm.expect(item.language).to.be.an(\"string\")\r",
+							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"        if (item.play_file_name != null) {\r",
+							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(item.id).to.be.an(\"number\")\r",
+							"        pm.expect(item.number).to.be.an(\"number\")\r",
+							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/item/latest?page=1&size=12",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"latest"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "size",
+							"value": "12"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search_item()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html; charset=utf-8\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(jsonData).to.be.an(\"array\")\r",
+							"    jsonData.forEach(function(item) {\r",
+							"        pm.expect(item).to.be.an(\"object\")\r",
+							"        pm.expect(item.shows).to.be.an(\"array\")\r",
+							"        item.shows.forEach(function(show){\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
+							"        if (item.airing != null) {\r",
+							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
+							"        }\r",
+							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.name).to.be.an(\"string\")\r",
+							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"        pm.expect(item.description).to.be.an(\"string\")\r",
+							"        pm.expect(item.language).to.be.an(\"string\")\r",
+							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"        if (item.play_file_name != null) {\r",
+							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
+							"        pm.expect(item.id).to.be.an(\"number\")\r",
+							"        pm.expect(item.number).to.be.an(\"number\")\r",
+							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/item/search?param=item&page=1&size=12",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						"search"
+					],
+					"query": [
+						{
+							"key": "param",
+							"value": "item"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "size",
+							"value": "12"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "view_episode_archive(show_slug, item_slug)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"})\r",
+							"\r",
+							"const item = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(item).to.be.an(\"object\")\r",
+							"    pm.expect(item.shows).to.be.an(\"array\")\r",
+							"    item.shows.forEach(function(show){\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"    pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"    pm.expect(item.name).to.be.an(\"string\")\r",
+							"    pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"    pm.expect(item.description).to.be.an(\"string\")\r",
+							"    pm.expect(item.language).to.be.an(\"string\")\r",
+							"    pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"    pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"    if (item.play_file_name != null) {\r",
+							"        pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"    }\r",
+							"    pm.expect(item.id).to.be.an(\"number\")\r",
+							"    pm.expect(item.number).to.be.an(\"number\")\r",
+							"    pm.expect(item.download_count).to.be.an(\"number\")\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/show/:show_slug/item/:item_slug",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						":show_slug",
+						"item",
+						":item_slug"
+					],
+					"variable": [
+						{
+							"key": "show_slug",
+							"value": "{{new_show_slug}}"
+						},
+						{
+							"key": "item_slug",
+							"value": "example_item1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_shows_page()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(jsonData).to.be.an(\"array\")\r",
+							"    jsonData.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        if (show.archive_mixcloud_base_url != null) {\r",
+							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/show/list",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_shows_without_items()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(jsonData).to.be.an(\"array\")\r",
+							"    jsonData.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.users).to.be.an(\"array\")\r",
+							"        show.users.forEach(function(user) {\r",
+							"            pm.expect(user).to.be.an(\"object\")\r",
+							"            pm.expect(user.name).to.be.an(\"string\")\r",
+							"            pm.expect(user.email).to.be.an(\"string\")\r",
+							"            pm.expect(user.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.language).to.be.an(\"string\")\r",
+							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        if (show.archive_mixcloud_base_url != null) {\r",
+							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.start).to.be.an(\"string\")\r",
+							"        pm.expect(show.end).to.be.an(\"string\")\r",
+							"        pm.expect(show.day).to.be.an(\"number\")\r",
+							"        pm.expect(show.frequency).to.be.an(\"number\")\r",
+							"        pm.expect(show.week).to.be.an(\"number\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/show/all_without_items",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						"all_without_items"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search_show()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(jsonData).to.be.an(\"array\")\r",
+							"    jsonData.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.users).to.be.an(\"array\")\r",
+							"        show.users.forEach(function(user) {\r",
+							"            pm.expect(user).to.be.an(\"object\")\r",
+							"            pm.expect(user.name).to.be.an(\"string\")\r",
+							"            pm.expect(user.email).to.be.an(\"string\")\r",
+							"            pm.expect(user.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.language).to.be.an(\"string\")\r",
+							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        if (show.archive_mixcloud_base_url != null) {\r",
+							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.start).to.be.an(\"string\")\r",
+							"        pm.expect(show.end).to.be.an(\"string\")\r",
+							"        pm.expect(show.day).to.be.an(\"number\")\r",
+							"        pm.expect(show.frequency).to.be.an(\"number\")\r",
+							"        pm.expect(show.week).to.be.an(\"number\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/show/search?param=show&page=1&size=12",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						"search"
+					],
+					"query": [
+						{
+							"key": "param",
+							"value": "show"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "size",
+							"value": "12"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_shows_for_schedule()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(jsonData).to.be.an(\"array\")\r",
+							"    jsonData.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.users).to.be.an(\"array\")\r",
+							"        show.users.forEach(function(user) {\r",
+							"            pm.expect(user).to.be.an(\"object\")\r",
+							"            pm.expect(user.name).to.be.an(\"string\")\r",
+							"            pm.expect(user.email).to.be.an(\"string\")\r",
+							"            pm.expect(user.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.language).to.be.an(\"string\")\r",
+							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        if (show.archive_mixcloud_base_url != null) {\r",
+							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.start).to.be.an(\"string\")\r",
+							"        pm.expect(show.end).to.be.an(\"string\")\r",
+							"        pm.expect(show.day).to.be.an(\"number\")\r",
+							"        pm.expect(show.frequency).to.be.an(\"number\")\r",
+							"        pm.expect(show.week).to.be.an(\"number\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/show/schedule",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						"schedule"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list_shows_for_schedule_by()",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"/*\r",
+							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    if (pm.expect(jsonData).to.be.an(\"array\")) {\r",
+							"        jsonData.forEach(function(show) {\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            if (show.items != null) {\r",
+							"                const latestEpisode = show.items\r",
+							"                pm.expect(latestEpisode).to.be.an(\"object\")\r",
+							"                pm.expect(latestEpisode.archived).to.be.an(\"boolean\")\r",
+							"                pm.expect(latestEpisode.name).to.be.an(\"string\")\r",
+							"                pm.expect(latestEpisode.name_slug).to.be.an(\"string\")\r",
+							"                pm.expect(latestEpisode.description).to.be.an(\"string\")\r",
+							"                pm.expect(latestEpisode.play_date).to.be.an(\"string\")\r",
+							"                pm.expect(latestEpisode.image_url).to.be.an(\"string\")\r",
+							"                if (latestEpisode.play_file_name != null) {\r",
+							"                    pm.expect(latestEpisode.play_file_name).to.be.an(\"string\")\r",
+							"                }\r",
+							"                pm.expect(latestEpisode.id).to.be.an(\"number\")\r",
+							"                pm.expect(latestEpisode.number).to.be.an(\"number\")\r",
+							"                pm.expect(latestEpisode.download_count).to.be.an(\"number\")\r",
+							"            }\r",
+							"            pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.description).to.be.an(\"string\")\r",
+							"            pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            if (show.archive_mixcloud_base_url != null) {\r",
+							"                pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"            }\r",
+							"            pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.start).to.be.an(\"string\")\r",
+							"            pm.expect(show.end).to.be.an(\"string\")\r",
+							"            pm.expect(show.day).to.be.an(\"number\")\r",
+							"            pm.expect(show.frequency).to.be.an(\"number\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"    }\r",
+							"    else if (pm.expect(jsonData).to.be.an(\"object\")) {\r",
+							"        const show = jsonData\r",
+							"        if (show.items != null) {\r",
+							"            const latestEpisode = show.items\r",
+							"            pm.expect(latestEpisode).to.be.an(\"object\")\r",
+							"            pm.expect(latestEpisode.archived).to.be.an(\"boolean\")\r",
+							"            pm.expect(latestEpisode.name).to.be.an(\"string\")\r",
+							"            pm.expect(latestEpisode.name_slug).to.be.an(\"string\")\r",
+							"            pm.expect(latestEpisode.description).to.be.an(\"string\")\r",
+							"            pm.expect(latestEpisode.play_date).to.be.an(\"string\")\r",
+							"            pm.expect(latestEpisode.image_url).to.be.an(\"string\")\r",
+							"            if (latestEpisode.play_file_name != null) {\r",
+							"                pm.expect(latestEpisode.play_file_name).to.be.an(\"string\")\r",
+							"            }\r",
+							"            pm.expect(latestEpisode.id).to.be.an(\"number\")\r",
+							"            pm.expect(latestEpisode.number).to.be.an(\"number\")\r",
+							"            pm.expect(latestEpisode.download_count).to.be.an(\"number\")\r",
+							"        }\r",
+							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        if (show.archive_mixcloud_base_url != null) {\r",
+							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"        pm.expect(show.start).to.be.an(\"string\")\r",
+							"        pm.expect(show.end).to.be.an(\"string\")\r",
+							"        pm.expect(show.day).to.be.an(\"number\")\r",
+							"        pm.expect(show.frequency).to.be.an(\"number\")\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    }\r",
+							"    else {\r",
+							"        pm.expect(jsonData).to.be.equal(\"[]\")\r",
+							"    }\r",
+							"})\r",
+							"*/"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/show/schedule_by?day=1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						"schedule_by"
+					],
+					"query": [
+						{
+							"key": "day",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "view_show_page(show_slug)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"})\r",
+							"\r",
+							"const jsonData = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody is OK!\", function() {\r",
+							"    pm.expect(jsonData).to.be.an(\"object\")\r",
+							"    pm.expect(jsonData.items).to.be.an(\"array\")\r",
+							"    jsonData.items.forEach(function(item) {\r",
+							"        pm.expect(item).to.be.an(\"object\")\r",
+							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.name).to.be.an(\"string\")\r",
+							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"        pm.expect(item.description).to.be.an(\"string\")\r",
+							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"        if (item.play_file_name != null) {\r",
+							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(item.id).to.be.an(\"number\")\r",
+							"        pm.expect(item.number).to.be.an(\"number\")\r",
+							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
+							"    })\r",
+							"    pm.expect(jsonData.active).to.be.an(\"boolean\")\r",
+							"    pm.expect(jsonData.name).to.be.an(\"string\")\r",
+							"    pm.expect(jsonData.description).to.be.an(\"string\")\r",
+							"    pm.expect(jsonData.language).to.be.an(\"string\")\r",
+							"    pm.expect(jsonData.playlist_name).to.be.an(\"string\")\r",
+							"    pm.expect(jsonData.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"    if (jsonData.archive_mixcloud_base_url != null) {\r",
+							"        pm.expect(jsonData.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"    }\r",
+							"    pm.expect(jsonData.cover_image_url).to.be.an(\"string\")\r",
+							"    pm.expect(jsonData.start).to.be.an(\"string\")\r",
+							"    pm.expect(jsonData.end).to.be.an(\"string\")\r",
+							"    pm.expect(jsonData.day).to.be.an(\"number\")\r",
+							"    pm.expect(jsonData.frequency).to.be.an(\"number\")\r",
+							"    pm.expect(jsonData.id).to.be.an(\"number\")\r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/show/:show_slug/page",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						":show_slug",
+						"page"
+					],
+					"variable": [
+						{
+							"key": "show_slug",
+							"value": "{{new_show_slug}}"
 						}
 					]
 				}
