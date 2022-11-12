@@ -1,12 +1,12 @@
 {
 	"info": {
-		"_postman_id": "f8aeca05-6c90-4215-aa89-4977d913683a",
+		"_postman_id": "3e8a6095-b0b7-4b95-a750-c9f113c33e49",
 		"name": "CI test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "get_api_token()",
+			"name": "Get API Token (get_api_token())",
 			"event": [
 				{
 					"listen": "test",
@@ -63,7 +63,7 @@
 			"response": []
 		},
 		{
-			"name": "list_shows()",
+			"name": "Get Shows (0, list_shows())",
 			"event": [
 				{
 					"listen": "test",
@@ -163,7 +163,7 @@
 			"response": []
 		},
 		{
-			"name": "add_show()",
+			"name": "Add Show (add_show())",
 			"event": [
 				{
 					"listen": "test",
@@ -330,7 +330,7 @@
 			"response": []
 		},
 		{
-			"name": "list_shows()",
+			"name": "Get Shows (1, list_shows())",
 			"event": [
 				{
 					"listen": "test",
@@ -430,7 +430,7 @@
 			"response": []
 		},
 		{
-			"name": "view_show(id)",
+			"name": "Get Show (view_show(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -529,7 +529,7 @@
 			"response": []
 		},
 		{
-			"name": "list_items()",
+			"name": "Get Items (0, list_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -619,7 +619,7 @@
 			"response": []
 		},
 		{
-			"name": "add_item() 1 new live",
+			"name": "Add Item (1 live, add_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -775,7 +775,7 @@
 			"response": []
 		},
 		{
-			"name": "list_items()",
+			"name": "Get Items (1, list_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -865,7 +865,7 @@
 			"response": []
 		},
 		{
-			"name": "edit_item(id) 1 live -> broadcast",
+			"name": "Edit Item (1 live -> broadcast, edit_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -1034,7 +1034,7 @@
 			"response": []
 		},
 		{
-			"name": "add_item() 2 new broadcast",
+			"name": "Add Item (2 broadcast, add_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -1189,7 +1189,7 @@
 			"response": []
 		},
 		{
-			"name": "list_items()",
+			"name": "Get Items (2, list_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -1279,7 +1279,7 @@
 			"response": []
 		},
 		{
-			"name": "add_item() 2 broadcast override",
+			"name": "Add Item (2 broadcast override, add_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -1434,7 +1434,7 @@
 			"response": []
 		},
 		{
-			"name": "list_items()",
+			"name": "Get Items (3, list_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -1524,7 +1524,7 @@
 			"response": []
 		},
 		{
-			"name": "add_item() 3 new live",
+			"name": "Add Item (3 live, add_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -1680,7 +1680,7 @@
 			"response": []
 		},
 		{
-			"name": "list_items()",
+			"name": "Get Items (4, list_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -1770,7 +1770,7 @@
 			"response": []
 		},
 		{
-			"name": "edit_item(id) 3 live -> broadcast",
+			"name": "Edit Item (3 live -> broadcast, edit_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -1939,7 +1939,7 @@
 			"response": []
 		},
 		{
-			"name": "edit_item(id) 3 broadcast edit",
+			"name": "Edit Item (3 broadcast, edit_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -2108,7 +2108,7 @@
 			"response": []
 		},
 		{
-			"name": "list_items()",
+			"name": "Get Items (4, list_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -2198,7 +2198,7 @@
 			"response": []
 		},
 		{
-			"name": "view_item(id)",
+			"name": "View Item (4, view_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -2287,7 +2287,7 @@
 			"response": []
 		},
 		{
-			"name": "list_items_latest()",
+			"name": "Get Latest Items (list_items_latest())",
 			"event": [
 				{
 					"listen": "test",
@@ -2366,7 +2366,7 @@
 			"response": []
 		},
 		{
-			"name": "search_item()",
+			"name": "Search Item (search_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -2467,7 +2467,7 @@
 			"response": []
 		},
 		{
-			"name": "view_episode_archive(show_slug, item_slug)",
+			"name": "View Item with Slug (view_episode_archive(show_slug, item_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -2545,7 +2545,7 @@
 			"response": []
 		},
 		{
-			"name": "list_shows_page()",
+			"name": "Get Shows Paginated (list_shows_page())",
 			"event": [
 				{
 					"listen": "test",
@@ -2604,7 +2604,7 @@
 			"response": []
 		},
 		{
-			"name": "list_shows_without_items()",
+			"name": "Get Shows without Items (list_shows_without_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -2678,7 +2678,7 @@
 			"response": []
 		},
 		{
-			"name": "search_show()",
+			"name": "Search Show (search_show())",
 			"event": [
 				{
 					"listen": "test",
@@ -2766,7 +2766,7 @@
 			"response": []
 		},
 		{
-			"name": "list_shows_for_schedule()",
+			"name": "Get Shows for Schedule (list_shows_for_schedule())",
 			"event": [
 				{
 					"listen": "test",
@@ -2840,7 +2840,7 @@
 			"response": []
 		},
 		{
-			"name": "list_shows_for_schedule_by()",
+			"name": "Get Shows for Schedule by Day (list_shows_for_schedule_by())",
 			"event": [
 				{
 					"listen": "test",
@@ -2963,7 +2963,7 @@
 			"response": []
 		},
 		{
-			"name": "view_show_page(show_slug)",
+			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
