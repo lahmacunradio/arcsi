@@ -6,6 +6,7 @@ from .item import *
 from .role import *
 from .show import *
 from .user import *
+from .data import *
 
 # TODO add routing here eg
 # arcsi.route("/archive", methods=["GET"])(<method_name>)
