@@ -122,16 +122,21 @@ def broadcast_audio(
 
 def save_file(archive_base, archive_idx, archive_file, archive_file_name):
     formed_file_name = form_filename(archive_file, archive_file_name)
+    app.logger.debug("STATUS/SAVE FILE: formed_file_name: {}".format(formed_file_name))
     if not allowed_file(formed_file_name):
+        app.logger.debug("STATUS/SAVE FILE: Not allowed file. See ALLOWED_EXTENSIONS")
         return None
     else:
         if formed_file_name == "":
             return None
+            app.logger.debug("STATUS/SAVE FILE: File name could not be computed")
         else:
             archive_file_path = media_path(
                 archive_base, str(archive_idx), formed_file_name
             )
+            app.logger.debug("STATUS/SAVE FILE: archive_file_path: {}".format(archive_file_path))
             archive_file.save(archive_file_path)
+            app.logger.debug("STATUS/SAVE FILE: archive_file: {}".format(archive_file))
             return formed_file_name
 
 
