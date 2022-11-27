@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from flask import jsonify, make_response, request, redirect
+from flask import current_app as app
 from flask_security import auth_token_required, roles_required
 from marshmallow import fields, post_load, Schema
 from sqlalchemy import func
