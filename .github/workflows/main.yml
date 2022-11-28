@@ -65,9 +65,6 @@ jobs:
     - name: Run the application and Postman's tests
       run: |
         gunicorn -b localhost:5000 -w 4 "arcsi:create_app('../config_ci.py')" --daemon --log-file aguni.log --log-level debug
-        cd test/postman/
-        newman run functional_test.postman_collection.json -e test.postman_environment.json -k
-        newman run robustness_test.postman_collection.json -e test.postman_environment.json -n 1000 -k
       env:
         FLASK_ENV: development
         UPLOAD_FOLDER: "uploads"
@@ -82,6 +79,16 @@ jobs:
         POSTGRES_PASSWORD: p0stgr3s
         POSTGRES_DB: arcsi
         CI: true
+    
+    - name: Functional Test
+      run: |
+        cd test/postman/
+        newman run functional_test.postman_collection.json -e test.postman_environment.json -k
+  
+    - name: Robustness Test
+      run: |
+        cd test/postman/
+        newman run robustness_test.postman_collection.json -e test.postman_environment.json -n 1000 -k
 
     - name: Upload logs
       uses: actions/upload-artifact@v3
