@@ -197,7 +197,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "{{new_show_id}}"
+							"value": "1"
 						}
 					]
 				}
