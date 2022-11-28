@@ -264,8 +264,8 @@
 							"    })\r",
 							"})\r",
 							"\r",
-							"pm.test(\"Episodes number is 0\", function() {\r",
-							"    pm.expect(items.length).to.equal(0)\r",
+							"pm.test(\"Episodes number is 4\", function() {\r",
+							"    pm.expect(items.length).to.equal(4)\r",
 							"})"
 						],
 						"type": "text/javascript"
