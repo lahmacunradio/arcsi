@@ -65,7 +65,9 @@ jobs:
     - name: Run the application and Postman's tests
       run: |
         gunicorn -b localhost:5000 -w 4 "arcsi:create_app('../config_ci.py')" --daemon --log-file aguni.log --log-level debug
-        cd test/postman/ && newman run test.postman_collection.json -e test.postman_environment.json -k
+        cd test/postman/
+        newman run functional_test.postman_collection.json -e test.postman_environment.json -k
+        newman run robustness_test.postman_collection.json -e test.postman_environment.json -n 1000 -k
       env:
         FLASK_ENV: development
         UPLOAD_FOLDER: "uploads"

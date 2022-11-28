@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "c6974ba5-bf1f-4b09-a1c9-365cbd75850e",
-		"name": "CI test",
+		"_postman_id": "e661c83e-0370-4481-8dfe-d0082bbf878e",
+		"name": "CI test (functional)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
