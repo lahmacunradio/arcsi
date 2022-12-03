@@ -49,7 +49,7 @@
         "tags": [
           "Statistics Request"
         ],
-        "summary": "Returns the number of uploaded episodes during the last x days from the given date",
+        "summary": "Returns the number of uploaded episodes during the last x days from the given date (today, by default)",
         "parameters": [
           {
             "in": "path",
@@ -108,7 +108,7 @@
         "tags": [
           "Statistics Request"
         ],
-        "summary": "Returns the number of uploaded episodes during the last x days from the given date",
+        "summary": "Returns the number of uploaded episodes during the last x weeks from the given date (today, by default)",
         "parameters": [
           {
             "in": "path",
