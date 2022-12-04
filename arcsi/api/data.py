@@ -17,6 +17,8 @@ def uploaded_episodes_in_last_x_days():
     if (given_date > datetime.today()):
         return make_response("Back to the future?", 418, headers)
     last_days = int(date_metadata['last_days'])
+    if (last_days < 0):
+        return make_response("Please, be postive!", 400, headers)
     episodes_count = Item.query.filter(
         given_date - timedelta(days=last_days) <= Item.play_date
         ).filter(Item.play_date <= datetime.today()
@@ -33,6 +35,8 @@ def uploaded_episodes_in_last_x_weeks():
     if (given_date > datetime.today()):
         return make_response("Back to the future?", 418, headers)
     last_weeks = int(date_metadata['last_weeks'])
+    if (last_weeks < 0):
+        return make_response("Please, be postive!", 400, headers)
     episodes_count = Item.query.filter(
         given_date - timedelta(weeks=last_weeks) <= Item.play_date
         ).filter(Item.play_date <= datetime.today()

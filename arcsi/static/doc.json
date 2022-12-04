@@ -97,6 +97,9 @@
               }
             }
           },
+          "400": {
+            "description": "Please, be postive!"
+          },
           "418": {
             "description": "Back to the future?"
           }
@@ -155,6 +158,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Please, be postive!"
           },
           "418": {
             "description": "Back to the future?"
