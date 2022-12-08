@@ -22,7 +22,7 @@ def uploaded_episodes_in_last_x_days():
     episodes_count = Item.query.filter(
         given_date - timedelta(days=last_days) <= Item.play_date
         ).filter(Item.play_date <= datetime.today()
-        ).filter(Item.archived == True).count()
+        ).count()
     ret = {"uploaded_episodes_in_last_%d_days" % (last_days): episodes_count}
     return make_response(jsonify(ret), 200, headers)
 
@@ -40,6 +40,6 @@ def uploaded_episodes_in_last_x_weeks():
     episodes_count = Item.query.filter(
         given_date - timedelta(weeks=last_weeks) <= Item.play_date
         ).filter(Item.play_date <= datetime.today()
-        ).filter(Item.archived == True).count()
+        ).count()
     ret = {"uploaded_episodes_in_last_%d_weeks" % (last_weeks): episodes_count}
     return make_response(jsonify(ret), 200, headers)
