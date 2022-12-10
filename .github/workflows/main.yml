@@ -88,7 +88,7 @@ jobs:
     - name: Robustness Test
       run: |
         cd test/postman/
-        newman run robustness_test.postman_collection.json -e test.postman_environment.json -n 20 -k
+        newman run robustness_test.postman_collection.json -e test.postman_environment.json -n 200 -k
 
     - name: Upload logs
       uses: actions/upload-artifact@v3
