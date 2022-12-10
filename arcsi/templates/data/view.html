@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h2>{% block title %}Data statistics{% endblock %}</h2>
+<h4>
+    <a href="{{ url_for('router.uploaded_episodes_in_last_x_days') }}">Daily uploaded episodes stats</a>
+</h4>
+<h4>
+    <a href="{{ url_for('router.uploaded_episodes_in_last_x_weeks') }}">Weekly uploaded episodes stats</a>
+</h4>
+{% endblock %}

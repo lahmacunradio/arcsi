@@ -37,9 +37,137 @@
     {
       "name": "User Request",
       "description": "API for requesting and return User details"
+    },
+    {
+      "name": "Statistics Request",
+      "description": "API for requesting and return Statistics"
     }
   ],
   "paths": {
+    "/data/episodes_uploaded_daily?year={year}&month={month}&day={day}&last_days={last_days}": {
+      "get": {
+        "tags": [
+          "Statistics Request"
+        ],
+        "summary": "Returns the number of uploaded episodes during the last x days from the given date (today, by default)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "year",
+            "required": true,
+            "description": "default: current year",
+            "type": "int"
+          },
+          {
+            "in": "path",
+            "name": "month",
+            "required": true,
+            "description": "default: current month",
+            "type": "int"
+          },
+          {
+            "in": "path",
+            "name": "day",
+            "required": true,
+            "description": "default: current day",
+            "type": "int"
+          },
+          {
+            "in": "path",
+            "name": "last_days",
+            "required": true,
+            "description": "default: 7",
+            "type": "int"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "type": "object",
+                "properties": {
+                    "uploaded_episodes_in_last_x_days": {
+                        "type": "int"
+                    }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Please, be postive!"
+          },
+          "418": {
+            "description": "Back to the future?"
+          }
+        }
+      }
+    },
+    "/data/episodes_uploaded_weekly?year={year}&month={month}&day={day}&last_weeks={last_weeks}": {
+      "get": {
+        "tags": [
+          "Statistics Request"
+        ],
+        "summary": "Returns the number of uploaded episodes during the last x weeks from the given date (today, by default)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "year",
+            "required": true,
+            "description": "default: current year",
+            "type": "int"
+          },
+          {
+            "in": "path",
+            "name": "month",
+            "required": true,
+            "description": "default: current month",
+            "type": "int"
+          },
+          {
+            "in": "path",
+            "name": "day",
+            "required": true,
+            "description": "default: current day",
+            "type": "int"
+          },
+          {
+            "in": "path",
+            "name": "last_weeks",
+            "required": true,
+            "description": "default: 1",
+            "type": "int"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "type": "object",
+                "properties": {
+                    "uploaded_episodes_in_last_x_weeks": {
+                        "type": "int"
+                    }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Please, be postive!"
+          },
+          "418": {
+            "description": "Back to the future?"
+          }
+        }
+      }
+    },
     "/users/all": {
       "get": {
         "tags": [

@@ -40,7 +40,7 @@ def list_users():
     return many_user_details_schema.dumps(users)
 
 
-@arcsi.route("/user/<id>", methods=["GET"])
+@arcsi.route("/user/<int:id>", methods=["GET"])
 def view_user(id):
     user_query = User.query.filter_by(id=id)
     user = user_query.first_or_404()

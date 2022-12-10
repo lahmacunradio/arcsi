@@ -98,7 +98,7 @@ def list_items_latest():
     return items_archive_schema.dumps(items.items)
 
 
-@arcsi.route("/item/<id>", methods=["GET"])
+@arcsi.route("/item/<int:id>", methods=["GET"])
 @auth_token_required
 def view_item(id):
     item_query = Item.query.filter_by(id=id)
@@ -290,7 +290,7 @@ def add_item():
             return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
 
 
-@arcsi.route("item/<id>/listen", methods=["GET"])
+@arcsi.route("item/<int:id>/listen", methods=["GET"])
 @auth_token_required
 def listen_play_file(id):
     do = DoArchive()
@@ -302,7 +302,7 @@ def listen_play_file(id):
     return presigned
 
 
-@arcsi.route("/item/<id>/download", methods=["GET"])
+@arcsi.route("/item/<int:id>/download", methods=["GET"])
 @auth_token_required
 def download_play_file(id):
     do = DoArchive()
@@ -314,7 +314,7 @@ def download_play_file(id):
     return redirect(presigned, code=302)
 
 
-@arcsi.route("/item/<id>", methods=["DELETE"])
+@arcsi.route("/item/<int:id>", methods=["DELETE"])
 @roles_required("admin")
 def delete_item(id):
     item_query = Item.query.filter_by(id=id)
@@ -324,7 +324,7 @@ def delete_item(id):
     return make_response("Deleted item successfully", 200, headers)
 
 
-@arcsi.route("/item/<id>/edit", methods=["POST"])
+@arcsi.route("/item/<int:id>/edit", methods=["POST"])
 @roles_required("admin")
 def edit_item(id):
     no_error = True

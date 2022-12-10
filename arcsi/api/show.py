@@ -227,7 +227,7 @@ def add_show():
         )
 
 
-@arcsi.route("/show/<id>", methods=["DELETE"])
+@arcsi.route("/show/<int:id>", methods=["DELETE"])
 @roles_required("admin")
 def delete_show(id):
     show_query = Show.query.filter_by(id=id)
@@ -236,7 +236,7 @@ def delete_show(id):
     return make_response("Deleted show successfully", 200, headers)
 
 
-@arcsi.route("/show/<id>/edit", methods=["POST"])
+@arcsi.route("/show/<int:id>/edit", methods=["POST"])
 @roles_required("admin")
 def edit_show(id):
     show_query = Show.query.filter_by(id=id)
@@ -314,7 +314,7 @@ def edit_show(id):
         )
 
 
-@arcsi.route("show/<id>", methods=["GET"])
+@arcsi.route("show/<int:id>", methods=["GET"])
 @auth_token_required
 def view_show(id):
     do = DoArchive()
