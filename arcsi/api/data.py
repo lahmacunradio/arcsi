@@ -17,10 +17,10 @@ def uploaded_episodes_in_last_x_days():
     if (given_date > datetime.today()):
         return make_response("Back to the future?", 418, headers)
     last_days = int(date_metadata['last_days'])
-    if (last_days < 0):
+    if (last_days < 1):
         return make_response("Please, be postive!", 400, headers)
     episodes_count = Item.query.filter(
-        given_date - timedelta(days=last_days) <= Item.play_date
+        given_date - timedelta(days=last_days - 1) <= Item.play_date
         ).filter(Item.play_date <= given_date).count()
     ret = {"uploaded_episodes_in_last_%d_days" % (last_days): episodes_count}
     return make_response(jsonify(ret), 200, headers)
@@ -34,10 +34,10 @@ def uploaded_episodes_in_last_x_weeks():
     if (given_date > datetime.today()):
         return make_response("Back to the future?", 418, headers)
     last_weeks = int(date_metadata['last_weeks'])
-    if (last_weeks < 0):
+    if (last_weeks < 1):
         return make_response("Please, be postive!", 400, headers)
     episodes_count = Item.query.filter(
-        given_date - timedelta(weeks=last_weeks) <= Item.play_date
+        given_date - timedelta(weeks=last_weeks) + timedelta(days=1) <= Item.play_date
         ).filter(Item.play_date <= given_date).count()
     ret = {"uploaded_episodes_in_last_%d_weeks" % (last_weeks): episodes_count}
     return make_response(jsonify(ret), 200, headers)
