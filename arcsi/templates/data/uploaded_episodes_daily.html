@@ -6,11 +6,11 @@
 
 {% block content %}
 <form action="{{ url_for('arcsi.uploaded_episodes_in_last_x_days') }}" method="post" enctype="multipart/form-data">
-    <label for="from_date">From date</label>
-    <input type="date" name="from_date" id="from_date">
+    <label for="end_date">End date</label>
+    <input type="date" name="end_date" id="end_date">
 
-    <label for="last_days">how many days?</label>
-    <input name="last_days" id="last_days" value="{{ last_days }}">
+    <label for="days">how many days?</label>
+    <input name="days" id="days" value="{{ days }}">
     <input type="submit" value="Query">
 </form>
 {% endblock %}
