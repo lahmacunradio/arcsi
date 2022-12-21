@@ -12,12 +12,7 @@ from arcsi.view import router
 def view_data():
     return render_template("data/view.html")
 
-@router.route("/data/latest_uploaded_episodes_daily")
+@router.route("/data/uploaded_episodes")
 @login_required
-def uploaded_episodes_in_last_x_days():
-    return render_template("data/uploaded_episodes_daily.html")
-
-@router.route("/data/latest_uploaded_episodes_weekly")
-@login_required
-def uploaded_episodes_in_last_x_weeks():
-    return render_template("data/uploaded_episodes_weekly.html")
+def uploaded_episodes():
+    return render_template("data/uploaded_episodes.html")
