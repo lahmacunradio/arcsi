@@ -8,7 +8,7 @@ from arcsi.model.item import Item
 
 headers = {"Content-Type": "application/json"}
 
-@arcsi.route("/data/episodes_uploaded", methods=["POST"])
+@arcsi.route("/data/uploaded_episodes", methods=["POST"])
 @roles_required("guest")
 def uploaded_episodes():
     date_metadata = request.form.to_dict()
