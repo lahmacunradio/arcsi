@@ -1,6 +1,25 @@
 {
     "components": {
         "schemas": {
+            "date": {
+                "properties": {
+                    "year": {
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 2022
+                    },
+                    "month": {
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 12
+                    },
+                    "day": {
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 21
+                    }
+                }
+            },
             "id": {
                 "type": "integer",
                 "format": "int32",
@@ -10,11 +29,27 @@
                 "type": "string",
                 "example": "https://www.lahmacun.hu"
             },
-            "api_token": {
+            "apiToken": {
                 "type": "object",
                 "properties": {
                     "api_token": {
                         "type": "string"
+                    }
+                }
+            },
+            "timeFrame": {
+                "properties": {
+                    "start_date": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/date"
+                        }
+                    },
+                    "end_date": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/date"
+                        }
                     }
                 }
             },

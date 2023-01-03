@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h2>{% block title %}Uploaded episodes{% endblock %}</h2>
+<h5>This query gives back the number of uploaded episodes in the selected timeframe.</h5>
+<h5>Both dates are included!</h5>
+{% endblock %}
+{% block content %}
+<div>
+    <form action="{{ url_for('arcsi.uploaded_episodes') }}" method="post" enctype="multipart/form-data">
+        <label for="start_date">Start date</label>
+        <input type="date" name="start_date" id="start_date">
+
+        <label for="end_date">End date</label>
+        <input type="date" name="end_date" id="end_date">
+
+        <input type="submit" value="Query">
+    </form>
+</div>
+{% endblock %}
