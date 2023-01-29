@@ -224,9 +224,6 @@
                     "archive_lahmastore": {
                         "type": "boolean"
                     },
-                    "archive_mixcloud": {
-                        "type": "boolean"
-                    },
                     "name": {
                         "type": "string"
                     },
@@ -242,7 +239,7 @@
                     "archive_lahmastore_base_url": {
                         "type": "string"
                     },
-                    "archive_mixcloud_base_url": {
+                    "social_base_url": {
                         "type": "string"
                     },
                     "cover_image_url": {
@@ -320,9 +317,6 @@
                     "archive_lahmastore": {
                         "type": "boolean"
                     },
-                    "archive_mixcloud": {
-                        "type": "boolean"
-                    },
                     "name": {
                         "type": "string"
                     },
@@ -338,7 +332,7 @@
                     "archive_lahmastore_base_url": {
                         "type": "string"
                     },
-                    "archive_mixcloud_base_url": {
+                    "social_base_url": {
                         "type": "string"
                     },
                     "cover_image_url": {
@@ -492,10 +486,6 @@
                         "type": "boolean",
                         "example": true
                     },
-                    "archive_mixcloud": {
-                        "type": "boolean",
-                        "example": true
-                    },
                     "users": {
                         "type": "integer",
                         "format": "int32",
@@ -525,7 +515,6 @@
                     "start": "04:20",
                     "end": "06:00",
                     "archive_lahmastore": true,
-                    "archive_mixcloud": true,
                     "users": 1,
                     "user_name": "Arcsi",
                     "user_email": "arcsi@lahmacun.hu"
