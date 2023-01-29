@@ -139,6 +139,7 @@ CREATE TABLE public.shows (
     id integer NOT NULL,
     name character varying NOT NULL,
     description character varying,
+    contact_address character varying,
     cover_image_url character varying,
     playlist_name character varying,
     week integer NOT NULL,
