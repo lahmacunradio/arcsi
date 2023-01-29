@@ -52,12 +52,6 @@ class ItemDetailsSchema(Schema):
             only=("id", "display_name",),
         )
     )
-    tags = fields.List(
-        fields.Nested(
-            "TagDetailsSchema",
-            only=("id", "display_name",),
-        )
-    )
 
     @post_load
     def make_item(self, data, **kwargs):
