@@ -16,9 +16,9 @@
         <p>Show host: {% for user in show.users %} {% if user.name %} {{ user.name }} {% else %} {{ user.email }} {% endif %}
             {% endfor %}</p>
         <p>Show description: {{show.description}}</p>
-        <p><img src="{{show.cover_image_url}}" style="max-width: 100%;"></p>
-        <p>Show social base URL: {{show.social_base_url}}</p>
+        <p>Show external link: {{show.social_base_url}}</p>
         <p>Show language: {{show.language}}</p>
+        <p><img src="{{show.cover_image_url}}" style="max-width: 100%;"></p>
         <p>Show playlist name: {{show.playlist_name}}</p>
         <p>Show frequency: {{show.frequency}}</p>
         <p>Show week: {{show.week}}</p>
