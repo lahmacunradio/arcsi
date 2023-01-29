@@ -185,7 +185,7 @@ def add_show():
             name=show_metadata.name,
             description=show_metadata.description,
             contact_address=show_metadata.contact_address,
-            social_base_url=social_base_url,
+            social_base_url=show_metadata.social_base_url,
             language=show_metadata.language,
             playlist_name=show_metadata.playlist_name,
             frequency=show_metadata.frequency,
@@ -270,7 +270,7 @@ def edit_show(id):
         show.active = show_metadata.active
         show.name = show_metadata.name
         show.description = show_metadata.description
-        show.social_base_url=social_base_url
+        show.social_base_url=show_metadata.social_base_url
         show.contact_address = show_metadata.contact_address
         show.language = show_metadata.language
         show.playlist_name = show_metadata.playlist_name
