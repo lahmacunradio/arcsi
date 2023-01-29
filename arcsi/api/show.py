@@ -31,7 +31,7 @@ class ShowDetailsSchema(Schema):
     end = fields.Time()
     archive_lahmastore = fields.Boolean(required=True)
     archive_lahmastore_base_url = fields.Str(dump_only=True)
-    social_base_url = fields.Str(dump_only=True)
+    social_base_url = fields.Str()
     items = fields.List(
         fields.Nested(
             "ItemDetailsSchema",
@@ -183,7 +183,7 @@ def add_show():
             active=show_metadata.active,
             name=show_metadata.name,
             description=show_metadata.description,
-            social_base_url=social_base_url,
+            social_base_url=show_metadata.social_base_url,
             language=show_metadata.language,
             playlist_name=show_metadata.playlist_name,
             frequency=show_metadata.frequency,
@@ -268,7 +268,7 @@ def edit_show(id):
         show.active = show_metadata.active
         show.name = show_metadata.name
         show.description = show_metadata.description
-        show.social_base_url=social_base_url
+        show.social_base_url=show_metadata.social_base_url
         show.language = show_metadata.language
         show.playlist_name = show_metadata.playlist_name
         show.frequency = show_metadata.frequency
