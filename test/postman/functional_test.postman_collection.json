@@ -305,6 +305,11 @@
 							"type": "text"
 						},
 						{
+							"key": "social_base_url",
+							"value": "true",
+							"type": "text"
+						},
+						{
 							"key": "image_file",
 							"type": "file",
 							"src": "testlogo.jpg"
@@ -2867,6 +2872,9 @@
                             "            pm.expect(show.contact_address).to.be.an(\"string\")\r",
 						    "            pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            if (show.social_base_url != null) {\r",
+							"                pm.expect(show.social_base_url).to.be.an(\"string\")\r",
+							"            }\r",
 							"            pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
 							"            pm.expect(show.start).to.be.an(\"string\")\r",
 							"            pm.expect(show.end).to.be.an(\"string\")\r",
@@ -2898,6 +2906,9 @@
 							"        pm.expect(show.description).to.be.an(\"string\")\r",
 							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"        if (show.social_base_url != null) {\r",
+							"            pm.expect(show.social_base_url).to.be.an(\"string\")\r",
+							"        }\r",
 							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
 							"        pm.expect(show.start).to.be.an(\"string\")\r",
 							"        pm.expect(show.end).to.be.an(\"string\")\r",
