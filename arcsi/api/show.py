@@ -25,6 +25,7 @@ class ShowDetailsSchema(Schema):
     language = fields.Str(max=5)
     playlist_name = fields.Str()
     frequency = fields.Int(min=1, max=1)
+    contact_address = fields.Email()
     week = fields.Int()
     day = fields.Int()
     start = fields.Time()
@@ -65,12 +66,12 @@ class ShowDetailsSchema(Schema):
 
 
 show_schema = ShowDetailsSchema()
-show_archive_schema = ShowDetailsSchema(only=("id", "active", "name", "description", "cover_image_url", 
+show_archive_schema = ShowDetailsSchema(only=("id", "active", "name", "description", "contact_address", "cover_image_url", 
                                                     "day", "start", "end", "frequency", "language",
                                                     "playlist_name", "archive_lahmastore_base_url", "archive_mixcloud_base_url", "items"))
 show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
-shows_schedule_schema = ShowDetailsSchema(many=True, exclude=("items",))
+shows_schedule_schema = ShowDetailsSchema(many=True, exclude=("items", "contact_address"))
 shows_schedule_by_schema = ShowDetailsSchema(many=True, 
                                                     only=("id", "active", "name", "description", "cover_image_url", 
                                                     "day", "start", "end", "frequency", "language",
@@ -184,6 +185,7 @@ def add_show():
             active=show_metadata.active,
             name=show_metadata.name,
             description=show_metadata.description,
+            contact_address=show_metadata.contact_address,
             language=show_metadata.language,
             playlist_name=show_metadata.playlist_name,
             frequency=show_metadata.frequency,
@@ -270,6 +272,7 @@ def edit_show(id):
         show.active = show_metadata.active
         show.name = show_metadata.name
         show.description = show_metadata.description
+        show.contact_address = show_metadata.contact_address
         show.language = show_metadata.language
         show.playlist_name = show_metadata.playlist_name
         show.frequency = show_metadata.frequency
