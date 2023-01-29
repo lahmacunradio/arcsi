@@ -32,7 +32,7 @@ class ShowDetailsSchema(Schema):
     end = fields.Time()
     archive_lahmastore = fields.Boolean(required=True)
     archive_lahmastore_base_url = fields.Str(dump_only=True)
-    social_base_url = fields.Str(dump_only=True)
+    social_base_url = fields.Str()
     items = fields.List(
         fields.Nested(
             "ItemDetailsSchema",
