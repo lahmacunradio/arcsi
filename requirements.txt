@@ -73,7 +73,7 @@ toml==0.10.0
 typed-ast==1.4.1
 urllib3==1.25.8
 watchdog==0.10.2
-Werkzeug==1.0.1
+Werkzeug==2.2.3
 wrapt==1.11.2
 WTForms==2.3.1
 flask_swagger_ui==3.25.0
