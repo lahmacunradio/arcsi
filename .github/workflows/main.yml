@@ -42,8 +42,11 @@ jobs:
 
     - name: Set up AzuraCast
       run: |
-        chmod a+x .github/azuracast/docker.sh
-        .github/azuracast/docker.sh install
+        cd .github/azuracast
+        chmod a+x ./docker.sh
+        ./docker.sh install-docker
+        ./docker.sh install-docker-compose
+        ./docker.sh install
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
