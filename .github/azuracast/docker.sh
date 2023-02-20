@@ -150,7 +150,7 @@ get-release-branch-name() {
   if [[ $(get-release-channel) == "stable" ]]; then
     echo "stable"
   else
-    echo "main"
+    echo "9811fbbcb2c7facbf4c53c6b58feb660ba2a675d"
   fi
 }
 

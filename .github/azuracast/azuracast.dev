@@ -2,6 +2,8 @@
 # AzuraCast Customization
 #
 
+AZURACAST_VERSION=9811fbbcb2c7facbf4c53c6b58feb660ba2a675d
+
 APPLICATION_ENV=development
 LOG_LEVEL=debug
 COMPOSER_PLUGIN_MODE=false

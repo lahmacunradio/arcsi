@@ -44,8 +44,6 @@ jobs:
       run: |
         cd .github/azuracast
         chmod a+x ./docker.sh
-        ./docker.sh install-docker
-        ./docker.sh install-docker-compose
         ./docker.sh install
 
     - name: Set up Python ${{ matrix.python-version }}
