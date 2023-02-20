@@ -37,12 +37,13 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - name: Git checkout
+      uses: actions/checkout@v3
+
     - name: Set up AzuraCast
       run: |
         chmod a+x .github/azuracast/docker.sh
         .github/azuracast/docker.sh install
-    - name: Git checkout
-      uses: actions/checkout@v3
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
