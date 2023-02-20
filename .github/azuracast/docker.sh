@@ -418,7 +418,7 @@ run-installer() {
 install() {
   check-install-requirements
 
-  if [[ $PODMAN_MODE -ne 0 ]]; then
+  if [[ $PODMAN_MODE -ne 1 ]]; then
     echo "Podman was detected and will be used instead of Docker..."
 
     if [[ $(command -v podman-compose) ]]; then
