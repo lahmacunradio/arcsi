@@ -688,7 +688,7 @@ backup() {
     .env --file .env set AZURACAST_PGID="$(id -g)"
   fi
 
-  dc exec --user="azuracast" web azuracast_cli azuracast:backup "/var/azuracast/backups/${BACKUP_FILENAME}" "$@"
+  dc exec --user="azuracast" web azuracast_cli azuracast:backup "/home/runner/work/arcsi/arcsi/.github/azuracast/backups/${BACKUP_FILENAME}" "$@"
 
   # Move from Docker volume to local filesystem
   d run --rm -v "azuracast_backups:/backup_src" \
@@ -742,7 +742,7 @@ restore() {
         .env --file .env set AZURACAST_PGID="$(id -g)"
       fi
 
-      dc run --rm web -- azuracast_restore "/var/azuracast/backups/${BACKUP_FILENAME}" "$@"
+      dc run --rm web -- azuracast_restore "/home/runner/work/arcsi/arcsi/.github/azuracast/backups/${BACKUP_FILENAME}" "$@"
 
       # Move file back from volume to local filesystem
       d run --rm -v "azuracast_backups:/backup_src" \

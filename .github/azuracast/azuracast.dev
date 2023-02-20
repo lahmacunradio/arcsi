@@ -25,8 +25,8 @@ INIT_ADMIN_EMAIL="admin_email"
 INIT_ADMIN_PASSWORD="admin_password"
 INIT_ADMIN_API_KEY="admin_api_key"
 
-INIT_MUSIC_PATH=/var/azuracast/www/util/fixtures/init_music
-INIT_PODCASTS_PATH=/var/azuracast/www/util/fixtures/init_podcasts
+INIT_MUSIC_PATH=/home/runner/work/arcsi/arcsi/.github/azuracast/www/util/fixtures/init_music
+INIT_PODCASTS_PATH=/home/runner/work/arcsi/arcsi/.github/azuracast/www/util/fixtures/init_podcasts
 
 INIT_GEOLITE_LICENSE_KEY=
 
