@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2145,SC2178,SC2120,SC2162
 
-PODMAN_MODE=0
+PODMAN_MODE=1
 
 # Docker and Docker Compose aliases
 d() {
@@ -418,7 +418,7 @@ run-installer() {
 install() {
   check-install-requirements
 
-  if [[ $PODMAN_MODE -ne 1 ]]; then
+  if [[ $PODMAN_MODE -ne 0 ]]; then
     echo "Podman was detected and will be used instead of Docker..."
 
     if [[ $(command -v podman-compose) ]]; then
