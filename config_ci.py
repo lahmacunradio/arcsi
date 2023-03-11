@@ -31,5 +31,5 @@ ARCHIVE_HOST_BASE_URL = os.getenv("ARCHIVE_HOST_BASE_URL")
 ARCHIVE_ENDPOINT = os.getenv("ARCHIVE_ENDPOINT")
 ARCHIVE_API_KEY = os.getenv("ARCHIVE_API_KEY")
 ARCHIVE_SECRET_KEY = os.getenv("ARCHIVE_SECRET_KEY")
-AZURACAST_BASE_URL = "http://azuracast.local/api"
+AZURACAST_BASE_URL = "http://azuracast.local"
 AZURACAST_API_KEY = "admin_api_key"
