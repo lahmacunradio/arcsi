@@ -316,7 +316,7 @@ check-install-requirements() {
   fi
 
   SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-  if [[ $SCRIPT_DIR == "/var/azuracast" ]]; then
+  if [[ $SCRIPT_DIR == "/home/runner/work/arcsi/arcsi/.github/azuracast" ]]; then
     echo -en "\e[32m[PASS]\e[0m Installation Directory\n"
   else
     echo -en "\e[93m[WARN]\e[0m Installation Directory\n"
@@ -500,11 +500,11 @@ install-dev() {
   if [[ ! -f docker-compose.override.yml ]]; then
     cp docker-compose.dev.yml docker-compose.override.yml
   fi
-  if [[ ! -f .env ]]; then
-    cp dev.env .env
+  if [[ ! -f .dev ]]; then
+    cp env.dev .env
   fi
   if [[ ! -f azuracast.env ]]; then
-    cp azuracast.dev azuracast.env
+    cp azuracast.env.dev azuracast.env
 
     echo "Customize azuracast.env file now before continuing. Re-run this command to continue installation."
     exit
