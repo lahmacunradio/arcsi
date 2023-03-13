@@ -150,7 +150,7 @@ get-release-branch-name() {
   if [[ $(get-release-channel) == "stable" ]]; then
     echo "stable"
   else
-    echo "9811fbbcb2c7facbf4c53c6b58feb660ba2a675d"
+    echo "main"
   fi
 }
 
@@ -320,7 +320,7 @@ check-install-requirements() {
     echo -en "\e[32m[PASS]\e[0m Installation Directory\n"
   else
     echo -en "\e[93m[WARN]\e[0m Installation Directory\n"
-    echo "       AzuraCast is not installed in /var/azuracast, as is recommended"
+    echo "       AzuraCast is not installed in /home/runner/work/arcsi/arcsi/.github/azuracast, as is recommended"
     echo "       for most installations. This will not prevent AzuraCast from"
     echo "       working, but you will need to update any instructions in our"
     echo "       documentation to reflect your current directory:"
@@ -500,7 +500,7 @@ install-dev() {
   if [[ ! -f docker-compose.override.yml ]]; then
     cp docker-compose.dev.yml docker-compose.override.yml
   fi
-  if [[ ! -f .dev ]]; then
+  if [[ ! -f .env ]]; then
     cp env.dev .env
   fi
   if [[ ! -f azuracast.env ]]; then

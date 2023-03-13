@@ -8,9 +8,9 @@ services:
       - "127.0.0.1:6379:6379" # Redis
       - "127.0.0.1:6070:6070" # Meilisearch
     volumes:
-      - $PWD/util/local_ssl/default.crt:/var/azuracast/acme/ssl.crt:ro
-      - $PWD/util/local_ssl/default.key:/var/azuracast/acme/ssl.key:ro
-      - $PWD/vendor:/var/azuracast/www/vendor
-      - $PWD:/var/azuracast/www
+      - $PWD/util/local_ssl/default.crt:/home/runner/work/arcsi/arcsi/.github/azuracast/acme/ssl.crt:ro
+      - $PWD/util/local_ssl/default.key:/home/runner/work/arcsi/arcsi/.github/azuracast/acme/ssl.key:ro
+      - $PWD/vendor:/home/runner/work/arcsi/arcsi/.github/azuracast/www/vendor
+      - $PWD:/home/runner/work/arcsi/arcsi/.github/azuracast/www
     extra_hosts:
       - "host.docker.internal:host-gateway"
