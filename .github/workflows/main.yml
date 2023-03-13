@@ -45,7 +45,7 @@ jobs:
         pip install podman-compose
         cd .github/azuracast
         chmod a+x ./docker.sh
-        yes '' | ./docker.sh install
+        yes '' | ./docker.sh install-dev
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
