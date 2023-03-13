@@ -43,10 +43,11 @@ jobs:
     - name: Set up AzuraCast
       run: |
         pip install podman-compose
-        cd .github/azuracast
-        chmod a+x ./docker.sh
-        yes '' | ./docker.sh install-dev
-        yes '' | ./docker.sh install-dev
+        mkdir -p /var/azuracast
+        cd /var/azuracast
+        curl -fsSL https://raw.githubusercontent.com/AzuraCast/AzuraCast/main/docker.sh > docker.sh
+        chmod a+x docker.sh
+        yes '' | ./docker.sh install
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
