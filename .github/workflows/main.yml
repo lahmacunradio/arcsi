@@ -42,7 +42,6 @@ jobs:
 
     - name: Set up AzuraCast
       run: |
-        pip install podman-compose
         cd ./.github/azuracast
         chmod a+x docker.sh
         ./docker.sh install-dev
