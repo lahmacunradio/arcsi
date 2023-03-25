@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [ `whoami` != 'azuracast' ]; then
+    exec gosu azuracast azuracast_cli "$@"
+fi
+
+cd /var/azuracast/www
+exec php bin/console "$@"

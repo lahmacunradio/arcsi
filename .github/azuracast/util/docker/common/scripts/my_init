@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Write environment variables to script
+declare -p | grep -Ev 'BASHOPTS|BASH_VERSINFO|EUID|PPID|SHELLOPTS|UID' > /container.env
+chmod 744 /container.env
+
+# Run startup scripts
+for f in /etc/my_init.d/*.sh; do
+  echo "** Running startup script '$f'..."
+  bash "$f" -H
+  echo "** Startup script complete."
+done
+
+echo "** Running Supervisord..."
+
+if [ "$1" = '--no-main-command' ]; then
+    exec supervisord -c /etc/supervisor/supervisord-full.conf --nodaemon
+fi
+
+supervisord -c /etc/supervisor/supervisord-minimal.conf
+
+echo "** Supervisord started."
+echo "** Running uptime_wait..."
+
+uptime_wait
+
+echo "** Services up and ready!"
+
+exec "$@"

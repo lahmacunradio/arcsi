@@ -1,0 +1,2 @@
+0 * * * * * * azuracast_cli azuracast:sync:run
+0 30 */6 * * * * temp_cleanup
