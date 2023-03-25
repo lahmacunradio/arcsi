@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2145,SC2178,SC2120,SC2162
 
-PODMAN_MODE=0
+PODMAN_MODE=1
 
 # Docker and Docker Compose aliases
 d() {
