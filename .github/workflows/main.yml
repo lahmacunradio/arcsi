@@ -44,7 +44,7 @@ jobs:
       run: |
         cd ./.github/azuracast
         chmod a+x docker.sh
-        yes 'Y' | ./docker.sh setup-release
+        mv .env.azura .env
         yes '' | ./docker.sh install
 
     - name: Set up Python ${{ matrix.python-version }}

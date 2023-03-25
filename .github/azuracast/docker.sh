@@ -415,19 +415,6 @@ install() {
     fi
   fi
 
-  setup-release
-
-  run-installer "$@"
-
-  # Installer creates a file at docker-compose.new.yml; copy it to the main spot.
-  if [[ -s docker-compose.new.yml ]]; then
-    if [[ -f docker-compose.yml ]]; then
-      rm docker-compose.yml
-    fi
-
-    mv docker-compose.new.yml docker-compose.yml
-  fi
-
   # If this script is running as a non-root user, set the PUID/PGID in the environment vars appropriately.
   if [[ $EUID -ne 0 ]]; then
     .env --file .env set AZURACAST_PUID="$(id -u)"
@@ -486,6 +473,9 @@ install-dev() {
 
   docker-compose build
   docker-compose run --rm web -- azuracast_install "$@"
+
+  docker-compose -p azuracast_frontend -f docker-compose.frontend.yml build
+  docker-compose -p azuracast_frontend -f docker-compose.frontend.yml run --rm frontend npm run build
 
   docker-compose up -d
   exit
@@ -660,7 +650,7 @@ backup() {
     .env --file .env set AZURACAST_PGID="$(id -g)"
   fi
 
-  docker-compose exec --user="azuracast" web azuracast_cli azuracast:backup "/home/runner/work/arcsi/arcsi/.github/azuracast/backups/${BACKUP_FILENAME}" "$@"
+  docker-compose exec --user="azuracast" web azuracast_cli azuracast:backup "/var/azuracast/backups/${BACKUP_FILENAME}" "$@"
 
   # Move from Docker volume to local filesystem
   docker run --rm -v "azuracast_backups:/backup_src" \
