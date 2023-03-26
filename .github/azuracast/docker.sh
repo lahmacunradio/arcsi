@@ -1,6 +1,25 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2145,SC2178,SC2120,SC2162
 
+PODMAN_MODE=0
+
+# Docker and Docker Compose aliases
+d() {
+  if [[ $PODMAN_MODE -ne 0 ]]; then
+    podman "$@"
+  else
+    docker "$@"
+  fi
+}
+
+dc() {
+  if [[ $PODMAN_MODE -ne 0 ]]; then
+    podman-compose "$@"
+  else
+    docker-compose "$@"
+  fi
+}
+
 # Functions to manage .env files
 __dotenv=
 __dotenv_file=
@@ -297,11 +316,11 @@ check-install-requirements() {
   fi
 
   SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-  if [[ $SCRIPT_DIR == "/home/runner/work/arcsi/arcsi/.github/azuracast" ]]; then
+  if [[ $SCRIPT_DIR == "/var/azuracast" ]]; then
     echo -en "\e[32m[PASS]\e[0m Installation Directory\n"
   else
     echo -en "\e[93m[WARN]\e[0m Installation Directory\n"
-    echo "       AzuraCast is not installed in /home/runner/work/arcsi/arcsi/.github/azuracast, as is recommended"
+    echo "       AzuraCast is not installed in /var/azuracast, as is recommended"
     echo "       for most installations. This will not prevent AzuraCast from"
     echo "       working, but you will need to update any instructions in our"
     echo "       documentation to reflect your current directory:"
@@ -377,7 +396,7 @@ run-installer() {
 
   touch docker-compose.new.yml
 
-  local dc_config_test=$(docker-compose -f docker-compose.new.yml config 2>/dev/null)
+  local dc_config_test=$(dc -f docker-compose.new.yml config 2>/dev/null)
   if [ $? -ne 0 ]; then
     if ask "Docker Compose needs to be updated to continue. Update to latest version?" Y; then
       install-docker-compose
@@ -386,8 +405,8 @@ run-installer() {
 
   curl -fsSL https://raw.githubusercontent.com/AzuraCast/AzuraCast/$AZURACAST_RELEASE_BRANCH/docker-compose.installer.yml -o docker-compose.installer.yml
 
-  docker-compose -p azuracast_installer -f docker-compose.installer.yml pull
-  docker-compose -p azuracast_installer -f docker-compose.installer.yml run --rm installer install "$@"
+  dc -p azuracast_installer -f docker-compose.installer.yml pull
+  dc -p azuracast_installer -f docker-compose.installer.yml run --rm installer install "$@"
 
   rm docker-compose.installer.yml
 }
@@ -399,20 +418,46 @@ run-installer() {
 install() {
   check-install-requirements
 
-  if [[ $(command -v docker) && $(docker --version) ]]; then
-    echo "Docker is already installed! Continuing..."
+  if [[ $PODMAN_MODE -ne 0 ]]; then
+    echo "Podman was detected and will be used instead of Docker..."
+
+    if [[ $(command -v podman-compose) ]]; then
+      echo "Podman-compose is installed!"
+    else
+      echo "Podman mode is active, but podman-compose is not found."
+      echo "Install it by following the instructions on this page:"
+      echo "https://github.com/containers/podman-compose"
+      exit 1
+    fi
   else
-    if ask "Docker does not appear to be installed. Install Docker now?" Y; then
-      install-docker
+    if [[ $(command -v docker) && $(docker --version) ]]; then
+      echo "Docker is already installed! Continuing..."
+    else
+      if ask "Docker does not appear to be installed. Install Docker now?" Y; then
+        install-docker
+      fi
+    fi
+
+    if [[ $(command -v docker-compose) ]]; then
+      echo "Docker Compose is already installed. Continuing..."
+    else
+      if ask "Docker Compose does not appear to be installed. Install Docker Compose now?" Y; then
+        install-docker-compose
+      fi
     fi
   fi
 
-  if [[ $(command -v docker-compose) ]]; then
-    echo "Docker Compose is already installed. Continuing..."
-  else
-    if ask "Docker Compose does not appear to be installed. Install Docker Compose now?" Y; then
-      install-docker-compose
+  setup-release
+
+  run-installer "$@"
+
+  # Installer creates a file at docker-compose.new.yml; copy it to the main spot.
+  if [[ -s docker-compose.new.yml ]]; then
+    if [[ -f docker-compose.yml ]]; then
+      rm docker-compose.yml
     fi
+
+    mv docker-compose.new.yml docker-compose.yml
   fi
 
   # If this script is running as a non-root user, set the PUID/PGID in the environment vars appropriately.
@@ -421,10 +466,14 @@ install() {
     .env --file .env set AZURACAST_PGID="$(id -g)"
   fi
 
-  docker-compose pull
+  if [[ $PODMAN_MODE -ne 0 ]]; then
+    .env --file .env set AZURACAST_PODMAN_MODE=true
+  fi
 
-  docker-compose run --rm web -- azuracast_install "$@"
-  docker-compose up -d
+  dc pull
+
+  dc run --rm web -- azuracast_install "$@"
+  dc up -d
   exit
 }
 
@@ -452,10 +501,10 @@ install-dev() {
     cp docker-compose.dev.yml docker-compose.override.yml
   fi
   if [[ ! -f .env ]]; then
-    cp env.dev .env
+    cp dev.env .env
   fi
   if [[ ! -f azuracast.env ]]; then
-    cp azuracast.env.dev azuracast.env
+    cp azuracast.dev.env azuracast.env
 
     echo "Customize azuracast.env file now before continuing. Re-run this command to continue installation."
     exit
@@ -467,17 +516,21 @@ install-dev() {
     .env --file .env set AZURACAST_PGID="$(id -g)"
   fi
 
+  if [[ $PODMAN_MODE -ne 0 ]]; then
+    .env --file .env set AZURACAST_PODMAN_MODE=true
+  fi
+
   chmod 777 ./frontend/ ./web/ ./vendor/ \
     ./web/static/ ./web/static/api/ \
     ./web/static/dist/ ./web/static/img/
 
-  docker-compose build
-  docker-compose run --rm web -- azuracast_install "$@"
+  dc build
+  dc run --rm web -- azuracast_install "$@"
 
-  docker-compose -p azuracast_frontend -f docker-compose.frontend.yml build
-  docker-compose -p azuracast_frontend -f docker-compose.frontend.yml run --rm frontend npm run build
+  dc -p azuracast_frontend -f docker-compose.frontend.yml build
+  dc -p azuracast_frontend -f docker-compose.frontend.yml run --rm frontend npm run build
 
-  docker-compose up -d
+  dc up -d
   exit
 }
 
@@ -520,15 +573,17 @@ update() {
     fi
 
     # Check Docker version.
-    DOCKER_VERSION=$(docker version -f "{{.Server.Version}}")
-    DOCKER_VERSION_MAJOR=$(echo "$DOCKER_VERSION"| cut -d'.' -f 1)
+    if [[ $PODMAN_MODE -eq 0 ]]; then
+      DOCKER_VERSION=$(docker version -f "{{.Server.Version}}")
+      DOCKER_VERSION_MAJOR=$(echo "$DOCKER_VERSION"| cut -d'.' -f 1)
 
-    if [ "${DOCKER_VERSION_MAJOR}" -ge 20 ]; then
-      echo "Docker server (version ${DOCKER_VERSION}) meets minimum version requirements."
-    else
-      if ask "Docker is out of date on this server. Attempt automatic upgrade?" Y; then
-        install-docker
-        install-docker-compose
+      if [ "${DOCKER_VERSION_MAJOR}" -ge 20 ]; then
+        echo "Docker server (version ${DOCKER_VERSION}) meets minimum version requirements."
+      else
+        if ask "Docker is out of date on this server. Attempt automatic upgrade?" Y; then
+          install-docker
+          install-docker-compose
+        fi
       fi
     fi
 
@@ -547,23 +602,23 @@ update() {
     )"
 
     if [[ ${COMPOSE_FILES_MATCH} -ne 0 ]]; then
-      docker-compose -f docker-compose.new.yml pull
-      docker-compose down --timeout 30
+      dc -f docker-compose.new.yml pull
+      dc down --timeout 60
 
       cp docker-compose.yml docker-compose.backup.yml
       mv docker-compose.new.yml docker-compose.yml
     else
       rm docker-compose.new.yml
 
-      docker-compose pull
-      docker-compose down --timeout 30
+      dc pull
+      dc down --timeout 60
     fi
 
-    docker-compose run --rm web -- azuracast_update "$@"
-    docker-compose up -d
+    dc run --rm web -- azuracast_update "$@"
+    dc up -d
 
     if ask "Clean up all stopped Docker containers and images to save space?" Y; then
-      docker system prune -f
+      d system prune -f
     fi
 
     echo "Update complete!"
@@ -579,7 +634,9 @@ update-self() {
   local AZURACAST_RELEASE_BRANCH
   AZURACAST_RELEASE_BRANCH=$(get-release-branch-name)
 
-  curl -fsSL https://raw.githubusercontent.com/AzuraCast/AzuraCast/$AZURACAST_RELEASE_BRANCH/docker.sh -o docker.sh
+  curl -H 'Cache-Control: no-cache, no-store' -fsSL \
+    https://raw.githubusercontent.com/AzuraCast/AzuraCast/$AZURACAST_RELEASE_BRANCH/docker.sh?$(date +%s) \
+    -o docker.sh
   chmod a+x docker.sh
 
   echo "New Docker utility script downloaded."
@@ -591,7 +648,7 @@ update-self() {
 # Usage: ./docker.sh cli [command]
 #
 cli() {
-  docker-compose exec --user="azuracast" web azuracast_cli "$@"
+  dc exec --user="azuracast" web azuracast_cli "$@"
   exit
 }
 
@@ -600,7 +657,7 @@ cli() {
 # Usage: ./docker.sh bash
 #
 bash() {
-  docker-compose exec --user="azuracast" web bash
+  dc exec --user="azuracast" web bash
   exit
 }
 
@@ -608,26 +665,7 @@ bash() {
 # Enter the MariaDB database management terminal with the correct credentials.
 #
 db() {
-  local MYSQL_HOST MYSQL_PORT MYSQL_USER MYSQL_PASSWORD MYSQL_DATABASE
-
-  .env --file azuracast.env get MYSQL_HOST
-  MYSQL_HOST="${REPLY:-localhost}"
-
-  .env --file azuracast.env get MYSQL_PORT
-  MYSQL_PORT="${REPLY:-3306}"
-
-  .env --file azuracast.env get MYSQL_USER
-  MYSQL_USER="${REPLY:-azuracast}"
-
-  .env --file azuracast.env get MYSQL_PASSWORD
-  MYSQL_PASSWORD="${REPLY:-azur4c457}"
-
-  .env --file azuracast.env get MYSQL_DATABASE
-  MYSQL_DATABASE="${REPLY:-azuracast}"
-
-  docker-compose exec --user="mysql" web mysql --user=${MYSQL_USER} --password=${MYSQL_PASSWORD} \
-    --host=${MYSQL_HOST} --port=${MYSQL_PORT} --database=${MYSQL_DATABASE}
-
+  dc exec web azuracast_db
   exit
 }
 
@@ -650,12 +688,15 @@ backup() {
     .env --file .env set AZURACAST_PGID="$(id -g)"
   fi
 
-  docker-compose exec --user="azuracast" web azuracast_cli azuracast:backup "/var/azuracast/backups/${BACKUP_FILENAME}" "$@"
+  dc exec --user="azuracast" web azuracast_cli azuracast:backup "/var/azuracast/backups/${BACKUP_FILENAME}" "$@"
 
   # Move from Docker volume to local filesystem
-  docker run --rm -v "azuracast_backups:/backup_src" \
-  -v "$BACKUP_DIR:/backup_dest" \
-  busybox mv "/backup_src/${BACKUP_FILENAME}" "/backup_dest/${BACKUP_FILENAME}"
+  d run --rm -v "azuracast_backups:/backup_src" \
+    -v "$BACKUP_DIR:/backup_dest" \
+    busybox mv "/backup_src/${BACKUP_FILENAME}" "/backup_dest/${BACKUP_FILENAME}"
+
+  echo "Backup completed."
+  exit
 }
 
 #
@@ -684,14 +725,14 @@ restore() {
         exit 1
       fi
 
-      docker-compose down
+      dc down
 
       # Remove most AzuraCast volumes but preserve some essential ones.
-      docker volume rm -f $(docker volume ls | grep 'azuracast' | grep -v 'station\|install' | awk 'NR>1 {print $2}')
-      docker volume create azuracast_backups
+      d volume rm -f $(d volume ls | grep 'azuracast' | grep -v 'station\|install' | awk 'NR>1 {print $2}')
+      d volume create azuracast_backups
 
       # Move from local filesystem to Docker volume
-      docker run --rm -v "$BACKUP_DIR:/backup_src" \
+      d run --rm -v "$BACKUP_DIR:/backup_src" \
         -v "azuracast_backups:/backup_dest" \
         busybox mv "/backup_src/${BACKUP_FILENAME}" "/backup_dest/${BACKUP_FILENAME}"
 
@@ -701,25 +742,25 @@ restore() {
         .env --file .env set AZURACAST_PGID="$(id -g)"
       fi
 
-      docker-compose run --rm web -- azuracast_restore "/home/runner/work/arcsi/arcsi/.github/azuracast/backups/${BACKUP_FILENAME}" "$@"
+      dc run --rm web -- azuracast_restore "/var/azuracast/backups/${BACKUP_FILENAME}" "$@"
 
       # Move file back from volume to local filesystem
-      docker run --rm -v "azuracast_backups:/backup_src" \
+      d run --rm -v "azuracast_backups:/backup_src" \
         -v "$BACKUP_DIR:/backup_dest" \
         busybox mv "/backup_src/${BACKUP_FILENAME}" "/backup_dest/${BACKUP_FILENAME}"
 
-      docker-compose down --timeout 30
-      docker-compose up -d
+      dc down --timeout 30
+      dc up -d
     else
-      docker-compose down
+      dc down
 
       # Remove most AzuraCast volumes but preserve some essential ones.
-      docker volume rm -f $(docker volume ls | grep 'azuracast' | grep -v 'station\|backups\|install' | awk 'NR>1 {print $2}')
+      d volume rm -f $(d volume ls | grep 'azuracast' | grep -v 'station\|backups\|install' | awk 'NR>1 {print $2}')
 
-      docker-compose run --rm web -- azuracast_restore "$@"
+      dc run --rm web -- azuracast_restore "$@"
 
-      docker-compose down --timeout 30
-      docker-compose up -d
+      dc down --timeout 30
+      dc up -d
     fi
   fi
   exit
@@ -742,35 +783,23 @@ restore-legacy() {
   cd "$APP_BASE_DIR" || exit
 
   if [ -f "$BACKUP_PATH" ]; then
-    docker-compose down --timeout 30
+    dc down --timeout 30
 
-    docker volume rm azuracast_db_data azuracast_station_data
-    docker volume create azuracast_db_data
-    docker volume create azuracast_station_data
+    d volume rm azuracast_db_data azuracast_station_data
+    d volume create azuracast_db_data
+    d volume create azuracast_station_data
 
-    docker run --rm -v "$BACKUP_DIR:/backup" \
+    d run --rm -v "$BACKUP_DIR:/backup" \
       -v azuracast_db_data:/azuracast/db \
       -v azuracast_station_data:/azuracast/stations \
       busybox tar zxvf "/backup/$BACKUP_FILENAME"
 
-    docker-compose up -d
+    dc up -d
   else
     echo "File $BACKUP_PATH does not exist in this directory. Nothing to restore."
     exit 1
   fi
 
-  exit
-}
-
-#
-# DEVELOPER TOOL:
-# Access the static console as a developer.
-# Usage: ./docker.sh static [static_container_command]
-#
-static() {
-  docker-compose -f docker-compose.frontend.yml down -v
-  docker-compose -f docker-compose.frontend.yml build
-  docker-compose --env-file=.env -f docker-compose.frontend.yml run --rm frontend "$@"
   exit
 }
 
@@ -781,9 +810,9 @@ static() {
 uninstall() {
   if ask "This operation is destructive and will wipe your existing Docker containers. Continue?" N; then
 
-    docker-compose down -v
-    docker-compose rm -f
-    docker volume prune -f
+    dc down -v
+    dc rm -f
+    d volume prune -f
 
     echo "All AzuraCast Docker containers and volumes were removed."
     echo "To remove *all* Docker containers and volumes, run:"
@@ -817,8 +846,8 @@ letsencrypt-create() {
 change-ports() {
   setup-ports
 
-  docker-compose down --timeout 30
-  docker-compose up -d
+  dc down --timeout 60
+  dc up -d
 }
 
 #
@@ -826,12 +855,12 @@ change-ports() {
 #
 up() {
   echo "Starting up AzuraCast services..."
-  docker-compose up -d
+  dc up -d
 }
 
 down() {
   echo "Shutting down AzuraCast services..."
-  docker-compose down --timeout 30
+  dc down --timeout 60
 }
 
 restart() {
@@ -841,5 +870,10 @@ restart() {
 
 # Ensure we're in the same directory as this script.
 cd "$( dirname "${BASH_SOURCE[0]}" )" || exit
+
+# Podman support
+if [[ $(command -v podman) ]]; then
+  PODMAN_MODE=1
+fi
 
 "$@"

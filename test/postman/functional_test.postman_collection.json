@@ -12,7 +12,7 @@
 				"header": [
 					{
 						"key": "X-API-Key",
-						"value": "admin_api_key",
+						"value": "azuracast_api_key",
 						"type": "default"
 					}
 				],
