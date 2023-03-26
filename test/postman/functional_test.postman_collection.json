@@ -12,7 +12,7 @@
 				"header": [
 					{
 						"key": "X-API-Key",
-						"value": "azuracast_api_key",
+						"value": "admin_api_key",
 						"type": "default"
 					}
 				],
@@ -26,7 +26,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost/api/admin/stations",
+					"raw": "http://azuracast.local/api/admin/stations",
 					"protocol": "http",
 					"host": [
 						"azuracast",
