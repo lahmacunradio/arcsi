@@ -43,7 +43,7 @@ jobs:
     - name: Set up AzuraCast
       run: |
         cd ./.github/azuracast
-        docker-compose up
+        docker-compose up -d
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4

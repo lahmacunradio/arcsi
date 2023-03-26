@@ -26,7 +26,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://azuracast.local/api/admin/stations",
+					"raw": "http://localhost/api/admin/stations",
 					"protocol": "http",
 					"host": [
 						"azuracast",
