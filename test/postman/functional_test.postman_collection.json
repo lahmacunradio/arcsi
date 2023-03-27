@@ -305,14 +305,14 @@
 							"type": "text"
 						},
 						{
-							"key": "archive_mixcloud",
-							"value": "false",
-							"type": "text"
-						},
-						{
 							"key": "image_file",
 							"type": "file",
 							"src": "testlogo.jpg"
+						},
+						{
+							"key": "social_media_url",
+							"value": "www.{{$randomWord}}.hu",
+							"type": "default"
 						}
 					]
 				},
