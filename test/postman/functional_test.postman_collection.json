@@ -310,7 +310,7 @@
 							"src": "testlogo.jpg"
 						},
 						{
-							"key": "social_media_url",
+							"key": "social_base_url",
 							"value": "www.{{$randomWord}}.hu",
 							"type": "default"
 						}
