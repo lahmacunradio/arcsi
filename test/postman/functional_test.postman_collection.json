@@ -6,43 +6,6 @@
 	},
 	"item": [
 		{
-			"name": "Create Station",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "X-API-Key",
-						"value": "admin_api_key",
-						"type": "default",
-						"disabled": true
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"id\": 1,\r\n  \"name\": \"AzuraTest Radio\",\r\n  \"short_name\": \"azuratest_radio\",\r\n  \"is_enabled\": true,\r\n  \"frontend_type\": \"icecast\",\r\n  \"frontend_config\": [\r\n    null\r\n  ],\r\n  \"backend_type\": \"liquidsoap\",\r\n  \"backend_config\": [\r\n    null\r\n  ],\r\n  \"description\": \"A sample radio station.\",\r\n  \"url\": \"https://demo.azuracast.com/\",\r\n  \"genre\": \"Various\",\r\n  \"radio_base_dir\": \"/var/azuracast/stations/azuratest_radio\",\r\n  \"radio_media_dir\": \"/var/azuracast/stations/azuratest_radio/media\",\r\n  \"automation_settings\": [\r\n    null\r\n  ],\r\n  \"enable_requests\": true,\r\n  \"request_delay\": 5,\r\n  \"request_threshold\": 15,\r\n  \"disconnect_deactivate_streamer\": 0,\r\n  \"enable_streamers\": false,\r\n  \"is_streamer_live\": false,\r\n  \"enable_public_page\": true,\r\n  \"enable_on_demand\": true,\r\n  \"api_history_items\": 5,\r\n  \"storage_quota\": \"1 GB\",\r\n  \"storage_quota_bytes\": \"1000000000\",\r\n  \"storage_used\": \"1 GB\",\r\n  \"storage_used_bytes\": \"1000000000\",\r\n  \"timezone\": \"UTC\",\r\n  \"default_album_art_url\": \"https://example.com/image.jpg\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://azuracast.local/api/admin/stations",
-					"protocol": "http",
-					"host": [
-						"azuracast",
-						"local"
-					],
-					"path": [
-						"api",
-						"admin",
-						"stations"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Get API Token (get_api_token())",
 			"event": [
 				{
