@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "e661c83e-0370-4481-8dfe-d0082bbf878e",
-		"name": "CI test (functional)",
+		"_postman_id": "6641a1ab-c4fb-4ff6-b736-e0277c7727f3",
+		"name": "CI test (functional) Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -747,6 +747,11 @@
 							"key": "play_file",
 							"type": "file",
 							"src": []
+						},
+						{
+							"key": "social_base_url",
+							"value": "new live item 1",
+							"type": "default"
 						}
 					]
 				},
@@ -992,6 +997,11 @@
 							"key": "play_file",
 							"type": "file",
 							"src": "testaudio.mp3"
+						},
+						{
+							"key": "social_base_url",
+							"value": "new live item 1",
+							"type": "default"
 						}
 					]
 				},
@@ -1148,6 +1158,11 @@
 							"key": "play_file",
 							"type": "file",
 							"src": "testaudio.mp3"
+						},
+						{
+							"key": "social_base_url",
+							"value": "new live item 1",
+							"type": "default"
 						}
 					]
 				},
@@ -1386,6 +1401,11 @@
 							"key": "play_file",
 							"type": "file",
 							"src": "testaudio.mp3"
+						},
+						{
+							"key": "social_base_url",
+							"value": "new live item 1",
+							"type": "default"
 						}
 					]
 				},
@@ -1625,6 +1645,11 @@
 							"key": "play_file",
 							"type": "file",
 							"src": []
+						},
+						{
+							"key": "social_base_url",
+							"value": "new live item 1",
+							"type": "default"
 						}
 					]
 				},
@@ -1870,6 +1895,11 @@
 							"key": "play_file",
 							"type": "file",
 							"src": "testaudio.mp3"
+						},
+						{
+							"key": "social_base_url",
+							"value": "new live item 1",
+							"type": "default"
 						}
 					]
 				},
@@ -2033,6 +2063,11 @@
 							"key": "play_file",
 							"type": "file",
 							"src": "testaudio.mp3"
+						},
+						{
+							"key": "social_base_url",
+							"value": "new live item 1",
+							"type": "default"
 						}
 					]
 				},
