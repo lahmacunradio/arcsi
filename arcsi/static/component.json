@@ -538,9 +538,6 @@
                     "archive_lahmastore": {
                         "type":"boolean"
                     },
-                    "archive_mixcloud": {
-                        "type":"boolean"
-                    },
                     "name": {
                         "type": "string"
                     },
@@ -560,7 +557,7 @@
                     "archive_lahmastore_canonical_url": {
                         "type": "string"
                     },
-                    "archive_mixcloud_canonical_url": {
+                    "social_base_url": {
                         "type": "string"
                     },
                     "image_url": {
@@ -1044,9 +1041,6 @@
           "archive_lahmastore": {
             "type": "boolean"
           },
-          "archive_mixcloud": {
-            "type": "boolean"
-          },
           "name": {
             "type": "string"
           },
@@ -1066,7 +1060,7 @@
           "archive_lahmastore_canonical_url": {
             "type": "string"
           },
-          "archive_mixcloud_canonical_url": {
+          "social_base_url": {
             "type": "string"
           },
           "image_url": {
@@ -1430,9 +1424,6 @@
           "archive_lahmastore": {
             "type": "boolean"
           },
-          "archive_mixcloud": {
-            "type": "boolean"
-          },
           "name": {
             "type": "string"
           },
@@ -1452,7 +1443,7 @@
           "archive_lahmastore_canonical_url": {
             "type": "string"
           },
-          "archive_mixcloud_canonical_url": {
+          "social_base_url": {
             "type": "string"
           },
           "image_url": {
@@ -1636,9 +1627,9 @@
             "type": "boolean",
             "example": true
           },
-          "archive_mixcloud": {
-            "type": "boolean",
-            "example": true
+          "social_base_url": {
+            "type": "string",
+            "example": "item-social_base_url"
           },
           "uploader": {
             "type": "string",

@@ -44,6 +44,11 @@
     <textarea name="description" id="description"></textarea>
   </div>
 
+  <div>
+    <label for="social_base_url">External link</label>
+    <input name="social_base_url" id="social_base_url">
+  </div>
+
 <div>
     <label for="language">Episode language</label>
     <select name="language" id="language">
@@ -83,9 +88,6 @@
     <label for="archive_lahmastore">Archive to Lahmastore</label>
     <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" value="1"><input type="checkbox"
       onclick="this.previousElementSibling.value=this.checked?1:0" checked>
-    <label for="archive_mixcloud">Archive to Mixcloud</label>
-    <input type="hidden" name="archive_mixcloud" id="archive_mixcloud" value="0"><input type="checkbox"
-      onclick="this.previousElementSibling.value=this.checked?1:0">
     <input type="hidden" name="uploader" id="uploader" value="{{ current_user.email }}">
   </div>
   
