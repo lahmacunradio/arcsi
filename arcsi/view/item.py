@@ -26,7 +26,7 @@ def add_item():
         return "add new show first"
 
     if current_user.has_role("admin"):
-        result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_shows"), headers = {"Authentication-Token": current_user.get_auth_token()})
+        result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_shows_without_items"), headers = {"Authentication-Token": current_user.get_auth_token()})
         shows = result.json()
 
     shows_sorted = sorted(shows, key=lambda k: k['name'])
@@ -55,7 +55,7 @@ def edit_item(id):
     relpath = url_for("arcsi.view_item", id=id)
     item = requests.get(app.config["APP_BASE_URL"] + relpath, headers = {"Authentication-Token": current_user.get_auth_token()})
     item_json = item.json()
-    result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_shows"), headers = {"Authentication-Token": current_user.get_auth_token()})
+    result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_shows_without_items"), headers = {"Authentication-Token": current_user.get_auth_token()})
     shows = result.json()
     shows_sorted = sorted(shows, key=lambda k: k['name'])
     return render_template("item/edit.html", item=item_json, shows=shows_sorted)
