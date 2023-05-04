@@ -44,6 +44,11 @@
 </div>
 
 <div>
+  <label for="social_base_url">External link</label>
+  <input name="social_base_url" id="social_base_url" value="{{ item.social_base_url }}">
+</div>
+
+<div>
   <label for="language">Episode language</label>
   <select name="language" id="language">
     <option id="music" value="music">Music</option>
@@ -83,10 +88,6 @@
   <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" {% if item.archive_lahmastore %} value="1"
     {% else %} value="0" {% endif %}><input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
     {% if item.archive_lahmastore %} checked {% endif %}>
-  <label for="archive_mixcloud">Archive to Mixcloud</label>
-  <input type="hidden" name="archive_mixcloud" id="archive_mixcloud" {% if item.archive_mixcloud %} value="1" {% else %}
-    value="0" {% endif %}><input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
-    {% if item.archive_mixcloud %} checked {% endif %}>
   <!-- TODO updated_at ? uploader means anything here? -->
   <input type="hidden" name="uploader" id="uploader" value="{{ current_user.email }}">
 </div>
