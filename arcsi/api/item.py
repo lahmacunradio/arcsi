@@ -86,7 +86,7 @@ def list_items_latest():
     size = request.args.get('size', 12, type=int)
     items = Item.query.filter(Item.play_date < datetime.today() - timedelta(days=1)
                 ).filter(Item.archived == True
-                ).order_by(Item.play_date.desc()
+                ).order_by(Item.play_date.desc(), Item.id.desc()
                 ).paginate(page, size, False)
     for item in items.items:
         if item.image_url:
