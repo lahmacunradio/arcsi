@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "e661c83e-0370-4481-8dfe-d0082bbf878e",
-		"name": "CI test (functional)",
+		"_postman_id": "6641a1ab-c4fb-4ff6-b736-e0277c7727f3",
+		"name": "CI test (functional) Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -113,15 +113,14 @@
 							"        })\r",
 							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.name).to.be.an(\"string\")\r",
 				  		    "        pm.expect(show.description).to.be.an(\"string\")\r",
                             "        pm.expect(show.contact_address).to.be.an(\"string\")\r",
 							"        pm.expect(show.language).to.be.an(\"string\")\r",
 							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"        if (show.archive_mixcloud_base_url != null) {\r",
-							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        if (show.social_base_url != null) {\r",
+							"            pm.expect(show.social_base_url).to.be.an(\"string\")\r",
 							"        }\r",
 							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
 							"        pm.expect(show.start).to.be.an(\"string\")\r",
@@ -201,15 +200,14 @@
 							"    })\r",
 							"    pm.expect(show.active).to.be.an(\"boolean\")\r",
 							"    pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"    pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
 							"    pm.expect(show.name).to.be.an(\"string\")\r",
 							"    pm.expect(show.description).to.be.an(\"string\")\r",
                             "    pm.expect(show.contact_address).to.be.an(\"string\")\r",
 						    "    pm.expect(show.language).to.be.an(\"string\")\r",
 							"    pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"    pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"    if (show.archive_mixcloud_base_url != null) {\r",
-							"        pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"    if (show.social_base_url != null) {\r",
+							"        pm.expect(show.social_base_url).to.be.an(\"string\")\r",
 							"    }\r",
 							"    pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
 							"    pm.expect(show.start).to.be.an(\"string\")\r",
@@ -307,14 +305,14 @@
 							"type": "text"
 						},
 						{
-							"key": "archive_mixcloud",
-							"value": "false",
-							"type": "text"
-						},
-						{
 							"key": "image_file",
 							"type": "file",
 							"src": "testlogo.jpg"
+						},
+						{
+							"key": "social_base_url",
+							"value": "www.{{$randomWord}}.hu",
+							"type": "default"
 						}
 					]
 				},
@@ -382,15 +380,14 @@
 							"        })\r",
 							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.name).to.be.an(\"string\")\r",
 							"        pm.expect(show.description).to.be.an(\"string\")\r",
                             "        pm.expect(show.contact_address).to.be.an(\"string\")\r",
 						    "        pm.expect(show.language).to.be.an(\"string\")\r",
 							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"        if (show.archive_mixcloud_base_url != null) {\r",
-							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        if (show.social_base_url != null) {\r",
+							"            pm.expect(show.social_base_url).to.be.an(\"string\")\r",
 							"        }\r",
 							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
 							"        pm.expect(show.start).to.be.an(\"string\")\r",
@@ -481,15 +478,14 @@
 							"    })\r",
 							"    pm.expect(show.active).to.be.an(\"boolean\")\r",
 							"    pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"    pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
 							"    pm.expect(show.name).to.be.an(\"string\")\r",
 						    "    pm.expect(show.description).to.be.an(\"string\")\r",
                             "    pm.expect(show.contact_address).to.be.an(\"string\")\r",
 							"    pm.expect(show.language).to.be.an(\"string\")\r",
 							"    pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"    pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"    if (show.archive_mixcloud_base_url != null) {\r",
-							"        pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"    if (show.social_base_url != null) {\r",
+							"        pm.expect(show.social_base_url).to.be.an(\"string\")\r",
 							"    }\r",
 							"    pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
 							"    pm.expect(show.start).to.be.an(\"string\")\r",
@@ -573,14 +569,13 @@
 							"        }\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
 							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
 							"        pm.expect(item.description).to.be.an(\"string\")\r",
 							"        pm.expect(item.language).to.be.an(\"string\")\r",
 							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
 							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.social_base_url).to.be.an(\"string\")\r",
 							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"        if (item.play_file_name != null) {\r",
 							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
@@ -657,12 +652,11 @@
 							"    })\r",
 							"    pm.expect(item.airing).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archive_lahmastore).to.be.an(\"boolean\");\r",
-							"    pm.expect(item.archive_mixcloud).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archived).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.broadcast).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.live).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
-							"    pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.social_base_url).to.be.an(\"string\");\r",
 							"    pm.expect(item.description).to.be.an(\"string\");\r",
 							"    pm.expect(item.image_url).to.be.an(\"string\");\r",
 							"    pm.expect(item.language).to.be.an(\"string\");\r",
@@ -744,11 +738,6 @@
 							"type": "text"
 						},
 						{
-							"key": "archive_mixcloud",
-							"value": "false",
-							"type": "text"
-						},
-						{
 							"key": "uploader",
 							"value": "1",
 							"type": "text"
@@ -762,6 +751,11 @@
 							"key": "play_file",
 							"type": "file",
 							"src": []
+						},
+						{
+							"key": "social_base_url",
+							"value": "new live item 1",
+							"type": "default"
 						}
 					]
 				},
@@ -819,14 +813,13 @@
 							"        }\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
 							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
 							"        pm.expect(item.description).to.be.an(\"string\")\r",
 							"        pm.expect(item.language).to.be.an(\"string\")\r",
 							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
 							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.social_base_url).to.be.an(\"string\")\r",
 							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"        if (item.play_file_name != null) {\r",
 							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
@@ -903,12 +896,11 @@
 							"    })\r",
 							"    pm.expect(item.airing).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archive_lahmastore).to.be.an(\"boolean\");\r",
-							"    pm.expect(item.archive_mixcloud).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archived).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.broadcast).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.live).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
-							"    pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.social_base_url).to.be.an(\"string\");\r",
 							"    pm.expect(item.description).to.be.an(\"string\");\r",
 							"    pm.expect(item.image_url).to.be.an(\"string\");\r",
 							"    pm.expect(item.language).to.be.an(\"string\");\r",
@@ -1001,11 +993,6 @@
 							"type": "text"
 						},
 						{
-							"key": "archive_mixcloud",
-							"value": "false",
-							"type": "text"
-						},
-						{
 							"key": "image_file",
 							"type": "file",
 							"src": "testlogo.jpg"
@@ -1014,6 +1001,11 @@
 							"key": "play_file",
 							"type": "file",
 							"src": "testaudio.mp3"
+						},
+						{
+							"key": "social_base_url",
+							"value": "new live item 1",
+							"type": "default"
 						}
 					]
 				},
@@ -1071,12 +1063,11 @@
 							"    })\r",
 							"    pm.expect(item.airing).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archive_lahmastore).to.be.an(\"boolean\");\r",
-							"    pm.expect(item.archive_mixcloud).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archived).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.broadcast).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.live).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
-							"    pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.social_base_url).to.be.an(\"string\");\r",
 							"    pm.expect(item.description).to.be.an(\"string\");\r",
 							"    pm.expect(item.image_url).to.be.an(\"string\");\r",
 							"    pm.expect(item.language).to.be.an(\"string\");\r",
@@ -1158,11 +1149,6 @@
 							"type": "text"
 						},
 						{
-							"key": "archive_mixcloud",
-							"value": "false",
-							"type": "text"
-						},
-						{
 							"key": "uploader",
 							"value": "1",
 							"type": "text"
@@ -1176,6 +1162,11 @@
 							"key": "play_file",
 							"type": "file",
 							"src": "testaudio.mp3"
+						},
+						{
+							"key": "social_base_url",
+							"value": "new live item 1",
+							"type": "default"
 						}
 					]
 				},
@@ -1233,14 +1224,13 @@
 							"        }\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
 							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
 							"        pm.expect(item.description).to.be.an(\"string\")\r",
 							"        pm.expect(item.language).to.be.an(\"string\")\r",
 							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
 							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.social_base_url).to.be.an(\"string\")\r",
 							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"        if (item.play_file_name != null) {\r",
 							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
@@ -1316,12 +1306,11 @@
 							"    })\r",
 							"    pm.expect(item.airing).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archive_lahmastore).to.be.an(\"boolean\");\r",
-							"    pm.expect(item.archive_mixcloud).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archived).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.broadcast).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.live).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
-							"    pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.social_base_url).to.be.an(\"string\");\r",
 							"    pm.expect(item.description).to.be.an(\"string\");\r",
 							"    pm.expect(item.image_url).to.be.an(\"string\");\r",
 							"    pm.expect(item.language).to.be.an(\"string\");\r",
@@ -1403,11 +1392,6 @@
 							"type": "text"
 						},
 						{
-							"key": "archive_mixcloud",
-							"value": "false",
-							"type": "text"
-						},
-						{
 							"key": "uploader",
 							"value": "1",
 							"type": "text"
@@ -1421,6 +1405,11 @@
 							"key": "play_file",
 							"type": "file",
 							"src": "testaudio.mp3"
+						},
+						{
+							"key": "social_base_url",
+							"value": "new live item 1",
+							"type": "default"
 						}
 					]
 				},
@@ -1478,14 +1467,13 @@
 							"        }\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
 							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
 							"        pm.expect(item.description).to.be.an(\"string\")\r",
 							"        pm.expect(item.language).to.be.an(\"string\")\r",
 							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
 							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.social_base_url).to.be.an(\"string\")\r",
 							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"        if (item.play_file_name != null) {\r",
 							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
@@ -1562,12 +1550,11 @@
 							"    })\r",
 							"    pm.expect(item.airing).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archive_lahmastore).to.be.an(\"boolean\");\r",
-							"    pm.expect(item.archive_mixcloud).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archived).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.broadcast).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.live).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
-							"    pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.social_base_url).to.be.an(\"string\");\r",
 							"    pm.expect(item.description).to.be.an(\"string\");\r",
 							"    pm.expect(item.image_url).to.be.an(\"string\");\r",
 							"    pm.expect(item.language).to.be.an(\"string\");\r",
@@ -1649,11 +1636,6 @@
 							"type": "text"
 						},
 						{
-							"key": "archive_mixcloud",
-							"value": "false",
-							"type": "text"
-						},
-						{
 							"key": "uploader",
 							"value": "1",
 							"type": "text"
@@ -1667,6 +1649,11 @@
 							"key": "play_file",
 							"type": "file",
 							"src": []
+						},
+						{
+							"key": "social_base_url",
+							"value": "new live item 1",
+							"type": "default"
 						}
 					]
 				},
@@ -1724,14 +1711,13 @@
 							"        }\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
 							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
 							"        pm.expect(item.description).to.be.an(\"string\")\r",
 							"        pm.expect(item.language).to.be.an(\"string\")\r",
 							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
 							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.social_base_url).to.be.an(\"string\")\r",
 							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"        if (item.play_file_name != null) {\r",
 							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
@@ -1808,12 +1794,11 @@
 							"    })\r",
 							"    pm.expect(item.airing).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archive_lahmastore).to.be.an(\"boolean\");\r",
-							"    pm.expect(item.archive_mixcloud).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archived).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.broadcast).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.live).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
-							"    pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.social_base_url).to.be.an(\"string\");\r",
 							"    pm.expect(item.description).to.be.an(\"string\");\r",
 							"    pm.expect(item.image_url).to.be.an(\"string\");\r",
 							"    pm.expect(item.language).to.be.an(\"string\");\r",
@@ -1906,11 +1891,6 @@
 							"type": "text"
 						},
 						{
-							"key": "archive_mixcloud",
-							"value": "false",
-							"type": "text"
-						},
-						{
 							"key": "image_file",
 							"type": "file",
 							"src": "testlogo.jpg"
@@ -1919,6 +1899,11 @@
 							"key": "play_file",
 							"type": "file",
 							"src": "testaudio.mp3"
+						},
+						{
+							"key": "social_base_url",
+							"value": "new live item 1",
+							"type": "default"
 						}
 					]
 				},
@@ -1977,12 +1962,11 @@
 							"    })\r",
 							"    pm.expect(item.airing).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archive_lahmastore).to.be.an(\"boolean\");\r",
-							"    pm.expect(item.archive_mixcloud).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archived).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.broadcast).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.live).to.be.an(\"boolean\");\r",
 							"    pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\");\r",
-							"    pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\");\r",
+							"    pm.expect(item.social_base_url).to.be.an(\"string\");\r",
 							"    pm.expect(item.description).to.be.an(\"string\");\r",
 							"    pm.expect(item.image_url).to.be.an(\"string\");\r",
 							"    pm.expect(item.language).to.be.an(\"string\");\r",
@@ -2075,11 +2059,6 @@
 							"type": "text"
 						},
 						{
-							"key": "archive_mixcloud",
-							"value": "false",
-							"type": "text"
-						},
-						{
 							"key": "image_file",
 							"type": "file",
 							"src": "testlogo.jpg"
@@ -2088,6 +2067,11 @@
 							"key": "play_file",
 							"type": "file",
 							"src": "testaudio.mp3"
+						},
+						{
+							"key": "social_base_url",
+							"value": "new live item 1",
+							"type": "default"
 						}
 					]
 				},
@@ -2152,14 +2136,13 @@
 							"        }\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
 							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
 							"        pm.expect(item.description).to.be.an(\"string\")\r",
 							"        pm.expect(item.language).to.be.an(\"string\")\r",
 							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
 							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.social_base_url).to.be.an(\"string\")\r",
 							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"        if (item.play_file_name != null) {\r",
 							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
@@ -2240,14 +2223,13 @@
 							"    }\r",
 							"    pm.expect(item.archived).to.be.an(\"boolean\")\r",
 							"    pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"    pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
 							"    pm.expect(item.name).to.be.an(\"string\")\r",
 							"    pm.expect(item.name_slug).to.be.an(\"string\")\r",
 							"    pm.expect(item.description).to.be.an(\"string\")\r",
 							"    pm.expect(item.language).to.be.an(\"string\")\r",
 							"    pm.expect(item.play_date).to.be.an(\"string\")\r",
 							"    pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"    pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"    pm.expect(item.social_base_url).to.be.an(\"string\")\r",
 							"    pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"    if (item.play_file_name != null) {\r",
 							"        pm.expect(item.play_file_name).to.be.an(\"string\")\r",
@@ -2411,14 +2393,13 @@
 							"        }\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_mixcloud).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
 							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
 							"        pm.expect(item.description).to.be.an(\"string\")\r",
 							"        pm.expect(item.language).to.be.an(\"string\")\r",
 							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
 							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_mixcloud_canonical_url).to.be.an(\"string\")\r",
+							"        pm.expect(item.social_base_url).to.be.an(\"string\")\r",
 							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"        if (item.play_file_name != null) {\r",
 							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
@@ -2574,8 +2555,8 @@
                             "        pm.expect(show.contact_address).to.be.an(\"string\")\r",
 						    "        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"        if (show.archive_mixcloud_base_url != null) {\r",
-							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        if (show.social_base_url != null) {\r",
+							"            pm.expect(show.social_base_url).to.be.an(\"string\")\r",
 							"        }\r",
 							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
 							"        pm.expect(show.id).to.be.an(\"number\")\r",
@@ -2637,15 +2618,14 @@
 							"        })\r",
 							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.name).to.be.an(\"string\")\r",
 							"        pm.expect(show.description).to.be.an(\"string\")\r",
                             "        pm.expect(show.contact_address).to.be.an(\"string\")\r",
 						    "        pm.expect(show.language).to.be.an(\"string\")\r",
 							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"        if (show.archive_mixcloud_base_url != null) {\r",
-							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        if (show.social_base_url != null) {\r",
+							"            pm.expect(show.social_base_url).to.be.an(\"string\")\r",
 							"        }\r",
 							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
 							"        pm.expect(show.start).to.be.an(\"string\")\r",
@@ -2712,15 +2692,14 @@
 							"        })\r",
 							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.name).to.be.an(\"string\")\r",
 							"        pm.expect(show.description).to.be.an(\"string\")\r",
                             "        pm.expect(show.contact_address).to.be.an(\"string\")\r",
 						    "        pm.expect(show.language).to.be.an(\"string\")\r",
 							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"        if (show.archive_mixcloud_base_url != null) {\r",
-							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        if (show.social_base_url != null) {\r",
+							"            pm.expect(show.social_base_url).to.be.an(\"string\")\r",
 							"        }\r",
 							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
 							"        pm.expect(show.start).to.be.an(\"string\")\r",
@@ -2801,15 +2780,14 @@
 							"        })\r",
 							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
-							"        pm.expect(show.archive_mixcloud).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.name).to.be.an(\"string\")\r",
 							"        pm.expect(show.description).to.be.an(\"string\")\r",
                             "        pm.expect(show.contact_address).to.be.an(\"string\")\r",
 						    "        pm.expect(show.language).to.be.an(\"string\")\r",
 							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"        if (show.archive_mixcloud_base_url != null) {\r",
-							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"        if (show.social_base_url != null) {\r",
+							"            pm.expect(show.social_base_url).to.be.an(\"string\")\r",
 							"        }\r",
 							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
 							"        pm.expect(show.start).to.be.an(\"string\")\r",
@@ -2889,9 +2867,6 @@
                             "            pm.expect(show.contact_address).to.be.an(\"string\")\r",
 						    "            pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"            if (show.archive_mixcloud_base_url != null) {\r",
-							"                pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
-							"            }\r",
 							"            pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
 							"            pm.expect(show.start).to.be.an(\"string\")\r",
 							"            pm.expect(show.end).to.be.an(\"string\")\r",
@@ -2923,9 +2898,6 @@
 							"        pm.expect(show.description).to.be.an(\"string\")\r",
 							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"        if (show.archive_mixcloud_base_url != null) {\r",
-							"            pm.expect(show.archive_mixcloud_base_url).to.be.an(\"string\")\r",
-							"        }\r",
 							"        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
 							"        pm.expect(show.start).to.be.an(\"string\")\r",
 							"        pm.expect(show.end).to.be.an(\"string\")\r",
@@ -3011,8 +2983,8 @@
 							"    pm.expect(jsonData.language).to.be.an(\"string\")\r",
 							"    pm.expect(jsonData.playlist_name).to.be.an(\"string\")\r",
 							"    pm.expect(jsonData.archive_lahmastore_base_url).to.be.an(\"string\")\r",
-							"    if (jsonData.archive_mixcloud_base_url != null) {\r",
-							"        pm.expect(jsonData.archive_mixcloud_base_url).to.be.an(\"string\")\r",
+							"    if (jsonData.social_base_url != null) {\r",
+							"        pm.expect(jsonData.social_base_url).to.be.an(\"string\")\r",
 							"    }\r",
 							"    pm.expect(jsonData.cover_image_url).to.be.an(\"string\")\r",
 							"    pm.expect(jsonData.start).to.be.an(\"string\")\r",
