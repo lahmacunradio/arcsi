@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "6641a1ab-c4fb-4ff6-b736-e0277c7727f3",
+		"_postman_id": "bd7c3edb-4279-427f-844f-3cee0be16708",
 		"name": "CI test (functional) Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -310,6 +310,11 @@
 						{
 							"key": "social_base_url",
 							"value": "www.{{$randomWord}}.hu",
+							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "tag1, tag2, tag3",
 							"type": "default"
 						}
 					]
@@ -752,6 +757,11 @@
 							"key": "social_base_url",
 							"value": "new live item 1",
 							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "tag1, tag2, tag3",
+							"type": "default"
 						}
 					]
 				},
@@ -1002,6 +1012,11 @@
 							"key": "social_base_url",
 							"value": "new live item 1",
 							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "tag1, tag2, tag3",
+							"type": "default"
 						}
 					]
 				},
@@ -1162,6 +1177,11 @@
 						{
 							"key": "social_base_url",
 							"value": "new live item 1",
+							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "",
 							"type": "default"
 						}
 					]
@@ -1406,6 +1426,11 @@
 							"key": "social_base_url",
 							"value": "new live item 1",
 							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "tag1, tag2, tag3",
+							"type": "default"
 						}
 					]
 				},
@@ -1649,6 +1674,11 @@
 						{
 							"key": "social_base_url",
 							"value": "new live item 1",
+							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "tag1, tag2, tag3",
 							"type": "default"
 						}
 					]
@@ -1900,6 +1930,11 @@
 							"key": "social_base_url",
 							"value": "new live item 1",
 							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "tag1, tag2, tag3",
+							"type": "default"
 						}
 					]
 				},
@@ -2067,6 +2102,11 @@
 						{
 							"key": "social_base_url",
 							"value": "new live item 1",
+							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "tag1, tag2, tag3",
 							"type": "default"
 						}
 					]
