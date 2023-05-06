@@ -272,6 +272,7 @@ def edit_show(id):
         show.description = show_metadata.description
         show.social_base_url=social_base_url
         show.contact_address = show_metadata.contact_address
+        show.social_base_url=show_metadata.social_base_url
         show.language = show_metadata.language
         show.playlist_name = show_metadata.playlist_name
         show.frequency = show_metadata.frequency
