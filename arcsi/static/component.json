@@ -706,7 +706,6 @@
             {
               "id": 2,
               "name": "show_2-name"
-<<<<<<< HEAD
             }
           ]
         }
@@ -1089,9 +1088,7 @@
             "additionalProperties": {
               "$ref": "#/components/schemas/show"
             }
-=======
-            }
-          ]
+          }
         }
       },
       "UserRequests": {

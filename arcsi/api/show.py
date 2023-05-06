@@ -194,6 +194,7 @@ def add_show():
             active=show_metadata.active,
             name=show_metadata.name,
             description=show_metadata.description,
+            contact_address=show_metadata.contact_address,
             social_base_url=show_metadata.social_base_url,
             contact_address=show_metadata.contact_address,
             social_base_url=show_metadata.social_base_url,
