@@ -13,6 +13,8 @@ from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.user import User
+from arcsi.model.tag import Tag
+from arcsi.model.utils import get_or_create
 from arcsi.api.item import item_archive_schema
 
 
@@ -57,6 +59,12 @@ class ShowDetailsSchema(Schema):
         ),
         required=True,
     )
+    tags = fields.List(
+        fields.Nested(
+            "TagDetailsSchema",
+            only=("id", "display_name",),
+        )
+    )
 
     @post_load
     def make_show(self, data, **kwargs):
@@ -66,7 +74,7 @@ class ShowDetailsSchema(Schema):
 show_schema = ShowDetailsSchema()
 show_archive_schema = ShowDetailsSchema(only=("id", "active", "name", "description", "cover_image_url", 
                                                     "day", "start", "end", "frequency", "language",
-                                                    "playlist_name", "archive_lahmastore_base_url", "social_base_url", "items"))
+                                                    "playlist_name", "archive_lahmastore_base_url", "social_base_url", "items", "tags"))
 show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
 shows_schedule_schema = ShowDetailsSchema(many=True, exclude=("items",))
@@ -169,6 +177,8 @@ def add_show():
     ]
     show_metadata.pop("user_name", None)
     show_metadata.pop("user_email", None)
+    show_metadata["tags"] = [{"display_name": dis_name} for dis_name in show_metadata["taglist"].split(",")]
+    show_metadata.pop("taglist", None)
 
     # validate payload
     err = show_schema.validate(show_metadata)
@@ -196,6 +206,9 @@ def add_show():
             users=db.session.query(User)
             .filter(User.id.in_((user.id for user in show_metadata.users)))
             .all(),
+            tags=(
+                get_or_create(Tag, display_name=tag.display_name, clean_name=normalise(tag.display_name)) for tag in show_metadata.tags
+            )
         )
 
         db.session.add(new_show)
@@ -254,6 +267,9 @@ def edit_show(id):
     show_metadata.pop("user_name", None)
     show_metadata.pop("user_email", None)
 
+    show_metadata["tags"] = [{"display_name": dis_name} for dis_name in show_metadata["taglist"].split(",")]
+    show_metadata.pop("taglist", None)
+
     # validate payload
     err = show_partial_schema.validate(show_metadata)
     if err:
@@ -283,6 +299,9 @@ def edit_show(id):
             .filter(User.id.in_((user.id for user in show_metadata.users)))
             .all()
         )
+        show.tags = (
+                get_or_create(Tag, display_name=tag.display_name, clean_name=normalise(tag.display_name)) for tag in show_metadata.tags
+            )
 
         db.session.add(show)
         db.session.flush()

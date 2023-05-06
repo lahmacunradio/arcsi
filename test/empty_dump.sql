@@ -177,6 +177,68 @@ ALTER TABLE public.shows_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.shows_id_seq OWNED BY public.shows.id;
 
+--
+-- Name: tags; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tags (
+    id integer NOT NULL,
+    display_name character varying NOT NULL,
+    clean_name character varying NOT NULL,
+    icon character varying,
+    uploaded_at timestamp without time zone NOT NULL,
+    uploader character varying NOT NULL
+);
+
+
+ALTER TABLE public.tags OWNER TO postgres;
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.tags_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tags_id_seq OWNER TO postgres;
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.tags_id_seq OWNED BY public.tags.id;
+
+
+--
+-- Name: tags_shows; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tags_shows (
+    tag_id integer,
+    show_id integer
+);
+
+
+ALTER TABLE public.tags_shows OWNER TO postgres;
+
+--
+-- Name: tags_items; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tags_items (
+    tag_id integer,
+    item_id integer
+);
+
+
+ALTER TABLE public.tags_items OWNER TO postgres;
+
 
 --
 -- Name: shows_users; Type: TABLE; Schema: public; Owner: postgres
@@ -255,6 +317,12 @@ ALTER TABLE ONLY public.shows ALTER COLUMN id SET DEFAULT nextval('public.shows_
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+--
+-- Name: tags id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tags ALTER COLUMN id SET DEFAULT nextval('public.tags_id_seq'::regclass);
 
 
 --
@@ -357,6 +425,13 @@ ALTER TABLE ONLY public.users
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
 
+--
+-- Name: tags tags_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tags
+    ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
+
 
 --
 -- Name: items_shows items_shows_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
@@ -373,6 +448,37 @@ ALTER TABLE ONLY public.items_shows
 ALTER TABLE ONLY public.items_shows
     ADD CONSTRAINT items_shows_show_id_fkey FOREIGN KEY (show_id) REFERENCES public.shows(id);
 
+
+--
+-- Name: tags_items tags_item_tag_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tags_items
+    ADD CONSTRAINT tags_items_tag_id_fkey FOREIGN KEY (tag_id) REFERENCES public.tags(id);
+
+
+--
+-- Name: tags_items tags_items_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tags_items
+    ADD CONSTRAINT tags_items_item_id_fkey FOREIGN KEY (item_id) REFERENCES public.items(id);
+
+
+--
+-- Name: tags_shows tags_shows_tag_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tags_shows
+    ADD CONSTRAINT tags_shows_tag_id_fkey FOREIGN KEY (tag_id) REFERENCES public.tags(id);
+
+
+--
+-- Name: tags_shows tags_shows_show_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tags_shows
+    ADD CONSTRAINT tags_shows_show_id_fkey FOREIGN KEY (show_id) REFERENCES public.shows(id);
 
 --
 -- Name: roles_users roles_users_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
