@@ -987,7 +987,7 @@
 							"        })\r",
 							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
-                            "        pm.expect(show.contact_address).to.be.an(\"string\")\r",
+              				"        pm.expect(show.contact_address).to.be.an(\"string\")\r",
 							"        pm.expect(show.name).to.be.an(\"string\")\r",
 							"        pm.expect(show.description).to.be.an(\"string\")\r",
 							"        pm.expect(show.language).to.be.an(\"string\")\r",
