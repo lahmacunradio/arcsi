@@ -1,7 +1,7 @@
 """add Tag table
 
 Revision ID: dc07c1e13d6e
-Revises: f02d05e78a7a
+Revises: 15d3ff65d9b2
 Create Date: 2021-12-13 15:20:37.000031
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'dc07c1e13d6e'
-down_revision = 'f02d05e78a7a'
+down_revision = '15d3ff65d9b2'
 branch_labels = None
 depends_on = None
 
@@ -23,7 +23,8 @@ def upgrade():
     sa.Column('display_name', sa.String(length=66), nullable=False),
     sa.Column('clean_name', sa.String(length=66), nullable=False),
     sa.Column('icon', sa.String(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('uploader', sa.String(), nullable=False),
+    sa.Column('uploaded_at', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('display_name')
     )

@@ -15,7 +15,7 @@ from arcsi.model.show import Show
 from arcsi.model.user import User
 from arcsi.model.tag import Tag
 from arcsi.model.utils import get_or_create
-from arcsi.api.item import Item, item_archive_schema
+from arcsi.api.item import item_archive_schema
 
 
 class ShowDetailsSchema(Schema):
