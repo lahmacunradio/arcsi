@@ -1,4 +1,5 @@
 from flask import make_response
+from flask_security import auth_token_required
 from marshmallow import fields, post_load, Schema
 
 from arcsi.api import arcsi
@@ -26,11 +27,13 @@ headers = {"Content-Type": "application/json"}
 
 @arcsi.route("/tag", methods=["GET"])
 @arcsi.route("/tag/all", methods=["GET"])
+@auth_token_required
 def list_tags():
     tags = Tag.query.all()
     return make_response(many_tags_schema.dumps(tags), 200 , headers,)
 
 @arcsi.route("/tag/<string:clean_tag>", methods=["GET"])
+@auth_token_required
 def view_tagged(clean_tag):
     tag_items = Tag.query.filter_by(clean_name=clean_tag).first_or_404()
     if tag_items:
