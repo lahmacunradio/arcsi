@@ -78,7 +78,7 @@ show_archive_schema = ShowDetailsSchema(only=("id", "active", "name", "descripti
                                                     "playlist_name", "archive_lahmastore_base_url", "social_base_url", "items"))
 show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
-shows_schedule_schema = ShowDetailsSchema(many=True, exclude=("items"))
+shows_schedule_schema = ShowDetailsSchema(many=True, exclude=("items",))
 shows_schedule_by_schema = ShowDetailsSchema(many=True, 
                                                     only=("id", "active", "name", "description", "cover_image_url", 
                                                     "day", "start", "end", "frequency", "language",
