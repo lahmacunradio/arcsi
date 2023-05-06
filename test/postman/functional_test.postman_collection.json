@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bd7c3edb-4279-427f-844f-3cee0be16708",
+		"_postman_id": "95a837e4-9e2a-4bc1-b828-f57040f954f6",
 		"name": "CI test (functional) Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -115,6 +115,7 @@
 							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.name).to.be.an(\"string\")\r",
 							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.contact_address).to.be.an(\"string\")\r",
 							"        pm.expect(show.language).to.be.an(\"string\")\r",
 							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
@@ -283,6 +284,7 @@
 							"    pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"    pm.expect(show.name).to.be.an(\"string\")\r",
 							"    pm.expect(show.description).to.be.an(\"string\")\r",
+							"    pm.expect(show.contact_address).to.be.an(\"string\")\r",
 							"    pm.expect(show.language).to.be.an(\"string\")\r",
 							"    pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"    pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
@@ -397,6 +399,11 @@
 						{
 							"key": "taglist",
 							"value": "tag1, tag2, tag3",
+							"type": "default"
+						},
+						{
+							"key": "contact_address",
+							"value": "test@lahmacun.hu",
 							"type": "default"
 						}
 					]
@@ -630,6 +637,7 @@
 							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.name).to.be.an(\"string\")\r",
 							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.contact_address).to.be.an(\"string\")\r",
 							"        pm.expect(show.language).to.be.an(\"string\")\r",
 							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
@@ -727,6 +735,7 @@
 							"    pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"    pm.expect(show.name).to.be.an(\"string\")\r",
 							"    pm.expect(show.description).to.be.an(\"string\")\r",
+							"    pm.expect(show.contact_address).to.be.an(\"string\")\r",
 							"    pm.expect(show.language).to.be.an(\"string\")\r",
 							"    pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"    pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
@@ -3064,6 +3073,7 @@
 							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.name).to.be.an(\"string\")\r",
 							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.contact_address).to.be.an(\"string\")\r",
 							"        pm.expect(show.language).to.be.an(\"string\")\r",
 							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
@@ -3137,6 +3147,7 @@
 							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.name).to.be.an(\"string\")\r",
 							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.contact_address).to.be.an(\"string\")\r",
 							"        pm.expect(show.language).to.be.an(\"string\")\r",
 							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
@@ -3224,6 +3235,7 @@
 							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.name).to.be.an(\"string\")\r",
 							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.contact_address).to.be.an(\"string\")\r",
 							"        pm.expect(show.language).to.be.an(\"string\")\r",
 							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
@@ -3305,6 +3317,7 @@
 							"            pm.expect(show.active).to.be.an(\"boolean\")\r",
 							"            pm.expect(show.name).to.be.an(\"string\")\r",
 							"            pm.expect(show.description).to.be.an(\"string\")\r",
+							"            pm.expect(show.contact_address).to.be.an(\"string\")\r",
 							"            pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
 							"            pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
