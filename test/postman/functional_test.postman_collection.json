@@ -214,7 +214,7 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Tags number is 0\", function() {\r",
-							"    pm.expect(items.length).to.equal(0)\r",
+							"    pm.expect(tags.length).to.equal(0)\r",
 							"})"
 						],
 						"type": "text/javascript"
@@ -467,7 +467,7 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Tags number is 3\", function() {\r",
-							"    pm.expect(items.length).to.equal(3)\r",
+							"    pm.expect(tags.length).to.equal(3)\r",
 							"})"
 						],
 						"type": "text/javascript"
@@ -1745,7 +1745,7 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Tags number is 4\", function() {\r",
-							"    pm.expect(items.length).to.equal(4)\r",
+							"    pm.expect(tags.length).to.equal(4)\r",
 							"})"
 						],
 						"type": "text/javascript"
