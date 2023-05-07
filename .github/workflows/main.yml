@@ -40,6 +40,11 @@ jobs:
     - name: Git checkout
       uses: actions/checkout@v3
 
+    - name: Set up AzuraCast
+      run: |
+        cd ./.github/azuracast
+        docker-compose up -d
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
@@ -73,8 +78,8 @@ jobs:
         ARCHIVE_ENDPOINT: ${{ secrets.ARCHIVE_ENDPOINT }}
         ARCHIVE_API_KEY: ${{ secrets.ARCHIVE_API_KEY }}
         ARCHIVE_SECRET_KEY: ${{ secrets.ARCHIVE_SECRET_KEY }}
-        AZURACAST_BASE_URL: ${{ secrets.AZURACAST_BASE_URL }}
-        AZURACAST_API_KEY: ${{ secrets.AZURACAST_API_KEY }}
+        AZURACAST_BASE_URL: http://azuracast.local/api
+        AZURACAST_API_KEY: admin_api_key
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: p0stgr3s
         POSTGRES_DB: arcsi
