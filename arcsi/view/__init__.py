@@ -8,3 +8,5 @@ from .item import *
 from .show import *
 from .user import *
 from .data import *
+from .tag import *
+

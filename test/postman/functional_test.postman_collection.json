@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "6641a1ab-c4fb-4ff6-b736-e0277c7727f3",
+		"_postman_id": "bd7c3edb-4279-427f-844f-3cee0be16708",
 		"name": "CI test (functional) Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -163,6 +163,88 @@
 			"response": []
 		},
 		{
+			"name": "Get Tags (0, list_tags())",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const tags = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(tags).to.be.an(\"array\")\r",
+							"    tags.forEach(function(tag) {\r",
+							"        pm.expect(tag).to.be.an(\"object\")\r",
+							"        pm.expect(tag.shows).to.be.an(\"array\")\r",
+							"        if (tag.shows != null) {\r",
+							"            tag.shows.forEach(function(show){\r",
+							"                pm.expect(show).to.be.an(\"object\")\r",
+							"                pm.expect(show.name).to.be.an(\"string\")\r",
+							"                pm.expect(show.id).to.be.an(\"number\")\r",
+							"            })\r",
+							"        }\r",
+							"        pm.expect(tag.items).to.be.an(\"array\")\r",
+							"        if (tag.items != null) {\r",
+							"            tag.items.forEach(function(item){\r",
+							"                pm.expect(item).to.be.an(\"object\")\r",
+							"                pm.expect(item.name).to.be.an(\"string\")\r",
+							"                pm.expect(item.id).to.be.an(\"number\")\r",
+							"            })\r",
+							"        }\r",
+							"        pm.expect(tag.display_name).to.be.an(\"string\")\r",
+							"        pm.expect(tag.clean_name).to.be.an(\"string\")\r",
+							"        if (tag.icon != null) {\r",
+							"            pm.expect(tag.icon).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(tag.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Tags number is 0\", function() {\r",
+							"    pm.expect(tags.length).to.equal(0)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/tag/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tag",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Add Show (add_show())",
 			"event": [
 				{
@@ -313,6 +395,11 @@
 							"key": "social_base_url",
 							"value": "www.{{$randomWord}}.hu",
 							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "tag1, tag2, tag3",
+							"type": "default"
 						}
 					]
 				},
@@ -324,6 +411,169 @@
 					"path": [
 						"show",
 						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Tags (3, list_tags())",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const tags = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(tags).to.be.an(\"array\")\r",
+							"    tags.forEach(function(tag) {\r",
+							"        pm.expect(tag).to.be.an(\"object\")\r",
+							"        pm.expect(tag.shows).to.be.an(\"array\")\r",
+							"        if (tag.shows != null) {\r",
+							"            tag.shows.forEach(function(show){\r",
+							"                pm.expect(show).to.be.an(\"object\")\r",
+							"                pm.expect(show.name).to.be.an(\"string\")\r",
+							"                pm.expect(show.id).to.be.an(\"number\")\r",
+							"            })\r",
+							"        }\r",
+							"        pm.expect(tag.items).to.be.an(\"array\")\r",
+							"        if (tag.items != null) {\r",
+							"            tag.items.forEach(function(item){\r",
+							"                pm.expect(item).to.be.an(\"object\")\r",
+							"                pm.expect(item.name).to.be.an(\"string\")\r",
+							"                pm.expect(item.id).to.be.an(\"number\")\r",
+							"            })\r",
+							"        }\r",
+							"        pm.expect(tag.display_name).to.be.an(\"string\")\r",
+							"        pm.expect(tag.clean_name).to.be.an(\"string\")\r",
+							"        if (tag.icon != null) {\r",
+							"            pm.expect(tag.icon).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(tag.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Tags number is 3\", function() {\r",
+							"    pm.expect(tags.length).to.equal(3)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/tag/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tag",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Tag (view_tagged())",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const tag = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(tag).to.be.an(\"object\")\r",
+							"    pm.expect(tag.shows).to.be.an(\"array\")\r",
+							"    if (tag.shows != null) {\r",
+							"        tag.shows.forEach(function(show){\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"    }\r",
+							"    pm.expect(tag.items).to.be.an(\"array\")\r",
+							"    if (tag.items != null) {\r",
+							"        tag.items.forEach(function(item){\r",
+							"            pm.expect(item).to.be.an(\"object\")\r",
+							"            pm.expect(item.name).to.be.an(\"string\")\r",
+							"            pm.expect(item.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"    }\r",
+							"    pm.expect(tag.display_name).to.be.an(\"string\")\r",
+							"    pm.expect(tag.clean_name).to.be.an(\"string\")\r",
+							"    if (tag.icon != null) {\r",
+							"        pm.expect(tag.icon).to.be.an(\"string\")\r",
+							"    }\r",
+							"    pm.expect(tag.id).to.be.an(\"number\")\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/tag/:clean_tag",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tag",
+						":clean_tag"
+					],
+					"variable": [
+						{
+							"key": "clean_tag",
+							"value": "tag1"
+						}
 					]
 				}
 			},
@@ -756,6 +1006,11 @@
 							"key": "social_base_url",
 							"value": "new live item 1",
 							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "tag1, tag2, tag3",
+							"type": "default"
 						}
 					]
 				},
@@ -1006,6 +1261,11 @@
 							"key": "social_base_url",
 							"value": "new live item 1",
 							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "tag1, tag2, tag3",
+							"type": "default"
 						}
 					]
 				},
@@ -1167,6 +1427,11 @@
 							"key": "social_base_url",
 							"value": "new live item 1",
 							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "",
+							"type": "default"
 						}
 					]
 				},
@@ -1178,6 +1443,88 @@
 					"path": [
 						"item",
 						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Tags (4, list_tags())",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const tags = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(tags).to.be.an(\"array\")\r",
+							"    tags.forEach(function(tag) {\r",
+							"        pm.expect(tag).to.be.an(\"object\")\r",
+							"        pm.expect(tag.shows).to.be.an(\"array\")\r",
+							"        if (tag.shows != null) {\r",
+							"            tag.shows.forEach(function(show){\r",
+							"                pm.expect(show).to.be.an(\"object\")\r",
+							"                pm.expect(show.name).to.be.an(\"string\")\r",
+							"                pm.expect(show.id).to.be.an(\"number\")\r",
+							"            })\r",
+							"        }\r",
+							"        pm.expect(tag.items).to.be.an(\"array\")\r",
+							"        if (tag.items != null) {\r",
+							"            tag.items.forEach(function(item){\r",
+							"                pm.expect(item).to.be.an(\"object\")\r",
+							"                pm.expect(item.name).to.be.an(\"string\")\r",
+							"                pm.expect(item.id).to.be.an(\"number\")\r",
+							"            })\r",
+							"        }\r",
+							"        pm.expect(tag.display_name).to.be.an(\"string\")\r",
+							"        pm.expect(tag.clean_name).to.be.an(\"string\")\r",
+							"        if (tag.icon != null) {\r",
+							"            pm.expect(tag.icon).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(tag.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Tags number is 4\", function() {\r",
+							"    pm.expect(tags.length).to.equal(4)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/tag/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tag",
+						"all"
 					]
 				}
 			},
@@ -1410,6 +1757,11 @@
 							"key": "social_base_url",
 							"value": "new live item 1",
 							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "tag1, tag2, tag3, tag4",
+							"type": "default"
 						}
 					]
 				},
@@ -1421,6 +1773,88 @@
 					"path": [
 						"item",
 						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Tags (5, list_tags())",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const tags = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(tags).to.be.an(\"array\")\r",
+							"    tags.forEach(function(tag) {\r",
+							"        pm.expect(tag).to.be.an(\"object\")\r",
+							"        pm.expect(tag.shows).to.be.an(\"array\")\r",
+							"        if (tag.shows != null) {\r",
+							"            tag.shows.forEach(function(show){\r",
+							"                pm.expect(show).to.be.an(\"object\")\r",
+							"                pm.expect(show.name).to.be.an(\"string\")\r",
+							"                pm.expect(show.id).to.be.an(\"number\")\r",
+							"            })\r",
+							"        }\r",
+							"        pm.expect(tag.items).to.be.an(\"array\")\r",
+							"        if (tag.items != null) {\r",
+							"            tag.items.forEach(function(item){\r",
+							"                pm.expect(item).to.be.an(\"object\")\r",
+							"                pm.expect(item.name).to.be.an(\"string\")\r",
+							"                pm.expect(item.id).to.be.an(\"number\")\r",
+							"            })\r",
+							"        }\r",
+							"        pm.expect(tag.display_name).to.be.an(\"string\")\r",
+							"        pm.expect(tag.clean_name).to.be.an(\"string\")\r",
+							"        if (tag.icon != null) {\r",
+							"            pm.expect(tag.icon).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(tag.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Tags number is 5\", function() {\r",
+							"    pm.expect(tags.length).to.equal(5)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/tag/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tag",
+						"all"
 					]
 				}
 			},
@@ -1653,6 +2087,11 @@
 						{
 							"key": "social_base_url",
 							"value": "new live item 1",
+							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "tag1, tag2, tag3",
 							"type": "default"
 						}
 					]
@@ -1904,6 +2343,11 @@
 							"key": "social_base_url",
 							"value": "new live item 1",
 							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "tag1, tag2, tag3",
+							"type": "default"
 						}
 					]
 				},
@@ -2071,6 +2515,11 @@
 						{
 							"key": "social_base_url",
 							"value": "new live item 1",
+							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "tag1, tag2, tag3",
 							"type": "default"
 						}
 					]

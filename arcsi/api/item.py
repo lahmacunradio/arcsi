@@ -14,6 +14,8 @@ from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.item import Item
 from arcsi.model.show import Show
+from arcsi.model.tag import Tag
+from arcsi.model.utils import get_or_create
 
 
 class ItemDetailsSchema(Schema):
@@ -44,6 +46,12 @@ class ItemDetailsSchema(Schema):
         ),
         required=True,
     )
+    tags = fields.List(
+        fields.Nested(
+            "TagDetailsSchema",
+            only=("id", "display_name",),
+        )
+    )
 
     @post_load
     def make_item(self, data, **kwargs):
@@ -53,12 +61,12 @@ class ItemDetailsSchema(Schema):
 item_schema = ItemDetailsSchema()
 item_archive_schema = ItemDetailsSchema(
                 only = ("id", "number", "name", "name_slug", "description", "language", "play_date",
-                        "image_url", "play_file_name", "archived", "download_count", "shows"))
+                        "image_url", "play_file_name", "archived", "download_count", "shows", "tags"))
 item_partial_schema = ItemDetailsSchema(partial = True,)
 items_schema = ItemDetailsSchema(many = True)
 items_archive_schema = ItemDetailsSchema(many = True, 
                 only = ("id", "number", "name", "name_slug", "description", "language", "play_date",
-                        "image_url", "play_file_name", "archived", "download_count", "shows"))
+                        "image_url", "play_file_name", "archived", "download_count", "shows", "tags"))
 
 headers = {"Content-Type": "application/json"}
 
@@ -126,9 +134,15 @@ def add_item():
     item_metadata = request.form.to_dict()
     # TODO if we could send JSON payloads w/ ajax then this prevalidation isn't needed
     item_metadata["shows"] = [
-        {"id": item_metadata["shows"], "name": item_metadata["show_name"]}
+        {
+            "id": item_metadata["shows"],
+            "name": item_metadata["show_name"]
+        }
     ]
+    item_metadata["tags"] = [ { "display_name": tag_name } for tag_name in item_metadata["taglist"].split(",") ]
     item_metadata.pop("show_name", None)
+    item_metadata.pop("taglist", None)
+    
     # validate payload
     err = item_schema.validate(item_metadata)
     if err:
@@ -152,7 +166,9 @@ def add_item():
             .filter(Show.id.in_((show.id for show in item_metadata.shows)))
             .all()
         )
-
+        tags = (
+            get_or_create( Tag, display_name=tag.display_name, clean_name=normalise(tag.display_name) ) for tag in item_metadata.tags
+        )
         new_item = Item(
             number=item_metadata.number,
             name=item_metadata.name,
@@ -171,6 +187,7 @@ def add_item():
             download_count=download_count,
             uploader=item_metadata.uploader,
             shows=shows,
+            tags=tags
         )
 
         #Check for duplicate files
@@ -285,7 +302,18 @@ def add_item():
                 headers,
             )
         else:
-            return "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast)."
+            return make_response(
+                jsonify(
+                    {
+                        "error": {
+                            "message": "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast).",
+                            "code": 10205070
+                        }
+                    },
+                    500,
+                    headers
+                )
+            )
 
 
 @arcsi.route("item/<int:id>/listen", methods=["GET"])
@@ -340,6 +368,8 @@ def edit_item(id):
     item_metadata["shows"] = [
         {"id": item_metadata["shows"], "name": item_metadata["show_name"]}
     ]
+    item_metadata["tags"] = [ { "display_name": tag_name } for tag_name in item_metadata["taglist"].split(",") ]
+    item_metadata.pop("taglist", None)
     item_metadata.pop("show_name", None)
 
     # validate payload
@@ -377,6 +407,9 @@ def edit_item(id):
             db.session.query(Show)
             .filter(Show.id.in_((show.id for show in item_metadata.shows)))
             .all()
+        )
+        item.tags = (
+            get_or_create(Tag, display_name=tag.display_name, clean_name=normalise(tag.display_name)) for tag in item_metadata.tags
         )
         
         db.session.add(item)
