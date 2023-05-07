@@ -78,7 +78,7 @@ show_archive_schema = ShowDetailsSchema(only=("id", "active", "name", "descripti
                                                     "playlist_name", "archive_lahmastore_base_url", "social_base_url", "items", "tags"))
 show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
-shows_schedule_schema = ShowDetailsSchema(many=True, exclude=("items", "contact_address"))
+shows_schedule_schema = ShowDetailsSchema(many=True, exclude=("items",))
 shows_schedule_by_schema = ShowDetailsSchema(many=True, 
                                                     only=("id", "active", "name", "description", "cover_image_url", 
                                                     "day", "start", "end", "frequency", "language",
@@ -286,8 +286,8 @@ def edit_show(id):
         show.active = show_metadata.active
         show.name = show_metadata.name
         show.description = show_metadata.description
-        show.contact_address = show_metadata.contact_address
         show.social_base_url=show_metadata.social_base_url
+        show.contact_address = show_metadata.contact_address
         show.language = show_metadata.language
         show.playlist_name = show_metadata.playlist_name
         show.frequency = show_metadata.frequency

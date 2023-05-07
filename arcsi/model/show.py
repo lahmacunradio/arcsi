@@ -7,8 +7,8 @@ class Show(db.Model):
     active = db.Column(db.Boolean, nullable=False, default=True)
     name = db.Column(db.String(), unique=True, nullable=False)
     description = db.Column(db.String())
-    contact_address = db.Column(db.String, unique=False, nullable=True)
     social_base_url = db.Column(db.String())
+    contact_address = db.Column(db.String())
     language = db.Column(db.String(5), default="hu_hu")
     # TODO rename to image_url
     cover_image_url = db.Column(db.String())
