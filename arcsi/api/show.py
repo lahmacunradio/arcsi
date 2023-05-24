@@ -27,6 +27,7 @@ class ShowDetailsSchema(Schema):
     language = fields.Str(max=5)
     playlist_name = fields.Str()
     frequency = fields.Int(min=1, max=1)
+    contact_address = fields.Email()
     week = fields.Int()
     day = fields.Int()
     start = fields.Time()
@@ -72,7 +73,7 @@ class ShowDetailsSchema(Schema):
 
 
 show_schema = ShowDetailsSchema()
-show_archive_schema = ShowDetailsSchema(only=("id", "active", "name", "description", "cover_image_url", 
+show_archive_schema = ShowDetailsSchema(only=("id", "active", "name", "description", "contact_address", "cover_image_url", 
                                                     "day", "start", "end", "frequency", "language",
                                                     "playlist_name", "archive_lahmastore_base_url", "social_base_url", "items", "tags"))
 show_partial_schema = ShowDetailsSchema(partial=True)
@@ -193,6 +194,7 @@ def add_show():
             active=show_metadata.active,
             name=show_metadata.name,
             description=show_metadata.description,
+            contact_address=show_metadata.contact_address,
             social_base_url=show_metadata.social_base_url,
             language=show_metadata.language,
             playlist_name=show_metadata.playlist_name,
@@ -285,6 +287,7 @@ def edit_show(id):
         show.name = show_metadata.name
         show.description = show_metadata.description
         show.social_base_url=show_metadata.social_base_url
+        show.contact_address = show_metadata.contact_address
         show.language = show_metadata.language
         show.playlist_name = show_metadata.playlist_name
         show.frequency = show_metadata.frequency
