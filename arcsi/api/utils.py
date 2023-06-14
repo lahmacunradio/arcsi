@@ -1,13 +1,14 @@
 import os
+from datetime import datetime, timedelta
+from flask import request
+from flask import current_app as app
+from slugify import slugify
+from werkzeug.utils import secure_filename
 
 from arcsi.handler.upload import AzuraArchive, DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.item import Item
-from flask import request
-from flask import current_app as app
-from slugify import slugify
-from werkzeug.utils import secure_filename
 
 CONNECTER = "_"
 DELIMITER = "-"
@@ -158,7 +159,9 @@ def get_shows():
             )
     return shows
 
-def item_duplications_number(item):
-    name_occurrence = int(db.session.query(db.func.count()).filter(Item.name == item.name, Item.number == item.number).scalar())
+def show_item_duplications_number(item):
+    existing_items = Show.query.filter(Show.id == item.shows[0].id).first().items
+    existing_items_with_same_name = existing_items.filter_by(name=item.name)
+    name_occurrence = existing_items_with_same_name.count()
     app.logger.error("Name_occurence (duplicate detection): {}".format(name_occurrence))
     return name_occurrence
