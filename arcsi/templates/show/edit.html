@@ -22,7 +22,7 @@
     <label for="active">Active</label>
     <input type="hidden" id="active" name="active" value="1">
     <input type="checkbox"
-      onclick="this.previousElementSibling.value=this.checked?1:0" checked>
+      onclick="this.previousElementSibling.value=this.checked?1:0" {% if show.active %} checked {% endif %}>
   </div>
 
   <div>
@@ -58,7 +58,7 @@
 
   <div>
     <label for="taglist">Show tag list (separate with commas)</label>
-    <input name="taglist" id="taglist" value="{% for tag in show.tags %} {{tag.display_name}} {% endfor %}">
+    <input name="taglist" id="taglist" value="{% for tag in show.tags %}{{tag.display_name}},{% endfor %}">
   </div>
 
   <div>

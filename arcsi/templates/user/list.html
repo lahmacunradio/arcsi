@@ -19,7 +19,7 @@
         <h4>ADMIN EYES</h4>
         <p>User roles: {% for role in user.roles %} {{ role.name }} {% endfor %}</p>
         {% endif %}
-        <p>permalink <a href="{{ url_for('router.view_user', id=user.id) }}">{{user.id}}</a></p>
+        <p>permalink <a href="{{ url_for('router.view_user', id=user.id) }}"><b>{{user.id}}</b></a></p>
     </div>
 {% endfor %}    
 </div>    
