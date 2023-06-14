@@ -165,3 +165,39 @@ def show_item_duplications_number(item):
     name_occurrence = existing_items_with_same_name.count()
     app.logger.error("Name_occurence (duplicate detection): {}".format(name_occurrence))
     return name_occurrence
+
+def comma_separated_params_to_list(param):
+    result = []
+    for val in param.split(','):
+        if val:
+            result.append(val)
+    return result
+
+def filter_show_items(show, items, archived, latest):
+    items = sorted(items, key=lambda x: x["play_date"], reverse=True)
+    if archived:
+        already_aired_items = [
+            show_item
+            for show_item in items
+            if (show_item.get("archived") &
+                (datetime.strptime(show_item.get("play_date"), "%Y-%m-%d") + timedelta(days=1) < datetime.today()))
+        ]
+        return get_show_items(show, already_aired_items, latest)
+    else:
+        return get_show_items(show, items, latest)
+        
+def get_show_items(show, items, latest):
+    do = DoArchive()
+    if latest:
+        items = items[0]
+        items["image_url"] = do.download(show.archive_lahmastore_base_url, items["image_url"])
+        items["name_slug"] = normalise(items["name"])
+        return items
+    else:
+        items = items
+        for item in items:
+            item["image_url"] = do.download(
+                show.archive_lahmastore_base_url, item["image_url"]
+            )
+            item["name_slug"] = normalise(item["name"])
+        return items

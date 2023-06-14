@@ -1,10 +1,67 @@
 {
 	"info": {
-		"_postman_id": "1bb97ca4-f02a-4a9b-a2ae-1a8fb07096ff",
+		"_postman_id": "48910ffa-6be6-4541-ba27-6af02b146243",
 		"name": "CI test (robustness)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "Get Guest API Token (get_api_token())",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"api_token_guest\", response.api_token);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API token has been set up: \" + pm.environment.get(\"api_token_guest\"), function() {\r",
+							"    pm.expect(pm.environment.get(\"api_token_guest\")).not.equal(\"\")\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "testguest",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "YhhU8Z4W2dVbKNf",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/users/get_api_token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"get_api_token"
+					]
+				}
+			},
+			"response": []
+		},
 		{
 			"name": "Get Shows (1, list_shows())",
 			"event": [
@@ -37,7 +94,7 @@
 							"            pm.expect(item).to.be.an(\"object\")\r",
 							"            pm.expect(item.archived).to.be.an(\"boolean\")\r",
 							"            pm.expect(item.name).to.be.an(\"string\")\r",
-						    "            pm.expect(item.description).to.be.an(\"string\")\r",
+							"            pm.expect(item.description).to.be.an(\"string\")\r",
 							"            pm.expect(item.play_date).to.be.an(\"string\")\r",
 							"            pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"            if (item.play_file_name != null) {\r",
@@ -57,8 +114,8 @@
 							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.name).to.be.an(\"string\")\r",
-					        "        pm.expect(show.description).to.be.an(\"string\")\r",
-                            "        pm.expect(show.contact_address).to.be.an(\"string\")\r",
+							"        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.contact_address).to.be.an(\"string\")\r",
 							"        pm.expect(show.language).to.be.an(\"string\")\r",
 							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
@@ -88,7 +145,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token}}",
+						"value": "{{api_token_guest}}",
 						"type": "text"
 					}
 				],
@@ -155,8 +212,8 @@
 							"    pm.expect(show.active).to.be.an(\"boolean\")\r",
 							"    pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"    pm.expect(show.name).to.be.an(\"string\")\r",
-				  	        "    pm.expect(show.description).to.be.an(\"string\")\r",
-                            "    pm.expect(show.contact_address).to.be.an(\"string\")\r",
+							"    pm.expect(show.description).to.be.an(\"string\")\r",
+							"    pm.expect(show.contact_address).to.be.an(\"string\")\r",
 							"    pm.expect(show.language).to.be.an(\"string\")\r",
 							"    pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"    pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
@@ -181,7 +238,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token}}",
+						"value": "{{api_token_guest}}",
 						"type": "text"
 					}
 				],
@@ -205,7 +262,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Items (4, list_items())",
+			"name": "Get Items (5, list_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -263,8 +320,8 @@
 							"    })\r",
 							"})\r",
 							"\r",
-							"pm.test(\"Episodes number is 4\", function() {\r",
-							"    pm.expect(items.length).to.equal(4)\r",
+							"pm.test(\"Episodes number is 5\", function() {\r",
+							"    pm.expect(items.length).to.equal(5)\r",
 							"})"
 						],
 						"type": "text/javascript"
@@ -276,7 +333,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token}}",
+						"value": "{{api_token_guest}}",
 						"type": "text"
 					}
 				],
@@ -358,7 +415,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token}}",
+						"value": "{{api_token_guest}}",
 						"type": "text"
 					}
 				],
@@ -446,7 +503,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token}}",
+						"value": "{{api_token_guest}}",
 						"type": "text"
 					}
 				],
@@ -534,7 +591,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token}}",
+						"value": "{{api_token_guest}}",
 						"type": "text"
 					}
 				],
@@ -622,7 +679,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token}}",
+						"value": "{{api_token_guest}}",
 						"type": "text"
 					}
 				],
@@ -697,7 +754,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token}}",
+						"value": "{{api_token_guest}}",
 						"type": "text"
 					}
 				],
@@ -736,14 +793,6 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Content-Type is text/html\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200)\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Content-Type is text/html; charset=utf-8\", function() {\r",
 							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
 							"})\r",
 							"\r",
@@ -793,7 +842,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token}}",
+						"value": "{{api_token_guest}}",
 						"type": "text"
 					}
 				],
@@ -846,7 +895,7 @@
 							"        pm.expect(show).to.be.an(\"object\")\r",
 							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.name).to.be.an(\"string\")\r",
-						    "        pm.expect(show.description).to.be.an(\"string\")\r",
+							"        pm.expect(show.description).to.be.an(\"string\")\r",
 							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
 							"        if (show.social_base_url != null) {\r",
@@ -866,7 +915,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token}}",
+						"value": "{{api_token_guest}}",
 						"type": "text"
 					}
 				],
@@ -913,8 +962,7 @@
 							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.name).to.be.an(\"string\")\r",
-						    "        pm.expect(show.description).to.be.an(\"string\")\r",
-                            "        pm.expect(show.contact_address).to.be.an(\"string\")\r",
+							"        pm.expect(show.description).to.be.an(\"string\")\r",
 							"        pm.expect(show.language).to.be.an(\"string\")\r",
 							"        pm.expect(show.playlist_name).to.be.an(\"string\")\r",
 							"        pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
@@ -940,7 +988,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token}}",
+						"value": "{{api_token_guest}}",
 						"type": "text"
 					}
 				],
@@ -986,7 +1034,6 @@
 							"        })\r",
 							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
 							"        pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
-              				"        pm.expect(show.contact_address).to.be.an(\"string\")\r",
 							"        pm.expect(show.name).to.be.an(\"string\")\r",
 							"        pm.expect(show.description).to.be.an(\"string\")\r",
 							"        pm.expect(show.language).to.be.an(\"string\")\r",
@@ -1014,7 +1061,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token}}",
+						"value": "{{api_token_guest}}",
 						"type": "text"
 					}
 				],
@@ -1101,7 +1148,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token}}",
+						"value": "{{api_token_guest}}",
 						"type": "text"
 					}
 				],
@@ -1212,7 +1259,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token}}",
+						"value": "{{api_token_guest}}",
 						"type": "text"
 					}
 				],

@@ -342,7 +342,8 @@ COPY public.roles (id, name, description) FROM stdin;
 --
 
 COPY public.roles_users (user_id, role_id) FROM stdin;
-1	1
+1	3
+2	1
 \.
 
 
@@ -351,7 +352,8 @@ COPY public.roles_users (user_id, role_id) FROM stdin;
 --
 
 COPY public.users (id, name, email, butt_user, butt_pw, password, active) FROM stdin;
-1	testuser	testuser@lahmacun.hu	buttuser	buttpw	$2b$12$bz/hCRWRMjNeHGr66wYZO.a/HHhenAHZaLECKmVYPFLSVTzvC/l9a	t
+1	testguest	testguest@lahmacun.hu	buttguest	buttpw	$2b$12$bz/hCRWRMjNeHGr66wYZO.a/HHhenAHZaLECKmVYPFLSVTzvC/l9a	t
+2	testadmin	testadmin@lahmacun.hu	buttadmin	buttpw	$2b$12$bz/hCRWRMjNeHGr66wYZO.a/HHhenAHZaLECKmVYPFLSVTzvC/l9a	t
 \.
 
 

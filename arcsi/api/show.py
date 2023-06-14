@@ -7,7 +7,7 @@ from flask_security import auth_token_required, roles_required
 from marshmallow import fields, post_load, Schema
 from sqlalchemy import func
 
-from .utils import archive, get_shows, save_file, slug, sort_for, normalise
+from .utils import archive, get_shows, save_file, slug, sort_for, normalise, comma_separated_params_to_list, filter_show_items
 from . import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
@@ -389,29 +389,28 @@ def view_show_archive(show_slug):
 @auth_token_required
 def view_show_page(show_slug):
     do = DoArchive()
+    filterArray = {}
+    filterList = request.args.getlist('filter')
+    if len(filterList) == 1 and ',' in filterList[0]:
+        filterArray['filters'] = comma_separated_params_to_list(filterList[0])
+    else:
+        filterArray['filters'] = filterList 
+    # TODO workaround for current frontend usage
+    archived = 'archived' in filterArray['filters']
+    if archived == None:
+        if "https://lahmacun.hu" in request.environ.get('HTTP_ORIGIN'):
+            archived = True
+    latest = 'latest' in filterArray['filters']
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first()
     if show:
-        # subquery = session.query(Item.id).filter(blabla -timedelta(day=1)).all().subquery()
-        # query = session.query(Show).filter_by(blabla).(Item.id.in_(subquery))
         if show.cover_image_url:
             show.cover_image_url = do.download(
                 show.archive_lahmastore_base_url, show.cover_image_url
             )
         serial_show = show_archive_schema.dump(show)
-        show_items = [
-            show_item
-            for show_item in serial_show["items"]
-            if datetime.strptime(show_item.get("play_date"), "%Y-%m-%d")
-            + timedelta(days=1)
-            < datetime.today()
-        ]
-        serial_show["items"]=show_items
-        for item in serial_show["items"]:
-            item["image_url"] = do.download(
-                show.archive_lahmastore_base_url, item["image_url"]
-            )
-            item["name_slug"]=normalise(item["name"])
+        if (0 < len(serial_show["items"])):
+            serial_show["items"] = filter_show_items(show, serial_show["items"], archived, latest)
         return serial_show
     else:
         return make_response("Show not found", 404, headers)
@@ -439,7 +438,7 @@ def search_show():
     do = DoArchive()
     page = request.args.get('page', 1, type=int)
     size = request.args.get('size', 12, type=int)
-    param = request.args.get('param', "", type=str)
+    param = request.args.get('param', "lahmacun", type=str)
     shows = Show.query.filter(func.lower(Show.name).contains(func.lower(param)) | func.lower(Show.description).contains(func.lower(param))).paginate(page, size, False)
     for show in shows.items:
         if show.cover_image_url:

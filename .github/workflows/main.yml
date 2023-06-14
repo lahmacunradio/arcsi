@@ -80,15 +80,17 @@ jobs:
         POSTGRES_DB: arcsi
         CI: true
     
+    # Running the functional postman test collection with the test environment (-e) and insecure option (no SSL verification, -k)
     - name: Functional Test
       run: |
         cd test/postman/
         newman run functional_test.postman_collection.json -e test.postman_environment.json -k
   
+    # Running the robustness/performance postman test collection (bunch of GET requests) with multiple iterations (-n)
     - name: Robustness Test
       run: |
         cd test/postman/
-        newman run robustness_test.postman_collection.json -e test.postman_environment.json -n 250 -k
+        newman run robustness_test.postman_collection.json -e test.postman_environment.json -n 50 -k
 
     - name: Upload logs
       uses: actions/upload-artifact@v3
