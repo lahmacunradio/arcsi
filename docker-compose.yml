@@ -21,7 +21,7 @@ services:
     links:
       - "db"
     build: .
-    image: arcsi:0.4.0
+    image: arcsi:0.4.1
     restart: always
     expose:
       - 5666

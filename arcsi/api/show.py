@@ -389,18 +389,15 @@ def view_show_archive(show_slug):
 @auth_token_required
 def view_show_page(show_slug):
     do = DoArchive()
-    filterArray = {}
-    filterList = request.args.getlist('filter')
-    if len(filterList) == 1 and ',' in filterList[0]:
-        filterArray['filters'] = comma_separated_params_to_list(filterList[0])
-    else:
-        filterArray['filters'] = filterList 
+    filter_params = request.args.getlist('filter')
+    if len(filter_params) == 1 and ',' in filter_params[0]:
+        filter_params = comma_separated_params_to_list(filter_params[0])
     # TODO workaround for current frontend usage
-    archived = 'archived' in filterArray['filters']
+    archived = 'archived' in filter_params
     if archived == None:
         if "https://lahmacun.hu" in request.environ.get('HTTP_ORIGIN'):
             archived = True
-    latest = 'latest' in filterArray['filters']
+    latest = 'latest' in filter_params
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first()
     if show:

@@ -194,7 +194,6 @@ def get_show_items(show, items, latest):
         items["name_slug"] = normalise(items["name"])
         return items
     else:
-        items = items
         for item in items:
             item["image_url"] = do.download(
                 show.archive_lahmastore_base_url, item["image_url"]
