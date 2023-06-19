@@ -7,7 +7,7 @@ class Item(db.Model):
     number = db.Column(db.Integer)
     name = db.Column(db.String(), nullable=False)
     description = db.Column(db.String())
-    social_base_url = db.Column(db.String())
+    external_url = db.Column(db.String(256))
     language = db.Column(db.String(5), default="hu_hu")
     play_date = db.Column(db.Date, nullable=False)
     image_url = db.Column(db.String())

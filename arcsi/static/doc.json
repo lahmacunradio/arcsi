@@ -460,24 +460,24 @@
         "summary": "Return all searched Shows (their name or description contains the parameter)",
         "parameters": [
           {
-            "in": "path",
+            "in": "query",
             "name": "size",
-            "required": true,
+            "required": false,
             "description": "page_size, default: 12",
-            "type": "string"
+            "type": "integer"
           },
           {
-            "in": "path",
+            "in": "query",
             "name": "page",
-            "required": true,
+            "required": false,
             "description": "page_number, default: 1",
-            "type": "string"
+            "type": "integer"
           },
           {
-            "in": "path",
+            "in": "query",
             "name": "param",
-            "required": true,
-            "description": "search_parameter, default: 1",
+            "required": false,
+            "description": "search_parameter, default: 'lahmacun'",
             "type": "string"
           }
         ],
@@ -529,9 +529,9 @@
         "summary": "Return all active Shows airing on the chosen day for Ananasz's Home and Schedule Page",
         "parameters": [
           {
-            "in": "path",
+            "in": "query",
             "name": "day",
-            "required": true,
+            "required": false,
             "description": "day, default: 1",
             "type": "number"
           }
@@ -553,7 +553,7 @@
         }
       }
     },
-    "/show/{show_slug}/page": {
+    "/show/{show_slug}/page?filter={filter}": {
       "get": {
         "tags": [
           "Show Requests for frontend"
@@ -565,6 +565,13 @@
             "name": "show_slug",
             "required": true,
             "description": "Show.archive_lahmastore_base_url",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "description": "can be archived (sorting out upcoming episodes) and/or latest (return only the latest)",
             "type": "string"
           }
         ],
@@ -822,18 +829,18 @@
         "summary": "Return latest Items for Ananasz's Home and Archive Page",
         "parameters": [
           {
-            "in": "path",
+            "in": "query",
             "name": "size",
-            "required": true,
+            "required": false,
             "description": "page_size, default: 12",
-            "type": "string"
+            "type": "integer"
           },
           {
-            "in": "path",
+            "in": "query",
             "name": "page",
-            "required": true,
+            "required": false,
             "description": "page_number, default: 1",
-            "type": "string"
+            "type": "integer"
           }
         ],
         "produces": [
@@ -861,24 +868,24 @@
         "summary": "Return all searched Items (their name or description contains the parameter)",
         "parameters": [
           {
-            "in": "path",
+            "in": "query",
             "name": "size",
-            "required": true,
+            "required": false,
             "description": "page_size, default: 12",
-            "type": "string"
+            "type": "integer"
           },
           {
-            "in": "path",
+            "in": "query",
             "name": "page",
-            "required": true,
+            "required": false,
             "description": "page_number, default: 1",
-            "type": "string"
+            "type": "integer"
           },
           {
-            "in": "path",
+            "in": "query",
             "name": "param",
-            "required": true,
-            "description": "search_parameter, default: 1",
+            "required": false,
+            "description": "search_parameter, default: 'lahmacun'",
             "type": "string"
           }
         ],

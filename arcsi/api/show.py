@@ -7,7 +7,7 @@ from flask_security import auth_token_required, roles_required
 from marshmallow import fields, post_load, Schema
 from sqlalchemy import func
 
-from .utils import archive, get_shows, save_file, slug, sort_for, normalise
+from .utils import archive, get_shows, save_file, slug, sort_for, normalise, comma_separated_params_to_list, filter_show_items
 from . import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
@@ -34,7 +34,7 @@ class ShowDetailsSchema(Schema):
     end = fields.Time()
     archive_lahmastore = fields.Boolean(required=True)
     archive_lahmastore_base_url = fields.Str(dump_only=True)
-    social_base_url = fields.Str()
+    external_url = fields.Str()
     items = fields.List(
         fields.Nested(
             "ItemDetailsSchema",
@@ -73,18 +73,18 @@ class ShowDetailsSchema(Schema):
 
 
 show_schema = ShowDetailsSchema()
-show_archive_schema = ShowDetailsSchema(only=("id", "active", "name", "description", "contact_address", "cover_image_url", 
+show_archive_schema = ShowDetailsSchema(only=("id", "active", "name", "description", "cover_image_url", 
                                                     "day", "start", "end", "frequency", "language",
-                                                    "playlist_name", "archive_lahmastore_base_url", "social_base_url", "items", "tags"))
+                                                    "playlist_name", "archive_lahmastore_base_url", "external_url", "items", "tags"))
 show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
-shows_schedule_schema = ShowDetailsSchema(many=True, exclude=("items",))
+shows_schedule_schema = ShowDetailsSchema(many=True, exclude=("items", "contact_address"))
 shows_schedule_by_schema = ShowDetailsSchema(many=True, 
                                                     only=("id", "active", "name", "description", "cover_image_url", 
                                                     "day", "start", "end", "frequency", "language",
                                                     "playlist_name", "archive_lahmastore_base_url", "items"))
 shows_archive_schema = ShowDetailsSchema(many=True, 
-                                                    only=("id", "active", "name", "description", "social_base_url", "cover_image_url",
+                                                    only=("id", "active", "name", "description", "external_url", "cover_image_url",
                                                     "playlist_name", "archive_lahmastore_base_url"))
 
 headers = {"Content-Type": "application/json"}
@@ -195,7 +195,7 @@ def add_show():
             name=show_metadata.name,
             description=show_metadata.description,
             contact_address=show_metadata.contact_address,
-            social_base_url=show_metadata.social_base_url,
+            external_url=show_metadata.external_url,
             language=show_metadata.language,
             playlist_name=show_metadata.playlist_name,
             frequency=show_metadata.frequency,
@@ -286,7 +286,7 @@ def edit_show(id):
         show.active = show_metadata.active
         show.name = show_metadata.name
         show.description = show_metadata.description
-        show.social_base_url=show_metadata.social_base_url
+        show.external_url=show_metadata.external_url
         show.contact_address = show_metadata.contact_address
         show.language = show_metadata.language
         show.playlist_name = show_metadata.playlist_name
@@ -389,29 +389,25 @@ def view_show_archive(show_slug):
 @auth_token_required
 def view_show_page(show_slug):
     do = DoArchive()
+    filter_params = request.args.getlist('filter')
+    if len(filter_params) == 1 and ',' in filter_params[0]:
+        filter_params = comma_separated_params_to_list(filter_params[0])
+    # TODO workaround for current frontend usage
+    archived = 'archived' in filter_params
+    if archived == None:
+        if "https://lahmacun.hu" in request.environ.get('HTTP_ORIGIN'):
+            archived = True
+    latest = 'latest' in filter_params
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first()
     if show:
-        # subquery = session.query(Item.id).filter(blabla -timedelta(day=1)).all().subquery()
-        # query = session.query(Show).filter_by(blabla).(Item.id.in_(subquery))
         if show.cover_image_url:
             show.cover_image_url = do.download(
                 show.archive_lahmastore_base_url, show.cover_image_url
             )
         serial_show = show_archive_schema.dump(show)
-        show_items = [
-            show_item
-            for show_item in serial_show["items"]
-            if datetime.strptime(show_item.get("play_date"), "%Y-%m-%d")
-            + timedelta(days=1)
-            < datetime.today()
-        ]
-        serial_show["items"]=show_items
-        for item in serial_show["items"]:
-            item["image_url"] = do.download(
-                show.archive_lahmastore_base_url, item["image_url"]
-            )
-            item["name_slug"]=normalise(item["name"])
+        if (0 < len(serial_show["items"])):
+            serial_show["items"] = filter_show_items(show, serial_show["items"], archived, latest)
         return serial_show
     else:
         return make_response("Show not found", 404, headers)
@@ -439,7 +435,7 @@ def search_show():
     do = DoArchive()
     page = request.args.get('page', 1, type=int)
     size = request.args.get('size', 12, type=int)
-    param = request.args.get('param', "", type=str)
+    param = request.args.get('param', "lahmacun", type=str)
     shows = Show.query.filter(func.lower(Show.name).contains(func.lower(param)) | func.lower(Show.description).contains(func.lower(param))).paginate(page, size, False)
     for show in shows.items:
         if show.cover_image_url:

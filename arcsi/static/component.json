@@ -239,7 +239,7 @@
               "archive_lahmastore_base_url": {
                   "type": "string"
               },
-              "social_base_url": {
+              "external_url": {
                   "type": "string"
               },
               "cover_image_url": {
@@ -332,7 +332,7 @@
               "archive_lahmastore_base_url": {
                   "type": "string"
               },
-              "social_base_url": {
+              "external_url": {
                   "type": "string"
               },
               "cover_image_url": {
@@ -557,7 +557,7 @@
               "archive_lahmastore_canonical_url": {
                   "type": "string"
               },
-              "social_base_url": {
+              "external_url": {
                   "type": "string"
               },
               "image_url": {
@@ -740,9 +740,9 @@
             "type": "boolean",
             "example": true
           },
-          "social_base_url": {
+          "external_url": {
             "type": "string",
-            "example": "item-social_base_url"
+            "example": "item-external_url"
           },
           "uploader": {
             "type": "string",
