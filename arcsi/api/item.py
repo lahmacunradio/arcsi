@@ -35,7 +35,7 @@ class ItemDetailsSchema(Schema):
     airing = fields.Boolean(dump_only=True)
     archive_lahmastore = fields.Boolean()
     archive_lahmastore_canonical_url = fields.Str(dump_only=True)
-    social_base_url = fields.Str()
+    external_url = fields.Str()
     archived = fields.Boolean(dump_only=True)
     download_count = fields.Int(dump_only=True)
     uploader = fields.Str(required=True)
@@ -160,7 +160,7 @@ def add_item():
         play_file = None
         play_file_name = None
         archive_lahmastore_canonical_url = ""
-        social_base_url = ""
+        external_url = ""
         shows = (
             db.session.query(Show)
             .filter(Show.id.in_((show.id for show in item_metadata.shows)))
@@ -173,7 +173,7 @@ def add_item():
             number=item_metadata.number,
             name=item_metadata.name,
             description=item_metadata.description,
-            social_base_url=item_metadata.social_base_url,
+            external_url=item_metadata.external_url,
             language=item_metadata.language,
             play_date=item_metadata.play_date,
             image_url=image_url,
@@ -400,7 +400,7 @@ def edit_item(id):
         item.airing = item_metadata.airing
         item.uploader = item_metadata.uploader
         item.archive_lahmastore = item_metadata.archive_lahmastore
-        item.social_base_url = item_metadata.social_base_url
+        item.external_url = item_metadata.external_url
 
         # conflict between shows from detached object load(item_metadata) added to session vs original persistent object item from query
         item.shows = (

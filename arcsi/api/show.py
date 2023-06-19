@@ -34,7 +34,7 @@ class ShowDetailsSchema(Schema):
     end = fields.Time()
     archive_lahmastore = fields.Boolean(required=True)
     archive_lahmastore_base_url = fields.Str(dump_only=True)
-    social_base_url = fields.Str()
+    external_url = fields.Str()
     items = fields.List(
         fields.Nested(
             "ItemDetailsSchema",
@@ -75,7 +75,7 @@ class ShowDetailsSchema(Schema):
 show_schema = ShowDetailsSchema()
 show_archive_schema = ShowDetailsSchema(only=("id", "active", "name", "description", "cover_image_url", 
                                                     "day", "start", "end", "frequency", "language",
-                                                    "playlist_name", "archive_lahmastore_base_url", "social_base_url", "items", "tags"))
+                                                    "playlist_name", "archive_lahmastore_base_url", "external_url", "items", "tags"))
 show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
 shows_schedule_schema = ShowDetailsSchema(many=True, exclude=("items", "contact_address"))
@@ -84,7 +84,7 @@ shows_schedule_by_schema = ShowDetailsSchema(many=True,
                                                     "day", "start", "end", "frequency", "language",
                                                     "playlist_name", "archive_lahmastore_base_url", "items"))
 shows_archive_schema = ShowDetailsSchema(many=True, 
-                                                    only=("id", "active", "name", "description", "social_base_url", "cover_image_url",
+                                                    only=("id", "active", "name", "description", "external_url", "cover_image_url",
                                                     "playlist_name", "archive_lahmastore_base_url"))
 
 headers = {"Content-Type": "application/json"}
@@ -195,7 +195,7 @@ def add_show():
             name=show_metadata.name,
             description=show_metadata.description,
             contact_address=show_metadata.contact_address,
-            social_base_url=show_metadata.social_base_url,
+            external_url=show_metadata.external_url,
             language=show_metadata.language,
             playlist_name=show_metadata.playlist_name,
             frequency=show_metadata.frequency,
@@ -286,7 +286,7 @@ def edit_show(id):
         show.active = show_metadata.active
         show.name = show_metadata.name
         show.description = show_metadata.description
-        show.social_base_url=show_metadata.social_base_url
+        show.external_url=show_metadata.external_url
         show.contact_address = show_metadata.contact_address
         show.language = show_metadata.language
         show.playlist_name = show_metadata.playlist_name
