@@ -394,9 +394,6 @@ def view_show_page(show_slug):
         filter_params = comma_separated_params_to_list(filter_params[0])
     # TODO workaround for current frontend usage
     archived = 'archived' in filter_params
-    if archived == None:
-        if "https://lahmacun.hu" in request.environ.get('HTTP_ORIGIN'):
-            archived = True
     latest = 'latest' in filter_params
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first()
