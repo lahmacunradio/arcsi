@@ -433,7 +433,9 @@ def search_show():
     page = request.args.get('page', 1, type=int)
     size = request.args.get('size', 12, type=int)
     param = request.args.get('param', "lahmacun", type=str)
-    shows = Show.query.filter(func.lower(Show.name).contains(func.lower(param)) | func.lower(Show.description).contains(func.lower(param))).paginate(page, size, False)
+    shows = Show.query.filter(func.lower(Show.name).contains(func.lower(param)) | 
+                              func.lower(Show.description).contains(func.lower(param))
+                              ).paginate(page=page, per_page=size, error_out=False)
     for show in shows.items:
         if show.cover_image_url:
             show.cover_image_url = do.download(
