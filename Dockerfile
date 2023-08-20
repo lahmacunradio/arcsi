@@ -9,9 +9,11 @@ WORKDIR /app
 RUN apt-get update \
     && apt-get install gcc g++ \
     libblas-dev libffi-dev liblapack-dev libopenblas-dev libpq-dev \
-    musl-dev postgresql -y \
+    musl-dev postgresql tmpreaper -y \
     && apt-get clean \
     && pip3 install -r requirements.txt
+
+ADD infra/tmpreaper.conf /etc/tmpreaper.conf
 
 ADD . /app
 
