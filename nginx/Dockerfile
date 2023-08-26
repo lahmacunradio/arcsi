@@ -1,4 +1,4 @@
-FROM nginx:1.25.1
+FROM nginx:1.18-alpine
 
 # SSL through letsencrypt
 RUN apk add --no-cache certbot
