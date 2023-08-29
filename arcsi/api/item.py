@@ -49,7 +49,7 @@ class ItemDetailsSchema(Schema):
     tags = fields.List(
         fields.Nested(
             "TagDetailsSchema",
-            only=("id", "display_name",),
+            only=("id", "display_name", "clean_name"),
         )
     )
 
@@ -139,7 +139,7 @@ def add_item():
             "name": item_metadata["show_name"]
         }
     ]
-    item_metadata["tags"] = [ { "display_name": tag_name } for tag_name in item_metadata["taglist"].split(",") ]
+    item_metadata["tags"] = [ { "display_name": tag_name.strip() } for tag_name in item_metadata["taglist"].split(",") ]
     item_metadata.pop("show_name", None)
     item_metadata.pop("taglist", None)
     
@@ -368,7 +368,7 @@ def edit_item(id):
     item_metadata["shows"] = [
         {"id": item_metadata["shows"], "name": item_metadata["show_name"]}
     ]
-    item_metadata["tags"] = [ { "display_name": tag_name } for tag_name in item_metadata["taglist"].split(",") ]
+    item_metadata["tags"] = [ { "display_name": tag_name.strip() } for tag_name in item_metadata["taglist"].split(",") ]
     item_metadata.pop("taglist", None)
     item_metadata.pop("show_name", None)
 

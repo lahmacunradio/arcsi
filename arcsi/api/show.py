@@ -63,7 +63,7 @@ class ShowDetailsSchema(Schema):
     tags = fields.List(
         fields.Nested(
             "TagDetailsSchema",
-            only=("id", "display_name",),
+            only=("id", "display_name", "clean_name"),
         )
     )
 
@@ -178,7 +178,7 @@ def add_show():
     ]
     show_metadata.pop("user_name", None)
     show_metadata.pop("user_email", None)
-    show_metadata["tags"] = [{"display_name": dis_name} for dis_name in show_metadata["taglist"].split(",")]
+    show_metadata["tags"] = [{"display_name": dis_name.strip()} for dis_name in show_metadata["taglist"].split(",")]
     show_metadata.pop("taglist", None)
 
     # validate payload
@@ -269,7 +269,7 @@ def edit_show(id):
     show_metadata.pop("user_name", None)
     show_metadata.pop("user_email", None)
 
-    show_metadata["tags"] = [{"display_name": dis_name} for dis_name in show_metadata["taglist"].split(",")]
+    show_metadata["tags"] = [{"display_name": dis_name.strip()} for dis_name in show_metadata["taglist"].split(",")]
     show_metadata.pop("taglist", None)
 
     # validate payload
