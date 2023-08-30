@@ -764,6 +764,42 @@
             "type": "file"
           }
         }
+      },
+      "TagResponseBody": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer",
+                "format": "int32"
+            },
+            "display_name": {
+                "type": "string"
+            },
+            "clean_name": {
+                "type": "string"
+            },
+            "icon": {
+                "type": "string"
+            },
+            "items": {
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/components/schemas/item"
+                }
+            },
+            "shows": {
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/components/schemas/show"
+                }
+            }
+        }      
+      },
+      "TagResponseBodies": {
+        "type": "object",
+        "additionalProperties": {
+            "$ref": "#/components/schemas/TagResponseBody"
+        }
       }
     }
   }
