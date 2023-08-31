@@ -11,7 +11,7 @@ from arcsi.view import router
 @router.route("/item/all")
 @login_required
 def list_items():
-    result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_items"), headers = {"Authentication-Token": current_user.get_auth_token()})
+    result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_items_archon"), headers = {"Authentication-Token": current_user.get_auth_token()})
     items = result.json()
     return render_template("item/list.html", items=items)
 

@@ -11,7 +11,7 @@ from arcsi.view import router
 @router.route("/show/all")
 @login_required
 def list_shows():
-    result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_shows"), headers = {"Authentication-Token": current_user.get_auth_token()})
+    result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_shows_archon"), headers = {"Authentication-Token": current_user.get_auth_token()})
     shows = result.json()
     return render_template("show/list.html", shows=shows)
 

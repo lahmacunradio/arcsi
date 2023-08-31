@@ -67,6 +67,8 @@ items_schema = ItemDetailsSchema(many = True)
 items_archive_schema = ItemDetailsSchema(many = True, 
                 only = ("id", "number", "name", "name_slug", "description", "language", "play_date",
                         "image_url", "play_file_name", "archived", "download_count", "shows", "tags"))
+items_archon_schema = ItemDetailsSchema(many = True, 
+                only = ("id", "number", "name", "play_date", "play_file_name", "archived", "shows"))
 
 headers = {"Content-Type": "application/json"}
 
@@ -85,6 +87,12 @@ def list_items():
         item.name_slug=normalise(item.name)
     return items_schema.dumps(items)
 
+
+@arcsi.route("/item/all_archon", methods=["GET"])
+@auth_token_required
+def list_items_archon():
+    items = Item.query.all()
+    return items_archon_schema.dumps(items)
 
 @arcsi.route("/item/latest", methods=["GET"])
 @auth_token_required

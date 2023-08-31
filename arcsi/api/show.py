@@ -86,6 +86,8 @@ shows_schedule_by_schema = ShowDetailsSchema(many=True,
 shows_archive_schema = ShowDetailsSchema(many=True, 
                                                     only=("id", "active", "name", "description", "external_url", "cover_image_url",
                                                     "playlist_name", "archive_lahmastore_base_url"))
+shows_archon_schema = ShowDetailsSchema(many=True, 
+                                                    only=("id", "active", "name", "users", "contact_address", "external_url"))
 
 headers = {"Content-Type": "application/json"}
 
@@ -101,7 +103,13 @@ def list_shows():
 @arcsi.route("/show/all_without_items", methods=["GET"])
 @auth_token_required
 def list_shows_without_items():
-    return shows_schedule_schema.dumps(get_shows())   
+    return shows_schedule_schema.dumps(get_shows())
+
+@arcsi.route("/show/all_archon", methods=["GET"])
+@auth_token_required
+def list_shows_archon():
+    shows = Show.query.all()
+    return shows_archon_schema.dumps(shows)   
 
 
 @arcsi.route("/show/schedule", methods=["GET"])
