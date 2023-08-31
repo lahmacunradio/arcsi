@@ -4,15 +4,15 @@ from marshmallow import fields, post_load, Schema
 
 from arcsi.api import arcsi
 from arcsi.model.tag import Tag
-from .utils import find_request_params
+from .utils import find_request_params, normalise
 
 class TagDetailsSchema(Schema):
     id = fields.Int()
     display_name = fields.Str(required=True, min=3)
     clean_name = fields.Str(dump_only=True)
     icon = fields.Str(dump_only=True)
-    items = fields.Nested("ItemDetailsSchema", many=True, only=("id", "name"), dump_only=True)
-    shows = fields.Nested("ShowDetailsSchema", many=True, only=("id", "name"), dump_only=True)
+    items = fields.Nested("ItemDetailsSchema", many=True, only=("id", "name", "name_slug", "description", "image_url", "play_date"), dump_only=True)
+    shows = fields.Nested("ShowDetailsSchema", many=True, only=("id", "name", "archive_lahmastore_base_url", "description", "cover_image_url"), dump_only=True)
 
     # TODO -- Tag count
     
@@ -35,6 +35,8 @@ def list_tags():
 @arcsi.route("/tag/<string:clean_tag>", methods=["GET"])
 @auth_token_required
 def view_tagged(clean_tag):
-    tag_items = Tag.query.filter_by(clean_name=clean_tag).first_or_404()
-    if tag_items:
-       return make_response(tags_details_schema.dumps(tag_items), 200, headers,)
+    tag = Tag.query.filter_by(clean_name=clean_tag).first_or_404()
+    if tag:
+        for item in tag.items:
+            item.name_slug=normalise(item.name)    
+        return make_response(tags_details_schema.dumps(tag), 200, headers,)

@@ -27,6 +27,10 @@
       "description": "API for requesting and return Item details"
     },
     {
+      "name": "Tag Requests for frontend",
+      "description": "API for requesting and return Tag details"
+    },
+    {
       "name": "Show Requests for Arcsi",
       "description": "API for requesting and return Show details"
     },
@@ -277,95 +281,12 @@
         }
       }
     },
-    "/show/add_api": {
-      "post": {
-        "tags": [
-          "Show Requests for Arcsi"
-        ],
-        "summary": "Add Show to Arcsi (external use)",
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "requestBody": {
-          "schema":{
-            "$ref": "component.json#/components/schemas/ShowRequestBody"
-          }
-        },
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "$ref": "component.json#/components/schemas/ShowResponseBody"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Invalid data sent to add show"
-          },
-          "503": {
-            "description": "Only accepts multipart/form-data for now, sorry"
-          }
-        }
-      }
-    },
     "/show/{id}/edit": {
       "post": {
         "tags": [
           "Show Requests for Arcsi"
         ],
         "summary": "Edit Show in Arcsi (internal use)",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "Show.id",
-            "type": "string"
-          }
-        ],
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "requestBody": {
-          "schema":{
-            "$ref": "component.json#/components/schemas/ShowRequestBody"
-          }
-        },
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "$ref": "component.json#/components/schemas/ShowResponseBody"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Show not found"
-          },
-          "500": {
-            "description": "Invalid data sent to edit show"
-          }
-        }
-      }
-    },
-    "/show/{id}/edit_api": {
-      "post": {
-        "tags": [
-          "Show Requests for Arcsi"
-        ],
-        "summary": "Edit Show in Arcsi (external use)",
         "parameters": [
           {
             "in": "path",
@@ -692,95 +613,12 @@
         }
       }
     },
-    "/item/add_api": {
-      "post": {
-        "tags": [
-          "Item Requests for Arcsi"
-        ],
-        "summary": "Add Item to Arcsi (external use)",
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "requestBody": {
-          "schema":{
-            "$ref": "component.json#/components/schemas/ItemRequestBody"
-          }
-        },
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "$ref": "component.json#/components/schemas/ItemResponseBody"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Invalid data sent to add item"
-          },
-          "503": {
-            "description": "Only accepts multipart/form-data for now, sorry"
-          }
-        }
-      }
-    },
     "/item/{id}/edit": {
       "post": {
         "tags": [
           "Item Requests for Arcsi"
         ],
         "summary": "Edit Item in Arcsi (internal use)",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "Item.id",
-            "type": "string"
-          }
-        ],
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "requestBody": {
-          "schema":{
-            "$ref": "component.json#/components/schemas/ItemRequestBody"
-          }
-        },
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "$ref": "component.json#/components/schemas/ItemResponseBody"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Item not found"
-          },
-          "500": {
-            "description": "Invalid data sent to edit item"
-          }
-        }
-      }
-    },
-    "/item/{id}/edit_api": {
-      "post": {
-        "tags": [
-          "Item Requests for Arcsi"
-        ],
-        "summary": "Edit Item in Arcsi (external use)",
         "parameters": [
           {
             "in": "path",
@@ -1041,6 +879,64 @@
           },
           "404": {
             "description": "Failed. Item not found."
+          }
+        }
+      }
+    },
+    "/tag/all": {
+      "get": {
+        "tags": [
+          "Tag Requests for frontend"
+        ],
+        "summary": "Return all Tags",
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/TagResponseBodies"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tag/{tag_slug}": {
+      "get": {
+        "tags": [
+          "Tag Requests for frontend"
+        ],
+        "summary": "Return the given Tag",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tag_slug",
+            "required": true,
+            "description": "Tag.clean_name",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/TagResponseBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tag not found"
           }
         }
       }

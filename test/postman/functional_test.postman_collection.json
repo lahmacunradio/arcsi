@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ad3b7596-289e-4122-83d1-4aebf04596a2",
+		"_postman_id": "6999efa4-6ab4-446e-b27e-5e7cddbc7c64",
 		"name": "CI test (functional)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -587,7 +587,7 @@
 						},
 						{
 							"key": "taglist",
-							"value": "tag1, tag2, tag3",
+							"value": "tag1 , tag2 , tag3",
 							"type": "default"
 						},
 						{
@@ -664,6 +664,12 @@
 							"\r",
 							"pm.test(\"Tags number is 3\", function() {\r",
 							"    pm.expect(tags.length).to.equal(3)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Tags are stripped\", function() {\r",
+							"    pm.expect(tags[0].display_name).to.equal(\"tag1\")\r",
+							"    pm.expect(tags[1].display_name).to.equal(\"tag2\")\r",
+							"    pm.expect(tags[2].display_name).to.equal(\"tag3\")\r",
 							"})"
 						],
 						"type": "text/javascript"
@@ -2628,6 +2634,13 @@
 							"\r",
 							"pm.test(\"Tags number is 4\", function() {\r",
 							"    pm.expect(tags.length).to.equal(4)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Tags are stripped\", function() {\r",
+							"    pm.expect(tags[0].display_name).to.equal(\"tag1\")\r",
+							"    pm.expect(tags[1].display_name).to.equal(\"tag2\")\r",
+							"    pm.expect(tags[2].display_name).to.equal(\"tag3\")\r",
+							"    pm.expect(tags[3].display_name).to.equal(\"\")\r",
 							"})"
 						],
 						"type": "text/javascript"
@@ -3154,6 +3167,14 @@
 							"\r",
 							"pm.test(\"Tags number is 5\", function() {\r",
 							"    pm.expect(tags.length).to.equal(5)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Tags are stripped\", function() {\r",
+							"    pm.expect(tags[0].display_name).to.equal(\"tag1\")\r",
+							"    pm.expect(tags[1].display_name).to.equal(\"tag2\")\r",
+							"    pm.expect(tags[2].display_name).to.equal(\"tag3\")\r",
+							"    pm.expect(tags[3].display_name).to.equal(\"\")\r",
+							"    pm.expect(tags[4].display_name).to.equal(\"tag4\")\r",
 							"})"
 						],
 						"type": "text/javascript"
