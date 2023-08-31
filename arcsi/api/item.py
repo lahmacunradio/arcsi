@@ -67,7 +67,7 @@ items_schema = ItemDetailsSchema(many = True)
 items_archive_schema = ItemDetailsSchema(many = True, 
                 only = ("id", "number", "name", "name_slug", "description", "language", "play_date",
                         "image_url", "play_file_name", "archived", "download_count", "shows", "tags"))
-items_archon_schema = ItemDetailsSchema(many = True, 
+archon_items_schema = ItemDetailsSchema(many = True, 
                 only = ("id", "number", "name", "play_date", "play_file_name", "archived", "shows"))
 
 headers = {"Content-Type": "application/json"}
@@ -88,15 +88,15 @@ def list_items():
     return items_schema.dumps(items)
 
 
-@arcsi.route("/item/all_archon", methods=["GET"])
+@arcsi.route("/archon/item/all", methods=["GET"])
 @auth_token_required
-def list_items_archon():
+def archon_list_items():
     items = Item.query.all()
-    return items_archon_schema.dumps(items)
+    return archon_items_schema.dumps(items)
 
 @arcsi.route("/item/latest", methods=["GET"])
 @auth_token_required
-def list_items_latest():
+def frontend_list_items_latest():
     do = DoArchive()
     page = request.args.get('page', 1, type=int)
     size = request.args.get('size', 12, type=int)
@@ -115,7 +115,7 @@ def list_items_latest():
 
 @arcsi.route("/item/<int:id>", methods=["GET"])
 @auth_token_required
-def view_item(id):
+def archon_view_item(id):
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
     if item:
@@ -130,9 +130,9 @@ def view_item(id):
         return make_response("Item not found", 404, headers)
 
 
-@arcsi.route("/item/add", methods=["POST"])
+@arcsi.route("/archon/item/add", methods=["POST"])
 @roles_required("admin")
-def add_item():
+def archon_add_item():
     no_error = True
     if request.is_json:
         return make_response(
@@ -324,9 +324,9 @@ def add_item():
             )
 
 
-@arcsi.route("item/<int:id>/listen", methods=["GET"])
+@arcsi.route("/item/<int:id>/listen", methods=["GET"])
 @auth_token_required
-def listen_play_file(id):
+def archon_listen_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)
     item = item_query.first()
@@ -338,7 +338,7 @@ def listen_play_file(id):
 
 @arcsi.route("/item/<int:id>/download", methods=["GET"])
 @auth_token_required
-def download_play_file(id):
+def archon_download_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
@@ -348,9 +348,9 @@ def download_play_file(id):
     return redirect(presigned, code=302)
 
 
-@arcsi.route("/item/<int:id>", methods=["DELETE"])
+@arcsi.route("/archon/item/<int:id>", methods=["DELETE"])
 @roles_required("admin")
-def delete_item(id):
+def archon_delete_item(id):
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
     item_query.delete()
@@ -358,9 +358,9 @@ def delete_item(id):
     return make_response("Deleted item successfully", 200, headers)
 
 
-@arcsi.route("/item/<int:id>/edit", methods=["POST"])
+@arcsi.route("/archon/item/<int:id>/edit", methods=["POST"])
 @roles_required("admin")
-def edit_item(id):
+def archon_edit_item(id):
     no_error = True
     image_file = None
     image_file_name = None
@@ -511,7 +511,7 @@ def edit_item(id):
 
 @arcsi.route("/item/search", methods=["GET"])
 @auth_token_required
-def search_item():
+def frontend_search_item():
     do = DoArchive()
     page = request.args.get('page', 1, type=int)
     size = request.args.get('size', 12, type=int)

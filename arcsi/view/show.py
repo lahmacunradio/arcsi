@@ -11,7 +11,7 @@ from arcsi.view import router
 @router.route("/show/all")
 @login_required
 def list_shows():
-    result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_shows_archon"), headers = {"Authentication-Token": current_user.get_auth_token()})
+    result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.archon_list_shows"), headers = {"Authentication-Token": current_user.get_auth_token()})
     shows = result.json()
     return render_template("show/list.html", shows=shows)
 
@@ -25,7 +25,7 @@ def add_show():
 @router.route("/show/<id>", methods=["GET"])
 @login_required
 def view_show(id):
-    relpath = url_for("arcsi.view_show", id=id)
+    relpath = url_for("arcsi.archon_view_show", id=id)
     show = requests.get(app.config["APP_BASE_URL"] + relpath, headers = {"Authentication-Token": current_user.get_auth_token()})
     show_json = show.json()
     return render_template("show/view.html", show=show_json)
@@ -34,6 +34,6 @@ def view_show(id):
 @router.route("/show/<id>/edit", methods=["GET"])
 @roles_accepted("admin", "host")
 def edit_show(id):
-    relpath = url_for("arcsi.view_show", id=id)
+    relpath = url_for("arcsi.archon_view_show", id=id)
     show = requests.get(app.config["APP_BASE_URL"] + relpath, headers = {"Authentication-Token": current_user.get_auth_token()})
     return render_template("show/edit.html", show=show.json())

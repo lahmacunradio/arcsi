@@ -86,7 +86,7 @@ shows_schedule_by_schema = ShowDetailsSchema(many=True,
 shows_archive_schema = ShowDetailsSchema(many=True, 
                                                     only=("id", "active", "name", "description", "external_url", "cover_image_url",
                                                     "playlist_name", "archive_lahmastore_base_url"))
-shows_archon_schema = ShowDetailsSchema(many=True, 
+archon_shows_schema = ShowDetailsSchema(many=True, 
                                                     only=("id", "active", "name", "users", "contact_address", "external_url"))
 
 headers = {"Content-Type": "application/json"}
@@ -102,19 +102,19 @@ def list_shows():
 
 @arcsi.route("/show/all_without_items", methods=["GET"])
 @auth_token_required
-def list_shows_without_items():
+def frontend_list_shows_without_items():
     return shows_schedule_schema.dumps(get_shows())
 
-@arcsi.route("/show/all_archon", methods=["GET"])
+@arcsi.route("/archon/show/all", methods=["GET"])
 @auth_token_required
-def list_shows_archon():
+def archon_list_shows():
     shows = Show.query.all()
-    return shows_archon_schema.dumps(shows)   
+    return archon_shows_schema.dumps(shows)   
 
 
 @arcsi.route("/show/schedule", methods=["GET"])
 @auth_token_required
-def list_shows_for_schedule():
+def frontend_list_shows_for_schedule():
     do = DoArchive()
     shows = Show.query.filter(Show.active == True).all()
     for show in shows:
@@ -127,7 +127,7 @@ def list_shows_for_schedule():
 
 @arcsi.route("/show/schedule_by", methods=["GET"])
 @auth_token_required
-def list_shows_for_schedule_by():
+def frontend_list_shows_for_schedule_by():
     do = DoArchive()
     day = request.args.get('day', 1, type=int)
     shows = Show.query.filter(Show.day == day and Show.active == True).all()
@@ -161,15 +161,15 @@ def list_shows_for_schedule_by():
 # We are gonna use this on the new page as the show/all
 @arcsi.route("/show/list", methods=["GET"])
 @auth_token_required
-def list_shows_page():
+def frontend_list_shows_page():
     return shows_archive_schema.dumps(get_shows())
 
 
 # TODO /item/<uuid>/add route so that each upload has unique id to begin with
 # no need for different methods for `POST` & `PUT`
-@arcsi.route("/show/add", methods=["POST"])
+@arcsi.route("/archon/show/add", methods=["POST"])
 @roles_required("admin")
-def add_show():
+def archon_add_show():
     if request.is_json:
         return make_response(
             jsonify("Only accepts multipart/form-data for now, sorry"), 503, headers
@@ -248,18 +248,18 @@ def add_show():
         )
 
 
-@arcsi.route("/show/<int:id>", methods=["DELETE"])
+@arcsi.route("/archon/show/<int:id>", methods=["DELETE"])
 @roles_required("admin")
-def delete_show(id):
+def archon_delete_show(id):
     show_query = Show.query.filter_by(id=id)
     show_query.delete()
     db.session.commit()
     return make_response("Deleted show successfully", 200, headers)
 
 
-@arcsi.route("/show/<int:id>/edit", methods=["POST"])
+@arcsi.route("/archon/show/<int:id>/edit", methods=["POST"])
 @roles_required("admin")
-def edit_show(id):
+def archon_edit_show(id):
     show_query = Show.query.filter_by(id=id)
     show = show_query.first_or_404()
 
@@ -344,7 +344,7 @@ def edit_show(id):
 
 @arcsi.route("show/<int:id>", methods=["GET"])
 @auth_token_required
-def view_show(id):
+def archon_view_show(id):
     do = DoArchive()
     show_query = Show.query.filter_by(id=id)
     show = show_query.first()
@@ -395,7 +395,7 @@ def view_show_archive(show_slug):
 # This will be the one that we are gonna use at the new page 
 @arcsi.route("show/<string:show_slug>/page", methods=["GET"])
 @auth_token_required
-def view_show_page(show_slug):
+def frontend_view_show_page(show_slug):
     do = DoArchive()
     filter_params = request.args.getlist('filter')
     if len(filter_params) == 1 and ',' in filter_params[0]:
@@ -420,7 +420,7 @@ def view_show_page(show_slug):
 
 @arcsi.route("show/<string:show_slug>/item/<string:item_slug>", methods=["GET"])
 @auth_token_required
-def view_episode_archive(show_slug, item_slug):
+def frontend_view_episode_archive(show_slug, item_slug):
     do = DoArchive()
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first_or_404()
@@ -436,7 +436,7 @@ def view_episode_archive(show_slug, item_slug):
 
 @arcsi.route("/show/search", methods=["GET"])
 @auth_token_required
-def search_show():
+def frontend_search_show():
     do = DoArchive()
     page = request.args.get('page', 1, type=int)
     size = request.args.get('size', 12, type=int)
