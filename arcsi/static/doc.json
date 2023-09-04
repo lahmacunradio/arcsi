@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "description": "Arcsi API doc",
-    "version": "0.9.7",
+    "version": "1.0.0",
     "title": "Arcsi",
     "contact": {
       "email": "it@lahmacun.hu"
@@ -12,12 +12,30 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
+  "components": {
+    "securitySchemes": {
+      "GuestApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authentication-Token"
+      },
+      "AdminApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authentication-Token"
+      }
+    }
+  },
   "servers": [
     {
       "url": "/arcsi/"
     }
   ],
   "tags": [
+    {
+      "name": "User Request",
+      "description": "API for requesting and return User details"
+    },
     {
       "name": "Show Requests for frontend",
       "description": "API for requesting and return Show details"
@@ -37,10 +55,6 @@
     {
       "name": "Item Requests for Arcsi",
       "description": "API for requesting and return Item details"
-    },
-    {
-      "name": "User Request",
-      "description": "API for requesting and return User details"
     },
     {
       "name": "Statistics Request",
@@ -159,8 +173,12 @@
           "multipart/form-data"
         ],
         "requestBody": {
-          "schema":{
-            "$ref": "component.json#/components/schemas/UserRequestBody"
+          "content": {
+            "multipart/form-data": {
+              "schema":{
+                "$ref": "component.json#/components/schemas/UserRequestBody"
+              }
+            }
           }
         },
         "produces": [
@@ -192,6 +210,11 @@
           "Show Requests for Arcsi"
         ],
         "summary": "Return all Shows for Arcsi's Shows Page",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "produces": [
           "text/html"
         ],
@@ -215,6 +238,11 @@
           "Show Requests for Arcsi"
         ],
         "summary": "Return chosen Show for Arcsi's Show Subpage",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -250,12 +278,22 @@
           "Show Requests for Arcsi"
         ],
         "summary": "Add Show to Arcsi (internal use)",
+        "security": [
+          {
+            "GuestApiKeyAuth": [],
+            "AdminApiKeyAuth": []
+          }
+        ],
         "consumes": [
           "multipart/form-data"
         ],
         "requestBody": {
-          "schema":{
-            "$ref": "component.json#/components/schemas/ShowRequestBody"
+          "content": {
+            "multipart/form-data": {
+              "schema":{
+                "$ref": "component.json#/components/schemas/ShowRequestBody"
+              }
+            }
           }
         },
         "produces": [
@@ -287,6 +325,12 @@
           "Show Requests for Arcsi"
         ],
         "summary": "Edit Show in Arcsi (internal use)",
+        "security": [
+          {
+            "GuestApiKeyAuth": [],
+            "AdminApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -300,8 +344,12 @@
           "multipart/form-data"
         ],
         "requestBody": {
-          "schema":{
-            "$ref": "component.json#/components/schemas/ShowRequestBody"
+          "content": {
+            "multipart/form-data": {
+              "schema":{
+                "$ref": "component.json#/components/schemas/ShowRequestBody"
+              }
+            }
           }
         },
         "produces": [
@@ -333,6 +381,11 @@
           "Show Requests for frontend"
         ],
         "summary": "Return all Shows for Ananasz's Shows Page",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "produces": [
           "text/html"
         ],
@@ -356,6 +409,11 @@
           "Show Requests for frontend"
         ],
         "summary": "Return all Shows for Ananasz's Shows Page",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "produces": [
           "text/html"
         ],
@@ -379,6 +437,11 @@
           "Show Requests for frontend"
         ],
         "summary": "Return all searched Shows (their name or description contains the parameter)",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "query",
@@ -425,6 +488,11 @@
           "Show Requests for frontend"
         ],
         "summary": "Return all active Shows for Ananasz's Home and Schedule Page",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "produces": [
           "text/html"
         ],
@@ -448,6 +516,11 @@
           "Show Requests for frontend"
         ],
         "summary": "Return all active Shows airing on the chosen day for Ananasz's Home and Schedule Page",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "query",
@@ -480,6 +553,11 @@
           "Show Requests for frontend"
         ],
         "summary": "Return the chosen Show for Ananasz's Show Subpage",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -522,6 +600,11 @@
           "Item Requests for Arcsi"
         ],
         "summary": "Return all Items for Arcsi's Items Page",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "produces": [
           "text/html"
         ],
@@ -545,6 +628,11 @@
           "Item Requests for Arcsi"
         ],
         "summary": "Return the chosen Item for Arcsi's Item Subpage",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -582,12 +670,22 @@
           "Item Requests for Arcsi"
         ],
         "summary": "Add Item to Arcsi (internal use)",
+        "security": [
+          {
+            "GuestApiKeyAuth": [],
+            "AdminApiKeyAuth": []
+          }
+        ],
         "consumes": [
           "multipart/form-data"
         ],
         "requestBody": {
-          "schema":{
-            "$ref": "component.json#/components/schemas/ItemRequestBody"
+          "content": {
+            "multipart/form-data": {
+              "schema":{
+                "$ref": "component.json#/components/schemas/ItemRequestBody"
+              }
+            }
           }
         },
         "produces": [
@@ -619,6 +717,12 @@
           "Item Requests for Arcsi"
         ],
         "summary": "Edit Item in Arcsi (internal use)",
+        "security": [
+          {
+            "GuestApiKeyAuth": [],
+            "AdminApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -632,8 +736,12 @@
           "multipart/form-data"
         ],
         "requestBody": {
-          "schema":{
-            "$ref": "component.json#/components/schemas/ItemRequestBody"
+          "content": {
+            "multipart/form-data": {
+              "schema":{
+                "$ref": "component.json#/components/schemas/ItemRequestBody"
+              }
+            }
           }
         },
         "produces": [
@@ -665,6 +773,11 @@
           "Item Requests for frontend"
         ],
         "summary": "Return latest Items for Ananasz's Home and Archive Page",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "query",
@@ -704,6 +817,11 @@
           "Item Requests for frontend"
         ],
         "summary": "Return all searched Items (their name or description contains the parameter)",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "query",
@@ -750,6 +868,11 @@
           "Item Requests for Arcsi"
         ],
         "summary": "Return all Items for the given Show (was used by the old WP Show Page)",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -785,6 +908,11 @@
           "Item Requests for frontend"
         ],
         "summary": "Return Item for Ananasz's Episode Subpage",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -827,6 +955,11 @@
           "Item Requests for Arcsi"
         ],
         "summary": "Listen Item with given ID",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -862,6 +995,11 @@
           "Item Requests for Arcsi"
         ],
         "summary": "Download Item with given ID",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -889,6 +1027,11 @@
           "Tag Requests for frontend"
         ],
         "summary": "Return all Tags",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "produces": [
           "text/html"
         ],
@@ -912,6 +1055,11 @@
           "Tag Requests for frontend"
         ],
         "summary": "Return the given Tag",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
