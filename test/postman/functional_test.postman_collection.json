@@ -637,27 +637,8 @@
 							"    pm.expect(tags).to.be.an(\"array\")\r",
 							"    tags.forEach(function(tag) {\r",
 							"        pm.expect(tag).to.be.an(\"object\")\r",
-							"        pm.expect(tag.shows).to.be.an(\"array\")\r",
-							"        if (tag.shows != null) {\r",
-							"            tag.shows.forEach(function(show){\r",
-							"                pm.expect(show).to.be.an(\"object\")\r",
-							"                pm.expect(show.name).to.be.an(\"string\")\r",
-							"                pm.expect(show.id).to.be.an(\"number\")\r",
-							"            })\r",
-							"        }\r",
-							"        pm.expect(tag.items).to.be.an(\"array\")\r",
-							"        if (tag.items != null) {\r",
-							"            tag.items.forEach(function(item){\r",
-							"                pm.expect(item).to.be.an(\"object\")\r",
-							"                pm.expect(item.name).to.be.an(\"string\")\r",
-							"                pm.expect(item.id).to.be.an(\"number\")\r",
-							"            })\r",
-							"        }\r",
 							"        pm.expect(tag.display_name).to.be.an(\"string\")\r",
 							"        pm.expect(tag.clean_name).to.be.an(\"string\")\r",
-							"        if (tag.icon != null) {\r",
-							"            pm.expect(tag.icon).to.be.an(\"string\")\r",
-							"        }\r",
 							"        pm.expect(tag.id).to.be.an(\"number\")\r",
 							"    })\r",
 							"})\r",
@@ -728,6 +709,9 @@
 							"        tag.shows.forEach(function(show){\r",
 							"            pm.expect(show).to.be.an(\"object\")\r",
 							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.description).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
 							"            pm.expect(show.id).to.be.an(\"number\")\r",
 							"        })\r",
 							"    }\r",
@@ -736,7 +720,19 @@
 							"        tag.items.forEach(function(item){\r",
 							"            pm.expect(item).to.be.an(\"object\")\r",
 							"            pm.expect(item.name).to.be.an(\"string\")\r",
+							"            pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"            pm.expect(item.description).to.be.an(\"string\")\r",
+							"            pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"            pm.expect(item.play_date).to.be.an(\"string\")\r",
 							"            pm.expect(item.id).to.be.an(\"number\")\r",
+							"            if (item.shows != null) {\r",
+							"                item.shows.forEach(function(show){\r",
+							"                    pm.expect(show).to.be.an(\"object\")\r",
+							"                    pm.expect(show.name).to.be.an(\"string\")\r",
+							"                    pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"                    pm.expect(show.id).to.be.an(\"number\")\r",
+							"                })\r",
+							"            }\r",
 							"        })\r",
 							"    }\r",
 							"    pm.expect(tag.display_name).to.be.an(\"string\")\r",
@@ -2607,27 +2603,8 @@
 							"    pm.expect(tags).to.be.an(\"array\")\r",
 							"    tags.forEach(function(tag) {\r",
 							"        pm.expect(tag).to.be.an(\"object\")\r",
-							"        pm.expect(tag.shows).to.be.an(\"array\")\r",
-							"        if (tag.shows != null) {\r",
-							"            tag.shows.forEach(function(show){\r",
-							"                pm.expect(show).to.be.an(\"object\")\r",
-							"                pm.expect(show.name).to.be.an(\"string\")\r",
-							"                pm.expect(show.id).to.be.an(\"number\")\r",
-							"            })\r",
-							"        }\r",
-							"        pm.expect(tag.items).to.be.an(\"array\")\r",
-							"        if (tag.items != null) {\r",
-							"            tag.items.forEach(function(item){\r",
-							"                pm.expect(item).to.be.an(\"object\")\r",
-							"                pm.expect(item.name).to.be.an(\"string\")\r",
-							"                pm.expect(item.id).to.be.an(\"number\")\r",
-							"            })\r",
-							"        }\r",
 							"        pm.expect(tag.display_name).to.be.an(\"string\")\r",
 							"        pm.expect(tag.clean_name).to.be.an(\"string\")\r",
-							"        if (tag.icon != null) {\r",
-							"            pm.expect(tag.icon).to.be.an(\"string\")\r",
-							"        }\r",
 							"        pm.expect(tag.id).to.be.an(\"number\")\r",
 							"    })\r",
 							"})\r",
@@ -2664,6 +2641,102 @@
 					"path": [
 						"tag",
 						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Tag (view_tagged())",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const tag = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(tag).to.be.an(\"object\")\r",
+							"    pm.expect(tag.shows).to.be.an(\"array\")\r",
+							"    if (tag.shows != null) {\r",
+							"        tag.shows.forEach(function(show){\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.description).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"    }\r",
+							"    pm.expect(tag.items).to.be.an(\"array\")\r",
+							"    if (tag.items != null) {\r",
+							"        tag.items.forEach(function(item){\r",
+							"            pm.expect(item).to.be.an(\"object\")\r",
+							"            pm.expect(item.name).to.be.an(\"string\")\r",
+							"            pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"            pm.expect(item.description).to.be.an(\"string\")\r",
+							"            pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"            pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"            pm.expect(item.id).to.be.an(\"number\")\r",
+							"            if (item.shows != null) {\r",
+							"                item.shows.forEach(function(show){\r",
+							"                    pm.expect(show).to.be.an(\"object\")\r",
+							"                    pm.expect(show.name).to.be.an(\"string\")\r",
+							"                    pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"                    pm.expect(show.id).to.be.an(\"number\")\r",
+							"                })\r",
+							"            }\r",
+							"        })\r",
+							"    }\r",
+							"    pm.expect(tag.display_name).to.be.an(\"string\")\r",
+							"    pm.expect(tag.clean_name).to.be.an(\"string\")\r",
+							"    if (tag.icon != null) {\r",
+							"        pm.expect(tag.icon).to.be.an(\"string\")\r",
+							"    }\r",
+							"    pm.expect(tag.id).to.be.an(\"number\")\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token_guest}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/tag/:clean_tag",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tag",
+						":clean_tag"
+					],
+					"variable": [
+						{
+							"key": "clean_tag",
+							"value": "tag2"
+						}
 					]
 				}
 			},
@@ -3140,27 +3213,8 @@
 							"    pm.expect(tags).to.be.an(\"array\")\r",
 							"    tags.forEach(function(tag) {\r",
 							"        pm.expect(tag).to.be.an(\"object\")\r",
-							"        pm.expect(tag.shows).to.be.an(\"array\")\r",
-							"        if (tag.shows != null) {\r",
-							"            tag.shows.forEach(function(show){\r",
-							"                pm.expect(show).to.be.an(\"object\")\r",
-							"                pm.expect(show.name).to.be.an(\"string\")\r",
-							"                pm.expect(show.id).to.be.an(\"number\")\r",
-							"            })\r",
-							"        }\r",
-							"        pm.expect(tag.items).to.be.an(\"array\")\r",
-							"        if (tag.items != null) {\r",
-							"            tag.items.forEach(function(item){\r",
-							"                pm.expect(item).to.be.an(\"object\")\r",
-							"                pm.expect(item.name).to.be.an(\"string\")\r",
-							"                pm.expect(item.id).to.be.an(\"number\")\r",
-							"            })\r",
-							"        }\r",
 							"        pm.expect(tag.display_name).to.be.an(\"string\")\r",
 							"        pm.expect(tag.clean_name).to.be.an(\"string\")\r",
-							"        if (tag.icon != null) {\r",
-							"            pm.expect(tag.icon).to.be.an(\"string\")\r",
-							"        }\r",
 							"        pm.expect(tag.id).to.be.an(\"number\")\r",
 							"    })\r",
 							"})\r",
@@ -3198,6 +3252,102 @@
 					"path": [
 						"tag",
 						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Tag (view_tagged())",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const tag = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(tag).to.be.an(\"object\")\r",
+							"    pm.expect(tag.shows).to.be.an(\"array\")\r",
+							"    if (tag.shows != null) {\r",
+							"        tag.shows.forEach(function(show){\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.description).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"    }\r",
+							"    pm.expect(tag.items).to.be.an(\"array\")\r",
+							"    if (tag.items != null) {\r",
+							"        tag.items.forEach(function(item){\r",
+							"            pm.expect(item).to.be.an(\"object\")\r",
+							"            pm.expect(item.name).to.be.an(\"string\")\r",
+							"            pm.expect(item.image_url).to.be.an(\"string\")\r",
+							"            pm.expect(item.description).to.be.an(\"string\")\r",
+							"            pm.expect(item.name_slug).to.be.an(\"string\")\r",
+							"            pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"            pm.expect(item.id).to.be.an(\"number\")\r",
+							"            if (item.shows != null) {\r",
+							"                item.shows.forEach(function(show){\r",
+							"                    pm.expect(show).to.be.an(\"object\")\r",
+							"                    pm.expect(show.name).to.be.an(\"string\")\r",
+							"                    pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"                    pm.expect(show.id).to.be.an(\"number\")\r",
+							"                })\r",
+							"            }\r",
+							"        })\r",
+							"    }\r",
+							"    pm.expect(tag.display_name).to.be.an(\"string\")\r",
+							"    pm.expect(tag.clean_name).to.be.an(\"string\")\r",
+							"    if (tag.icon != null) {\r",
+							"        pm.expect(tag.icon).to.be.an(\"string\")\r",
+							"    }\r",
+							"    pm.expect(tag.id).to.be.an(\"number\")\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token_guest}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/tag/:clean_tag",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tag",
+						":clean_tag"
+					],
+					"variable": [
+						{
+							"key": "clean_tag",
+							"value": "tag4"
+						}
 					]
 				}
 			},
