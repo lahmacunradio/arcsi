@@ -12,8 +12,8 @@ class TagDetailsSchema(Schema):
     display_name = fields.Str(required=True, min=3)
     clean_name = fields.Str(dump_only=True)
     icon = fields.Str(dump_only=True)
-    items = fields.Nested("ItemDetailsSchema", many=True, only=("id", "name", "name_slug", "description", "image_url", "play_date", "shows"), dump_only=True)
-    shows = fields.Nested("ShowDetailsSchema", many=True, only=("id", "name", "archive_lahmastore_base_url", "description", "cover_image_url"), dump_only=True)
+    items = fields.Nested("ItemDetailsSchema", many=True, only=("id", "name", "name_slug", "description", "image_url", "play_date", "shows", "tags"), dump_only=True)
+    shows = fields.Nested("ShowDetailsSchema", many=True, only=("id", "name", "archive_lahmastore_base_url", "description", "cover_image_url", "tags"), dump_only=True)
 
     # TODO -- Tag count
     

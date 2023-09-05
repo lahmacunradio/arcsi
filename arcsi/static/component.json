@@ -248,6 +248,12 @@
             "id": {
                 "type": "integer",
                 "format": "int32"
+            },
+            "tags": {
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/components/schemas/BasicTagResponseBody"
+                }
             }
         }
     },
@@ -583,6 +589,12 @@
                   "type": "object",
                   "additionalProperties": {
                       "$ref": "#/components/schemas/BasicShowResponseBody"
+                  }
+              },
+              "tags": {
+                  "type": "object",
+                  "additionalProperties": {
+                      "$ref": "#/components/schemas/BasicTagResponseBody"
                   }
               }
           }
