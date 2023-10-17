@@ -832,9 +832,10 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Tags are stripped\", function() {\r",
-							"    pm.expect(_isContains(tags, \"display_name\", \"tag1\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"display_name\", \"tag2\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"display_name\", \"tag3\")).to.be.true\r",
+							"    var display_names = tags.map((i) => i.display_name)\r",
+							"    pm.expect(display_names.includes('tag1')).to.eql(true)\r",
+							"    pm.expect(display_names.includes('tag2')).to.eql(true)\r",
+							"    pm.expect(display_names.includes('tag3')).to.eql(true)\r",
 							"})"
 						],
 						"type": "text/javascript"
@@ -2814,10 +2815,11 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Tags are stripped\", function() {\r",
-							"    pm.expect(_isContains(tags, \"display_name\", \"tag1\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"display_name\", \"tag2\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"display_name\", \"tag3\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"display_name\", \"\")).to.be.true\r",
+							"    var display_names = tags.map((i) => i.display_name)\r",
+							"    pm.expect(display_names.includes('tag1')).to.eql(true)\r",
+							"    pm.expect(display_names.includes('tag2')).to.eql(true)\r",
+							"    pm.expect(display_names.includes('tag3')).to.eql(true)\r",
+							"    pm.expect(display_names.includes('')).to.eql(true)\r",
 							"})"
 						],
 						"type": "text/javascript"
@@ -3440,11 +3442,12 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Tags are stripped\", function() {\r",
-							"    pm.expect(_isContains(tags, \"display_name\", \"tag1\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"display_name\", \"tag2\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"display_name\", \"tag3\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"display_name\", \"tag4\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"display_name\", \"\")).to.be.true\r",
+							"    var display_names = tags.map((i) => i.display_name)\r",
+							"    pm.expect(display_names.includes('tag1')).to.eql(true)\r",
+							"    pm.expect(display_names.includes('tag2')).to.eql(true)\r",
+							"    pm.expect(display_names.includes('tag3')).to.eql(true)\r",
+							"    pm.expect(display_names.includes('tag4')).to.eql(true)\r",
+							"    pm.expect(display_names.includes('')).to.eql(true)\r",
 							"})"
 						],
 						"type": "text/javascript"
