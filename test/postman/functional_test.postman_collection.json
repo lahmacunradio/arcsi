@@ -832,9 +832,9 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Tags are stripped\", function() {\r",
-							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag1\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag2\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag3\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"display_name\", \"tag1\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"display_name\", \"tag2\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"display_name\", \"tag3\")).to.be.true\r",
 							"})"
 						],
 						"type": "text/javascript"
@@ -2814,10 +2814,10 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Tags are stripped\", function() {\r",
-							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag1\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag2\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag3\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"display_name\", \"tag1\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"display_name\", \"tag2\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"display_name\", \"tag3\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"display_name\", \"\")).to.be.true\r",
 							"})"
 						],
 						"type": "text/javascript"
@@ -3440,11 +3440,11 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Tags are stripped\", function() {\r",
-							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag1\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag2\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag3\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag4\")).to.be.true\r",
-							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"display_name\", \"tag1\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"display_name\", \"tag2\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"display_name\", \"tag3\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"display_name\", \"tag4\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"display_name\", \"\")).to.be.true\r",
 							"})"
 						],
 						"type": "text/javascript"
