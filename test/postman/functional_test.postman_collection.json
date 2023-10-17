@@ -587,7 +587,7 @@
 						},
 						{
 							"key": "taglist",
-							"value": "tag1 , tag2 , tag3",
+							"value": "tag1 , tag2 , tag3, tag1",
 							"type": "default"
 						},
 						{
@@ -605,6 +605,190 @@
 					"path": [
 						"show",
 						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Show (edit_show())",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"var show = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"new_show_id\", show.id);\r",
+							"pm.environment.set(\"new_show_name\", show.name);\r",
+							"pm.environment.set(\"new_show_slug\", show.archive_lahmastore_base_url);\r",
+							"pm.test(\"ResponseBody is OK!\", function() {\r",
+							"    pm.expect(show).to.be.an(\"object\")\r",
+							"    pm.expect(show.items).to.be.an(\"array\")\r",
+							"    pm.expect(show.users).to.be.an(\"array\")\r",
+							"    show.users.forEach(function(user) {\r",
+							"        pm.expect(user).to.be.an(\"object\")\r",
+							"        pm.expect(user.name).to.be.an(\"string\")\r",
+							"        pm.expect(user.email).to.be.an(\"string\")\r",
+							"        pm.expect(user.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"    pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"    pm.expect(show.archive_lahmastore).to.be.an(\"boolean\")\r",
+							"    pm.expect(show.name).to.be.an(\"string\")\r",
+							"    pm.expect(show.description).to.be.an(\"string\")\r",
+							"    pm.expect(show.contact_address).to.be.an(\"string\")\r",
+							"    pm.expect(show.language).to.be.an(\"string\")\r",
+							"    pm.expect(show.playlist_name).to.be.an(\"string\")\r",
+							"    pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"    if (show.external_url != null) {\r",
+							"        pm.expect(show.external_url).to.be.an(\"string\")\r",
+							"    }\r",
+							"    pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
+							"    pm.expect(show.start).to.be.an(\"string\")\r",
+							"    pm.expect(show.end).to.be.an(\"string\")\r",
+							"    pm.expect(show.day).to.be.an(\"number\")\r",
+							"    pm.expect(show.frequency).to.be.an(\"number\")\r",
+							"    pm.expect(show.week).to.be.an(\"number\")\r",
+							"    pm.expect(show.id).to.be.an(\"number\")\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token_admin}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "users",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "user_name",
+							"value": "example-user_name",
+							"type": "text"
+						},
+						{
+							"key": "user_email",
+							"value": "example-user_email",
+							"type": "text"
+						},
+						{
+							"key": "active",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "a-test-show-about-{{$randomWord}}",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "newly created lahmacun show for tests",
+							"type": "text"
+						},
+						{
+							"key": "language",
+							"value": "hu_hu",
+							"type": "text"
+						},
+						{
+							"key": "playlist_name",
+							"value": "example-playlist_name",
+							"type": "text"
+						},
+						{
+							"key": "frequency",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "week",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "day",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "start",
+							"value": "14:00",
+							"type": "text"
+						},
+						{
+							"key": "end",
+							"value": "16:20",
+							"type": "text"
+						},
+						{
+							"key": "archive_lahmastore",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "image_file",
+							"type": "file",
+							"src": "testlogo.jpg"
+						},
+						{
+							"key": "external_url",
+							"value": "www.{{$randomWord}}.hu",
+							"type": "default"
+						},
+						{
+							"key": "taglist",
+							"value": "tag1 , tag2 , tag2, tag3",
+							"type": "default"
+						},
+						{
+							"key": "contact_address",
+							"value": "test@lahmacun.hu",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/show/:id/edit",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						":id",
+						"edit"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{new_show_id}}"
+						}
 					]
 				}
 			},
@@ -648,9 +832,9 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Tags are stripped\", function() {\r",
-							"    pm.expect(tags[0].display_name).to.equal(\"tag1\")\r",
-							"    pm.expect(tags[1].display_name).to.equal(\"tag2\")\r",
-							"    pm.expect(tags[2].display_name).to.equal(\"tag3\")\r",
+							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag1\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag2\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag3\")).to.be.true\r",
 							"})"
 						],
 						"type": "text/javascript"
@@ -2118,7 +2302,7 @@
 						},
 						{
 							"key": "taglist",
-							"value": "tag1, tag2, tag3",
+							"value": "tag1, tag2, tag3, tag3",
 							"type": "default"
 						}
 					]
@@ -2630,10 +2814,10 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Tags are stripped\", function() {\r",
-							"    pm.expect(tags[0].display_name).to.equal(\"tag1\")\r",
-							"    pm.expect(tags[1].display_name).to.equal(\"tag2\")\r",
-							"    pm.expect(tags[2].display_name).to.equal(\"tag3\")\r",
-							"    pm.expect(tags[3].display_name).to.equal(\"\")\r",
+							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag1\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag2\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag3\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"\")).to.be.true\r",
 							"})"
 						],
 						"type": "text/javascript"
@@ -3019,7 +3203,7 @@
 						},
 						{
 							"key": "taglist",
-							"value": "tag1, tag2, tag3, tag4",
+							"value": "tag1, tag4, tag2, tag3, tag4",
 							"type": "default"
 						}
 					]
@@ -3256,11 +3440,11 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Tags are stripped\", function() {\r",
-							"    pm.expect(tags[0].display_name).to.equal(\"tag1\")\r",
-							"    pm.expect(tags[1].display_name).to.equal(\"tag2\")\r",
-							"    pm.expect(tags[2].display_name).to.equal(\"tag3\")\r",
-							"    pm.expect(tags[3].display_name).to.equal(\"\")\r",
-							"    pm.expect(tags[4].display_name).to.equal(\"tag4\")\r",
+							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag1\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag2\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag3\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"tag4\")).to.be.true\r",
+							"    pm.expect(_isContains(tags, \"dsiplay_name\", \"\")).to.be.true\r",
 							"})"
 						],
 						"type": "text/javascript"
