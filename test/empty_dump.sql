@@ -435,6 +435,12 @@ ALTER TABLE ONLY public.users
 ALTER TABLE ONLY public.tags
     ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
 
+--
+-- Name: roles tags_display_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tags
+    ADD CONSTRAINT tags_display_name_key UNIQUE (display_name);
 
 --
 -- Name: items_shows items_shows_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
