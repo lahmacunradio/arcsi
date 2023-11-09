@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "description": "Arcsi API doc",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "title": "Arcsi",
     "contact": {
       "email": "it@lahmacun.hu"
@@ -232,7 +232,36 @@
         }
       }
     },
-    "/show/{id}": {
+    "/archon/show/all": {
+      "get": {
+        "tags": [
+          "Show Requests for Arcsi"
+        ],
+        "summary": "Return all Shows for Arcsi's Shows Page",
+        "security": [
+          {
+            "GuestApiKeyAuth": [],
+            "AdminApiKeyAuth": []
+          }
+        ],
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ArchonShowResponseBodies"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/archon/show/{id}": {
       "get": {
         "tags": [
           "Show Requests for Arcsi"
@@ -272,7 +301,7 @@
         }
       }
     },
-    "/show/add": {
+    "/archon/show/add": {
       "post": {
         "tags": [
           "Show Requests for Arcsi"
@@ -319,7 +348,7 @@
         }
       }
     },
-    "/show/{id}/edit": {
+    "/archon/show/{id}/edit": {
       "post": {
         "tags": [
           "Show Requests for Arcsi"
@@ -622,7 +651,36 @@
         }
       }
     },
-    "/item/{id}": {
+    "/archon/item/all": {
+      "get": {
+        "tags": [
+          "Item Requests for Arcsi"
+        ],
+        "summary": "Return all Items for Arcsi's Items Page",
+        "security": [
+          {
+            "GuestApiKeyAuth": [],
+            "AdminApiKeyAuth": []
+          }
+        ],
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "component.json#/components/schemas/ArchonItemResponseBodies"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/archon/item/{id}": {
       "get": {
         "tags": [
           "Item Requests for Arcsi"
@@ -664,7 +722,7 @@
         }
       }
     },
-    "/item/add": {
+    "/archon/item/add": {
       "post": {
         "tags": [
           "Item Requests for Arcsi"
@@ -711,7 +769,7 @@
         }
       }
     },
-    "/item/{id}/edit": {
+    "/archon/item/{id}/edit": {
       "post": {
         "tags": [
           "Item Requests for Arcsi"

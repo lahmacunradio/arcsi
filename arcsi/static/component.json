@@ -256,7 +256,7 @@
                 }
             }
         }
-    },
+      },
       "ShowResponseBody": {
           "type": "object",
           "properties": {
@@ -460,6 +460,33 @@
               }
           }
       },
+      "ArchonShowResponseBody": {
+        "type": "object",
+        "properties": {
+            "active": {
+                "type": "boolean"
+            },
+            "name": {
+                "type": "string"
+            },
+            "contract_address": {
+                "type": "string"
+            },
+            "external_url": {
+                "type": "string"
+            },
+            "id": {
+                "type": "integer",
+                "format": "int32"
+            },
+            "users": {
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/components/schemas/user"
+                }
+            }
+        }
+      },
       "ShowResponseBodies": {
           "type": "object",
           "additionalProperties": {
@@ -477,6 +504,12 @@
           "additionalProperties": {
               "$ref": "#/components/schemas/ShowScheduleResponseBody"
           }
+      },
+      "ArchonShowResponseBodies": {
+        "type": "object",
+        "additionalProperties": {
+            "$ref": "#/components/schemas/ArchonShowResponseBody"
+        }
       },
       "ShowRequestBody": {
           "type": "object",
@@ -764,6 +797,38 @@
               }
           }
       },
+      "ArchonItemResponseBody": {
+        "type": "object",
+        "properties": {
+            "archived": {
+                "type":"boolean"
+            },
+            "name": {
+                "type": "string"
+            },
+            "play_date": {
+                "type": "string",
+                "format": "date"
+            },
+            "play_file_name": {
+                "type": "string"
+            },
+            "id": {
+                "type": "integer",
+                "format": "int32"
+            },
+            "number": {
+                "type": "integer",
+                "format": "int32"
+            },
+            "shows": {
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/components/schemas/shpw"
+                }
+            }
+        }
+      },
       "ItemResponseBodies": {
           "type": "object",
           "additionalProperties": {
@@ -781,6 +846,12 @@
           "additionalProperties": {
               "$ref": "#/components/schemas/item"
           }
+      },
+      "ArchonItemResponseBodies": {
+        "type": "object",
+        "additionalProperties": {
+            "$ref": "#/components/schemas/ArchonItemResponseBody"
+        }
       },
       "ItemRequestBody": {
         "type": "object",
