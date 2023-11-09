@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "48910ffa-6be6-4541-ba27-6af02b146243",
+		"_postman_id": "56ca4c1b-46b5-4540-ba4f-65d198d32e76",
 		"name": "CI test (robustness)",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19378201"
 	},
 	"item": [
 		{
@@ -163,7 +164,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show (view_show(id))",
+			"name": "Get Show (archon_view_show(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -351,7 +352,7 @@
 			"response": []
 		},
 		{
-			"name": "View Item (1, view_item(id))",
+			"name": "View Item (1, archon_view_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -439,7 +440,7 @@
 			"response": []
 		},
 		{
-			"name": "View Item (2, view_item(id))",
+			"name": "View Item (2, archon_view_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -527,7 +528,7 @@
 			"response": []
 		},
 		{
-			"name": "View Item (3, view_item(id))",
+			"name": "View Item (3, archon_view_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -615,7 +616,7 @@
 			"response": []
 		},
 		{
-			"name": "View Item (4, view_item(id))",
+			"name": "View Item (4, archon_view_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -703,7 +704,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Latest Items (list_items_latest())",
+			"name": "Get Latest Items (frontend_list_items_latest())",
 			"event": [
 				{
 					"listen": "test",
@@ -782,7 +783,7 @@
 			"response": []
 		},
 		{
-			"name": "Search Item (search_item())",
+			"name": "Search Item (frontend_search_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -874,7 +875,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Shows Paginated (list_shows_page())",
+			"name": "Get Shows Paginated (frontend_list_shows_page())",
 			"event": [
 				{
 					"listen": "test",
@@ -933,7 +934,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Shows without Items (list_shows_without_items())",
+			"name": "Get Shows without Items (frontend_list_shows_without_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -1006,7 +1007,7 @@
 			"response": []
 		},
 		{
-			"name": "Search Show (search_show())",
+			"name": "Search Show (frontend_search_show())",
 			"event": [
 				{
 					"listen": "test",
@@ -1093,7 +1094,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Shows for Schedule (list_shows_for_schedule())",
+			"name": "Get Shows for Schedule (frontend_list_shows_for_schedule())",
 			"event": [
 				{
 					"listen": "test",
@@ -1166,7 +1167,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Shows for Schedule by Day (list_shows_for_schedule_by())",
+			"name": "Get Shows for Schedule by Day (frontend_list_shows_for_schedule_by())",
 			"event": [
 				{
 					"listen": "test",

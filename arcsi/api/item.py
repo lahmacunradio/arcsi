@@ -89,7 +89,7 @@ def list_items():
 
 
 @arcsi.route("/archon/item/all", methods=["GET"])
-@auth_token_required
+@roles_required("admin")
 def archon_list_items():
     items = Item.query.all()
     return archon_items_schema.dumps(items)

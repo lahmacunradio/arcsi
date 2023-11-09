@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "6999efa4-6ab4-446e-b27e-5e7cddbc7c64",
+		"_postman_id": "7b2e9c00-ae05-451c-9dc9-02913a1f3973",
 		"name": "CI test (functional)",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19378201"
 	},
 	"item": [
 		{
@@ -302,7 +303,7 @@
 			"response": []
 		},
 		{
-			"name": "Add Show (add_show()) fails with guest user",
+			"name": "Add Show (archon_add_show()) fails with guest user",
 			"event": [
 				{
 					"listen": "test",
@@ -421,11 +422,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/show/add",
+					"raw": "{{url}}/archon/show/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"show",
 						"add"
 					]
@@ -434,7 +436,7 @@
 			"response": []
 		},
 		{
-			"name": "Add Show (add_show())",
+			"name": "Add Show (archon_add_show())",
 			"event": [
 				{
 					"listen": "test",
@@ -598,11 +600,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/show/add",
+					"raw": "{{url}}/archon/show/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"show",
 						"add"
 					]
@@ -880,7 +883,82 @@
 			"response": []
 		},
 		{
-			"name": "Get Show (view_show(id))",
+			"name": "Get Shows (1, archon_list_shows())",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const shows = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(shows).to.be.an(\"array\")\r",
+							"    shows.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.users).to.be.an(\"array\")\r",
+							"        show.users.forEach(function(user) {\r",
+							"            pm.expect(user).to.be.an(\"object\")\r",
+							"            pm.expect(user.name).to.be.an(\"string\")\r",
+							"            pm.expect(user.email).to.be.an(\"string\")\r",
+							"            pm.expect(user.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.contact_address).to.be.an(\"string\")\r",
+							"        if (show.external_url != null) {\r",
+							"            pm.expect(show.external_url).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Shows number is 1\", function() {\r",
+							"    pm.expect(shows.length).to.equal(1)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token_admin}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/archon/show/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"archon",
+						"show",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Show (archon_view_show(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -1068,7 +1146,7 @@
 			"response": []
 		},
 		{
-			"name": "Add Item (1 live, add_item()) fails with guest user",
+			"name": "Add Item (1 live, archon_add_item()) fails with guest user",
 			"event": [
 				{
 					"listen": "test",
@@ -1172,11 +1250,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/add",
+					"raw": "{{url}}/archon/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"add"
 					]
@@ -1185,7 +1264,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -1279,7 +1358,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -1373,7 +1452,7 @@
 			"response": []
 		},
 		{
-			"name": "Add Item (1 live, add_item())",
+			"name": "Add Item (1 live, archon_add_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -1531,11 +1610,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/add",
+					"raw": "{{url}}/archon/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"add"
 					]
@@ -1544,7 +1624,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -1638,7 +1718,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -1814,7 +1894,7 @@
 			"response": []
 		},
 		{
-			"name": "Edit Item (1 live -> broadcast, edit_item(id)) fails with guest user",
+			"name": "Edit Item (1 live -> broadcast, archon_edit_item(id)) fails with guest user",
 			"event": [
 				{
 					"listen": "test",
@@ -1924,11 +2004,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id/edit",
+					"raw": "{{url}}/archon/item/:id/edit",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						":id",
 						"edit"
@@ -1944,7 +2025,7 @@
 			"response": []
 		},
 		{
-			"name": "Edit Item (1 live -> broadcast, edit_item(id))",
+			"name": "Edit Item (1 live -> broadcast, archon_edit_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -2112,11 +2193,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id/edit",
+					"raw": "{{url}}/archon/item/:id/edit",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						":id",
 						"edit"
@@ -2132,7 +2214,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -2226,7 +2308,7 @@
 			"response": []
 		},
 		{
-			"name": "Add Item (2 broadcast, add_item())",
+			"name": "Add Item (2 broadcast, archon_add_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -2387,11 +2469,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/add",
+					"raw": "{{url}}/archon/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"add"
 					]
@@ -2400,7 +2483,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -2494,7 +2577,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -2759,7 +2842,7 @@
 			"response": []
 		},
 		{
-			"name": "Add Item (2 broadcast override, add_item())",
+			"name": "Add Item (2 broadcast override, archon_add_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -2920,11 +3003,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/add",
+					"raw": "{{url}}/archon/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"add"
 					]
@@ -2933,7 +3017,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -3027,7 +3111,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -3293,7 +3377,7 @@
 			"response": []
 		},
 		{
-			"name": "Add Item (3 live, add_item())",
+			"name": "Add Item (3 live, archon_add_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -3451,11 +3535,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/add",
+					"raw": "{{url}}/archon/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"add"
 					]
@@ -3464,7 +3549,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -3552,7 +3637,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -3728,7 +3813,7 @@
 			"response": []
 		},
 		{
-			"name": "Edit Item (3 live -> broadcast, edit_item(id))",
+			"name": "Edit Item (3 live -> broadcast, archon_edit_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -3896,11 +3981,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id/edit",
+					"raw": "{{url}}/archon/item/:id/edit",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						":id",
 						"edit"
@@ -3916,7 +4002,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -4010,7 +4096,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -4098,7 +4184,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -4185,7 +4271,7 @@
 			"response": []
 		},
 		{
-			"name": "Edit Item (3 broadcast, edit_item(id))",
+			"name": "Edit Item (3 broadcast, archon_edit_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -4353,11 +4439,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id/edit",
+					"raw": "{{url}}/archon/item/:id/edit",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						":id",
 						"edit"
@@ -4462,7 +4549,7 @@
 			"response": []
 		},
 		{
-			"name": "View Item (4, view_item(id))",
+			"name": "View Item (4, archon_view_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -4550,7 +4637,7 @@
 			"response": []
 		},
 		{
-			"name": "Add Item (4 live, add_item())",
+			"name": "Add Item (4 live, archon_add_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -4708,11 +4795,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/add",
+					"raw": "{{url}}/archon/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"add"
 					]
@@ -4721,7 +4809,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -4815,7 +4903,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -4903,7 +4991,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -5079,7 +5167,83 @@
 			"response": []
 		},
 		{
-			"name": "View Item (5, view_item(id))",
+			"name": "Get Items (5, archon_list_items())",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const items = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(items).to.be.an(\"array\")\r",
+							"    items.forEach(function(item) {\r",
+							"        pm.expect(item).to.be.an(\"object\")\r",
+							"        pm.expect(item.shows).to.be.an(\"array\")\r",
+							"        item.shows.forEach(function(show){\r",
+							"            pm.expect(show).to.be.an(\"object\")\r",
+							"            pm.expect(show.name).to.be.an(\"string\")\r",
+							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
+							"            pm.expect(show.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
+							"        pm.expect(item.name).to.be.an(\"string\")\r",
+							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
+							"        if (item.play_file_name != null) {\r",
+							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(item.id).to.be.an(\"number\")\r",
+							"        pm.expect(item.number).to.be.an(\"number\")\r",
+							"    })\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Episodes number is 5\", function() {\r",
+							"    pm.expect(items.length).to.equal(5)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token_admin}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/archon/item/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"archon",
+						"item",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "View Item (5, archon_view_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -5167,7 +5331,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Latest Items (list_items_latest())",
+			"name": "Get Latest Items (frontend_list_items_latest())",
 			"event": [
 				{
 					"listen": "test",
@@ -5246,7 +5410,7 @@
 			"response": []
 		},
 		{
-			"name": "Search Item (search_item())",
+			"name": "Search Item (frontend_search_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -5338,7 +5502,7 @@
 			"response": []
 		},
 		{
-			"name": "View Item with Slug (view_episode_archive(show_slug, item_slug))",
+			"name": "View Item with Slug (frontend_view_episode_archive(show_slug, item_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -5416,7 +5580,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Shows Paginated (list_shows_page())",
+			"name": "Get Shows Paginated (frontend_list_shows_page())",
 			"event": [
 				{
 					"listen": "test",
@@ -5475,7 +5639,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Shows without Items (list_shows_without_items())",
+			"name": "Get Shows without Items (frontend_list_shows_without_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -5548,7 +5712,7 @@
 			"response": []
 		},
 		{
-			"name": "Search Show (search_show())",
+			"name": "Search Show (frontend_search_show())",
 			"event": [
 				{
 					"listen": "test",
@@ -5635,7 +5799,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Shows for Schedule (list_shows_for_schedule())",
+			"name": "Get Shows for Schedule (frontend_list_shows_for_schedule())",
 			"event": [
 				{
 					"listen": "test",
@@ -5708,7 +5872,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Shows for Schedule by Day (list_shows_for_schedule_by())",
+			"name": "Get Shows for Schedule by Day (frontend_list_shows_for_schedule_by())",
 			"event": [
 				{
 					"listen": "test",
@@ -5826,7 +5990,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",

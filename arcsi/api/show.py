@@ -106,7 +106,7 @@ def frontend_list_shows_without_items():
     return shows_schedule_schema.dumps(get_shows())
 
 @arcsi.route("/archon/show/all", methods=["GET"])
-@auth_token_required
+@roles_required("admin")
 def archon_list_shows():
     shows = Show.query.all()
     return archon_shows_schema.dumps(shows)   
@@ -342,7 +342,7 @@ def archon_edit_show(id):
         )
 
 
-@arcsi.route("show/<int:id>", methods=["GET"])
+@arcsi.route("/show/<int:id>", methods=["GET"])
 @auth_token_required
 def archon_view_show(id):
     do = DoArchive()
@@ -367,7 +367,7 @@ def archon_view_show(id):
 
 
 # We use this route on the legacy front-end show page
-@arcsi.route("show/<string:show_slug>/archive", methods=["GET"])
+@arcsi.route("/show/<string:show_slug>/archive", methods=["GET"])
 @auth_token_required
 def view_show_archive(show_slug):
     do = DoArchive()
@@ -393,7 +393,7 @@ def view_show_archive(show_slug):
 
 
 # This will be the one that we are gonna use at the new page 
-@arcsi.route("show/<string:show_slug>/page", methods=["GET"])
+@arcsi.route("/show/<string:show_slug>/page", methods=["GET"])
 @auth_token_required
 def frontend_view_show_page(show_slug):
     do = DoArchive()
@@ -418,7 +418,7 @@ def frontend_view_show_page(show_slug):
         return make_response("Show not found", 404, headers)
 
 
-@arcsi.route("show/<string:show_slug>/item/<string:item_slug>", methods=["GET"])
+@arcsi.route("/show/<string:show_slug>/item/<string:item_slug>", methods=["GET"])
 @auth_token_required
 def frontend_view_episode_archive(show_slug, item_slug):
     do = DoArchive()
