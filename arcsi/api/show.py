@@ -187,6 +187,7 @@ def archon_add_show():
     show_metadata.pop("user_name", None)
     show_metadata.pop("user_email", None)
     show_metadata["tags"] = [{"display_name": dis_name.strip()} for dis_name in show_metadata["taglist"].split(",")]
+    show_metadata["tags"] = [dict(t) for t in {tuple(d.items()) for d in show_metadata["tags"]}]
     show_metadata.pop("taglist", None)
 
     # validate payload
@@ -278,6 +279,7 @@ def archon_edit_show(id):
     show_metadata.pop("user_email", None)
 
     show_metadata["tags"] = [{"display_name": dis_name.strip()} for dis_name in show_metadata["taglist"].split(",")]
+    show_metadata["tags"] = [dict(t) for t in {tuple(d.items()) for d in show_metadata["tags"]}]
     show_metadata.pop("taglist", None)
 
     # validate payload

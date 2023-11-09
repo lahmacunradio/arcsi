@@ -148,6 +148,7 @@ def archon_add_item():
         }
     ]
     item_metadata["tags"] = [ { "display_name": tag_name.strip() } for tag_name in item_metadata["taglist"].split(",") ]
+    item_metadata["tags"] = [dict(t) for t in {tuple(d.items()) for d in item_metadata["tags"]}]
     item_metadata.pop("show_name", None)
     item_metadata.pop("taglist", None)
     
@@ -377,6 +378,7 @@ def archon_edit_item(id):
         {"id": item_metadata["shows"], "name": item_metadata["show_name"]}
     ]
     item_metadata["tags"] = [ { "display_name": tag_name.strip() } for tag_name in item_metadata["taglist"].split(",") ]
+    item_metadata["tags"] = [dict(t) for t in {tuple(d.items()) for d in item_metadata["tags"]}]
     item_metadata.pop("taglist", None)
     item_metadata.pop("show_name", None)
 

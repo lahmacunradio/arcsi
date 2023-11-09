@@ -215,6 +215,48 @@
               "password": "user-password"
           }
       },
+      "BasicShowResponseBody": {
+          "type": "object",
+          "properties": {
+              "name": {
+                  "type": "string"
+              },
+              "archive_lahmastore_base_url": {
+                  "type": "string"
+              },
+              "id": {
+                  "type": "integer",
+                  "format": "int32"
+              }
+          }
+      },
+      "NotThatBasicShowResponseBody": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "archive_lahmastore_base_url": {
+                "type": "string"
+            },
+            "cover_image_url": {
+                "type": "string"
+            },
+            "id": {
+                "type": "integer",
+                "format": "int32"
+            },
+            "tags": {
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/components/schemas/BasicTagResponseBody"
+                }
+            }
+        }
+    },
       "ShowResponseBody": {
           "type": "object",
           "properties": {
@@ -520,6 +562,43 @@
               "user_email": "arcsi@lahmacun.hu"
           }
       },
+      "BasicItemResponseBody": {
+          "type": "object",
+          "properties": {
+              "name": {
+                  "type": "string"
+              },
+              "name_slug": {
+                  "type": "string"
+              },
+              "description": {
+                  "type": "string"
+              },
+              "play_date": {
+                  "type": "string",
+                  "format": "date"
+              },
+              "image_url": {
+                  "type": "string"
+              },
+              "id": {
+                  "type": "integer",
+                  "format": "int32"
+              },
+              "shows": {
+                  "type": "object",
+                  "additionalProperties": {
+                      "$ref": "#/components/schemas/BasicShowResponseBody"
+                  }
+              },
+              "tags": {
+                  "type": "object",
+                  "additionalProperties": {
+                      "$ref": "#/components/schemas/BasicTagResponseBody"
+                  }
+              }
+          }
+      },
       "ItemResponseBody": {
           "type": "object",
           "properties": {
@@ -765,6 +844,21 @@
           }
         }
       },
+      "BasicTagResponseBody": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer",
+                "format": "int32"
+            },
+            "display_name": {
+                "type": "string"
+            },
+            "clean_name": {
+                "type": "string"
+            }
+        }      
+      },
       "TagResponseBody": {
         "type": "object",
         "properties": {
@@ -784,13 +878,13 @@
             "items": {
                 "type": "object",
                 "additionalProperties": {
-                    "$ref": "#/components/schemas/item"
+                    "$ref": "#/components/schemas/BasicItemResponseBody"
                 }
             },
             "shows": {
                 "type": "object",
                 "additionalProperties": {
-                    "$ref": "#/components/schemas/show"
+                    "$ref": "#/components/schemas/NotThatBasicShowResponseBody"
                 }
             }
         }      
@@ -798,7 +892,7 @@
       "TagResponseBodies": {
         "type": "object",
         "additionalProperties": {
-            "$ref": "#/components/schemas/TagResponseBody"
+            "$ref": "#/components/schemas/BasicTagResponseBody"
         }
       }
     }
