@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "11f6a999-a62d-45f2-8366-fea80db48f34",
+		"_postman_id": "81bf5fd7-8240-4766-bdfd-2febc5cacbe3",
 		"name": "CI test (functional)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "19378201"
@@ -1254,6 +1254,60 @@
 			"response": []
 		},
 		{
+			"name": "Get Show returns 404 (archon_view_show(id))",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token_guest}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/show/:id",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"show",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{new_show_id}}+1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get Items (0, list_items())",
 			"event": [
 				{
@@ -2276,7 +2330,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Audio file uploaded with name: \" + item.play_file_name, () => {\r",
-							"    pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"    pm.expect(item.play_file_name).to.be.include(\"example_item1.mp3\")\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -2558,7 +2612,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Audio file uploaded with name: \" + item.play_file_name, () => {\r",
-							"    pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"    pm.expect(item.play_file_name).to.be.include(\"example_item2.mp3\")\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -3186,7 +3240,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Audio file uploaded with name: \" + item.play_file_name, () => {\r",
-							"    pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"    pm.expect(item.play_file_name).to.not.include(\"example_item2.mp3\")\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -4252,7 +4306,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Audio file uploaded with name: \" + item.play_file_name, () => {\r",
-							"    pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"    pm.expect(item.play_file_name).to.be.include(\"example_item3.mp3\")\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -4710,7 +4764,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Audio file uploaded with name: \" + item.play_file_name, () => {\r",
-							"    pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"    pm.expect(item.play_file_name).to.be.include(\"example_item3.mp3\")\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -5015,6 +5069,60 @@
 						{
 							"key": "id",
 							"value": "{{new_item_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "View Item returns 404 (4, archon_view_item(id))",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token_guest}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/item/:id",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{new_item_id}}+1"
 						}
 					]
 				}

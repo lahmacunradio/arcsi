@@ -27,6 +27,8 @@ def add_show():
 def view_show(id):
     relpath = url_for("arcsi.archon_view_show", id=id)
     show = requests.get(app.config["APP_BASE_URL"] + relpath, headers = {"Authentication-Token": current_user.get_auth_token()})
+    if show.status_code == 404:
+        return "Show not found"
     show_json = show.json()
     return render_template("show/view.html", show=show_json)
 
@@ -36,4 +38,6 @@ def view_show(id):
 def edit_show(id):
     relpath = url_for("arcsi.archon_view_show", id=id)
     show = requests.get(app.config["APP_BASE_URL"] + relpath, headers = {"Authentication-Token": current_user.get_auth_token()})
+    if show.status_code == 404:
+        return "Show not found"
     return render_template("show/edit.html", show=show.json())

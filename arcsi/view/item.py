@@ -38,6 +38,8 @@ def add_item():
 def view_item(id):
     relpath = url_for("arcsi.archon_view_item", id=id)
     item = requests.get(app.config["APP_BASE_URL"] + relpath, headers = {"Authentication-Token": current_user.get_auth_token()})
+    if item.status_code == 404:
+        return "Episode not found"
     item_json = item.json()
     #Check legacy None values if no image has been uploaded and change it to empty string so that the renderer doesn't throw error
     if item_json["image_url"] == None:
@@ -54,6 +56,8 @@ def view_item(id):
 def edit_item(id):
     relpath = url_for("arcsi.archon_view_item", id=id)
     item = requests.get(app.config["APP_BASE_URL"] + relpath, headers = {"Authentication-Token": current_user.get_auth_token()})
+    if item.status_code == 404:
+        return "Episode not found"
     item_json = item.json()
     result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.frontend_list_shows_without_items"), headers = {"Authentication-Token": current_user.get_auth_token()})
     shows = result.json()
