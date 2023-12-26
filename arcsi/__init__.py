@@ -67,7 +67,7 @@ def create_app(config_file):
 
     ### swagger specific ###
     SWAGGER_URL = '/doc'
-    API_URL = '/docs/swagger.json'
+    API_URL = '/static/docs/swagger.json'
     SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
         SWAGGER_URL,
         API_URL,
