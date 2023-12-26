@@ -409,7 +409,7 @@
         "tags": [
           "Show Requests for frontend"
         ],
-        "summary": "Return all Shows for Ananasz's Shows Page",
+        "summary": "Return all Shows for frontend Shows Page",
         "security": [
           {
             "GuestApiKeyAuth": []
@@ -437,7 +437,7 @@
         "tags": [
           "Show Requests for frontend"
         ],
-        "summary": "Return all Shows for Ananasz's Shows Page",
+        "summary": "Return all Shows for frontend Shows Page",
         "security": [
           {
             "GuestApiKeyAuth": []
@@ -516,7 +516,7 @@
         "tags": [
           "Show Requests for frontend"
         ],
-        "summary": "Return all active Shows for Ananasz's Home and Schedule Page",
+        "summary": "Return all active Shows for frontend Home and Schedule Page",
         "security": [
           {
             "GuestApiKeyAuth": []
@@ -544,7 +544,7 @@
         "tags": [
           "Show Requests for frontend"
         ],
-        "summary": "Return all active Shows airing on the chosen day for Ananasz's Home and Schedule Page",
+        "summary": "Return all active Shows airing on the chosen day for frontend Home and Schedule Page",
         "security": [
           {
             "GuestApiKeyAuth": []
@@ -581,7 +581,7 @@
         "tags": [
           "Show Requests for frontend"
         ],
-        "summary": "Return the chosen Show for Ananasz's Show Subpage",
+        "summary": "Return the chosen Show for frontend Show Subpage",
         "security": [
           {
             "GuestApiKeyAuth": []
@@ -830,7 +830,7 @@
         "tags": [
           "Item Requests for frontend"
         ],
-        "summary": "Return latest Items for Ananasz's Home and Archive Page",
+        "summary": "Return latest Items for frontend Home and Archive Page",
         "security": [
           {
             "GuestApiKeyAuth": []
@@ -965,7 +965,7 @@
         "tags": [
           "Item Requests for frontend"
         ],
-        "summary": "Return Item for Ananasz's Episode Subpage",
+        "summary": "Return Item for frontend Episode Subpage",
         "security": [
           {
             "GuestApiKeyAuth": []
