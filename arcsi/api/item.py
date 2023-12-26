@@ -74,20 +74,6 @@ headers = {"Content-Type": "application/json"}
 
 
 @arcsi.route("/item", methods=["GET"])
-@arcsi.route("/item/all", methods=["GET"])
-@auth_token_required
-def list_items():
-    do = DoArchive()
-    items = Item.query.all()
-    for item in items:
-        if item.image_url:
-            item.image_url = do.download(
-                item.shows[0].archive_lahmastore_base_url, item.image_url
-            )
-        item.name_slug=normalise(item.name)
-    return items_schema.dumps(items)
-
-
 @arcsi.route("/archon/item/all", methods=["GET"])
 @roles_required("admin")
 def archon_list_items():

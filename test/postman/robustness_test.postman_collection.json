@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "56ca4c1b-46b5-4540-ba4f-65d198d32e76",
+		"_postman_id": "e07d0c34-02a9-40e7-a96b-2784e6b7956b",
 		"name": "CI test (robustness)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "19378201"
@@ -263,7 +263,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Items (5, list_items())",
+			"name": "Get Items (5, archon_list_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -296,28 +296,14 @@
 							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
 							"            pm.expect(show.id).to.be.an(\"number\")\r",
 							"        })\r",
-							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
-							"        if (item.airing != null) {\r",
-							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
-							"        }\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
-							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
-							"        pm.expect(item.description).to.be.an(\"string\")\r",
-							"        pm.expect(item.language).to.be.an(\"string\")\r",
 							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.external_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"        if (item.play_file_name != null) {\r",
 							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
 							"        }\r",
-							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
 							"        pm.expect(item.id).to.be.an(\"number\")\r",
 							"        pm.expect(item.number).to.be.an(\"number\")\r",
-							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
 							"    })\r",
 							"})\r",
 							"\r",
@@ -339,11 +325,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{url}}/item/all",
+					"raw": "{{url}}/archon/item/all",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"all"
 					]

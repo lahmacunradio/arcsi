@@ -49,11 +49,11 @@
       "description": "API for requesting and return Tag details"
     },
     {
-      "name": "Show Requests for Arcsi",
+      "name": "Show Requests for Archon",
       "description": "API for requesting and return Show details"
     },
     {
-      "name": "Item Requests for Arcsi",
+      "name": "Item Requests for Archon",
       "description": "API for requesting and return Item details"
     },
     {
@@ -108,7 +108,7 @@
         "tags": [
           "User Request"
         ],
-        "summary": "Return Users for Arcsi",
+        "summary": "Return Users for Archon",
         "produces": [
           "text/html"
         ],
@@ -131,7 +131,7 @@
         "tags": [
           "User Request"
         ],
-        "summary": "Return User for Arcsi",
+        "summary": "Return User for Archon",
         "parameters": [
           {
             "in": "path",
@@ -207,9 +207,9 @@
     "/show/all": {
       "get": {
         "tags": [
-          "Show Requests for Arcsi"
+          "Show Requests for Archon"
         ],
-        "summary": "Return all Shows for Arcsi's Shows Page",
+        "summary": "Return all Shows for Archon's Shows Page (deprecated and should be deleted but it is still used by the frontend/app :/)",
         "security": [
           {
             "GuestApiKeyAuth": []
@@ -235,9 +235,9 @@
     "/archon/show/all": {
       "get": {
         "tags": [
-          "Show Requests for Arcsi"
+          "Show Requests for Archon"
         ],
-        "summary": "Return all Shows for Arcsi's Shows Page",
+        "summary": "Return all Shows for Archon's Shows Page",
         "security": [
           {
             "GuestApiKeyAuth": [],
@@ -264,9 +264,9 @@
     "/archon/show/{id}": {
       "get": {
         "tags": [
-          "Show Requests for Arcsi"
+          "Show Requests for Archon"
         ],
-        "summary": "Return chosen Show for Arcsi's Show Subpage",
+        "summary": "Return chosen Show for Archon's Show Subpage",
         "security": [
           {
             "GuestApiKeyAuth": []
@@ -304,9 +304,9 @@
     "/archon/show/add": {
       "post": {
         "tags": [
-          "Show Requests for Arcsi"
+          "Show Requests for Archon"
         ],
-        "summary": "Add Show to Arcsi (internal use)",
+        "summary": "Add Show to Archon (internal use)",
         "security": [
           {
             "GuestApiKeyAuth": [],
@@ -351,9 +351,9 @@
     "/archon/show/{id}/edit": {
       "post": {
         "tags": [
-          "Show Requests for Arcsi"
+          "Show Requests for Archon"
         ],
-        "summary": "Edit Show in Arcsi (internal use)",
+        "summary": "Edit Show in Archon (internal use)",
         "security": [
           {
             "GuestApiKeyAuth": [],
@@ -623,40 +623,12 @@
         }
       }
     },
-    "/item/all": {
-      "get": {
-        "tags": [
-          "Item Requests for Arcsi"
-        ],
-        "summary": "Return all Items for Arcsi's Items Page",
-        "security": [
-          {
-            "GuestApiKeyAuth": []
-          }
-        ],
-        "produces": [
-          "text/html"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "$ref": "component.json#/components/schemas/ItemResponseBodies"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/archon/item/all": {
       "get": {
         "tags": [
-          "Item Requests for Arcsi"
+          "Item Requests for Archon"
         ],
-        "summary": "Return all Items for Arcsi's Items Page",
+        "summary": "Return all Items for Archon's Items Page",
         "security": [
           {
             "GuestApiKeyAuth": [],
@@ -683,9 +655,9 @@
     "/archon/item/{id}": {
       "get": {
         "tags": [
-          "Item Requests for Arcsi"
+          "Item Requests for Archon"
         ],
-        "summary": "Return the chosen Item for Arcsi's Item Subpage",
+        "summary": "Return the chosen Item for Archon's Item Subpage",
         "security": [
           {
             "GuestApiKeyAuth": []
@@ -725,9 +697,9 @@
     "/archon/item/add": {
       "post": {
         "tags": [
-          "Item Requests for Arcsi"
+          "Item Requests for Archon"
         ],
-        "summary": "Add Item to Arcsi (internal use)",
+        "summary": "Add Item to Archon (internal use)",
         "security": [
           {
             "GuestApiKeyAuth": [],
@@ -772,9 +744,9 @@
     "/archon/item/{id}/edit": {
       "post": {
         "tags": [
-          "Item Requests for Arcsi"
+          "Item Requests for Archon"
         ],
-        "summary": "Edit Item in Arcsi (internal use)",
+        "summary": "Edit Item in Archon (internal use)",
         "security": [
           {
             "GuestApiKeyAuth": [],
@@ -923,7 +895,7 @@
     "/show/{show_slug}/archive": {
       "get": {
         "tags": [
-          "Item Requests for Arcsi"
+          "Item Requests for Archon"
         ],
         "summary": "Return all Items for the given Show (was used by the old WP Show Page)",
         "security": [
@@ -1010,7 +982,7 @@
     "/item/{id}/listen": {
       "get": {
         "tags": [
-          "Item Requests for Arcsi"
+          "Item Requests for Archon"
         ],
         "summary": "Listen Item with given ID",
         "security": [
@@ -1050,7 +1022,7 @@
     "/item/{id}/download": {
       "get": {
         "tags": [
-          "Item Requests for Arcsi"
+          "Item Requests for Archon"
         ],
         "summary": "Download Item with given ID",
         "security": [
