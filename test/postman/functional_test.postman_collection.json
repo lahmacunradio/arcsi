@@ -1365,7 +1365,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token_guest}}",
+						"value": "{{api_token_admin}}",
 						"type": "text"
 					}
 				],
@@ -2100,7 +2100,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token_guest}}",
+						"value": "{{api_token_admin}}",
 						"type": "text"
 					}
 				],
@@ -3131,7 +3131,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token_guest}}",
+						"value": "{{api_token_admin}}",
 						"type": "text"
 					}
 				],
@@ -3747,7 +3747,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token_guest}}",
+						"value": "{{api_token_admin}}",
 						"type": "text"
 					}
 				],
@@ -4170,7 +4170,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token_guest}}",
+						"value": "{{api_token_admin}}",
 						"type": "text"
 					}
 				],
@@ -4897,7 +4897,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token_guest}}",
+						"value": "{{api_token_admin}}",
 						"type": "text"
 					}
 				],
@@ -5556,7 +5556,7 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token_guest}}",
+						"value": "{{api_token_admin}}",
 						"type": "text"
 					}
 				],
