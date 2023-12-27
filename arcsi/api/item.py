@@ -326,10 +326,10 @@ def listen_play_file(id):
     )
     return presigned
 
-
+# Not used anywhere
 @arcsi.route("/archon/item/<int:id>/download", methods=["GET"])
 @auth_token_required
-def download_play_file(id):
+def archon_download_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
