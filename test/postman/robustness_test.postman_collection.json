@@ -301,11 +301,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{url}}/show/:id",
+					"raw": "{{url}}/archon/show/:id",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"show",
 						":id"
 					],

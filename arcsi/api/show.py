@@ -93,7 +93,7 @@ headers = {"Content-Type": "application/json"}
 
 
 @arcsi.route("/show", methods=["GET"])
-# We use this route on the legacy for a massive shows query
+# Still used by the application, but should be replaced with the /show/all_without_items
 @arcsi.route("/show/all", methods=["GET"])
 @auth_token_required
 def list_shows():
@@ -104,6 +104,7 @@ def list_shows():
 @auth_token_required
 def frontend_list_shows_without_items():
     return shows_schedule_schema.dumps(get_shows())
+
 
 @arcsi.route("/archon/show/all", methods=["GET"])
 @roles_required("admin")
@@ -249,6 +250,7 @@ def archon_add_show():
         )
 
 
+# TODO implement delete functionality
 @arcsi.route("/archon/show/<int:id>", methods=["DELETE"])
 @roles_required("admin")
 def archon_delete_show(id):
@@ -344,7 +346,7 @@ def archon_edit_show(id):
         )
 
 
-@arcsi.route("/show/<int:id>", methods=["GET"])
+@arcsi.route("/archon/show/<int:id>", methods=["GET"])
 @auth_token_required
 def archon_view_show(id):
     do = DoArchive()
@@ -368,33 +370,6 @@ def archon_view_show(id):
         return make_response("Show not found", 404, headers)
 
 
-# We use this route on the legacy front-end show page
-@arcsi.route("/show/<string:show_slug>/archive", methods=["GET"])
-@auth_token_required
-def view_show_archive(show_slug):
-    do = DoArchive()
-    show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
-    show = show_query.first()
-    if show:
-        show_json = show_schema.dump(show)
-        show_items = [
-            show_item
-            for show_item in show_json["items"]
-            if datetime.strptime(show_item.get("play_date"), "%Y-%m-%d")
-            + timedelta(days=1)
-            < datetime.today()
-        ]
-        for show_item in show_items:
-            show_item["image_url"] = do.download(
-                show.archive_lahmastore_base_url, show_item["image_url"]
-            )
-            show_item["name_slug"]=normalise(show_item["name"])
-        return json.dumps(show_items)
-    else:
-        return make_response("Show not found", 404, headers)
-
-
-# This will be the one that we are gonna use at the new page 
 @arcsi.route("/show/<string:show_slug>/page", methods=["GET"])
 @auth_token_required
 def frontend_view_show_page(show_slug):

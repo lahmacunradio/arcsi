@@ -652,7 +652,7 @@
         }
       }
     },
-    "/archon/item/{id}": {
+    "/item/{id}": {
       "get": {
         "tags": [
           "Item Requests for Archon"
@@ -1019,7 +1019,7 @@
         }
       }
     },
-    "/item/{id}/download": {
+    "/archon/item/{id}/download": {
       "get": {
         "tags": [
           "Item Requests for Archon"

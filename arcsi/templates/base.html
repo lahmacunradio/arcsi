@@ -37,6 +37,7 @@
         <div>
           
           <div class="adminmenu">
+            <a href="/doc" title="API documentation"><i class="fa fa-book"></i></a>
             {% if current_user.is_authenticated %}
             <a href="{{ url_for('router.view_data') }}" title="Statistics"><i class="fa fa-database"></i></a>
             <a href="{{ url_for('router.view_user') }}" title="Profile"><i class="far fa-user-circle"></i></a>

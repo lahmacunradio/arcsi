@@ -80,6 +80,7 @@ def archon_list_items():
     items = Item.query.all()
     return archon_items_schema.dumps(items)
 
+
 @arcsi.route("/item/latest", methods=["GET"])
 @auth_token_required
 def frontend_list_items_latest():
@@ -99,6 +100,8 @@ def frontend_list_items_latest():
     return items_archive_schema.dumps(items.items)
 
 
+# As a legacy it's still used by the frontend in a fallback mechanism,
+# It should be replaced with the /show/<string:show_slug>/item/<string:item_slug>
 @arcsi.route("/item/<int:id>", methods=["GET"])
 @auth_token_required
 def archon_view_item(id):
@@ -311,9 +314,10 @@ def archon_add_item():
             )
 
 
+# It's still used by the application for sure, and maybe by the frontend (?)
 @arcsi.route("/item/<int:id>/listen", methods=["GET"])
 @auth_token_required
-def archon_listen_play_file(id):
+def listen_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)
     item = item_query.first()
@@ -323,9 +327,9 @@ def archon_listen_play_file(id):
     return presigned
 
 
-@arcsi.route("/item/<int:id>/download", methods=["GET"])
+@arcsi.route("/archon/item/<int:id>/download", methods=["GET"])
 @auth_token_required
-def archon_download_play_file(id):
+def download_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
@@ -335,6 +339,7 @@ def archon_download_play_file(id):
     return redirect(presigned, code=302)
 
 
+# TODO implement delete functionality
 @arcsi.route("/archon/item/<int:id>", methods=["DELETE"])
 @roles_required("admin")
 def archon_delete_item(id):
