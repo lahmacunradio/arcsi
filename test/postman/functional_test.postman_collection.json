@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "6999efa4-6ab4-446e-b27e-5e7cddbc7c64",
+		"_postman_id": "4ce6be12-004a-499a-b10f-613c99df44da",
 		"name": "CI test (functional)",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19378201"
 	},
 	"item": [
 		{
@@ -302,7 +303,7 @@
 			"response": []
 		},
 		{
-			"name": "Add Show (add_show()) fails with guest user",
+			"name": "Add Show (archon_add_show()) fails with guest user",
 			"event": [
 				{
 					"listen": "test",
@@ -421,11 +422,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/show/add",
+					"raw": "{{url}}/archon/show/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"show",
 						"add"
 					]
@@ -434,7 +436,7 @@
 			"response": []
 		},
 		{
-			"name": "Add Show (add_show())",
+			"name": "Add Show (archon_add_show())",
 			"event": [
 				{
 					"listen": "test",
@@ -598,11 +600,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/show/add",
+					"raw": "{{url}}/archon/show/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"show",
 						"add"
 					]
@@ -611,7 +614,7 @@
 			"response": []
 		},
 		{
-			"name": "Edit Show (edit_show())",
+			"name": "Edit Show (archon_edit_show())",
 			"event": [
 				{
 					"listen": "test",
@@ -633,7 +636,6 @@
 							"});\r",
 							"\r",
 							"var show = JSON.parse(responseBody)\r",
-							"pm.environment.set(\"new_show_id\", show.id);\r",
 							"pm.environment.set(\"new_show_name\", show.name);\r",
 							"pm.environment.set(\"new_show_slug\", show.archive_lahmastore_base_url);\r",
 							"pm.test(\"ResponseBody is OK!\", function() {\r",
@@ -775,11 +777,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/show/:id/edit",
+					"raw": "{{url}}/archon/show/:id/edit",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"show",
 						":id",
 						"edit"
@@ -1077,7 +1080,82 @@
 			"response": []
 		},
 		{
-			"name": "Get Show (view_show(id))",
+			"name": "Get Shows (1, archon_list_shows())",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});\r",
+							"\r",
+							"const shows = JSON.parse(responseBody)\r",
+							"pm.test(\"ResponseBody fields are correct!\", function() {\r",
+							"    pm.expect(shows).to.be.an(\"array\")\r",
+							"    shows.forEach(function(show) {\r",
+							"        pm.expect(show).to.be.an(\"object\")\r",
+							"        pm.expect(show.users).to.be.an(\"array\")\r",
+							"        show.users.forEach(function(user) {\r",
+							"            pm.expect(user).to.be.an(\"object\")\r",
+							"            pm.expect(user.name).to.be.an(\"string\")\r",
+							"            pm.expect(user.email).to.be.an(\"string\")\r",
+							"            pm.expect(user.id).to.be.an(\"number\")\r",
+							"        })\r",
+							"        pm.expect(show.active).to.be.an(\"boolean\")\r",
+							"        pm.expect(show.name).to.be.an(\"string\")\r",
+							"        pm.expect(show.contact_address).to.be.an(\"string\")\r",
+							"        if (show.external_url != null) {\r",
+							"            pm.expect(show.external_url).to.be.an(\"string\")\r",
+							"        }\r",
+							"        pm.expect(show.id).to.be.an(\"number\")\r",
+							"    })\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Shows number is 1\", function() {\r",
+							"    pm.expect(shows.length).to.equal(1)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token_admin}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/archon/show/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"archon",
+						"show",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Show (archon_view_show(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -1157,11 +1235,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{url}}/show/:id",
+					"raw": "{{url}}/archon/show/:id",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"show",
 						":id"
 					],
@@ -1176,7 +1255,62 @@
 			"response": []
 		},
 		{
-			"name": "Get Items (0, list_items())",
+			"name": "Get Show returns 404 (archon_view_show(id))",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html; charset=utf-8\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token_guest}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/archon/show/:id",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"archon",
+						"show",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{new_show_id}}+1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Items (0, archon_list_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -1209,28 +1343,14 @@
 							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
 							"            pm.expect(show.id).to.be.an(\"number\")\r",
 							"        })\r",
-							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
-							"        if (item.airing != null) {\r",
-							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
-							"        }\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
-							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
-							"        pm.expect(item.description).to.be.an(\"string\")\r",
-							"        pm.expect(item.language).to.be.an(\"string\")\r",
 							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.external_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"        if (item.play_file_name != null) {\r",
 							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
 							"        }\r",
-							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
 							"        pm.expect(item.id).to.be.an(\"number\")\r",
 							"        pm.expect(item.number).to.be.an(\"number\")\r",
-							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
 							"    })\r",
 							"})\r",
 							"\r",
@@ -1247,16 +1367,17 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token_guest}}",
+						"value": "{{api_token_admin}}",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{url}}/item/all",
+					"raw": "{{url}}/archon/item/all",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"all"
 					]
@@ -1265,7 +1386,7 @@
 			"response": []
 		},
 		{
-			"name": "Add Item (1 live, add_item()) fails with guest user",
+			"name": "Add Item (1 live, archon_add_item()) fails with guest user",
 			"event": [
 				{
 					"listen": "test",
@@ -1369,11 +1490,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/add",
+					"raw": "{{url}}/archon/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"add"
 					]
@@ -1382,7 +1504,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -1476,7 +1598,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -1570,7 +1692,7 @@
 			"response": []
 		},
 		{
-			"name": "Add Item (1 live, add_item())",
+			"name": "Add Item (1 live, archon_add_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -1728,11 +1850,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/add",
+					"raw": "{{url}}/archon/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"add"
 					]
@@ -1741,7 +1864,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -1835,7 +1958,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -1922,7 +2045,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Items (1, list_items())",
+			"name": "Get Items (1, archon_list_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -1955,28 +2078,14 @@
 							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
 							"            pm.expect(show.id).to.be.an(\"number\")\r",
 							"        })\r",
-							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
-							"        if (item.airing != null) {\r",
-							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
-							"        }\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
-							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
-							"        pm.expect(item.description).to.be.an(\"string\")\r",
-							"        pm.expect(item.language).to.be.an(\"string\")\r",
 							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.external_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"        if (item.play_file_name != null) {\r",
 							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
 							"        }\r",
-							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
 							"        pm.expect(item.id).to.be.an(\"number\")\r",
 							"        pm.expect(item.number).to.be.an(\"number\")\r",
-							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
 							"    })\r",
 							"})\r",
 							"\r",
@@ -1993,16 +2102,17 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token_guest}}",
+						"value": "{{api_token_admin}}",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{url}}/item/all",
+					"raw": "{{url}}/archon/item/all",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"all"
 					]
@@ -2011,7 +2121,7 @@
 			"response": []
 		},
 		{
-			"name": "Edit Item (1 live -> broadcast, edit_item(id)) fails with guest user",
+			"name": "Edit Item (1 live -> broadcast, archon_edit_item(id)) fails with guest user",
 			"event": [
 				{
 					"listen": "test",
@@ -2121,11 +2231,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id/edit",
+					"raw": "{{url}}/archon/item/:id/edit",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						":id",
 						"edit"
@@ -2141,7 +2252,7 @@
 			"response": []
 		},
 		{
-			"name": "Edit Item (1 live -> broadcast, edit_item(id))",
+			"name": "Edit Item (1 live -> broadcast, archon_edit_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -2196,6 +2307,8 @@
 							"\r",
 							"pm.test(\"Audio file uploaded with name: \" + item.play_file_name, () => {\r",
 							"    pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"    // should be changed when the hashing is resolved\r",
+							"    // pm.expect(item.play_file_name).to.be.include(\"example_item3.mp3\")\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -2309,11 +2422,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id/edit",
+					"raw": "{{url}}/archon/item/:id/edit",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						":id",
 						"edit"
@@ -2329,7 +2443,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -2423,7 +2537,7 @@
 			"response": []
 		},
 		{
-			"name": "Add Item (2 broadcast, add_item())",
+			"name": "Add Item (2 broadcast, archon_add_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -2476,7 +2590,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Audio file uploaded with name: \" + item.play_file_name, () => {\r",
-							"    pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"    pm.expect(item.play_file_name).to.be.include(\"example_item2.mp3\")\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -2584,11 +2698,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/add",
+					"raw": "{{url}}/archon/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"add"
 					]
@@ -2597,7 +2712,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -2691,7 +2806,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -2961,7 +3076,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Items (2, list_items())",
+			"name": "Get Items (2, archon_list_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -2994,28 +3109,14 @@
 							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
 							"            pm.expect(show.id).to.be.an(\"number\")\r",
 							"        })\r",
-							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
-							"        if (item.airing != null) {\r",
-							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
-							"        }\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
-							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
-							"        pm.expect(item.description).to.be.an(\"string\")\r",
-							"        pm.expect(item.language).to.be.an(\"string\")\r",
 							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.external_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"        if (item.play_file_name != null) {\r",
 							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
 							"        }\r",
-							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
 							"        pm.expect(item.id).to.be.an(\"number\")\r",
 							"        pm.expect(item.number).to.be.an(\"number\")\r",
-							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
 							"    })\r",
 							"})\r",
 							"\r",
@@ -3032,16 +3133,17 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token_guest}}",
+						"value": "{{api_token_admin}}",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{url}}/item/all",
+					"raw": "{{url}}/archon/item/all",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"all"
 					]
@@ -3050,7 +3152,7 @@
 			"response": []
 		},
 		{
-			"name": "Add Item (2 broadcast override, add_item())",
+			"name": "Add Item (2 broadcast override, archon_add_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -3103,7 +3205,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Audio file uploaded with name: \" + item.play_file_name, () => {\r",
-							"    pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"    pm.expect(item.play_file_name).to.not.include(\"example_item2.mp3\")\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -3211,11 +3313,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/add",
+					"raw": "{{url}}/archon/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"add"
 					]
@@ -3224,7 +3327,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -3318,7 +3421,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -3589,7 +3692,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Items (3, list_items())",
+			"name": "Get Items (3, archon_list_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -3622,28 +3725,14 @@
 							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
 							"            pm.expect(show.id).to.be.an(\"number\")\r",
 							"        })\r",
-							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
-							"        if (item.airing != null) {\r",
-							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
-							"        }\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
-							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
-							"        pm.expect(item.description).to.be.an(\"string\")\r",
-							"        pm.expect(item.language).to.be.an(\"string\")\r",
 							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.external_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"        if (item.play_file_name != null) {\r",
 							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
 							"        }\r",
-							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
 							"        pm.expect(item.id).to.be.an(\"number\")\r",
 							"        pm.expect(item.number).to.be.an(\"number\")\r",
-							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
 							"    })\r",
 							"})\r",
 							"\r",
@@ -3660,16 +3749,17 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token_guest}}",
+						"value": "{{api_token_admin}}",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{url}}/item/all",
+					"raw": "{{url}}/archon/item/all",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"all"
 					]
@@ -3678,7 +3768,7 @@
 			"response": []
 		},
 		{
-			"name": "Add Item (3 live, add_item())",
+			"name": "Add Item (3 live, archon_add_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -3836,11 +3926,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/add",
+					"raw": "{{url}}/archon/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"add"
 					]
@@ -3849,7 +3940,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -3937,7 +4028,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -4024,7 +4115,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Items (4, list_items())",
+			"name": "Get Items (4, archon_list_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -4057,28 +4148,14 @@
 							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
 							"            pm.expect(show.id).to.be.an(\"number\")\r",
 							"        })\r",
-							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
-							"        if (item.airing != null) {\r",
-							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
-							"        }\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
-							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
-							"        pm.expect(item.description).to.be.an(\"string\")\r",
-							"        pm.expect(item.language).to.be.an(\"string\")\r",
 							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.external_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"        if (item.play_file_name != null) {\r",
 							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
 							"        }\r",
-							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
 							"        pm.expect(item.id).to.be.an(\"number\")\r",
 							"        pm.expect(item.number).to.be.an(\"number\")\r",
-							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
 							"    })\r",
 							"})\r",
 							"\r",
@@ -4095,16 +4172,17 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token_guest}}",
+						"value": "{{api_token_admin}}",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{url}}/item/all",
+					"raw": "{{url}}/archon/item/all",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"all"
 					]
@@ -4113,7 +4191,7 @@
 			"response": []
 		},
 		{
-			"name": "Edit Item (3 live -> broadcast, edit_item(id))",
+			"name": "Edit Item (3 live -> broadcast, archon_edit_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -4168,6 +4246,8 @@
 							"\r",
 							"pm.test(\"Audio file uploaded with name: \" + item.play_file_name, () => {\r",
 							"    pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"    // should be changed when the hashing is resolved\r",
+							"    // pm.expect(item.play_file_name).to.be.include(\"example_item3.mp3\")\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -4281,11 +4361,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id/edit",
+					"raw": "{{url}}/archon/item/:id/edit",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						":id",
 						"edit"
@@ -4301,7 +4382,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -4395,7 +4476,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -4483,7 +4564,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -4570,7 +4651,7 @@
 			"response": []
 		},
 		{
-			"name": "Edit Item (3 broadcast, edit_item(id))",
+			"name": "Edit Item (3 broadcast, archon_edit_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -4625,6 +4706,8 @@
 							"\r",
 							"pm.test(\"Audio file uploaded with name: \" + item.play_file_name, () => {\r",
 							"    pm.expect(item.play_file_name).to.be.an(\"string\")\r",
+							"    // should be changed when the hashing is resolved\r",
+							"    // pm.expect(item.play_file_name).to.be.include(\"example_item3.mp3\")\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -4738,11 +4821,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/:id/edit",
+					"raw": "{{url}}/archon/item/:id/edit",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						":id",
 						"edit"
@@ -4758,7 +4842,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Items (4, list_items())",
+			"name": "Get Items (4, archon_list_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -4791,28 +4875,14 @@
 							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
 							"            pm.expect(show.id).to.be.an(\"number\")\r",
 							"        })\r",
-							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
-							"        if (item.airing != null) {\r",
-							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
-							"        }\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
-							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
-							"        pm.expect(item.description).to.be.an(\"string\")\r",
-							"        pm.expect(item.language).to.be.an(\"string\")\r",
 							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.external_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"        if (item.play_file_name != null) {\r",
 							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
 							"        }\r",
-							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
 							"        pm.expect(item.id).to.be.an(\"number\")\r",
 							"        pm.expect(item.number).to.be.an(\"number\")\r",
-							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
 							"    })\r",
 							"})\r",
 							"\r",
@@ -4829,16 +4899,17 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token_guest}}",
+						"value": "{{api_token_admin}}",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{url}}/item/all",
+					"raw": "{{url}}/archon/item/all",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"all"
 					]
@@ -4847,7 +4918,7 @@
 			"response": []
 		},
 		{
-			"name": "View Item (4, view_item(id))",
+			"name": "View Item (4, archon_view_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -4935,7 +5006,61 @@
 			"response": []
 		},
 		{
-			"name": "Add Item (4 live, add_item())",
+			"name": "View Item returns 404 (4, archon_view_item(id))",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Content-Type is text/html; charset=utf-8\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"})\r",
+							"\r",
+							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
+							"    const expectedTimeInMilliseconds = 5000;\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(\r",
+							"        expectedTimeInMilliseconds + 1,\r",
+							"        `Response came in ${pm.response.responseTime} ms`);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authentication-Token",
+						"value": "{{api_token_guest}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/item/:id",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"item",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{new_item_id}}+1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Item (4 live, archon_add_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -5093,11 +5218,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{url}}/item/add",
+					"raw": "{{url}}/archon/item/add",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"add"
 					]
@@ -5106,7 +5232,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -5200,7 +5326,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -5288,7 +5414,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -5375,7 +5501,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Items (5, list_items())",
+			"name": "Get Items (5, archon_list_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -5408,28 +5534,14 @@
 							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
 							"            pm.expect(show.id).to.be.an(\"number\")\r",
 							"        })\r",
-							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
-							"        if (item.airing != null) {\r",
-							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
-							"        }\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
-							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
-							"        pm.expect(item.description).to.be.an(\"string\")\r",
-							"        pm.expect(item.language).to.be.an(\"string\")\r",
 							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.external_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"        if (item.play_file_name != null) {\r",
 							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
 							"        }\r",
-							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
 							"        pm.expect(item.id).to.be.an(\"number\")\r",
 							"        pm.expect(item.number).to.be.an(\"number\")\r",
-							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
 							"    })\r",
 							"})\r",
 							"\r",
@@ -5446,16 +5558,17 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token_guest}}",
+						"value": "{{api_token_admin}}",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{url}}/item/all",
+					"raw": "{{url}}/archon/item/all",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"all"
 					]
@@ -5464,7 +5577,7 @@
 			"response": []
 		},
 		{
-			"name": "View Item (5, view_item(id))",
+			"name": "View Item (5, archon_view_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -5552,7 +5665,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Latest Items (list_items_latest())",
+			"name": "Get Latest Items (frontend_list_items_latest())",
 			"event": [
 				{
 					"listen": "test",
@@ -5631,7 +5744,7 @@
 			"response": []
 		},
 		{
-			"name": "Search Item (search_item())",
+			"name": "Search Item (frontend_search_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -5723,7 +5836,7 @@
 			"response": []
 		},
 		{
-			"name": "View Item with Slug (view_episode_archive(show_slug, item_slug))",
+			"name": "View Item with Slug (frontend_view_episode_archive(show_slug, item_slug))",
 			"event": [
 				{
 					"listen": "test",
@@ -5801,7 +5914,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Shows Paginated (list_shows_page())",
+			"name": "Get Shows Paginated (frontend_list_shows_page())",
 			"event": [
 				{
 					"listen": "test",
@@ -5860,7 +5973,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Shows without Items (list_shows_without_items())",
+			"name": "Get Shows without Items (frontend_list_shows_without_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -5933,7 +6046,7 @@
 			"response": []
 		},
 		{
-			"name": "Search Show (search_show())",
+			"name": "Search Show (frontend_search_show())",
 			"event": [
 				{
 					"listen": "test",
@@ -6020,7 +6133,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Shows for Schedule (list_shows_for_schedule())",
+			"name": "Get Shows for Schedule (frontend_list_shows_for_schedule())",
 			"event": [
 				{
 					"listen": "test",
@@ -6093,7 +6206,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Shows for Schedule by Day (list_shows_for_schedule_by())",
+			"name": "Get Shows for Schedule by Day (frontend_list_shows_for_schedule_by())",
 			"event": [
 				{
 					"listen": "test",
@@ -6211,7 +6324,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show for Show Subpage (view_show_page(show_slug))",
+			"name": "Get Show for Show Subpage (frontend_view_show_page(show_slug))",
 			"event": [
 				{
 					"listen": "test",

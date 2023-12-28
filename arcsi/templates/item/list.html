@@ -21,23 +21,10 @@
         </p>
         <p>Episode number: {{item["number"]}}</p>
         <p>Episode id: {{item['id']}}</p>
-        <p>Episode image URL: {{item["image_url"]}}</p>
-        <p>Episode description: {{item["description"]}}</p>
-        <p>Episode external link: {{item.external_url}}</p>
-        <p>Episode language: {{item.language}}</p>
         <p>Episode play date: {{item["play_date"]}}</p>
         <p>Episode play file name: {{item["play_file_name"]}}</p>
-        <p>Episode play length: {{item["length"]}}</p>
-        <p>Episode live?: {{item["live"]}} </p>
-        <p>Episode broadcasted?: {{item["broadcast"]}}</p>
-        <p>Episode (currently) airing?: {{item.airing}}</p>
-        <p>Episode archive lahmastore: {{item["archive_lahmastore"]}}</p>
-        <p>Episode archive lahmastore URL : {{item["archive_lahmastore_canonical_url"]}}</p>
         <p>Episode archived?: {{item["archived"]}}</p>
-        <p>Episode D/L count: {{item["download_count"]}}</p>
-        <p>Episode uploader: {{item["uploader"]}}</p>
-        <p>Episode uploaded at: {{item["uploaded_at"]}}</p>
-        <p>permalink <a href="{{ url_for('router.view_item', id=item['id']) }}">{{item['id']}}</a></p>
+        <p>permalink <a href="{{ url_for('router.view_item', id=item['id']) }}"><b>{{item['id']}}</b></a></p>
     </div>
     {% endfor %}    
 </div> 

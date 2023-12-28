@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "48910ffa-6be6-4541-ba27-6af02b146243",
+		"_postman_id": "e07d0c34-02a9-40e7-a96b-2784e6b7956b",
 		"name": "CI test (robustness)",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19378201"
 	},
 	"item": [
 		{
@@ -40,6 +41,63 @@
 						{
 							"key": "name",
 							"value": "testguest",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "YhhU8Z4W2dVbKNf",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/users/get_api_token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"get_api_token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Admin API Token (get_api_token())",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = JSON.parse(responseBody)\r",
+							"pm.environment.set(\"api_token_admin\", response.api_token);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is application/json\", function() {\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
+							"});\r",
+							"\r",
+							"pm.test(\"API token has been set up: \" + pm.environment.get(\"api_token_admin\"), function() {\r",
+							"    pm.expect(pm.environment.get(\"api_token_admin\")).not.equal(\"\")\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "testadmin",
 							"type": "text"
 						},
 						{
@@ -163,7 +221,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Show (view_show(id))",
+			"name": "Get Show (archon_view_show(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -243,11 +301,12 @@
 					}
 				],
 				"url": {
-					"raw": "{{url}}/show/:id",
+					"raw": "{{url}}/archon/show/:id",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"show",
 						":id"
 					],
@@ -262,7 +321,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Items (5, list_items())",
+			"name": "Get Items (5, archon_list_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -295,28 +354,14 @@
 							"            pm.expect(show.archive_lahmastore_base_url).to.be.an(\"string\")\r",
 							"            pm.expect(show.id).to.be.an(\"number\")\r",
 							"        })\r",
-							"        pm.expect(item.live).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.broadcast).to.be.an(\"boolean\")\r",
-							"        if (item.airing != null) {\r",
-							"            pm.expect(item.airing).to.be.an(\"boolean\")\r",
-							"        }\r",
 							"        pm.expect(item.archived).to.be.an(\"boolean\")\r",
-							"        pm.expect(item.archive_lahmastore).to.be.an(\"boolean\")\r",
 							"        pm.expect(item.name).to.be.an(\"string\")\r",
-							"        pm.expect(item.name_slug).to.be.an(\"string\")\r",
-							"        pm.expect(item.description).to.be.an(\"string\")\r",
-							"        pm.expect(item.language).to.be.an(\"string\")\r",
 							"        pm.expect(item.play_date).to.be.an(\"string\")\r",
-							"        pm.expect(item.archive_lahmastore_canonical_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.external_url).to.be.an(\"string\")\r",
-							"        pm.expect(item.image_url).to.be.an(\"string\")\r",
 							"        if (item.play_file_name != null) {\r",
 							"            pm.expect(item.play_file_name).to.be.an(\"string\")\r",
 							"        }\r",
-							"        pm.expect(item.uploader).to.be.an(\"string\")\r",
 							"        pm.expect(item.id).to.be.an(\"number\")\r",
 							"        pm.expect(item.number).to.be.an(\"number\")\r",
-							"        pm.expect(item.download_count).to.be.an(\"number\")\r",
 							"    })\r",
 							"})\r",
 							"\r",
@@ -333,16 +378,17 @@
 				"header": [
 					{
 						"key": "Authentication-Token",
-						"value": "{{api_token_guest}}",
+						"value": "{{api_token_admin}}",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "{{url}}/item/all",
+					"raw": "{{url}}/archon/item/all",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
+						"archon",
 						"item",
 						"all"
 					]
@@ -351,7 +397,7 @@
 			"response": []
 		},
 		{
-			"name": "View Item (1, view_item(id))",
+			"name": "View Item (1, archon_view_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -439,7 +485,7 @@
 			"response": []
 		},
 		{
-			"name": "View Item (2, view_item(id))",
+			"name": "View Item (2, archon_view_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -527,7 +573,7 @@
 			"response": []
 		},
 		{
-			"name": "View Item (3, view_item(id))",
+			"name": "View Item (3, archon_view_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -615,7 +661,7 @@
 			"response": []
 		},
 		{
-			"name": "View Item (4, view_item(id))",
+			"name": "View Item (4, archon_view_item(id))",
 			"event": [
 				{
 					"listen": "test",
@@ -703,7 +749,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Latest Items (list_items_latest())",
+			"name": "Get Latest Items (frontend_list_items_latest())",
 			"event": [
 				{
 					"listen": "test",
@@ -782,7 +828,7 @@
 			"response": []
 		},
 		{
-			"name": "Search Item (search_item())",
+			"name": "Search Item (frontend_search_item())",
 			"event": [
 				{
 					"listen": "test",
@@ -874,7 +920,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Shows Paginated (list_shows_page())",
+			"name": "Get Shows Paginated (frontend_list_shows_page())",
 			"event": [
 				{
 					"listen": "test",
@@ -933,7 +979,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Shows without Items (list_shows_without_items())",
+			"name": "Get Shows without Items (frontend_list_shows_without_items())",
 			"event": [
 				{
 					"listen": "test",
@@ -1006,7 +1052,7 @@
 			"response": []
 		},
 		{
-			"name": "Search Show (search_show())",
+			"name": "Search Show (frontend_search_show())",
 			"event": [
 				{
 					"listen": "test",
@@ -1093,7 +1139,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Shows for Schedule (list_shows_for_schedule())",
+			"name": "Get Shows for Schedule (frontend_list_shows_for_schedule())",
 			"event": [
 				{
 					"listen": "test",
@@ -1166,7 +1212,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Shows for Schedule by Day (list_shows_for_schedule_by())",
+			"name": "Get Shows for Schedule by Day (frontend_list_shows_for_schedule_by())",
 			"event": [
 				{
 					"listen": "test",

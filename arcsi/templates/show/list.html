@@ -15,20 +15,9 @@
         <p>Show active: {{show.active}}</p>
         <p>Show host: {% for user in show.users %} {% if user.name %} {{ user.name }} {% else %} {{ user.email }} {% endif %}
             {% endfor %}</p>
-        <p>Show description: {{show.description}}</p>
         <p>Show contact address: {{show.contact_address}}</p>
         <p>Show external link: {{show.external_url}}</p>
-        <p>Show language: {{show.language}}</p>
-        <p><img src="{{show.cover_image_url}}" style="max-width: 100%;"></p>
-        <p>Show playlist name: {{show.playlist_name}}</p>
-        <p>Show frequency: {{show.frequency}}</p>
-        <p>Show week: {{show.week}}</p>
-        <p>Show day: {{show.day}}</p>
-        <p>Show start: {{show.start}}</p>
-        <p>Show end: {{show.end}}</p>
-        <p>Show archive lahmastore base URL: {{show.archive_lahmastore_base_url}}</p>
         <p>Show ID: <a href="{{ url_for('router.view_show', id=show.id) }}"><b>{{show.id}}</b></a></p>
-        <p>Show tags: <ul> {% for tag in show["tags"] %} <li> * {{tag.display_name}} </li> {% endfor %} </ul> </p>
     </div>
     {% endfor %}    
 </div>  
