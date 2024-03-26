@@ -1,9 +1,4 @@
-import requests
-
-from flask import current_app as app
-from flask import render_template, request, url_for
-from flask_login import current_user
-from flask_security import roles_accepted, roles_required
+from flask import render_template
 
 from arcsi.api import list_tags
 from arcsi.view import router

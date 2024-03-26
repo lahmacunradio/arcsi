@@ -1,7 +1,4 @@
-import requests
-
-from flask import current_app as app
-from flask import render_template, url_for
+from flask import render_template
 from flask_login import current_user
 from flask_security import login_required, roles_accepted
 
@@ -27,7 +24,7 @@ def add_item():
         return "add new show first"
 
     if current_user.has_role("admin"):
-        shows = frontend_list_shows_without_items()
+        shows = frontend_list_shows_without_items().json()
 
     shows_sorted = sorted(shows, key=lambda k: k['name'])
     return render_template("item/add.html", shows=shows_sorted)
