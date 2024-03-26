@@ -101,7 +101,7 @@ def list_shows():
 
 
 @arcsi.route("/show/all_without_items", methods=["GET"])
-@roles_accepted("admin", "host")
+@roles_accepted("admin", "host", "guest")
 def frontend_list_shows_without_items():
     return shows_schedule_schema.dump(get_shows())
 
@@ -156,7 +156,7 @@ def frontend_list_shows_for_schedule_by():
             # if there is no archived show return empty array
             if (latest_item_found == False):
                 show_json["items"] = []
-    return json.dump(shows_json)
+    return json.dumps(shows_json)
 
 
 # We are gonna use this on the new page as the show/all
@@ -347,7 +347,7 @@ def archon_edit_show(id):
 
 
 @arcsi.route("/archon/show/<int:id>", methods=["GET"])
-@roles_accepted("admin", "host")
+@roles_accepted("admin", "host", "guest")
 def archon_view_show(id):
     do = DoArchive()
     show_query = Show.query.filter_by(id=id)

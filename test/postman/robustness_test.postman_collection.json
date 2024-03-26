@@ -132,7 +132,7 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Content-Type is text/html\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
 							"})\r",
 							"\r",
 							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
@@ -194,7 +194,8 @@
 							"    pm.expect(shows.length).to.equal(1)\r",
 							"})"
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -931,7 +932,7 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Content-Type is text/html\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
 							"})\r",
 							"\r",
 							"const jsonData = JSON.parse(responseBody)\r",
@@ -952,7 +953,8 @@
 							"    })\r",
 							"})"
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -1063,7 +1065,7 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Content-Type is text/html\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
 							"})\r",
 							"\r",
 							"const jsonData = JSON.parse(responseBody)\r",
@@ -1098,7 +1100,8 @@
 							"    })\r",
 							"})"
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -1150,7 +1153,7 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Content-Type is text/html\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
 							"})\r",
 							"\r",
 							"const jsonData = JSON.parse(responseBody)\r",
@@ -1185,7 +1188,8 @@
 							"    })\r",
 							"})"
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
