@@ -3,7 +3,7 @@ import json
 from datetime import datetime, timedelta
 from flask import jsonify, make_response, request
 from flask import current_app as app
-from flask_security import auth_token_required, roles_required
+from flask_security import auth_token_required, roles_required, roles_accepted
 from marshmallow import fields, post_load, Schema
 from sqlalchemy import func
 
@@ -97,20 +97,20 @@ headers = {"Content-Type": "application/json"}
 @arcsi.route("/show/all", methods=["GET"])
 @auth_token_required
 def list_shows():
-    return shows_schema.dumps(get_shows())
+    return shows_schema.dump(get_shows())
 
 
 @arcsi.route("/show/all_without_items", methods=["GET"])
-@auth_token_required
+@roles_accepted("admin", "host")
 def frontend_list_shows_without_items():
-    return shows_schedule_schema.dumps(get_shows())
+    return shows_schedule_schema.dump(get_shows())
 
 
 @arcsi.route("/archon/show/all", methods=["GET"])
-@roles_required("admin")
+@roles_accepted("admin", "host")
 def archon_list_shows():
     shows = Show.query.all()
-    return archon_shows_schema.dumps(shows)   
+    return archon_shows_schema.dump(shows)   
 
 
 @arcsi.route("/show/schedule", methods=["GET"])
@@ -123,7 +123,7 @@ def frontend_list_shows_for_schedule():
             show.cover_image_url = do.download(
                 show.archive_lahmastore_base_url, show.cover_image_url
             )
-    return shows_schedule_schema.dumps(shows)    
+    return shows_schedule_schema.dump(shows)    
 
 
 @arcsi.route("/show/schedule_by", methods=["GET"])
@@ -156,14 +156,14 @@ def frontend_list_shows_for_schedule_by():
             # if there is no archived show return empty array
             if (latest_item_found == False):
                 show_json["items"] = []
-    return json.dumps(shows_json)
+    return json.dump(shows_json)
 
 
 # We are gonna use this on the new page as the show/all
 @arcsi.route("/show/list", methods=["GET"])
 @auth_token_required
 def frontend_list_shows_page():
-    return shows_archive_schema.dumps(get_shows())
+    return shows_archive_schema.dump(get_shows())
 
 
 # TODO /item/<uuid>/add route so that each upload has unique id to begin with
@@ -426,4 +426,4 @@ def frontend_search_show():
             show.cover_image_url = do.download(
                 show.archive_lahmastore_base_url, show.cover_image_url
             )
-    return shows_schedule_schema.dumps(shows.items)
+    return shows_schedule_schema.dump(shows.items)
