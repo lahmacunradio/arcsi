@@ -103,7 +103,7 @@ def frontend_list_items_latest():
 # As a legacy it's still used by the frontend in a fallback mechanism,
 # It should be replaced with the /show/<string:show_slug>/item/<string:item_slug>
 @arcsi.route("/item/<int:id>", methods=["GET"])
-@roles_accepted("admin", "host")
+@roles_accepted("admin", "host", "guest")
 def archon_view_item(id):
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
