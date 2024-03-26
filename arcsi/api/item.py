@@ -328,7 +328,7 @@ def listen_play_file(id):
 
 # Not used anywhere
 @arcsi.route("/archon/item/<int:id>/download", methods=["GET"])
-@auth_token_required
+@roles_accepted("admin", "host")
 def archon_download_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)

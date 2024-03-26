@@ -347,7 +347,7 @@ def archon_edit_show(id):
 
 
 @arcsi.route("/archon/show/<int:id>", methods=["GET"])
-@auth_token_required
+@roles_accepted("admin", "host")
 def archon_view_show(id):
     do = DoArchive()
     show_query = Show.query.filter_by(id=id)
