@@ -333,7 +333,7 @@
 							"})\r",
 							"\r",
 							"pm.test(\"Content-Type is text/html\", function() {\r",
-							"    pm.response.to.be.header(\"Content-Type\", \"text/html; charset=utf-8\")\r",
+							"    pm.response.to.be.header(\"Content-Type\", \"application/json\")\r",
 							"})\r",
 							"\r",
 							"pm.test(\"API responds within 5 sec (\" + pm.response.responseTime + \" msec)\", () => {\r",
@@ -370,7 +370,8 @@
 							"    pm.expect(items.length).to.equal(5)\r",
 							"})"
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
