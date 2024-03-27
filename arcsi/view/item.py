@@ -24,7 +24,7 @@ def add_item():
         return "add new show first"
 
     if current_user.has_role("admin"):
-        shows = frontend_list_shows_without_items().json()
+        shows = frontend_list_shows_without_items()
 
     shows_sorted = sorted(shows, key=lambda k: k['name'])
     return render_template("item/add.html", shows=shows_sorted)
