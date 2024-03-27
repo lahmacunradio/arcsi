@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from flask import jsonify, make_response, request, redirect
 from flask import current_app as app
-from flask_security import auth_token_required, roles_required
+from flask_security import auth_token_required, roles_required, roles_accepted
 from marshmallow import fields, post_load, Schema
 from sqlalchemy import func
 
@@ -78,7 +78,7 @@ headers = {"Content-Type": "application/json"}
 @roles_required("admin")
 def archon_list_items():
     items = Item.query.all()
-    return archon_items_schema.dumps(items)
+    return archon_items_schema.dump(items)
 
 
 @arcsi.route("/item/latest", methods=["GET"])
@@ -97,13 +97,13 @@ def frontend_list_items_latest():
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
         item.name_slug=normalise(item.name)
-    return items_archive_schema.dumps(items.items)
+    return items_archive_schema.dump(items.items)
 
 
 # As a legacy it's still used by the frontend in a fallback mechanism,
 # It should be replaced with the /show/<string:show_slug>/item/<string:item_slug>
 @arcsi.route("/item/<int:id>", methods=["GET"])
-@auth_token_required
+@roles_accepted("admin", "host", "guest")
 def archon_view_item(id):
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
@@ -316,7 +316,7 @@ def archon_add_item():
 
 # It's still used by the application for sure, and maybe by the frontend (?)
 @arcsi.route("/item/<int:id>/listen", methods=["GET"])
-@auth_token_required
+@roles_accepted("admin", "host")
 def listen_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)
@@ -328,7 +328,7 @@ def listen_play_file(id):
 
 # Not used anywhere
 @arcsi.route("/archon/item/<int:id>/download", methods=["GET"])
-@auth_token_required
+@roles_accepted("admin", "host")
 def archon_download_play_file(id):
     do = DoArchive()
     item_query = Item.query.filter_by(id=id)
