@@ -1,18 +1,15 @@
-import requests
-
-from flask import current_app as app
-from flask import render_template, request, url_for
+from flask import render_template
 from flask_login import current_user
 from flask_security import login_required, roles_required
 
+from arcsi.api import list_users
 from arcsi.view import router
 
 
 @router.route("/user/all")
 @roles_required('admin')
 def list_users():
-    result = requests.get(app.config["APP_BASE_URL"] + url_for("arcsi.list_users"))
-    users = result.json()
+    users = list_users().json()
     return render_template("user/list.html", users=users)
 
 
