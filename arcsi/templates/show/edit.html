@@ -48,16 +48,16 @@
 
   <div>
     <label for="language">Show language</label>
-    <!-- TODO dynamic checked here based on db record -->
     <select name="language" id="language">
-      <option id="music" value="music">Music</option>
-      <option id="hu_hu" value="hu_hu" selected>Magyar</option>
-      <option id="en_uk" value="en_uk">English</option>
+      <option id="music" value="music" {% if show.language="music" %} selected {% endif %}>Music</option>
+      <option id="hu_hu" value="hu_hu" {% if show.language="hu_hu" %} selected {% endif %}>Magyar</option>
+      <option id="en_uk" value="en_uk" {% if show.language="en_uk" %} selected {% endif %}>English</option>
     </select>
   </div>
 
   <div>
     <label for="taglist">Show tag list (separate with commas)</label>
+    <!-- TODO remove or handle properly the last individual comma -->
     <input name="taglist" id="taglist" value="{% for tag in show.tags %}{{tag.display_name}},{% endfor %}">
   </div>
 

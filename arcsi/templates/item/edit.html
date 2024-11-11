@@ -51,14 +51,15 @@
 <div>
   <label for="language">Episode language</label>
   <select name="language" id="language">
-    <option id="music" value="music">Music</option>
-    <option id="hu_hu" value="hu_hu" selected>Magyar</option>
-    <option id="en_uk" value="en_uk">English</option>
+    <option id="music" value="music" {% if item.language="music" %} selected {% endif %}>Music</option>
+    <option id="hu_hu" value="hu_hu" {% if item.language="hu_hu" %} selected {% endif %}>Magyar</option>
+    <option id="en_uk" value="en_uk" {% if item.language="en_uk" %} selected {% endif %}>English</option>
   </select>
 </div>
 
   <div>
     <label for="taglist">Item tag list (separate with commas)</label>
+    <!-- TODO remove or handle properly the last individual comma -->
     <input name="taglist" id="taglist" value="{% for tag in item.tags %}{{tag.display_name}},{% endfor %}">
   </div>
 
