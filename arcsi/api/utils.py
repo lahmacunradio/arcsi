@@ -159,6 +159,10 @@ def get_shows():
             )
     return shows
 
+def get_managed_shows(user):
+    shows = Show.query.filter(Show.users == user).all()
+    return shows
+
 def show_item_duplications_number(item):
     existing_items = Show.query.filter(Show.id == item.shows[0].id).first().items
     existing_items_with_same_name = existing_items.filter_by(name=item.name)

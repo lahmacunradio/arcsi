@@ -28,9 +28,13 @@
       <div class="navigation-block">
         <nav>
           <ul>
+            {% if current_user.has_role("admin") %}
             <li><a href="{{ url_for('router.add_show') }}">Add new show</a></li>
+            {% endif %}
             <li><a href="{{ url_for('router.list_shows') }}">Shows archive</a></li>
+            {% if current_user.has_role("admin") or current_user.has_role("host") %}
             <li><a href="{{ url_for('router.add_item') }}">Add new item</a></li>
+            {% endif %}
             <li><a href="{{ url_for('router.list_items') }}">Items archive</a></li>
           </ul>
         </nav> 

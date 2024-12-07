@@ -6,28 +6,29 @@
 
 {% block content %}
 <form action="{{ url_for('arcsi.archon_add_item') }}" method="post" enctype="multipart/form-data">
-<article class="add-infos">
 
-<div>
+<article class="add-infos">
+  <div>
     <label for="shows">Episode of show:</label>
     {% if current_user.has_role("admin") %}
     <input type="hidden" name="show_name" id="show_name" value="{{ shows[0].name }}">
     <select name="shows" id="shows"
-    onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
-    <option value="">--Please choose an option--</option>
-    {% for show in shows %}
-    <option value="{{ show.id }}">{{ show.name }}</option>
-    {% endfor %}
+      onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
+      <option value="">--Please choose an option--</option>
+      {% for show in shows %}
+      <option value="{{ show.id }}">{{ show.name }}</option>
+      {% endfor %}
     </select>
     {% else %}
-    <input type="hidden" name="show_name" id="show_name" value="{{ current_user.shows[0].name }}"><select name="shows" id="shows"
+    <input type="hidden" name="show_name" id="show_name" value="{{ current_user.shows[0].name }}">
+    <select name="shows" id="shows"
       onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
       {% for show in current_user.shows %}
       <option value="{{ show.id }}">{{ show.name }}</option>
       {% endfor %}
     </select>
     {% endif %}
-</div>
+  </div>
 
   <div>
     <label for="number">Episode number</label>
@@ -49,14 +50,14 @@
     <input name="external_url" id="external_url">
   </div>
 
-<div>
+  <div>
     <label for="language">Episode language</label>
     <select name="language" id="language">
       <option id="music" value="music">Music</option>
       <option id="hu_hu" value="hu_hu" selected>Magyar</option>
       <option id="en_uk" value="en_uk">English</option>
     </select>
-</div>
+  </div>
 
   <div>
     <label for="taglist">Item tag list (separate with commas)</label>

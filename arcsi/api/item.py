@@ -366,7 +366,10 @@ def archon_edit_item(id):
 
     # TODO if we could send JSON payloads w/ ajax then this prevalidation isn't needed
     item_metadata["shows"] = [
-        {"id": item_metadata["shows"], "name": item_metadata["show_name"]}
+        {
+            "id": item_metadata["shows"],
+            "name": item_metadata["show_name"]
+        }
     ]
     item_metadata["tags"] = [ { "display_name": tag_name.strip() } for tag_name in item_metadata["taglist"].split(",") ]
     item_metadata["tags"] = [dict(t) for t in {tuple(d.items()) for d in item_metadata["tags"]}]
