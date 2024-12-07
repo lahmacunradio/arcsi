@@ -103,7 +103,7 @@ def frontend_list_items_latest():
 # As a legacy it's still used by the frontend in a fallback mechanism,
 # It should be replaced with the /show/<string:show_slug>/item/<string:item_slug>
 @arcsi.route("/item/<int:id>", methods=["GET"])
-@roles_accepted("admin", "host", "guest")
+@auth_token_required
 def archon_view_item(id):
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
@@ -120,7 +120,7 @@ def archon_view_item(id):
 
 
 @arcsi.route("/archon/item/add", methods=["POST"])
-@roles_required("admin")
+@roles_accepted("admin", "host")
 def archon_add_item():
     no_error = True
     if request.is_json:
@@ -341,7 +341,7 @@ def archon_download_play_file(id):
 
 # TODO implement delete functionality
 @arcsi.route("/archon/item/<int:id>", methods=["DELETE"])
-@roles_required("admin")
+@roles_accepted("admin", "host")
 def archon_delete_item(id):
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
@@ -351,7 +351,7 @@ def archon_delete_item(id):
 
 
 @arcsi.route("/archon/item/<int:id>/edit", methods=["POST"])
-@roles_required("admin")
+@roles_accepted("admin", "host")
 def archon_edit_item(id):
     no_error = True
     image_file = None

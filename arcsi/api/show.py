@@ -101,7 +101,7 @@ def list_shows():
 
 
 @arcsi.route("/show/all_without_items", methods=["GET"])
-@roles_accepted("admin", "host", "guest")
+@auth_token_required
 def frontend_list_shows_without_items():
     return shows_schedule_schema.dump(get_shows())
 
@@ -261,7 +261,7 @@ def archon_delete_show(id):
 
 
 @arcsi.route("/archon/show/<int:id>/edit", methods=["POST"])
-@roles_required("admin")
+@roles_accepted("admin", "host")
 def archon_edit_show(id):
     show_query = Show.query.filter_by(id=id)
     show = show_query.first_or_404()
@@ -347,7 +347,7 @@ def archon_edit_show(id):
 
 
 @arcsi.route("/archon/show/<int:id>", methods=["GET"])
-@roles_accepted("admin", "host", "guest")
+@auth_token_required
 def archon_view_show(id):
     do = DoArchive()
     show_query = Show.query.filter_by(id=id)

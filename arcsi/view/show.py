@@ -1,5 +1,5 @@
 from flask import render_template
-from flask_security import login_required, roles_accepted
+from flask_security import login_required, roles_accepted, roles_required
 
 from arcsi.api import archon_list_shows, archon_view_show
 from arcsi.view import router
@@ -13,7 +13,7 @@ def list_shows():
 
 
 @router.route("/show/add", methods=["GET"])
-@roles_accepted("admin", "host")
+@roles_required("admin")
 def add_show():
     return render_template("show/add.html")
 
