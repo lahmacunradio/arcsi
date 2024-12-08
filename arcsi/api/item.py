@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from flask import jsonify, make_response, request, redirect
 from flask import current_app as app
-from flask_security import auth_token_required, roles_required, roles_accepted
+from flask_security import auth_token_required, roles_accepted
 from marshmallow import fields, post_load, Schema
 from sqlalchemy import func
 
@@ -75,7 +75,7 @@ headers = {"Content-Type": "application/json"}
 
 @arcsi.route("/item", methods=["GET"])
 @arcsi.route("/archon/item/all", methods=["GET"])
-@roles_required("admin")
+@roles_accepted("admin", "host")
 def archon_list_items():
     items = Item.query.all()
     return archon_items_schema.dump(items)

@@ -7,7 +7,7 @@ from flask_security import auth_token_required, roles_required, roles_accepted
 from marshmallow import fields, post_load, Schema
 from sqlalchemy import func
 
-from .utils import archive, get_shows, save_file, slug, sort_for, normalise, comma_separated_params_to_list, filter_show_items
+from .utils import archive, get_shows_with_cover, save_file, slug, sort_for, normalise, comma_separated_params_to_list, filter_show_items
 from . import arcsi
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
@@ -98,13 +98,13 @@ headers = {"Content-Type": "application/json"}
 @arcsi.route("/show/all", methods=["GET"])
 @auth_token_required
 def list_shows():
-    return shows_schema.dump(get_shows())
+    return shows_schema.dump(get_shows_with_cover())
 
 
 @arcsi.route("/show/all_without_items", methods=["GET"])
 @auth_token_required
 def frontend_list_shows_without_items():
-    return shows_schedule_schema.dump(get_shows())
+    return shows_schedule_schema.dump(get_shows_with_cover())
 
 
 @arcsi.route("/archon/show/all", methods=["GET"])
@@ -164,7 +164,7 @@ def frontend_list_shows_for_schedule_by():
 @arcsi.route("/show/list", methods=["GET"])
 @auth_token_required
 def frontend_list_shows_page():
-    return shows_archive_schema.dump(get_shows())
+    return shows_archive_schema.dump(get_shows_with_cover())
 
 
 # TODO /item/<uuid>/add route so that each upload has unique id to begin with

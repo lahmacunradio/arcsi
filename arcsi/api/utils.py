@@ -149,7 +149,20 @@ def archive(archive_base, archive_file_name, archive_idx):
 
     return archive_url
 
+def get_items():
+    items = Item.query.all()
+    return items
+
+def get_managed_items(user):
+    managed_shows = Show.query.filter(Show.users.contains(user)).all()
+    managed_items = Item.query.filter(Item.shows.contains(managed_shows)).all()
+    return managed_items
+
 def get_shows():
+    shows = Show.query.all()
+    return shows
+
+def get_shows_with_cover():
     do = DoArchive()
     shows = Show.query.all()
     for show in shows:
@@ -159,9 +172,10 @@ def get_shows():
             )
     return shows
 
+
 def get_managed_shows(user):
-    shows = Show.query.filter(Show.users == user).all()
-    return shows
+    managed_shows = Show.query.filter(Show.users.contains(user)).all()
+    return managed_shows
 
 def show_item_duplications_number(item):
     existing_items = Show.query.filter(Show.id == item.shows[0].id).first().items
