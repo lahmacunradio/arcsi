@@ -8,8 +8,9 @@ from sqlalchemy import func
 
 from uuid import uuid4
 
-from .utils import archive, broadcast_audio, normalise, save_file, show_item_duplications_number
 from . import arcsi
+from .utils import archive, broadcast_audio, normalise, save_file
+from .utils import get_items, show_item_duplications_number
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.item import Item
@@ -77,8 +78,7 @@ headers = {"Content-Type": "application/json"}
 @arcsi.route("/archon/item/all", methods=["GET"])
 @roles_accepted("admin", "host")
 def archon_list_items():
-    items = Item.query.all()
-    return archon_items_schema.dump(items)
+    return archon_items_schema.dump(get_items())
 
 
 @arcsi.route("/item/latest", methods=["GET"])
@@ -103,7 +103,7 @@ def frontend_list_items_latest():
 # As a legacy it's still used by the frontend in a fallback mechanism,
 # It should be replaced with the /show/<string:show_slug>/item/<string:item_slug>
 @arcsi.route("/item/<int:id>", methods=["GET"])
-@auth_token_required
+@roles_accepted("admin", "host", "guest")
 def archon_view_item(id):
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()

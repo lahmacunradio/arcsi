@@ -7,15 +7,16 @@ from flask_security import auth_token_required, roles_required, roles_accepted
 from marshmallow import fields, post_load, Schema
 from sqlalchemy import func
 
-from .utils import archive, get_shows_with_cover, save_file, slug, sort_for, normalise, comma_separated_params_to_list, filter_show_items
 from . import arcsi
+from .utils import archive, save_file, slug, sort_for, normalise, comma_separated_params_to_list
+from .utils import filter_show_items, get_shows, get_shows_with_cover
+from .item import item_archive_schema
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.user import User
 from arcsi.model.tag import Tag
 from arcsi.model.utils import get_or_create
-from arcsi.api.item import item_archive_schema
 
 
 class ShowDetailsSchema(Schema):
@@ -102,7 +103,7 @@ def list_shows():
 
 
 @arcsi.route("/show/all_without_items", methods=["GET"])
-@auth_token_required
+@roles_accepted("admin", "host", "guest")
 def frontend_list_shows_without_items():
     return shows_schedule_schema.dump(get_shows_with_cover())
 
@@ -110,8 +111,7 @@ def frontend_list_shows_without_items():
 @arcsi.route("/archon/show/all", methods=["GET"])
 @roles_accepted("admin", "host")
 def archon_list_shows():
-    shows = Show.query.all()
-    return archon_shows_schema.dump(shows)   
+    return archon_shows_schema.dump(get_shows())   
 
 
 @arcsi.route("/show/schedule", methods=["GET"])
@@ -348,7 +348,7 @@ def archon_edit_show(id):
 
 
 @arcsi.route("/archon/show/<int:id>", methods=["GET"])
-@auth_token_required
+@roles_accepted("admin", "host", "guest")
 def archon_view_show(id):
     do = DoArchive()
     show_query = Show.query.filter_by(id=id)
