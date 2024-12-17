@@ -181,11 +181,12 @@ def archon_add_show():
     # TODO see item.py same line
     show_metadata["users"] = [
         {
-            "id": show_metadata["users"],
+            "id": show_metadata["user_id"],
             "name": show_metadata["user_name"],
             "email": show_metadata["user_email"],
         }
     ]
+    show_metadata.pop("user_id", None)
     show_metadata.pop("user_name", None)
     show_metadata.pop("user_email", None)
     show_metadata["tags"] = [{"display_name": dis_name.strip()} for dis_name in show_metadata["taglist"].split(",")]
@@ -273,11 +274,12 @@ def archon_edit_show(id):
     # TODO see item.py same line
     show_metadata["users"] = [
         {
-            "id": show_metadata["users"],
+            "id": show_metadata["user_id"],
             "name": show_metadata["user_name"],
             "email": show_metadata["user_email"],
         }
     ]
+    show_metadata.pop("user_id", None)
     show_metadata.pop("user_name", None)
     show_metadata.pop("user_email", None)
 

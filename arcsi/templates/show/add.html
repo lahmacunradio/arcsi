@@ -8,15 +8,9 @@
 <form action="{{ url_for('arcsi.archon_add_show') }}" method="post" enctype="multipart/form-data">
 <article class="add-infos">
 
-  <div>
-    <label for="users">Host:</label>
-    <input type="hidden" name="user_name" id="user_name" value="{{ current_user.name }}">
-    <input type="hidden" name="user_email" id="user_email" value="{{ current_user.email }}">
-    <select name="users" id="users">
-      <option value="{{current_user.id}}"> {% if current_user.name %} {{ current_user.name }} {% else %}
-        {{ current_user.email }} {% endif %}</option>
-    </select>
-  </div>
+  <input type="hidden" name="user_id" id="user_id" value="{{ current_user.id }}">
+  <input type="hidden" name="user_name" id="user_name" value="{{ current_user.name }}">
+  <input type="hidden" name="user_email" id="user_email" value="{{ current_user.email }}">
 
   <div>
     <label for="active">Active</label>
