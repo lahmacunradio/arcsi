@@ -42,11 +42,10 @@
 
   <div>
     <label for="language">Show language</label>
-    <!-- TODO dynamic checked here based on db record -->
     <select name="language" id="language">
-      <option id="music" value="music">Music</option>
-      <option id="hu_hu" value="hu_hu" selected>Magyar</option>
-      <option id="en_uk" value="en_uk">English</option>
+      <option id="music" value="music" {% if show.language="music" %} selected {% endif %}>Music</option>
+      <option id="hu_hu" value="hu_hu" {% if show.language="hu_hu" %} selected {% endif %}>Magyar</option>
+      <option id="en_uk" value="en_uk" {% if show.language="en_uk" %} selected {% endif %}>English</option>
     </select>
   </div>
 
@@ -62,7 +61,7 @@
 
   <div>
     <label for="image_file">Cover image</label>
-    <input type="file" name="image_file" id="image_file">
+    <input type="file" accept= "image/*" name="image_file" id="image_file">
   </div>
 
   <div>
