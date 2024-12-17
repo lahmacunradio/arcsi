@@ -39,7 +39,7 @@ headers = {"Content-Type": "application/json"}
 @roles_required("admin")
 def list_users():
     users = User.query.all()
-    return many_user_details_schema.dumps(users)
+    return many_user_details_schema.dump(users)
 
 
 @arcsi.route("/user/<int:id>", methods=["GET"])
