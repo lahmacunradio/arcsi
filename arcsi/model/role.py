@@ -7,8 +7,8 @@ class Role(db.Model, RoleMixin):
     """
     Proposed roles:
     * admin -- everything
-    * host -- manage show, manage items
-    * guest -- manage item(s)
+    * host -- can manage assigned shows and items
+    * guest -- have access for basic endpoints
     """
 
     __tablename__ = "roles"

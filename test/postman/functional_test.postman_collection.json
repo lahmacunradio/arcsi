@@ -314,7 +314,8 @@
 							"    pm.response.to.have.status(403);\r",
 							"});"
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -331,7 +332,7 @@
 					"mode": "formdata",
 					"formdata": [
 						{
-							"key": "users",
+							"key": "user_id",
 							"value": "1",
 							"type": "text"
 						},
@@ -492,7 +493,8 @@
 							"    pm.expect(show.id).to.be.an(\"number\")\r",
 							"})"
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -509,7 +511,7 @@
 					"mode": "formdata",
 					"formdata": [
 						{
-							"key": "users",
+							"key": "user_id",
 							"value": "1",
 							"type": "text"
 						},
@@ -669,7 +671,8 @@
 							"    pm.expect(show.id).to.be.an(\"number\")\r",
 							"})"
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -686,7 +689,7 @@
 					"mode": "formdata",
 					"formdata": [
 						{
-							"key": "users",
+							"key": "user_id",
 							"value": "1",
 							"type": "text"
 						},

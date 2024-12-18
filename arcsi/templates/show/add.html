@@ -8,15 +8,9 @@
 <form action="{{ url_for('arcsi.archon_add_show') }}" method="post" enctype="multipart/form-data">
 <article class="add-infos">
 
-  <div>
-    <label for="users">Host:</label>
-    <input type="hidden" name="user_name" id="user_name" value="{{ current_user.name }}">
-    <input type="hidden" name="user_email" id="user_email" value="{{ current_user.email }}">
-    <select name="users" id="users">
-      <option value="{{current_user.id}}"> {% if current_user.name %} {{ current_user.name }} {% else %}
-        {{ current_user.email }} {% endif %}</option>
-    </select>
-  </div>
+  <input type="hidden" name="user_id" id="user_id" value="{{ current_user.id }}">
+  <input type="hidden" name="user_name" id="user_name" value="{{ current_user.name }}">
+  <input type="hidden" name="user_email" id="user_email" value="{{ current_user.email }}">
 
   <div>
     <label for="active">Active</label>
@@ -48,8 +42,8 @@
   <div>
       <label for="language">Show language</label>
       <select name="language" id="language">
-        <option id="music" value="music">Music</option>
-        <option id="hu_hu" value="hu_hu" selected>Magyar</option>
+        <option id="music" value="music" selected>Music</option>
+        <option id="hu_hu" value="hu_hu">Magyar</option>
         <option id="en_uk" value="en_uk">English</option>
       </select>
   </div>
@@ -66,7 +60,7 @@
 
   <div>
     <label for="image_file">Cover image</label>
-    <input type="file" name="image_file" id="image_file">
+    <input type="file" accept= "image/*" name="image_file" id="image_file">
   </div>
 
   <div>
@@ -101,4 +95,8 @@
 
 </article>
 </form>
+
+{{ ckeditor.load(pkg_type="basic") }}
+{{ ckeditor.config(name="description") }}
+
 {% endblock %}

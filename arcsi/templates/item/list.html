@@ -24,7 +24,6 @@
         <p>Episode play date: {{item["play_date"]}}</p>
         <p>Episode play file name: {{item["play_file_name"]}}</p>
         <p>Episode archived?: {{item["archived"]}}</p>
-        <p>permalink <a href="{{ url_for('router.view_item', id=item['id']) }}"><b>{{item['id']}}</b></a></p>
     </div>
     {% endfor %}    
 </div> 

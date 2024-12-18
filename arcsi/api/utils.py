@@ -150,6 +150,10 @@ def archive(archive_base, archive_file_name, archive_idx):
     return archive_url
 
 def get_shows():
+    shows = Show.query.all()
+    return shows
+
+def get_shows_with_cover():
     do = DoArchive()
     shows = Show.query.all()
     for show in shows:
@@ -158,6 +162,26 @@ def get_shows():
                 show.archive_lahmastore_base_url, show.cover_image_url
             )
     return shows
+
+def get_managed_shows(user):
+    managed_shows = Show.query.filter(Show.users.contains(user)).all()
+    return managed_shows
+
+def get_managed_show(user, id):
+    managed_show = Show.query.filter(Show.users.contains(user)).filter(Show.id == id).all()
+    return managed_show
+
+def get_items():
+    items = Item.query.all()
+    return items
+
+def get_managed_items(user):
+    managed_shows = get_managed_shows(user)
+    managed_items = []
+    for managed_show in managed_shows:
+        managed_items_for_current_show = Item.query.filter(Item.shows.contains(managed_show)).all()
+        managed_items.extend(managed_items_for_current_show)
+    return managed_items
 
 def show_item_duplications_number(item):
     existing_items = Show.query.filter(Show.id == item.shows[0].id).first().items
