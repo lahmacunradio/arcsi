@@ -93,7 +93,7 @@ jobs:
         newman run robustness_test.postman_collection.json -e test.postman_environment.json -n 50 -k
 
     - name: Upload logs
-      uses: actions/upload-artifact@v4.3.3
+      uses: actions/upload-artifact@v4.4.3
       if: failure()
       with:
         path: aguni.log
