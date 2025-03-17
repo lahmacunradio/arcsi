@@ -70,7 +70,7 @@
   </div>
 
   <div>
-    <label for="play_file">Play file</label>
+    <label for="play_file">Audio file</label>
     <input type="file" accept= ".mp3" name="play_file" id="play_file">
   </div>
 
@@ -88,7 +88,7 @@
       onclick="this.previousElementSibling.value=this.checked?1:0">
   </div>
 
-  <h4>WARNING, THESE OVERWRITE SHOW-LEVEL SETTINGS!</h4>
+  <!-- TODO WARNING, THESE OVERWRITE SHOW-LEVEL SETTINGS! revisit this message -->
 
   <div>
     <label for="archive_lahmastore">Archive to Lahmastore</label>
@@ -96,6 +96,9 @@
       onclick="this.previousElementSibling.value=this.checked?1:0" checked>
     <input type="hidden" name="uploader" id="uploader" value="{{ current_user.email }}">
   </div>
+
+  <p>For <b>Live</b> episodes please use an <b>image</b> between <b>200-500 kB</b></p>
+  <p>For <b>Broadcasted</b> episodes next to the <b>image</b> please upload the <b>audio</b> in <b>.mp3 format</b></p>
   
   <div>
     <input type="submit" value="Add">

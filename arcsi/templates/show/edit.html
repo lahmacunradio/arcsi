@@ -84,15 +84,14 @@
     <input type="time" name="end" id="end" value="{{ show.end }}">
   </div>
 
-
-  <h4>TODO THIS DIFFERENTLY ON EDIT</h4>
-
   <div>
     <label for="archive_lahmastore">Archive to Lahmastore</label>
     <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" {% if show.archive_lahmastore %} value="1"
       {% else %} value="0" {% endif %}><input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
       {% if show.archive_lahmastore %} checked {% endif %}>
   </div>
+
+  <p>Please use an <b>image</b> between <b>200-500 kB</b> as your show's cover</p>
 
   <div>
     <input type="submit" value="Update">

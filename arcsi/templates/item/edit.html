@@ -71,7 +71,7 @@
   </div>
 
   <div>
-    <label for="play_file">Play file</label>
+    <label for="play_file">Audio file</label>
     <input type="file" accept= ".mp3" name="play_file" id="play_file" value="{{ item.play_file_name }}">
   </div>
 
@@ -86,7 +86,6 @@
       {% if item.live %} value="1" {% else %} value="0" {% endif %}>
     <input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
       {% if item.live %} checked {% endif %}>
-    <p>TODO THIS DIFFERENTLY ON EDIT</p>
     <label for="broadcast">Broadcast</label>
     <input type="hidden" id="broadcast" name="broadcast"
       {% if item.broadcast %} value="1" {% else %} value="0" {% endif %}>
@@ -103,6 +102,9 @@
     <!-- TODO updated_at ? uploader means anything here? -->
     <input type="hidden" name="uploader" id="uploader" value="{{ current_user.email }}">
   </div>
+
+  <p>For <b>Live</b> episodes please use an <b>image</b> between <b>200-500 kB</b></p>
+  <p>For <b>Broadcasted</b> episodes next to the <b>image</b> please upload the <b>audio</b> in <b>.mp3 format</b></p>
 
   <div>
     <input type="submit" value="Update">
