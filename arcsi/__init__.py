@@ -2,6 +2,7 @@ import logging
 import os
 
 from flask import Flask
+from flask_ckeditor import CKEditor
 from flask_security import Security, SQLAlchemySessionUserDatastore
 from flask_migrate import Migrate
 from flask_swagger_ui import get_swaggerui_blueprint
@@ -11,6 +12,7 @@ from arcsi.model import db, item, role, show, tag, user
 from arcsi.view.forms.register import ButtRegisterForm
 
 migrate = Migrate()
+ckeditor = CKEditor()
 
 
 def create_app(config_file):
@@ -39,6 +41,7 @@ def create_app(config_file):
     with app.app_context():
         db.init_app(app)
         migrate.init_app(app, db)
+        ckeditor.init_app(app)
 
         '''
         The application factory runs when `flask db upgrade` is called

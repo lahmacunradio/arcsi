@@ -8,8 +8,8 @@ from arcsi.view import router
 
 @router.route("/user/all")
 @roles_required('admin')
-def list_users():
-    users = list_users().json()
+def view_list_users():
+    users = list_users()
     return render_template("user/list.html", users=users)
 
 

@@ -6,28 +6,29 @@
 
 {% block content %}
 <form action="{{ url_for('arcsi.archon_add_item') }}" method="post" enctype="multipart/form-data">
-<article class="add-infos">
 
-<div>
+<article class="add-infos">
+  <div>
     <label for="shows">Episode of show:</label>
     {% if current_user.has_role("admin") %}
     <input type="hidden" name="show_name" id="show_name" value="{{ shows[0].name }}">
     <select name="shows" id="shows"
-    onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
-    <option value="">--Please choose an option--</option>
-    {% for show in shows %}
-    <option value="{{ show.id }}">{{ show.name }}</option>
-    {% endfor %}
+      onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
+      <option value="">--Please choose an option--</option>
+      {% for show in shows %}
+      <option value="{{ show.id }}">{{ show.name }}</option>
+      {% endfor %}
     </select>
     {% else %}
-    <input type="hidden" name="show_name" id="show_name" value="{{ current_user.shows[0].name }}"><select name="shows" id="shows"
+    <input type="hidden" name="show_name" id="show_name" value="{{ current_user.shows[0].name }}">
+    <select name="shows" id="shows"
       onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
       {% for show in current_user.shows %}
       <option value="{{ show.id }}">{{ show.name }}</option>
       {% endfor %}
     </select>
     {% endif %}
-</div>
+  </div>
 
   <div>
     <label for="number">Episode number</label>
@@ -49,14 +50,14 @@
     <input name="external_url" id="external_url">
   </div>
 
-<div>
+  <div>
     <label for="language">Episode language</label>
     <select name="language" id="language">
-      <option id="music" value="music">Music</option>
-      <option id="hu_hu" value="hu_hu" selected>Magyar</option>
+      <option id="music" value="music" selected>Music</option>
+      <option id="hu_hu" value="hu_hu">Magyar</option>
       <option id="en_uk" value="en_uk">English</option>
     </select>
-</div>
+  </div>
 
   <div>
     <label for="taglist">Item tag list (separate with commas)</label>
@@ -69,13 +70,13 @@
   </div>
 
   <div>
-    <label for="play_file">Play file</label>
-    <input type="file" name="play_file" id="play_file">
+    <label for="play_file">Audio file</label>
+    <input type="file" accept= ".mp3" name="play_file" id="play_file">
   </div>
 
   <div>
     <label for="image_file">Episode cover image</label>
-    <input type="file" name="image_file" id="image_file">
+    <input type="file" accept= "image/*" name="image_file" id="image_file">
   </div>
 
   <div>
@@ -87,7 +88,7 @@
       onclick="this.previousElementSibling.value=this.checked?1:0">
   </div>
 
-  <h4>WARNING, THESE OVERWRITE SHOW-LEVEL SETTINGS!</h4>
+  <!-- TODO WARNING, THESE OVERWRITE SHOW-LEVEL SETTINGS! revisit this message -->
 
   <div>
     <label for="archive_lahmastore">Archive to Lahmastore</label>
@@ -95,6 +96,9 @@
       onclick="this.previousElementSibling.value=this.checked?1:0" checked>
     <input type="hidden" name="uploader" id="uploader" value="{{ current_user.email }}">
   </div>
+
+  <p>For <b>Live</b> episodes please use an <b>image</b> between <b>200-500 kB</b></p>
+  <p>For <b>Broadcasted</b> episodes next to the <b>image</b> please upload the <b>audio</b> in <b>.mp3 format</b></p>
   
   <div>
     <input type="submit" value="Add">
@@ -102,4 +106,8 @@
 
 </article>
 </form>
+
+{{ ckeditor.load(pkg_type="basic") }}
+{{ ckeditor.config(name="description") }}
+
 {% endblock %}

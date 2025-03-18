@@ -8,15 +8,9 @@
 <form action="{{ url_for('arcsi.archon_edit_show', id=show.id) }}" method="post" enctype="multipart/form-data">
 <article class="add-infos">
 
-  <div>
-    <label for="users">Host: </label>
-    <input type="hidden" name="user_name" id="user_name" value="{{ current_user.name }}">
-    <input type="hidden" name="user_email" id="user_email" value="{{ current_user.email }}">
-    <select name="users" id="users">
-      <option value="{{current_user.id}}"> {% if current_user.name %} {{ current_user.name }} {% else %}
-        {{ current_user.email }} {% endif %}</option>
-    </select>
-  </div>
+  <input type="hidden" name="user_id" id="user_id" value="{{ current_user.id }}">
+  <input type="hidden" name="user_name" id="user_name" value="{{ current_user.name }}">
+  <input type="hidden" name="user_email" id="user_email" value="{{ current_user.email }}">
 
   <div>
     <label for="active">Active</label>
@@ -49,9 +43,9 @@
   <div>
     <label for="language">Show language</label>
     <select name="language" id="language">
-      <option id="music" value="music" {% if show.language="music" %} selected {% endif %}>Music</option>
-      <option id="hu_hu" value="hu_hu" {% if show.language="hu_hu" %} selected {% endif %}>Magyar</option>
-      <option id="en_uk" value="en_uk" {% if show.language="en_uk" %} selected {% endif %}>English</option>
+      <option id="music" value="music" {% if show.language=="music" %} selected {% endif %}>Music</option>
+      <option id="hu_hu" value="hu_hu" {% if show.language=="hu_hu" %} selected {% endif %}>Magyar</option>
+      <option id="en_uk" value="en_uk" {% if show.language=="en_uk" %} selected {% endif %}>English</option>
     </select>
   </div>
 
@@ -68,7 +62,7 @@
 
   <div>
     <label for="image_file">Cover image</label>
-    <input type="file" name="image_file" id="image_file">
+    <input type="file" accept= "image/*" name="image_file" id="image_file">
   </div>
 
   <div>
@@ -90,9 +84,6 @@
     <input type="time" name="end" id="end" value="{{ show.end }}">
   </div>
 
-
-  <h4>TODO THIS DIFFERENTLY ON EDIT</h4>
-
   <div>
     <label for="archive_lahmastore">Archive to Lahmastore</label>
     <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" {% if show.archive_lahmastore %} value="1"
@@ -100,10 +91,16 @@
       {% if show.archive_lahmastore %} checked {% endif %}>
   </div>
 
+  <p>Please use an <b>image</b> between <b>200-500 kB</b> as your show's cover</p>
+
   <div>
     <input type="submit" value="Update">
   </div>
 
 </article>
 </form>
+
+{{ ckeditor.load(pkg_type="basic") }}
+{{ ckeditor.config(name="description") }}
+
 {% endblock %}

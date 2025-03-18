@@ -3,28 +3,34 @@ from flask_login import current_user
 from flask_security import login_required, roles_accepted
 
 
-from arcsi.api import archon_view_item, listen_play_file, archon_list_items, frontend_list_shows_without_items
+from arcsi.api import archon_view_item, listen_play_file, archon_items_schema, shows_minimal_schema
+from arcsi.api.utils import get_items, get_managed_items, get_shows, get_managed_shows
 from arcsi.view import router
 
 
 @router.route("/item/all")
 @login_required
 def list_items():
-    items = archon_list_items()
+    items = {}
+    if current_user.has_role("admin"):
+        items = archon_items_schema.dump(get_items())
+    if current_user.has_role("host"):
+        items = archon_items_schema.dump(get_managed_items(current_user))
     return render_template("item/list.html", items=items)
 
 
 @router.route("/item/add", methods=["GET"])
 @roles_accepted("admin", "host")
 def add_item():
-    shows = {}
-
     if not current_user.has_role("admin") and not current_user.shows.all():
         # TODO error handling
         return "add new show first"
 
+    shows = {}
     if current_user.has_role("admin"):
-        shows = frontend_list_shows_without_items()
+        shows = shows_minimal_schema.dump(get_shows())
+    if current_user.has_role("host"):
+        shows = shows_minimal_schema.dump(get_managed_shows(current_user))
 
     shows_sorted = sorted(shows, key=lambda k: k['name'])
     return render_template("item/add.html", shows=shows_sorted)
@@ -52,6 +58,12 @@ def edit_item(id):
     item = archon_view_item(id)
     if (hasattr(item, 'status_code') and item.status_code == 404):
         return "Episode not found"
-    shows = frontend_list_shows_without_items()
+    
+    shows = {}
+    if current_user.has_role("admin"):
+        shows = shows_minimal_schema.dump(get_shows())
+    if current_user.has_role("host"):
+        shows = shows_minimal_schema.dump(get_managed_shows(current_user))
+
     shows_sorted = sorted(shows, key=lambda k: k['name'])
     return render_template("item/edit.html", item=item, shows=shows_sorted)

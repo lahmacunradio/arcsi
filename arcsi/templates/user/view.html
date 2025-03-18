@@ -12,9 +12,9 @@
 <p>User butt password: {{user.butt_pw}}</p>
 <p>User hosted shows: {% for show in user.shows %} {{ show.name }} {% endfor %}</p>
 <p>User API token: {{user.get_auth_token()}}</p>
-<a href="{{ url_for('router.edit_user', id=user['id']) }}">Edit user</a>
 {% if user.has_role("admin") %}
-
+<!-- TODO implement user edit -->
+<a href="{{ url_for('router.edit_user', id=user['id']) }}">Edit user</a>
 <h4>ADMIN EYES</h4>
 <p>User roles: {% for role in user.roles %} {{ role.name }} {% endfor %}</p>
 {% endif %}

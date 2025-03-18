@@ -1,4 +1,5 @@
 from flask import jsonify, make_response, request
+from flask_security import roles_required
 from flask_security.utils import verify_password
 from marshmallow import fields, post_load, Schema
 
@@ -35,12 +36,14 @@ headers = {"Content-Type": "application/json"}
 
 @arcsi.route("/users", methods=["GET"])
 @arcsi.route("/users/all", methods=["GET"])
+@roles_required("admin")
 def list_users():
     users = User.query.all()
-    return many_user_details_schema.dumps(users)
+    return many_user_details_schema.dump(users)
 
 
 @arcsi.route("/user/<int:id>", methods=["GET"])
+@roles_required("admin")
 def view_user(id):
     user_query = User.query.filter_by(id=id)
     user = user_query.first_or_404()

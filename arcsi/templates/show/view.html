@@ -48,8 +48,9 @@
     </li>
     {% endfor %}
 </ul>
- <hr> 
-<p><a href="{{ url_for('router.edit_show', id=show['id']) }}">Edit show</a> || <a
-        href="{{ url_for('arcsi.archon_delete_show', id=show['id']) }}">Delete show</a>
-    
+<hr>
+{% if current_user.has_role("admin") or current_user.has_role("host") %}
+<p><a href="{{ url_for('router.edit_show', id=show['id']) }}">Edit show</a>{% if current_user.has_role("admin")%} || <a
+        href="{{ url_for('arcsi.archon_delete_show', id=show['id']) }}">Delete show</a>{% endif %}
+{% endif %}
 {% endblock %}
