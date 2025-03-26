@@ -16,6 +16,7 @@
         {% if current_user.has_role("admin") %}
           <h4>ADMIN EYES</h4>
           <p>User active: {{user.active}}</p>
+          <p>User email: {{user.email}}</p>
           <p>User butt username: {{user.butt_user}}</p>
           <p>User butt password: {{user.butt_pw}}</p>
           <p>User roles: {% for role in user.roles %} {{ role.name }} {% endfor %}</p> {% endif %}
