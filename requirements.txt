@@ -20,6 +20,7 @@ docutils==0.21.2
 email_validator==2.2.0
 filelock==3.18.0
 Flask==3.1.0
+Flask-Alembic==3.1.1
 Flask-BabelEx==0.9.4
 Flask-CKEditor==1.0.0
 Flask-Login==0.6.3
@@ -74,6 +75,7 @@ requests==2.32.3
 s3transfer==0.11.4
 scikit-learn==1.6.1
 scipy==1.15.2
+setuptools==78.1.0
 six==1.17.0
 soundfile==0.13.1
 soxr==0.5.0.post1
