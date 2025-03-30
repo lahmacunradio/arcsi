@@ -8,7 +8,7 @@ from flask_migrate import Migrate
 from flask_swagger_ui import get_swaggerui_blueprint
 from sqlalchemy.exc import ProgrammingError
 
-from arcsi.model import db, item, role, show, tag, user
+from arcsi.model import db, item, media, role, show, tag, user
 from arcsi.view.forms.register import ButtRegisterForm
 
 migrate = Migrate()
@@ -18,9 +18,9 @@ ckeditor = CKEditor()
 def create_app(config_file):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    
+
     # set logger and log-handler and log-level so that Gunicorn and Flask share
-    guni_logger = logging.getLogger('gunicorn.error')
+    guni_logger = logging.getLogger("gunicorn.error")
     app.logger.handlers = guni_logger.handlers
     app.logger.setLevel(guni_logger.level)
 
@@ -43,21 +43,21 @@ def create_app(config_file):
         migrate.init_app(app, db)
         ckeditor.init_app(app)
 
-        '''
+        """
         The application factory runs when `flask db upgrade` is called
         in entrypoint. At this stage we don't have `roles` relations available.
         So we let `user_store` fail silently on first try. 
         This allows the `db upgrade` to set up all relations, which enables
         us to create these roles once gunicorn starts.
-        '''
+        """
         try:
-            # create arcsi roles: 
-            # `admin` => access to whole service, 
-            # `host` => acces to their show, 
+            # create arcsi roles:
+            # `admin` => access to whole service,
+            # `host` => acces to their show,
             # `guest` => acces to their episode
-            user_store.find_or_create_role(name='admin', description='Radio staff')
-            user_store.find_or_create_role(name='host', description='Show host')
-            user_store.find_or_create_role(name='guest', description='Episode guest')
+            user_store.find_or_create_role(name="admin", description="Radio staff")
+            user_store.find_or_create_role(name="host", description="Show host")
+            user_store.find_or_create_role(name="guest", description="Episode guest")
             db.session.commit()
         except ProgrammingError as err:
             pass
@@ -69,14 +69,10 @@ def create_app(config_file):
     app.register_blueprint(view.router)
 
     ### swagger specific ###
-    SWAGGER_URL = '/doc'
-    API_URL = '/static/docs/swagger.json'
+    SWAGGER_URL = "/doc"
+    API_URL = "/static/docs/swagger.json"
     SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
-        SWAGGER_URL,
-        API_URL,
-        config={
-            'app_name': "Arcsi"
-        }
+        SWAGGER_URL, API_URL, config={"app_name": "Arcsi"}
     )
     app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 
