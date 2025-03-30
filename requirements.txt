@@ -19,6 +19,7 @@ docutils==0.15.2
 email-validator==1.1.1
 filelock==3.0.12
 Flask==2.2.5
+Flask-Alembic
 Flask-BabelEx==0.9.4
 Flask-CKEditor==1.0.0
 Flask-Login==0.6.2
