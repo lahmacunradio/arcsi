@@ -13,7 +13,7 @@ class MediaSimpleSchema(Schema):
     external_storage = fields.Boolean(required=True)
     dimension = fields.Str(dump_only=True)
     created_at = fields.Date(dump_only=True)
-    source_name = fields.Str()
+    source = fields.Str()
     size = fields.Int(required=True)
 
     @post_load
