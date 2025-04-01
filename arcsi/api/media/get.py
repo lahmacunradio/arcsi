@@ -19,7 +19,7 @@ from arcsi.model.utils import get_or_create
 
 
 schema = MediaSimpleSchema(
-    many=True, only=("id", "url", "source", "dimension", "created_at")
+    many=True, only=("id", "url", "dimension", "size", "created_at")
 )
 
 headers = {"Content-Type": "application/json"}
