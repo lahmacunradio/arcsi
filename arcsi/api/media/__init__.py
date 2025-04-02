@@ -1,6 +1,6 @@
 from b64uuid import B64UUID
 from flask import Blueprint
-from marshmallow import fields, post_load, pre_dump, pre_load, Schema
+from marshmallow import fields, post_dump, post_load, pre_dump, pre_load, Schema
 from arcsi.model.media import Media
 
 
@@ -18,13 +18,15 @@ class MediaSimpleSchema(Schema):
     source = fields.Str()
     size = fields.Int(required=True)
 
-    @pre_dump
+    @post_dump
     def make_front_face(self, data, **kwargs):
-        return B64UUID(data.id).string
+        data["id"] = B64UUID(data["id"]).string
+        return data
 
     @pre_load
     def make_back_face(self, data, **kwargs):
-        return B64UUID(data.id).uuid
+        if data.get("id"):
+            return str(B64UUID(data["id"]).uuid)
 
     @post_load
     def make_media(self, data, **kwargs):

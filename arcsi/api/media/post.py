@@ -49,17 +49,19 @@ def insert_media():
         )
     # Successfully validated meta and file
     else:
-        uuid = _make_uuid()
-        media_metadata["id"] = uuid
+        media_metadata["id"] = _make_uuid()
         # TODO Make future file handler check that archive path is valid eg. url or localpath
         media_metadata["url"] = archive(media_metadata["source"], local_name, 0) or None
+
         media_metadata.update({"source_name": media_metadata.pop("source")})
+
         # TODO Refactor fun raise show.items from it
         # if show_item_duplications_number(media_metadata):
         #    media_metadata["name"] = _form_hashed_name(local_name, uuid)
         # TODO use formed name for "name" field
 
-        new_media = schema.make_media(media_metadata)
+        new_media = schema.load(media_metadata)
+
         db.session.add(new_media)
         db.session.flush()
         db.session.commit()
@@ -68,7 +70,7 @@ def insert_media():
 
 
 def _make_uuid():
-    return uuid4()
+    return str(uuid4())
 
 
 def _form_hashed_name(file_name, hashing):
