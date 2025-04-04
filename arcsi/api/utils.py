@@ -22,7 +22,7 @@ DOT = "."
 def allowed_file(filename):
     return (
         DOT in filename
-        and filename.rsplit(DOT, 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
+        and raise_extension(filename) in app.config["ALLOWED_EXTENSIONS"]
     )
 
 
@@ -82,6 +82,10 @@ def slug(namestring):
     return slugs
 
 
+def raise_extension(base_name):
+    return base_name.rsplit(DOT, 1)[1].lower()
+
+
 def form_filename(file_obj, title_tuple):
     """
     Filename naming schema:
@@ -90,15 +94,15 @@ def form_filename(file_obj, title_tuple):
     Get the extension from file sent to API.
     To get the extension we use rsplit w/ maxsplit=1 to make sure we always get the extension even if there is another dot in the filename.
     """
-    ext = file_obj.filename.rsplit(DOT, 1)[1].lower()
+    ext = raise_extension(file_obj.filename)
     norms_show_name = normalise(title_tuple[0])
     norms_ep_name = normalise(title_tuple[1])
     norms_names = [norms_show_name, norms_ep_name]
     return "{}{}{}".format(DELIMITER.join(norms_names), DOT, ext)
 
 
-def find_request_params(param, default, type):
-    return request.args.get(param, default, type)
+def find_request_params(param, default, param_type):
+    return request.args.get(param, default, param_type)
 
 
 def get_playlist_existence_and_emptiness(playlist_name):
@@ -259,6 +263,9 @@ def save_file(norms_show_name, episode_number, archive_file, archive_file_name):
         else:
             archive_file_path = media_path(
                 norms_show_name, str(episode_number), formed_file_name
+            )
+            app.logger.debug(
+                "STATUS/SAVE FILE: archive_file_path: {}".format(archive_file_path)
             )
             app.logger.debug(
                 "STATUS/SAVE FILE: archive_file_path: {}".format(archive_file_path)

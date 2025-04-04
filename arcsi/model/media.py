@@ -15,15 +15,19 @@ class Media(db.Model):
     url = db.Column(db.String(256))
     size = db.Column(db.Integer, nullable=False)
     external_storage = db.Column(db.Boolean, nullable=False)
+    # Storage process if needed part 1.3
     storage_process = db.Column(db.Integer, nullable=False, default=0)
     # For picture dimension is XxY | For audio dimension is length
     dimension = db.Column(db.String())
-    # Show or episode name
-    source_name = db.Column(db.String())
+    # Show or episode
+    tie = db.Column(db.String(), nullable=True)
+    # Formed name of related show/episode/etc.
+    binding = db.Column(db.String(), nullable=True)
     # source = FK sec tables (part 1.2)
     created_at = db.Column(
         db.DateTime, default=db.func.current_timestamp(), nullable=False
     )
+    # Use this field for registering queue sccess -- TODO part 1.4
     uploaded_at = db.Column(db.DateTime)
 
     def __repr__(self):
