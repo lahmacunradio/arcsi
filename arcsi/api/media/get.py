@@ -26,6 +26,6 @@ headers = {"Content-Type": "application/json"}
 
 
 @media.route("/all", methods=["GET"])
-@media.route("", methods=["GET"])  # root of blueprint see media/__init__.py
+@media.route("", methods=["GET"])  # root of this blueprint see media/__init__.py
 def select_all():
     return schema.dump(Media.query.all())
