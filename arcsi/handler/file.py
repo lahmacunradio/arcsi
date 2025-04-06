@@ -6,6 +6,7 @@ from mutagen.mp3 import MP3
 from PIL import Image
 from slugify import slugify
 
+
 CONNECTER = "-"
 DELIMITER = "-"
 DOT = "."
@@ -66,7 +67,10 @@ def path(group_name, number, element_name):
 
 
 def get_audio_length(file_path):
-    return "0"
+    item_audio_obj = MP3(file_path)
+    # return item_audio_obj.filename
+    item_length = item_audio_obj.info.length
+    return str(item_length)
 
 
 def get_image_dimension(file_path):

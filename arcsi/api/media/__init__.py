@@ -14,7 +14,7 @@ class MediaSimpleSchema(Schema):
     name = fields.Str(required=True, min=1)
     extension = fields.Str()
     url = fields.Url(allow_none=True)
-    external_storage = fields.Boolean(required=True)
+    external_storage = fields.Boolean(load_default=False)
     dimension = fields.Str(load_default="0")
     created_at = fields.Date(dump_only=True)
     # allow uploading before assigning to show
