@@ -13,14 +13,14 @@ class MediaSimpleSchema(Schema):
     id = fields.Str()
     name = fields.Str(required=True, min=1)
     extension = fields.Str()
-    url = fields.Url(dump_only=True)
+    url = fields.Url(allow_none=True)
     external_storage = fields.Boolean(required=True)
-    dimension = fields.Str(dump_only=True)
+    dimension = fields.Str(load_default="0")
     created_at = fields.Date(dump_only=True)
     # allow uploading before assigning to show
     # Keep tie and binding data optional
-    tie = fields.Str()
-    binding = fields.Str()
+    tie = fields.Str(allow_none=True)
+    binding = fields.Str(allow_none=True)
     size = fields.Int()
 
     """
@@ -48,6 +48,7 @@ class MediaSimpleSchema(Schema):
 
     @post_load
     def make_media(self, data, **kwargs):
+
         return Media(**data)
 
 
