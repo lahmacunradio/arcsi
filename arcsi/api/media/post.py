@@ -88,8 +88,8 @@ def insert_media():
         if not allowed_file(secured_filename):
             return make_response(
                 jsonify(
-                    "Request files must be of {}".format(
-                        app.config["ALLOWED_EXTENSIONS"]
+                    "Request files must be of {} (received {})".format(
+                        app.config["ALLOWED_EXTENSIONS"], secured_filename
                     )
                 ),
                 400,
@@ -103,10 +103,10 @@ def insert_media():
             )
 
         if f.content_length:
-            app.logger.info("Receive file size -- request header includes length")
+            app.logger.debug("Receive file size -- request header includes length")
             file_length = round(f.content_length / 1024, 1)
         else:
-            app.logger.info("Calculate file size -- request header missing length")
+            app.logger.debug("Calculate file size -- request header missing length")
             try:
                 file_length = round(len(f.read()) / 1024, 1)
             except:
@@ -116,7 +116,17 @@ def insert_media():
             finally:
                 f.seek(0, 0)
 
-        if not file_length < 8192:
+        if not file_length < (20 * 8192) and is_audio(get_extension(secured_filename)):
+            return make_response(
+                jsonify(
+                    "File size is too large. Limited to 160 Mb. Actual {} Mb".format(
+                        file_length
+                    ),
+                    400,
+                    headers,
+                )
+            )
+        elif not file_length < 8192 and is_image(get_extension(secured_filename)):
             return make_response(
                 jsonify(
                     "File size is too large. Limited to 8192 Kb. Actual {} Kb".format(
@@ -138,8 +148,6 @@ def insert_media():
             }
         )
 
-    app.logger.info("VALIDS\t{}".format(valids))
-
     if not valids.items():
         return make_response(
             jsonify(
@@ -150,15 +158,13 @@ def insert_media():
         )
     # Keep clean copy for all valid items
     media_metadata = request.form.to_dict()
-    media_metadata["external_storage"] = bool(media_metadata["external_storage"])
 
     for _naming, valid in valids.items():
-        # Serialise, create new object
+        # create new object properties
         media_metadata["id"] = B64UUID(_make_uuid()).string
-        media_metadata["size"] = valid["size"]  # TODO use conjoin all mapping
+        media_metadata["size"] = valid["size"]
         media_metadata["extension"] = valid["ext"]
 
-        # TODO Make future file handler check that archive path is valid eg. url or localpath
         # TODO Allow external urls also (depends on cloudflare media cache)
         # Maintain backward compatibility of URL formats
         if media_metadata.get("binding"):
@@ -183,16 +189,15 @@ def insert_media():
             file_name = tidy_name(
                 valid["ext"],
                 space,
-                "{}-{}".format(media_metadata["name"], media_metadata["id"]),
+                _form_hashed_name(media_metadata["name"], media_metadata["id"]),
             )
             file_path = path(space, idx, file_name)
 
-            if media_metadata["external_storage"]:
-                # media_metadata["url"] = archive(space, file_name, idx)
+            if media_metadata.get("external_storage"):
                 media_metadata["url"] = _archive(file_path, space, idx)
             else:
+                media_metadata["external_storage"] = False
                 media_metadata["url"] = "http://localhost/{}".format(
-                    # save_file(space, idx, valid["file"], file_name)
                     _save_file(file_path, valid["file"]).split("/", 1)[1]
                 )
 
@@ -202,9 +207,9 @@ def insert_media():
                 media_metadata["dimension"] = get_audio_length(valid["file"])
             else:
                 media_metadata["dimension"] = str(0)
-            new_media = schema.load(media_metadata)
 
             # Persist to storage
+            new_media = schema.load(media_metadata)
             db.session.add(new_media)
             db.session.flush()
             db.session.commit()
@@ -228,8 +233,6 @@ def _archive(path, space, idx):
 
 
 def _save_file(path, file):
-    app.logger.info("MEDIA/STATUS/SAVE FILE: path: {}".format(path))
-    app.logger.info("MEDIA/STATUS/SAVE FILE: archive_file: {}".format(file))
     return local_save(file, path)
 
 
