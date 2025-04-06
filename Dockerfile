@@ -6,6 +6,7 @@ ENV PYTHONUNBUFFERED 1
 RUN apt-get update \
     && apt-get install gcc g++ \
     libblas-dev libffi-dev liblapack-dev libopenblas-dev libpq-dev \
+    libjpeg-dev zlib1g-dev \
     musl-dev postgresql tmpreaper -y \
     && apt-get clean
 ADD infra/tmpreaper.conf /etc/tmpreaper.conf

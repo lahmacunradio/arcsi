@@ -3,8 +3,9 @@ import os
 
 from mutagen.id3 import ID3, ID3NoHeaderError, APIC, TIT2, TPE1
 from mutagen.mp3 import MP3
-
+from PIL import Image
 from slugify import slugify
+
 
 CONNECTER = "-"
 DELIMITER = "-"
@@ -66,11 +67,24 @@ def path(group_name, number, element_name):
 
 
 def get_audio_length(file_path):
-    pass
+    item_audio_obj = MP3(file_path)
+    # return item_audio_obj.filename
+    item_length = item_audio_obj.info.length
+    return str(item_length)
 
 
 def get_image_dimension(file_path):
-    pass
+    img = Image.open(file_path)
+
+    return "{}x{}".format(img.size[0], img.size[1])
+
+
+def is_image(ext):
+    return True if ext in ["jpg", "jpeg", "png", "gif"] else False
+
+
+def is_audio(ext):
+    return True if ext in ["mp3"] else False
 
 
 class StoredFile:
