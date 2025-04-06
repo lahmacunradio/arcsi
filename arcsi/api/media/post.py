@@ -1,5 +1,6 @@
 from b64uuid import B64UUID
 from datetime import datetime, timedelta
+import requests
 from uuid import uuid4
 
 from flask import jsonify, make_response, request, redirect
@@ -16,7 +17,16 @@ from arcsi.api.utils import (
     save_file,
     show_item_duplications_number,
 )
-from arcsi.handler.file import get_extension, tidy_name, path, local_save
+from arcsi.handler.file import (
+    get_extension,
+    get_audio_length,
+    get_image_dimension,
+    tidy_name,
+    path,
+    local_save,
+    is_image,
+    is_audio,
+)
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.media import Media
@@ -52,6 +62,12 @@ Order of processing
          = validation
 -- file into data
 -- db
+"""
+"""
+Endpoint responsible for handling files of the request.
+It implements logic to create new rows in the Media table
+It has 2 main parts: writing files to storage (local- or external-storage), writing to the db
+Covers 2 user flows. 1, new free media 2, new bound media by show or episode relations.
 """
 
 
@@ -100,7 +116,7 @@ def insert_media():
             finally:
                 f.seek(0, 0)
 
-        if not file_length < 8192:  # TODO add app.config("MAX_CONTENT_LENGTH")?
+        if not file_length < 8192:
             return make_response(
                 jsonify(
                     "File size is too large. Limited to 8192 Kb. Actual {} Kb".format(
@@ -125,7 +141,6 @@ def insert_media():
     app.logger.info("VALIDS\t{}".format(valids))
 
     if not valids.items():
-
         return make_response(
             jsonify(
                 "All upload attempts have been rejected. No valid upload file found"
@@ -144,65 +159,50 @@ def insert_media():
         media_metadata["extension"] = valid["ext"]
 
         # TODO Make future file handler check that archive path is valid eg. url or localpath
-        # TODO Allow external urls also (hogy mukodne media cache retegunk kulso adattal?
+        # TODO Allow external urls also (depends on cloudflare media cache)
         # Maintain backward compatibility of URL formats
         if media_metadata.get("binding"):
-            binds = media_metadata.get("binding").split("_")
-            space = binds[0]
-            idx = binds[1]
-            media_metadata["name"] = "{}".format(binds[2])
+            [space, idx, media_metadata["name"]] = media_metadata.get("binding").split(
+                "_"
+            )
         else:
-            space = media_metadata["id"]
+            space = media_metadata["name"]
             idx = media_metadata["id"]
 
-        # Create URL with unique suffix for all new media
-        media_metadata["name"] = "{}-{}".format(
-            media_metadata["name"], media_metadata["id"]
-        )
-
-        file_name = tidy_name(valid["ext"], space, media_metadata["name"])
-        file_path = path(space, idx, file_name)
-
-        if not media_metadata["external_storage"]:
-            # media_metadata["url"] = archive(space, file_name, idx)
-            media_metadata["url"] = _archive(file_path, space, idx)
-        else:
-            media_metadata["url"] = "http://localhost/{}".format(
-                # save_file(space, idx, valid["file"], file_name)
-                _save_file(file_path, valid["file"]).split("/", 1)[1]
-            )
-
-        media_metadata["dimension"] = str(0)
-
-        app.logger.info("{}".format(media_metadata["url"]))
-        app.logger.info(
-            "{} --> {}".format(media_metadata["id"], B64UUID(media_metadata["id"]).uuid)
-        )
-        app.logger.info(
-            "{} <-- {}".format(
-                str(B64UUID(media_metadata["id"]).uuid), media_metadata["id"]
-            )
-        )
         err = schema.validate(media_metadata)
         if err:
             return make_response(
-                jsonify("Invalid data sent to add media: {}".format(err)), 500, headers
+                jsonify("Invalid formed data sent to add media: {}".format(err)),
+                500,
+                headers,
             )
         # Successfully validated both meta and file
-        # -- upload file
-        # -- load new item
-        # -- persist to db
         else:
+            media_metadata = schema.dump(media_metadata)
+            # Create URL with unique suffix for all new media
+            file_name = tidy_name(
+                valid["ext"],
+                space,
+                "{}-{}".format(media_metadata["name"], media_metadata["id"]),
+            )
+            file_path = path(space, idx, file_name)
 
+            if media_metadata["external_storage"]:
+                # media_metadata["url"] = archive(space, file_name, idx)
+                media_metadata["url"] = _archive(file_path, space, idx)
+            else:
+                media_metadata["url"] = "http://localhost/{}".format(
+                    # save_file(space, idx, valid["file"], file_name)
+                    _save_file(file_path, valid["file"]).split("/", 1)[1]
+                )
+
+            if is_image(valid["ext"]):
+                media_metadata["dimension"] = get_image_dimension(valid["file"])
+            elif is_audio(valid["ext"]):
+                media_metadata["dimension"] = get_audio_length(valid["file"])
+            else:
+                media_metadata["dimension"] = str(0)
             new_media = schema.load(media_metadata)
-
-            ### TODO For size to be calculated we need a valid local_name
-            #        new_media["size"] = size(local_name)
-
-            # TODO Refactor fun raise show.items from it
-            # if show_item_duplications_number(new_media):
-            #    new_media["name"] = _form_hashed_name(local_name, uuid)
-            # TODO use formed name for "name" field
 
             # Persist to storage
             db.session.add(new_media)
@@ -213,6 +213,8 @@ def insert_media():
 
 
 ## Helper funcs
+
+
 def _archive(path, space, idx):
     do = DoArchive()
     archive_file_path = path
