@@ -41,13 +41,14 @@
         <div>
           
           <div class="adminmenu">
-            <a href="/doc" title="API documentation"><i class="fa fa-book"></i></a>
+            <a href="/user-guide" title="User guide"><i class="fa fa-question"></i><span for="fa"> Upload guide</span></a>
+            <a href="/doc" title="API documentation"><i class="fa fa-book"></i><span for="fa"> API</span></a>
             {% if current_user.has_role("admin") %}
             <a href="{{ url_for('router.view_data') }}" title="Statistics"><i class="fa fa-database"></i></a>
             {% endif %}
             {% if current_user.is_authenticated %}
-            <a href="{{ url_for('router.view_user') }}" title="Profile"><i class="far fa-user-circle"></i></a>
-            <a href="{{ url_for('security.logout') }}" title="Logout"><i class="fas fa-sign-out-alt"></i></a>
+            <a href="{{ url_for('router.view_user') }}" title="Profile"><i class="far fa-user-circle"></i><span for="Profile"> Profile</span></a>
+            <a href="{{ url_for('security.logout') }}" title="Logout"><i class="fas fa-sign-out-alt"></i><span for="Logout"> Logout</span></a>
             {% else %}
             <a href="{{ url_for('security.login') }}" title="Login"><i class="fas fa-sign-in-alt"></i></a>
             <a href="{{ url_for('security.register') }}" title="Register"><i class="fas fa-user-plus"></i></a>
