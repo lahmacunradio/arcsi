@@ -13,24 +13,24 @@
   <input type="hidden" name="user_email" id="user_email" value="{{ current_user.email }}">
 
   <div>
-    <label for="active">Active</label>
+    <label for="active">Active *</label>
     <input type="hidden" id="active" name="active" value="1">
     <input type="checkbox"
       onclick="this.previousElementSibling.value=this.checked?1:0" checked>
   </div>
 
   <div>
-    <label for="name">Show name</label>
+    <label for="name">Show name *</label>
     <input name="name" id="name" required>
   </div>
 
   <div>
-    <label for="description">Show description</label>
+    <label for="description">Show description *</label>
     <input name="description" id="description" required>
   </div>
 
   <div>
-    <label for="contact_address">Contact address</label>
+    <label for="contact_address">Contact address *</label>
     <input name="contact_address" id="contact_address">
   </div>
 
@@ -40,7 +40,7 @@
   </div>
 
   <div>
-      <label for="language">Show language</label>
+      <label for="language">Show language *</label>
       <select name="language" id="language">
         <option id="music" value="music" selected>Music</option>
         <option id="hu_hu" value="hu_hu">Magyar</option>
@@ -64,14 +64,14 @@
   </div>
 
   <div>
-    <label for="frequency">Frequency (new-show-per-month)</label>
+    <label for="frequency">Frequency (new-show-per-month) *</label>
     <input type="number" name="frequency" id="frequency">
   </div>
 
-  <div>    
-    <label for="week">Week</label>
+  <div>
+    <label for="week">Week *</label>
     <input type="number" name="week" id="week">
-    <label for="day">Day</label>
+    <label for="day">Day *</label>
     <input type="number" name="day" id="day">
   </div>
 
@@ -83,11 +83,13 @@
   </div>
 
   <div>
-    <label for="archive_lahmastore">Archive to Lahmastore</label>
+    <label for="archive_lahmastore">Archive to Lahmastore *</label>
     <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" value="1">
     <input type="checkbox"
       onclick="this.previousElementSibling.value=this.checked?1:0" checked>
   </div>
+
+  <p>Please use an <b>image</b> between <b>200-500 kB</b> as your show's cover</p>
 
   <div>
     <input type="submit" value="Add">
