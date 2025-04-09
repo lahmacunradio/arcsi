@@ -6,8 +6,9 @@
 
 {% block content %}
 <form action="{{ url_for('arcsi.archon_add_item') }}" method="post" enctype="multipart/form-data">
-
-<article class="add-infos">
+  <span>Fields marked with an asterisk (`*`) are mandatory (you can not leave them empty)
+  <article class="add-infos">
+  <h3>Information</h3>
   <div>
     <label for="shows">Episode of show *</label>
     {% if current_user.has_role("admin") %}
@@ -64,21 +65,49 @@
     <input name="taglist" id="taglist">
   </div>
 
+
+
+  <h3>Broadcast</h3>
   <div>
-    <label for="play_date">Play date *</label>
-    <input type="date" name="play_date" id="play_date" required>
+    <label for="broadcast_info">
+     Usage
+    </label>
+     <span>Airing an episode on a radio show's time slot has 2 forms. 1, Live - Image uploads are allowed, audio uploads are disabled. 2, Recorded - Image and music uploads are mandatory.</span>
+    <p>The current episode airing on the station is reset in both cases.</p>
+    <p>When selecting the default choice ("Skip") the episode is archived without updating the station.</p>
+    <p>On the inverse, airing an episode also archives that episode by default. This setting can be turned off on a show-level currently.</p>
+    <input type="hidden" name="airing" id="airing" value="0">
+    <input type="hidden" name="live" id="live" value="0">
+    <input type="hidden" id="recording" name="broadcast" value="0">
+    <!-- Matches and supersedes previous process. Selecting live - from materials it's image only, airing, without uploading to the radio station. Image is uploaded but episode is not archived without an audio. Live value is 1, broadcast value is 0. Selecting recording - from materials both audio and image are required. airing, broadcast on for uploading to the radio station. The intent to archive to storage is captured in the form as "archive_lahmastore'. The intent to update what airs on the show is captured as "broadcast" (should beecome "airing" and "recording"). Broadcast value is 1, live value is 0. Selecting skip - from materials it is any, not airing, not broadcast, not live, archives files to storage. -->
+    <select id="cast_type"
+      onchange="d=(this.options[this.selectedIndex].value=='skip');l=(this.options[this.selectedIndex].value=='live');l?play_file.disabled=true:play_file.disabled=false;l?play_file.value='':null;l?live.value=1:live.value=0;l?recording.value=0:recording.value=1;d?airing.value=0:airing.value=1;d?live.value=0:null;d?recording.value=0:null;">
+      <option value="skip">Skip</option>
+      {% for cast in ["Live", "Recording"] %}
+      <option value="{{ cast|lower }}">{{ cast }}</option>
+      {% endfor %}
+    </select>
+    <label for="date_info">Schedule</label>
+    <p>The station schedule rotates weekly. If any broadcasting type is selected the episode airs the next time the show is broadcasted. If no episode is added during the week then the show airs the most recent episode by default.</p>
+    <p>Setting the date of airing is optional, when no date is set the default date is tomorrow - relatively, i.e. the last possible submission is the day before show airs. The schedule is reloaded each dawn.</p>
+    <p>Summary: When an episode is ready submit it within one week before scheduled broadcast time and select from the date-picker the day the show airs.</p>
+    <div>
+      <label for="play_date">Play date *</label>
+      <input type="date" name="play_date" id="play_date" required>
+    </div>
   </div>
 
+
+  <h3>Archive</h3>
   <div>
     <label for="play_file">Audio file *</label>
     <input type="file" accept= ".mp3" name="play_file" id="play_file">
-    <span for="play_file">Skip when episode is live</span>
-  </div>
 
-  <div>
     <label for="image_file">Episode cover image *</label>
+
     <input type="file" accept= "image/*" name="image_file" id="image_file">
   </div>
+
 
   <div>
     <label for="live">Live</label>
@@ -92,14 +121,15 @@
   <div>
     <label for="archive_lahmastore">Archive to Lahmastore *</label>
     <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" value="1"><input type="checkbox"
-      onclick="this.previousElementSibling.value=this.checked?1:0" checked>
-    <input type="hidden" name="uploader" id="uploader" value="{{ current_user.email }}">
+      onclick="this.previousElementSibling.value=this.checked?1:0" checked
   </div>
+
 
   <p>For <b>Live</b> episodes please use an <b>image</b> between <b>200-500 kB</b></p>
   <p>For <b>Broadcasted</b> episodes next to the <b>image</b> please upload the <b>audio</b> in <b>.mp3</b> format</p>
-  
+
   <div>
+    <input type="hidden" name="uploader" id="uploader" value="{{ current_user.name }}">
     <input type="submit" value="Add">
   </div>
 
