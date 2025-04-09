@@ -8,8 +8,9 @@
 <p>Episode parent show: {% for show in item["shows"] %} {{ show["name"] }} {% endfor %}</p>
 <p>Episode number: {{item["number"]}}</p>
 <p>Episode name: {{item["name"]}}</p>
-<img src="{{item['image_url']}}">
-<p>Episode description: {{item["description"]}}</p>
+<img src="{{item['image_url']}}" width = "500" height="500">
+<p>Episode description:</p>
+<p>{{item["description"] | safe}}</p>
 <p>Episode external link: {{item.external_url}}</p>
 <p>Episode language: {{item.language}}</p>
 <p>Episode play date: {{item["play_date"]}}</p>
