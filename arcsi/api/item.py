@@ -1,3 +1,5 @@
+import requests
+
 from datetime import datetime, timedelta
 
 from flask import jsonify, make_response, request, redirect
@@ -32,14 +34,16 @@ class ItemDetailsSchema(Schema):
     name = fields.Str(required=True, validate=Length(min=1))
     name_slug = fields.Str(dump_only=True)
     description = fields.Str()
-    language = fields.Str(validate=Length(min=5))
-    play_date = fields.Date(required=True)
+    language = fields.Str(max=5)
+    play_date = fields.Date(
+        required=False, load_default=datetime.today() + timedelta(days=1)
+    )  # Thanks Kamil Szot!
     image_url = fields.Str(dump_only=True)
     play_file_name = fields.Str(dump_only=True)
     live = fields.Boolean()
     broadcast = fields.Boolean()
-    airing = fields.Boolean(dump_only=True)
-    archive_lahmastore = fields.Boolean()
+    # airing = fields.Boolean()
+    archive_lahmastore = fields.Boolean(load_default=True)
     archive_lahmastore_canonical_url = fields.Str(dump_only=True)
     external_url = fields.Str()
     archived = fields.Boolean(dump_only=True)
@@ -183,12 +187,17 @@ def archon_add_item():
     ]
     item_metadata.pop("show_name", None)
     item_metadata.pop("taglist", None)
+    item_metadata.pop("airing", None)
 
     # validate payload
     err = item_schema.validate(item_metadata)
     if err:
         return make_response(
-            jsonify("Invalid data sent to add item, see: {}".format(err)), 500, headers
+            jsonify(
+                "Fix your form. Invalid data sent to add item, see: {}".format(err)
+            ),
+            500,
+            headers,
         )
     else:
         item_metadata = item_schema.load(item_metadata)
@@ -198,6 +207,7 @@ def archon_add_item():
         image_file_name = None
         image_url = ""
         play_file_name = None
+        default_archive_lahmastore = True
         archive_lahmastore_canonical_url = ""
         shows = (
             db.session.query(Show)
@@ -222,10 +232,17 @@ def archon_add_item():
             image_url=image_url,
             play_file_name=play_file_name,
             length=length,
+            # Value represents whether an episode airs as a live broadcast
             live=item_metadata.live,
+            # TODO Clarify broadcast meaning currently the value is used during file upload, signals the intent of upload request. If true, the client wants to air the upload.
+            # After cleanup it would maybe represent recording as a broadcast type
             broadcast=item_metadata.broadcast,
-            archive_lahmastore=item_metadata.archive_lahmastore,
+            # Value represents if the request wants to upload to storage too
+            archive_lahmastore=default_archive_lahmastore,
+            # Stores the result of the archive intent (above). Returns a Url or None
             archive_lahmastore_canonical_url=archive_lahmastore_canonical_url,
+            # Internal property is set when audio has finished uploading to storage. Represents the result of a broadcast intent, true or false.
+            # After cleanup it could keep this role to make it simple to handle live episode audio to archives.
             archived=archived,
             download_count=download_count,
             uploader=item_metadata.uploader,
@@ -404,6 +421,88 @@ def archon_edit_item(id):
 
         db.session.add(item)
         db.session.flush()
+
+        app.logger.debug(request.files.items())
+        app.logger.debug(request.files.lists())
+        app.logger.debug(request.files.listvalues())
+
+        empty_files = all([not (_v) for _v in request.files.values()])
+
+        if empty_files:
+            if item.broadcast and item.archived:
+                presigned_play = do.download(
+                    item.shows[0].archive_lahmastore_base_url,
+                    item.archive_lahmastore_canonical_url,
+                )
+                presigned_image = do.download(
+                    item.shows[0].archive_lahmastore_base_url,
+                    item.image_url,
+                )
+                temp_urls = [
+                    (item.play_file_name, presigned_play),
+                    (item.image_url.rsplit("/")[0], presigned_image),
+                ]
+                for temp_name, presigned in temp_urls:
+                    resp = requests.get(presigned, stream=True)
+                    if resp.ok:
+                        with open(
+                            media_path(
+                                item.shows[0].archive_lahmastore_base_url,
+                                str(item.number),
+                                temp_name,
+                            ),
+                            "wb",
+                        ) as _temp_file:
+                            for chunk in resp.iter_content(chunk_size=4 * 1024):
+                                _temp_file.write(chunk)
+                    else:
+                        return make_response(
+                            jsonify(
+                                {
+                                    "error": {
+                                        "message": "Episode not found in storage. The system provided the following error.",
+                                        "errorReason": error,
+                                        "code": 10201030,
+                                    }
+                                },
+                                404,
+                                headers,
+                            )
+                        )
+                    item.airing = broadcast_audio(
+                        archive_base=item.shows[0].archive_lahmastore_base_url,
+                        archive_idx=item.number,
+                        broadcast_file_name=item.play_file_name,
+                        broadcast_playlist=item.shows[0].playlist_name,
+                        broadcast_show=item.shows[0].name,
+                        broadcast_title=item.name,
+                        image_file_name=image_file_name,
+                    )
+
+                if item.airing:
+                    db.session.commit()
+                    return make_response(
+                        jsonify(item_partial_schema.dump(item)), 200, headers
+                    )
+                # TODO cleanup tmp files after upload
+                # TODO rollback for db -- needed?
+                else:
+                    return make_response(
+                        jsonify(
+                            {
+                                "error": {
+                                    "message": "Upload to broadcast station failed. The system provided the following error. Try if an older episode or a smaller file can be uploaded. Contact your administrators.",
+                                    "errorReason": error,
+                                    "code": 10208090,
+                                }
+                            },
+                            400,
+                            headers,
+                        )
+                    )
+
+            db.session.commit()
+            return make_response(jsonify(item_partial_schema.dump(item)), 200, headers)
 
         if request.files:
             # overwrites item's play_file_name and broadcast
