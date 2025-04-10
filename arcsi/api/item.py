@@ -28,7 +28,9 @@ class ItemDetailsSchema(Schema):
     name_slug = fields.Str(dump_only=True)
     description = fields.Str()
     language = fields.Str(max=5)
-    play_date = fields.Date(required=True, default=datetime.today() + timedelta(days=1))
+    play_date = fields.Date(
+        required=True, default=datetime.date.today() + datetime.timedelta(days=1)
+    )  # Thanks Kamil Szot!
     image_url = fields.Str(dump_only=True)
     play_file_name = fields.Str(dump_only=True)
     live = fields.Boolean()
@@ -220,10 +222,17 @@ def archon_add_item():
             image_url=image_url,
             play_file_name=play_file_name,
             length=length,
+            # Value represents whether an episode airs as a live broadcast
             live=item_metadata.live,
-            broadcast=item_metadata.broadcast,
-            archive_lahmastore=item_metadata.archive_lahmastore,
+            # TODO Clarify broadcast meaning currently the value is used during file upload
+            # After cleanup it would maybe represent recording as a broadcast type
+            archive_lahmastore=metadata.broadcast,
+            broadcast=metadata.airing,
+            # broadcast=item_metadata.broadcast,
+            # Value represents if the request wants to broadcast only or upload to storage too
+            # archive_lahmastore=item_metadata.archive_lahmastore,
             archive_lahmastore_canonical_url=archive_lahmastore_canonical_url,
+            # Internal property is set when audio has finished uploading to storage
             archived=archived,
             download_count=download_count,
             uploader=item_metadata.uploader,
@@ -273,7 +282,7 @@ def archon_add_item():
                 # we require both image and audio if broadcast (Azuracast) is set
                 if not (image_file_name and new_item.play_file_name):
                     no_error = False
-                    error = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
+                    error = "ERROR: Both image and audio input are required if broadcast is set"
                     app.logger.debug(error)
             # this branch is typically used for pre-uploading live episodes (no audio)
             else:
@@ -315,7 +324,9 @@ def archon_add_item():
         if new_item.broadcast and xppno_error:
             if not (play_file and image_file):
                 no_error = False
-                error = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
+                error = (
+                    "ERROR: Both image and audio input are required if broadcast is set"
+                )
                 app.logger.debug(error)
             else:
                 new_item.airing = broadcast_audio(
@@ -329,7 +340,7 @@ def archon_add_item():
                 )
                 if not new_item.airing:
                     no_error = False
-                    error = "ERROR: Item could not be uploaded to Azuracast"
+                    error = "ERROR: Item could not be uploaded to the broadcast station"
                     app.logger.debug(error)
 
             # TODO some mp3 error
