@@ -29,14 +29,14 @@ class ItemDetailsSchema(Schema):
     description = fields.Str()
     language = fields.Str(max=5)
     play_date = fields.Date(
-        required=True, default=datetime.date.today() + datetime.timedelta(days=1)
+        required=False, load_default=datetime.today() + timedelta(days=1)
     )  # Thanks Kamil Szot!
     image_url = fields.Str(dump_only=True)
     play_file_name = fields.Str(dump_only=True)
     live = fields.Boolean()
     broadcast = fields.Boolean()
-    airing = fields.Boolean()
-    archive_lahmastore = fields.Boolean()
+    # airing = fields.Boolean()
+    archive_lahmastore = fields.Boolean(load_default=True)
     archive_lahmastore_canonical_url = fields.Str(dump_only=True)
     external_url = fields.Str()
     archived = fields.Boolean(dump_only=True)
@@ -180,12 +180,17 @@ def archon_add_item():
     ]
     item_metadata.pop("show_name", None)
     item_metadata.pop("taglist", None)
+    item_metadata.pop("airing", None)
 
     # validate payload
     err = item_schema.validate(item_metadata)
     if err:
         return make_response(
-            jsonify("Invalid data sent to add item, see: {}".format(err)), 500, headers
+            jsonify(
+                "Fix your form. Invalid data sent to add item, see: {}".format(err)
+            ),
+            500,
+            headers,
         )
     else:
         item_metadata = item_schema.load(item_metadata)
@@ -197,6 +202,7 @@ def archon_add_item():
         image_url = ""
         play_file = None
         play_file_name = None
+        default_archive_lahmastore = True
         archive_lahmastore_canonical_url = ""
         external_url = ""
         shows = (
@@ -224,15 +230,15 @@ def archon_add_item():
             length=length,
             # Value represents whether an episode airs as a live broadcast
             live=item_metadata.live,
-            # TODO Clarify broadcast meaning currently the value is used during file upload
+            # TODO Clarify broadcast meaning currently the value is used during file upload, signals the intent of upload request. If true, the client wants to air the upload.
             # After cleanup it would maybe represent recording as a broadcast type
-            archive_lahmastore=metadata.broadcast,
-            broadcast=metadata.airing,
-            # broadcast=item_metadata.broadcast,
-            # Value represents if the request wants to broadcast only or upload to storage too
-            # archive_lahmastore=item_metadata.archive_lahmastore,
+            broadcast=item_metadata.broadcast,
+            # Value represents if the request wants to upload to storage too
+            archive_lahmastore=default_archive_lahmastore,
+            # Stores the result of the archive intent (above). Returns a Url or None
             archive_lahmastore_canonical_url=archive_lahmastore_canonical_url,
-            # Internal property is set when audio has finished uploading to storage
+            # Internal property is set when audio has finished uploading to storage. Represents the result of a broadcast intent, true or false.
+            # After cleanup it could keep this role to make it simple to handle live episode audio to archives.
             archived=archived,
             download_count=download_count,
             uploader=item_metadata.uploader,
@@ -256,7 +262,7 @@ def archon_add_item():
                 item_name = new_item.name
 
             # process files first
-            if request.files["play_file"]:
+            if request.files.get("play_file"):
                 if request.files["play_file"] != "":
                     play_file = request.files["play_file"]
 
@@ -267,7 +273,7 @@ def archon_add_item():
                         archive_file_name=(new_item.shows[0].name, item_name),
                     )
 
-            if request.files["image_file"]:
+            if request.files.get("image_file"):
                 if request.files["image_file"] != "":
                     image_file = request.files["image_file"]
 
@@ -321,7 +327,7 @@ def archon_add_item():
                         app.logger.debug(error)
 
         # broadcast episode if asked
-        if new_item.broadcast and xppno_error:
+        if new_item.broadcast and no_error:
             if not (play_file and image_file):
                 no_error = False
                 error = (
