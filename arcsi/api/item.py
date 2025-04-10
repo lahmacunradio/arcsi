@@ -28,12 +28,12 @@ class ItemDetailsSchema(Schema):
     name_slug = fields.Str(dump_only=True)
     description = fields.Str()
     language = fields.Str(max=5)
-    play_date = fields.Date(required=True)
+    play_date = fields.Date(required=True, default=datetime.today() + timedelta(days=1))
     image_url = fields.Str(dump_only=True)
     play_file_name = fields.Str(dump_only=True)
     live = fields.Boolean()
     broadcast = fields.Boolean()
-    airing = fields.Boolean(dump_only=True)
+    airing = fields.Boolean()
     archive_lahmastore = fields.Boolean()
     archive_lahmastore_canonical_url = fields.Str(dump_only=True)
     external_url = fields.Str()
@@ -61,15 +61,48 @@ class ItemDetailsSchema(Schema):
 
 item_schema = ItemDetailsSchema()
 item_archive_schema = ItemDetailsSchema(
-                only = ("id", "number", "name", "name_slug", "description", "language", "play_date",
-                        "image_url", "play_file_name", "archived", "download_count", "shows", "tags"))
-item_partial_schema = ItemDetailsSchema(partial = True,)
-items_schema = ItemDetailsSchema(many = True)
-items_archive_schema = ItemDetailsSchema(many = True, 
-                only = ("id", "number", "name", "name_slug", "description", "language", "play_date",
-                        "image_url", "play_file_name", "archived", "download_count", "shows", "tags"))
-archon_items_schema = ItemDetailsSchema(many = True, 
-                only = ("id", "number", "name", "play_date", "play_file_name", "archived", "shows"))
+    only=(
+        "id",
+        "number",
+        "name",
+        "name_slug",
+        "description",
+        "language",
+        "play_date",
+        "image_url",
+        "play_file_name",
+        "archived",
+        "download_count",
+        "shows",
+        "tags",
+    )
+)
+item_partial_schema = ItemDetailsSchema(
+    partial=True,
+)
+items_schema = ItemDetailsSchema(many=True)
+items_archive_schema = ItemDetailsSchema(
+    many=True,
+    only=(
+        "id",
+        "number",
+        "name",
+        "name_slug",
+        "description",
+        "language",
+        "play_date",
+        "image_url",
+        "play_file_name",
+        "archived",
+        "download_count",
+        "shows",
+        "tags",
+    ),
+)
+archon_items_schema = ItemDetailsSchema(
+    many=True,
+    only=("id", "number", "name", "play_date", "play_file_name", "archived", "shows"),
+)
 
 headers = {"Content-Type": "application/json"}
 
@@ -85,18 +118,20 @@ def archon_list_items():
 @auth_token_required
 def frontend_list_items_latest():
     do = DoArchive()
-    page = request.args.get('page', 1, type=int)
-    size = request.args.get('size', 12, type=int)
-    items = Item.query.filter(Item.play_date < datetime.today() - timedelta(days=1)
-                ).filter(Item.archived == True
-                ).order_by(Item.play_date.desc(), Item.id.desc()
-                ).paginate(page=page, per_page=size, error_out=False)
+    page = request.args.get("page", 1, type=int)
+    size = request.args.get("size", 12, type=int)
+    items = (
+        Item.query.filter(Item.play_date < datetime.today() - timedelta(days=1))
+        .filter(Item.archived == True)
+        .order_by(Item.play_date.desc(), Item.id.desc())
+        .paginate(page=page, per_page=size, error_out=False)
+    )
     for item in items.items:
         if item.image_url:
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
-        item.name_slug=normalise(item.name)
+        item.name_slug = normalise(item.name)
     return items_archive_schema.dump(items.items)
 
 
@@ -113,7 +148,7 @@ def archon_view_item(id):
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
-        item.name_slug=normalise(item.name)
+        item.name_slug = normalise(item.name)
         return item_schema.dump(item)
     else:
         return make_response("Item not found", 404, headers)
@@ -132,16 +167,18 @@ def archon_add_item():
     item_metadata = request.form.to_dict()
     # TODO if we could send JSON payloads w/ ajax then this prevalidation isn't needed
     item_metadata["shows"] = [
-        {
-            "id": item_metadata["shows"],
-            "name": item_metadata["show_name"]
-        }
+        {"id": item_metadata["shows"], "name": item_metadata["show_name"]}
     ]
-    item_metadata["tags"] = [ { "display_name": tag_name.strip() } for tag_name in item_metadata["taglist"].split(",") ]
-    item_metadata["tags"] = [dict(t) for t in {tuple(d.items()) for d in item_metadata["tags"]}]
+    item_metadata["tags"] = [
+        {"display_name": tag_name.strip()}
+        for tag_name in item_metadata["taglist"].split(",")
+    ]
+    item_metadata["tags"] = [
+        dict(t) for t in {tuple(d.items()) for d in item_metadata["tags"]}
+    ]
     item_metadata.pop("show_name", None)
     item_metadata.pop("taglist", None)
-    
+
     # validate payload
     err = item_schema.validate(item_metadata)
     if err:
@@ -166,7 +203,12 @@ def archon_add_item():
             .all()
         )
         tags = (
-            get_or_create( Tag, display_name=tag.display_name, clean_name=normalise(tag.display_name) ) for tag in item_metadata.tags
+            get_or_create(
+                Tag,
+                display_name=tag.display_name,
+                clean_name=normalise(tag.display_name),
+            )
+            for tag in item_metadata.tags
         )
         new_item = Item(
             number=item_metadata.number,
@@ -186,10 +228,10 @@ def archon_add_item():
             download_count=download_count,
             uploader=item_metadata.uploader,
             shows=shows,
-            tags=tags
+            tags=tags,
         )
 
-        #Check for duplicate files
+        # Check for duplicate files
         name_occurrence = show_item_duplications_number(new_item)
 
         db.session.add(new_item)
@@ -198,16 +240,16 @@ def archon_add_item():
         # TODO get show cover img and set as fallback
         if request.files:
             # Defend against possible duplicate files
-            if (0 < name_occurrence):
+            if 0 < name_occurrence:
                 version_prefix = uuid4()
-                item_name = "{}-{}".format(new_item.name,version_prefix)
+                item_name = "{}-{}".format(new_item.name, version_prefix)
             else:
                 item_name = new_item.name
 
             # process files first
             if request.files["play_file"]:
                 if request.files["play_file"] != "":
-                    play_file = request.files["play_file"]  
+                    play_file = request.files["play_file"]
 
                     new_item.play_file_name = save_file(
                         archive_base=new_item.shows[0].archive_lahmastore_base_url,
@@ -234,12 +276,11 @@ def archon_add_item():
                     error = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
                     app.logger.debug(error)
             # this branch is typically used for pre-uploading live episodes (no audio)
-            else: 
+            else:
                 if not image_file_name:
                     no_error = False
                     error = "ERROR: You need to add at least an image"
                     app.logger.debug(error)
-                    
 
         # archive files if asked
         if new_item.archive_lahmastore:
@@ -270,9 +311,8 @@ def archon_add_item():
                         error = "ERROR: Audio could not be uploaded to storage"
                         app.logger.debug(error)
 
-
         # broadcast episode if asked
-        if new_item.broadcast and no_error:
+        if new_item.broadcast and xppno_error:
             if not (play_file and image_file):
                 no_error = False
                 error = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
@@ -291,7 +331,6 @@ def archon_add_item():
                     no_error = False
                     error = "ERROR: Item could not be uploaded to Azuracast"
                     app.logger.debug(error)
-
 
             # TODO some mp3 error
             # TODO Maybe I used vanilla mp3 not from azuracast
@@ -313,11 +352,11 @@ def archon_add_item():
                     "error": {
                         "message": "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast).",
                         "errorReason": error,
-                        "code": 10205070
+                        "code": 10205070,
                     }
                 },
                 500,
-                headers
+                headers,
             )
         )
 
@@ -333,6 +372,7 @@ def listen_play_file(id):
         item.shows[0].archive_lahmastore_base_url, item.archive_lahmastore_canonical_url
     )
     return presigned
+
 
 # Not used anywhere
 @arcsi.route("/archon/item/<int:id>/download", methods=["GET"])
@@ -375,13 +415,15 @@ def archon_edit_item(id):
 
     # TODO if we could send JSON payloads w/ ajax then this prevalidation isn't needed
     item_metadata["shows"] = [
-        {
-            "id": item_metadata["shows"],
-            "name": item_metadata["show_name"]
-        }
+        {"id": item_metadata["shows"], "name": item_metadata["show_name"]}
     ]
-    item_metadata["tags"] = [ { "display_name": tag_name.strip() } for tag_name in item_metadata["taglist"].split(",") ]
-    item_metadata["tags"] = [dict(t) for t in {tuple(d.items()) for d in item_metadata["tags"]}]
+    item_metadata["tags"] = [
+        {"display_name": tag_name.strip()}
+        for tag_name in item_metadata["taglist"].split(",")
+    ]
+    item_metadata["tags"] = [
+        dict(t) for t in {tuple(d.items()) for d in item_metadata["tags"]}
+    ]
     item_metadata.pop("taglist", None)
     item_metadata.pop("show_name", None)
 
@@ -400,7 +442,7 @@ def archon_edit_item(id):
         # TODO broadcast / airing
         item_metadata = item_schema.load(item_metadata)
 
-        #Check for duplicate files (before item is updated!)
+        # Check for duplicate files (before item is updated!)
         name_occurrence = show_item_duplications_number(item_metadata)
 
         item.number = item_metadata.number
@@ -422,17 +464,22 @@ def archon_edit_item(id):
             .all()
         )
         item.tags = (
-            get_or_create(Tag, display_name=tag.display_name, clean_name=normalise(tag.display_name)) for tag in item_metadata.tags
+            get_or_create(
+                Tag,
+                display_name=tag.display_name,
+                clean_name=normalise(tag.display_name),
+            )
+            for tag in item_metadata.tags
         )
-        
+
         db.session.add(item)
         db.session.flush()
 
         if request.files:
             # Defend against possible duplicate files
-            if (0 < name_occurrence):
+            if 0 < name_occurrence:
                 version_prefix = uuid4()
-                item_name = "{}-{}".format(item.name,version_prefix)
+                item_name = "{}-{}".format(item.name, version_prefix)
             else:
                 item_name = item.name
 
@@ -465,12 +512,11 @@ def archon_edit_item(id):
                     error = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
                     app.logger.debug(error)
             # this branch is typically used for pre-uploading live episodes (no audio)
-            else: 
+            else:
                 if not image_file_name:
                     no_error = False
                     error = "ERROR: You need to add at least an image"
                     app.logger.debug(error)
-
 
         # archive files if asked
         if item.archive_lahmastore:
@@ -523,38 +569,42 @@ def archon_edit_item(id):
 
         db.session.commit()
         if no_error:
-            return make_response(
-                jsonify(item_partial_schema.dump(item)), 200, headers
-            )
+            return make_response(jsonify(item_partial_schema.dump(item)), 200, headers)
         return make_response(
             jsonify(
                 {
                     "error": {
                         "message": "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast).",
                         "errorReason": error,
-                        "code": 10205070
+                        "code": 10205070,
                     }
                 },
                 500,
-                headers
+                headers,
             )
         )
+
 
 @arcsi.route("/item/search", methods=["GET"])
 @auth_token_required
 def frontend_search_item():
     do = DoArchive()
-    page = request.args.get('page', 1, type=int)
-    size = request.args.get('size', 12, type=int)
-    param = request.args.get('param', "lahmacun", type=str)
-    items = Item.query.filter(func.lower(Item.name).contains(func.lower(param)) | 
-                func.lower(Item.description).contains(func.lower(param))
-                ).filter(Item.play_date < datetime.today() - timedelta(days=1)
-                ).order_by(Item.play_date.desc()).paginate(page=page, per_page=size, error_out=False)
+    page = request.args.get("page", 1, type=int)
+    size = request.args.get("size", 12, type=int)
+    param = request.args.get("param", "lahmacun", type=str)
+    items = (
+        Item.query.filter(
+            func.lower(Item.name).contains(func.lower(param))
+            | func.lower(Item.description).contains(func.lower(param))
+        )
+        .filter(Item.play_date < datetime.today() - timedelta(days=1))
+        .order_by(Item.play_date.desc())
+        .paginate(page=page, per_page=size, error_out=False)
+    )
     for item in items.items:
         if item.image_url:
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
-        item.name_slug=normalise(item.name)
+        item.name_slug = normalise(item.name)
     return items_schema.dumps(items.items)
