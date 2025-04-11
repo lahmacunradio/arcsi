@@ -84,6 +84,7 @@ header .adminmenu {
 
 header .adminmenu a {
     margin: 0 0.5em;
+    font-size: 0.8rem;
 }
 
 header .has-submenu {

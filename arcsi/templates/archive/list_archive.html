@@ -1,10 +1,5 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h2>{% block title %}Arcsi home{% endblock %}</h2>
-{% endblock %}
-
-{% block content %}
-<p>Under construction...</p>
-
+<h2>{% block title %}Welcome {{ current_user.name }}!{% endblock %}</h2>
 {% endblock %}
