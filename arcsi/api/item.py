@@ -1,3 +1,5 @@
+import requests
+
 from datetime import datetime, timedelta
 
 from flask import jsonify, make_response, request, redirect
@@ -418,6 +420,7 @@ def archon_delete_item(id):
 @arcsi.route("/archon/item/<int:id>/edit", methods=["POST"])
 @roles_accepted("admin", "host")
 def archon_edit_item(id):
+    do = DoArchive()
     no_error = True
     error = ""
     image_file = None
@@ -491,7 +494,86 @@ def archon_edit_item(id):
 
         db.session.add(item)
         db.session.flush()
+        app.logger.info(dir(request.files))
+        app.logger.info(request.files.items())
+        app.logger.info(request.files.lists())
+        app.logger.info(request.files.listvalues())
+        empty_files = all([not (_v) for _v in request.files.values()])
+        if empty_files:
+            if item.broadcast and item.archived:
+                presigned_play = do.download(
+                    item.shows[0].archive_lahmastore_base_url,
+                    item.archive_lahmastore_canonical_url,
+                )
+                presigned_image = do.download(
+                    item.shows[0].archive_lahmastore_base_url,
+                    item.image_url,
+                )
+                temp_urls = [
+                    (item.play_file_name, presigned_play),
+                    (item.image_url.rsplit("/")[0], presigned_image),
+                ]
+                for temp_name, presigned in temp_urls:
+                    resp = requests.get(presigned, stream=True)
+                    if resp.ok:
+                        with open(
+                            media_path(
+                                item.shows[0].archive_lahmastore_base_url,
+                                str(item.number),
+                                temp_name,
+                            ),
+                            "wb",
+                        ) as _temp_file:
+                            for chunk in resp.iter_content(chunk_size=4 * 1024):
+                                _temp_file.write(chunk)
+                    else:
+                        return make_response(
+                            jsonify(
+                                {
+                                    "error": {
+                                        "message": "Episode not found in storage. The system provided the following error.",
+                                        "errorReason": error,
+                                        "code": 10201030,
+                                    }
+                                },
+                                404,
+                                headers,
+                            )
+                        )
+                item.airing = broadcast_audio(
+                    archive_base=item.shows[0].archive_lahmastore_base_url,
+                    archive_idx=item.number,
+                    broadcast_file_name=item.play_file_name,
+                    broadcast_playlist=item.shows[0].playlist_name,
+                    broadcast_show=item.shows[0].name,
+                    broadcast_title=item.name,
+                    image_file_name=image_file_name,
+                )
 
+                if item.airing:
+                    db.session.commit()
+                    return make_response(
+                        jsonify(item_partial_schema.dump(item)), 200, headers
+                    )
+                # TODO cleanup tmp files after upload
+                # TODO rollback for db -- needed?
+                else:
+                    return make_response(
+                        jsonify(
+                            {
+                                "error": {
+                                    "message": "Upload to broadcast station failed. The system provided the following error. Try if an older episode or a smaller file can be uploaded. Contact your administrators.",
+                                    "errorReason": error,
+                                    "code": 10208090,
+                                }
+                            },
+                            400,
+                            headers,
+                        )
+                    )
+
+            db.session.commit()
+            return make_response(jsonify(item_partial_schema.dump(item)), 200, headers)
         if request.files:
             # Defend against possible duplicate files
             if 0 < name_occurrence:

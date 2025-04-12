@@ -91,7 +91,7 @@
       <input type="hidden" id="recording" name="broadcast" value="0">
       <!-- Matches and supersedes previous process. Selecting live - from materials it's image only, airing, without uploading to the radio station. Image is uploaded but episode is not archived without an audio. Live value is 1, broadcast value is 0. Selecting recording - from materials both audio and image are required. airing, broadcast on for uploading to the radio station. The intent to archive to storage is captured in the form as "archive_lahmastore'. The intent to update what airs on the show is captured as "broadcast" (should beecome "airing" and "recording"). Broadcast value is 1, live value is 0. Selecting skip - from materials it is any, not airing, not broadcast, not live, archives files to storage. -->
       <label for="cast_type">
-        Broadcastj
+        Broadcast
       </label>
       <select id="cast_type"
               onchange="d=(this.options[this.selectedIndex].value=='skip');l=(this.options[this.selectedIndex].value=='live');l?play_file.disabled=true:play_file.disabled=false;l?play_file.value='':null;l?live.value=1:live.value=0;l?recording.value=0:recording.value=1;d?airing.value=0:airing.value=1;d?live.value=0:null;d?recording.value=0:null;">

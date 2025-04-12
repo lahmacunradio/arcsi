@@ -12,6 +12,7 @@
   <input type="hidden" name="user_name" id="user_name" value="{{ current_user.name }}">
   <input type="hidden" name="user_email" id="user_email" value="{{ current_user.email }}">
 
+  <h3>Information</h3>
   <div>
     <label for="active">Active *</label>
     <input type="hidden" id="active" name="active" value="1">
@@ -53,15 +54,13 @@
     <input name="taglist" id="taglist">
   </div>
 
+  <h3>Radio</h3>
   <div>
     <label for="playlist_name">Playlist name</label>
     <input name="playlist_name" id="playlist_name">
   </div>
 
-  <div>
-    <label for="image_file">Cover image</label>
-    <input type="file" accept= "image/*" name="image_file" id="image_file">
-  </div>
+  
 
   <div>
     <label for="frequency">Frequency (new-show-per-month) *</label>
@@ -84,6 +83,11 @@
     <input type="time" name="end" id="end" value="00:00">
   </div>
 
+  <h3>Archive</h3>
+  <div>
+    <label for="image_file">Cover image</label>
+    <input type="file" accept= "image/*" name="image_file" id="image_file">
+  </div>
   <div>
     <label for="archive_lahmastore">Archive to Lahmastore *</label>
     <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" value="1">
