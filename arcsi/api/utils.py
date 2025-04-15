@@ -152,6 +152,7 @@ def broadcast_audio(
     episode_name,
     image_file_name,
 ):
+    ## TODO yield them
     broadcast_file_path = media_path(
         norms_show_name, str(episode_number), audio_file_name
     )
@@ -242,6 +243,18 @@ def process_files(
             error_message = "ERROR: You need to add at least an image"
             app.logger.debug(error_message)
     return item, image_file_name, error, error_message
+
+
+def delete_file(archive_base, archive_idx, archive_name):
+    os.remove(
+        safe_join(
+            app.config["UPLOAD_FOLDER"],
+            archive_base,
+            archive_idx,
+            secure_filename(archive_name),
+        )
+    )
+    return True
 
 
 def save_file(norms_show_name, episode_number, archive_file, archive_file_name):

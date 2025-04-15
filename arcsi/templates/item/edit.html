@@ -73,7 +73,7 @@
     <article class="add-infos add-airing">
       <div>
         <label for="live">Live</label>
-        <input type="hidden" name="live" id="live" 
+        <input type="hidden" name="live" id="live"
           {% if item.live %} value="1" {% else %} value="0" {% endif %}>
         <input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
           {% if item.live %} checked {% endif %}>
