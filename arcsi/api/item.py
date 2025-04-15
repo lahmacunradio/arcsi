@@ -491,89 +491,189 @@ def archon_edit_item(id):
             )
             for tag in item_metadata.tags
         )
-
+        # TODO Implement upsert https://docs.sqlalchemy.org/en/20/dialects/postgresql.html#insert-on-conflict-upsert
         db.session.add(item)
         db.session.flush()
-        app.logger.info(dir(request.files))
-        app.logger.info(request.files.items())
-        app.logger.info(request.files.lists())
-        app.logger.info(request.files.listvalues())
         empty_files = all([not (_v) for _v in request.files.values()])
-        if empty_files:
-            if item.broadcast and item.archived:
-                presigned_play = do.download(
-                    item.shows[0].archive_lahmastore_base_url,
-                    item.archive_lahmastore_canonical_url,
+        request_files = {k: v for k, v in request.files.items()}
+        image_url_name = item.image_url.rsplit("/", 1)[1]
+
+        # TODO Update after py update, python3.10+ supports patmat
+        if empty_files and (not (item.broadcast and item.archive_lahmastore)):
+            db.session.commit()
+            return make_response(jsonify(item_partial_schema.dump(item)), 200, headers)
+        elif empty_files and (item.archive_lahmastore and (not item.broadcast)):
+            return make_response(
+                jsonify(
+                    {
+                        "error": {
+                            "message": "To edit an episode's archives select attachments and ensure they have acceptable extensions (eg. mp3, jpg, jpeg, png, gif). You need to at least add an image or turn off the `archive` checkmark.",
+                            "errorReason": "ERROR: Image handler returned empty",
+                            "code": 10201010,
+                        }
+                    },
+                    400,
+                    headers,
                 )
-                presigned_image = do.download(
-                    item.shows[0].archive_lahmastore_base_url,
-                    item.image_url,
+            )
+        elif (
+            (empty_files or (not request_files["play_file"]))
+            and (item.broadcast and (not item.archive_lahmastore))
+            and (not item.archived)
+        ):
+            return make_response(
+                jsonify(
+                    {
+                        "error": {
+                            "message": "To broadcast an edited episode an audio file is needed. This episode has no audio archived. (This is the initial state of live episodes). No audio file was provided. Please attach an audio.",
+                            "errorReason": "ERROR: Audio handler returned empty",
+                            "code": 10205030,
+                        }
+                    },
+                    400,
+                    headers,
                 )
-                temp_urls = [
-                    (item.play_file_name, presigned_play),
-                    (item.image_url.rsplit("/")[0], presigned_image),
-                ]
-                for temp_name, presigned in temp_urls:
-                    resp = requests.get(presigned, stream=True)
-                    if resp.ok:
-                        with open(
-                            media_path(
-                                item.shows[0].archive_lahmastore_base_url,
-                                str(item.number),
-                                temp_name,
-                            ),
-                            "wb",
-                        ) as _temp_file:
-                            for chunk in resp.iter_content(chunk_size=4 * 1024):
-                                _temp_file.write(chunk)
-                    else:
-                        return make_response(
-                            jsonify(
-                                {
-                                    "error": {
-                                        "message": "Episode not found in storage. The system provided the following error.",
-                                        "errorReason": error,
-                                        "code": 10201030,
-                                    }
-                                },
-                                404,
-                                headers,
-                            )
+            )
+
+        if item.archive_lahmastore:
+            save_errors = {}
+            # Defend against possible duplicate files
+            if 0 < name_occurrence:
+                version_prefix = uuid4()
+                item_name = "{}-{}".format(item.name, version_prefix)
+            else:
+                item_name = item.name
+
+            for name, file in request_files:
+                if name == "play_file":
+                    item.play_file_name = save_file(
+                        archive_base=item.shows[0].archive_lahmastore_base_url,
+                        archive_idx=item.number,
+                        archive_file=file,
+                        archive_file_name=(item.shows[0].name, item_name),
+                    )
+                    if item.play_file_name:
+                        item.archive_lahmastore_canonical_url = archive(
+                            archive_base=item.shows[0].archive_lahmastore_base_url,
+                            archive_file_name=item.play_file_name,
+                            archive_idx=item.number,
                         )
-                item.airing = broadcast_audio(
-                    archive_base=item.shows[0].archive_lahmastore_base_url,
-                    archive_idx=item.number,
-                    broadcast_file_name=item.play_file_name,
-                    broadcast_playlist=item.shows[0].playlist_name,
-                    broadcast_show=item.shows[0].name,
-                    broadcast_title=item.name,
-                    image_file_name=image_file_name,
+                        # Only set archived if there is audio data otherwise it's live episode
+                        if item.archive_lahmastore_canonical_url:
+                            item.archived = True
+                        else:
+                            app.logger.debug(item)
+                            save_errors.update({name: {"type": "nwdo"}})
+                    else:
+                        app.logger.debug(request_files)
+                        save_errors.update({name: {"type": "fs"}})
+
+                elif name == "image_file":
+                    image_file_name = save_file(
+                        archive_base=item.shows[0].archive_lahmastore_base_url,
+                        archive_idx=item.number,
+                        archive_file=file,
+                        archive_file_name=(item.shows[0].name, item_name),
+                    )
+                    if image_file_name:
+                        item.image_url = archive(
+                            archive_base=item.shows[0].archive_lahmastore_base_url,
+                            archive_file_name=image_file_name,
+                            archive_idx=item.number,
+                        )
+
+                        if not item.image_url:
+                            app.logger.debug(item)
+                            save_errors.update({name: {"type": "nwdo"}})
+                    else:
+                        app.logger.debug(item_name, image_file_name)
+                        save_errors.update({name: {"type": "fs"}})
+
+            if save_errors:
+                return make_response(
+                    jsonify(
+                        {
+                            "error": {
+                                "message": "Failed to upload file(s) to Lahmastore. Try again later or contact an administrator.",
+                                "errorReason": "ERROR: {}".format(save_errors.items()),
+                                "code": 10202030,
+                            }
+                        },
+                        400,
+                        headers,
+                    )
+                )
+            else:
+                db.session.commit()
+                return make_response(
+                    jsonify(item_partial_schema.dump(item)), 200, headers
                 )
 
-                if item.airing:
-                    db.session.commit()
-                    return make_response(
-                        jsonify(item_partial_schema.dump(item)), 200, headers
-                    )
-                # TODO cleanup tmp files after upload
-                # TODO rollback for db -- needed?
-                else:
+        if item.broadcast:
+            temp_urls = []
+            if not request_files["play_file"]:
+                tmp_file_saved = do.tmp_save_file(
+                    item.shows[0].archive_lahmastore_base_url,
+                    item.archive_lahmastore_canonical_url,
+                    item.number,
+                )
+                temp_urls.append(tmp_file_saved)
+            if not request_files["image_file"]:
+                tmp_image_saved = do.tmp_save_file(
+                    item.shows[0].archive_lahmastore_base_url,
+                    item.image_url,
+                    item.number,
+                )
+                temp_urls.append(tmp_image_saved)
+            for saved in temp_urls:
+                if not saved:
                     return make_response(
                         jsonify(
                             {
                                 "error": {
-                                    "message": "Upload to broadcast station failed. The system provided the following error. Try if an older episode or a smaller file can be uploaded. Contact your administrators.",
-                                    "errorReason": error,
-                                    "code": 10208090,
+                                    "message": "Episode not found in storage. The system provided the following error.",
+                                    "errorReason": "ERROR: Request to {} returned {}: {},".format(
+                                        presigned, resp.status_code, resp.reason
+                                    ),
+                                    "code": 10201030,
                                 }
                             },
-                            400,
+                            404,
                             headers,
                         )
                     )
+            item.airing = broadcast_audio(
+                archive_base=item.shows[0].archive_lahmastore_base_url,
+                archive_idx=item.number,
+                broadcast_file_name=item.play_file_name,
+                broadcast_playlist=item.shows[0].playlist_name,
+                broadcast_show=item.shows[0].name,
+                broadcast_title=item.name,
+                image_file_name=image_url_name,
+            )
 
-            db.session.commit()
-            return make_response(jsonify(item_partial_schema.dump(item)), 200, headers)
+            if item.airing:
+                db.session.commit()
+                return make_response(
+                    jsonify(item_partial_schema.dump(item)), 200, headers
+                )
+            # TODO cleanup tmp files after upload
+            # Rollback automatically happens when the api request context closes (ie. at return statements).
+            else:
+                return make_response(
+                    jsonify(
+                        {
+                            "error": {
+                                "message": "Upload to broadcast station failed. The system provided the following error. Try if an older episode or a smaller file can be uploaded. Contact your administrator and try again later.",
+                                "errorReason": "ERROR: Request to radio station raised an exception.",
+                                "code": 10208090,
+                            }
+                        },
+                        400,
+                        headers,
+                    )
+                )
+
         if request.files:
             # Defend against possible duplicate files
             if 0 < name_occurrence:
@@ -610,78 +710,80 @@ def archon_edit_item(id):
                     no_error = False
                     error = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
                     app.logger.debug(error)
-            # this branch is typically used for pre-uploading live episodes (no audio)
-            else:
-                if not image_file_name:
+                # this branch is typically used for pre-uploading live episodes (no audio)
+                else:
+                    if not image_file_name:
+                        no_error = False
+                        error = "ERROR: You need to add at least an image"
+                        app.logger.debug(error)
+
+            # archive files if asked
+            if item.archive_lahmastore:
+                if no_error and (play_file or image_file):
+                    if image_file_name:
+                        item.image_url = archive(
+                            archive_base=item.shows[0].archive_lahmastore_base_url,
+                            archive_file_name=image_file_name,
+                            archive_idx=item.number,
+                        )
+                        if not item.image_url:
+                            no_error = False
+                            error = "ERROR: Image could not be uploaded to storage"
+                            app.logger.debug(error)
+
+                    if item.play_file_name:
+                        item.archive_lahmastore_canonical_url = archive(
+                            archive_base=item.shows[0].archive_lahmastore_base_url,
+                            archive_file_name=item.play_file_name,
+                            archive_idx=item.number,
+                        )
+                        # Only set archived if there is audio data otherwise it's live episode
+                        if item.archive_lahmastore_canonical_url:
+                            item.archived = True
+                        else:
+                            no_error = False
+                            error = "ERROR: Audio could not be uploaded to storage"
+                            app.logger.debug(error)
+
+            # broadcast episode if asked
+            if item.broadcast and no_error:
+                if not (play_file and image_file):
                     no_error = False
-                    error = "ERROR: You need to add at least an image"
+                    error = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
                     app.logger.debug(error)
-
-        # archive files if asked
-        if item.archive_lahmastore:
-            if no_error and (play_file or image_file):
-                if image_file_name:
-                    item.image_url = archive(
+                else:
+                    item.airing = broadcast_audio(
                         archive_base=item.shows[0].archive_lahmastore_base_url,
-                        archive_file_name=image_file_name,
                         archive_idx=item.number,
+                        broadcast_file_name=item.play_file_name,
+                        broadcast_playlist=item.shows[0].playlist_name,
+                        broadcast_show=item.shows[0].name,
+                        broadcast_title=item.name,
+                        image_file_name=image_file_name,
                     )
-                    if not item.image_url:
+                    if not item.airing:
                         no_error = False
-                        error = "ERROR: Image could not be uploaded to storage"
+                        error = "ERROR: Item could not be uploaded to Azuracast"
                         app.logger.debug(error)
 
-                if item.play_file_name:
-                    item.archive_lahmastore_canonical_url = archive(
-                        archive_base=item.shows[0].archive_lahmastore_base_url,
-                        archive_file_name=item.play_file_name,
-                        archive_idx=item.number,
-                    )
-                    # Only set archived if there is audio data otherwise it's live episode
-                    if item.archive_lahmastore_canonical_url:
-                        item.archived = True
-                    else:
-                        no_error = False
-                        error = "ERROR: Audio could not be uploaded to storage"
-                        app.logger.debug(error)
-
-        # broadcast episode if asked
-        if item.broadcast and no_error:
-            if not (play_file and image_file):
-                no_error = False
-                error = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
-                app.logger.debug(error)
-            else:
-                item.airing = broadcast_audio(
-                    archive_base=item.shows[0].archive_lahmastore_base_url,
-                    archive_idx=item.number,
-                    broadcast_file_name=item.play_file_name,
-                    broadcast_playlist=item.shows[0].playlist_name,
-                    broadcast_show=item.shows[0].name,
-                    broadcast_title=item.name,
-                    image_file_name=image_file_name,
+            db.session.commit()
+            if no_error:
+                return make_response(
+                    jsonify(item_partial_schema.dump(item)), 200, headers
                 )
-                if not item.airing:
-                    no_error = False
-                    error = "ERROR: Item could not be uploaded to Azuracast"
-                    app.logger.debug(error)
-
-        db.session.commit()
-        if no_error:
-            return make_response(jsonify(item_partial_schema.dump(item)), 200, headers)
-        return make_response(
-            jsonify(
-                {
-                    "error": {
-                        "message": "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast).",
-                        "errorReason": error,
-                        "code": 10205070,
-                    }
-                },
-                500,
-                headers,
+            return make_response(
+                jsonify(
+                    {
+                        "error": {
+                            "message": "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast).",
+                            "errorReason": error,
+                            "code": 10205070,
+                        }
+                    },
+                    500,
+                    headers,
+                )
             )
-        )
 
 
 @arcsi.route("/item/search", methods=["GET"])
