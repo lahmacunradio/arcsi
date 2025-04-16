@@ -12,7 +12,7 @@ from uuid import uuid4
 
 from . import arcsi
 from .utils import archive, broadcast_audio, normalise, save_file
-from .utils import get_items, show_item_duplications_number
+from .utils import form_filename, get_items, show_item_duplications_number
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.item import Item
@@ -496,8 +496,13 @@ def archon_edit_item(id):
         db.session.flush()
         empty_files = all([not (_v) for _v in request.files.values()])
         request_files = {k: v for k, v in request.files.items()}
-        image_url_name = item.image_url.rsplit("/", 1)[1]
 
+        # Defend against possible duplicate files
+        if 0 < name_occurrence:
+            version_prefix = uuid4()
+            item_name = "{}-{}".format(item.name, version_prefix)
+        else:
+            item_name = item.name
         # TODO Update after py update, python3.10+ supports patmat
         if empty_files and (not (item.broadcast and item.archive_lahmastore)):
             db.session.commit()
@@ -537,14 +542,10 @@ def archon_edit_item(id):
 
         if item.archive_lahmastore:
             save_errors = {}
-            # Defend against possible duplicate files
-            if 0 < name_occurrence:
-                version_prefix = uuid4()
-                item_name = "{}-{}".format(item.name, version_prefix)
-            else:
-                item_name = item.name
 
-            for name, file in request_files:
+            for name, file in request_files.items():
+                if not file:
+                    continue
                 if name == "play_file":
                     item.play_file_name = save_file(
                         archive_base=item.shows[0].archive_lahmastore_base_url,
@@ -605,47 +606,81 @@ def archon_edit_item(id):
                 )
             else:
                 db.session.commit()
-                return make_response(
-                    jsonify(item_partial_schema.dump(item)), 200, headers
-                )
 
         if item.broadcast:
+            image_url_name = None
+            play_url_name = None
             temp_urls = []
-            if not request_files["play_file"]:
-                tmp_file_saved = do.tmp_save_file(
+            if request_files["play_file"] and request_files.get("play_file"):
+                # TODO Save only when file doesnt exist
+                app.logger.info(item.name, item_name, item_metadata)
+                if item.play_file_name != form_filename(
+                    request_files["play_file"], (item.shows[0].name, item_name)
+                ):
+                    play_url_name = save_file(
+                        archive_base=item.shows[0].archive_lahmastore_base_url,
+                        archive_idx=item.number,
+                        archive_file=request_files["play_file"],
+                        archive_file_name=(item.shows[0].name, item_name),
+                    )
+                    if not play_url_name:
+                        temp_urls.append(False)
+                else:
+                    play_url_name = item.play_file_name
+            else:
+                (tmp_file_saved, play_url_name) = do.tmp_save_file(
                     item.shows[0].archive_lahmastore_base_url,
                     item.archive_lahmastore_canonical_url,
                     item.number,
                 )
                 temp_urls.append(tmp_file_saved)
-            if not request_files["image_file"]:
-                tmp_image_saved = do.tmp_save_file(
+            if request_files["image_file"] and request_files.get("image_file"):
+                if not item.image_url:
+                    image_url_name = save_file(
+                        archive_base=item.shows[0].archive_lahmastore_base_url,
+                        archive_idx=item.number,
+                        archive_file=request_files["image_file"],
+                        archive_file_name=(item.shows[0].name, item_name),
+                    )
+                    if not image_url_name:
+                        temp_urls.append(False)
+                else:
+                    image_url_name = item.image_url.rsplit("/", 1)[1]
+            else:
+                if item.shows[0].cover_image_url:
+                    fallback_image = item.shows[0].cover_image_url
+                else:
+                    fallback_image = "/static/img/lahmacun-logo.png"
+
+                (tmp_image_saved, image_url_name) = do.tmp_save_file(
                     item.shows[0].archive_lahmastore_base_url,
-                    item.image_url,
-                    item.number,
+                    fallback_image,
+                    0,
                 )
                 temp_urls.append(tmp_image_saved)
-            for saved in temp_urls:
-                if not saved:
-                    return make_response(
-                        jsonify(
-                            {
-                                "error": {
-                                    "message": "Episode not found in storage. The system provided the following error.",
-                                    "errorReason": "ERROR: Request to {} returned {}: {},".format(
-                                        presigned, resp.status_code, resp.reason
-                                    ),
-                                    "code": 10201030,
-                                }
-                            },
-                            404,
-                            headers,
+            if temp_urls:
+                for saved in temp_urls:
+                    if not saved:
+                        return make_response(
+                            jsonify(
+                                {
+                                    "error": {
+                                        "message": "Episode not found in storage. The system provided the following error.",
+                                        "errorReason": "ERROR: Request to {} returned {}: {},".format(
+                                            presigned, resp.status_code, resp.reason
+                                        ),
+                                        "code": 10201030,
+                                    }
+                                },
+                                404,
+                                headers,
+                            )
                         )
-                    )
+
             item.airing = broadcast_audio(
                 archive_base=item.shows[0].archive_lahmastore_base_url,
                 archive_idx=item.number,
-                broadcast_file_name=item.play_file_name,
+                broadcast_file_name=play_url_name,
                 broadcast_playlist=item.shows[0].playlist_name,
                 broadcast_show=item.shows[0].name,
                 broadcast_title=item.name,
@@ -654,10 +689,7 @@ def archon_edit_item(id):
 
             if item.airing:
                 db.session.commit()
-                return make_response(
-                    jsonify(item_partial_schema.dump(item)), 200, headers
-                )
-            # TODO cleanup tmp files after upload
+            # TODO cleanup tmp files after upload?
             # Rollback automatically happens when the api request context closes (ie. at return statements).
             else:
                 return make_response(
@@ -673,6 +705,7 @@ def archon_edit_item(id):
                         headers,
                     )
                 )
+        return make_response(jsonify(item_partial_schema.dump(item)), 200, headers)
 
         if request.files:
             # Defend against possible duplicate files

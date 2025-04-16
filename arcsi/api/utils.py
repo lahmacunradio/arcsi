@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from flask import request
 from flask import current_app as app
 from slugify import slugify
-from werkzeug.utils import secure_filename
+from werkzeug.utils import safe_join, secure_filename
 
 from arcsi.handler.upload import AzuraArchive, DoArchive
 from arcsi.model import db
@@ -15,12 +15,12 @@ DELIMITER = "-"
 DOT = "."
 
 
-
 def allowed_file(filename):
     return (
         DOT in filename
         and filename.rsplit(DOT, 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
     )
+
 
 def sort_for(collection, value, direction="asc"):
     if isinstance(collection, list):
@@ -54,7 +54,7 @@ def media_path(show, number, item_name):
         os.makedirs("{}/{}/{}".format(app.config["UPLOAD_FOLDER"], show, number))
     except FileExistsError as err:
         pass
-    media_file_path = os.path.join(
+    media_file_path = safe_join(
         app.config["UPLOAD_FOLDER"], show, number, secure_filename(item_name)
     )
     return media_file_path
@@ -70,6 +70,7 @@ def slug(namestring):
     slugs = slugify(namestring)
     return slugs
 
+
 def form_filename(file_obj, title_tuple):
     """
     Filename naming schema:
@@ -84,8 +85,10 @@ def form_filename(file_obj, title_tuple):
     norms_names = [norms_show_name, norms_ep_name]
     return "{}{}{}".format(DELIMITER.join(norms_names), DOT, ext)
 
+
 def find_request_params(param, default, type):
     return request.args.get(param, default, type)
+
 
 def broadcast_audio(
     archive_base,
@@ -96,6 +99,7 @@ def broadcast_audio(
     broadcast_title,
     image_file_name,
 ):
+    ## TODO yield them
     broadcast_file_path = media_path(
         archive_base, str(archive_idx), broadcast_file_name
     )
@@ -122,6 +126,19 @@ def broadcast_audio(
             return True
     return False
 
+
+def delete_file(archive_base, archive_idx, archive_name):
+    os.remove(
+        safe_join(
+            app.config["UPLOAD_FOLDER"],
+            archive_base,
+            archive_idx,
+            secure_filename(archive_name),
+        )
+    )
+    return True
+
+
 def save_file(archive_base, archive_idx, archive_file, archive_file_name):
     formed_file_name = form_filename(archive_file, archive_file_name)
     app.logger.debug("STATUS/SAVE FILE: formed_file_name: {}".format(formed_file_name))
@@ -136,10 +153,13 @@ def save_file(archive_base, archive_idx, archive_file, archive_file_name):
             archive_file_path = media_path(
                 archive_base, str(archive_idx), formed_file_name
             )
-            app.logger.debug("STATUS/SAVE FILE: archive_file_path: {}".format(archive_file_path))
+            app.logger.debug(
+                "STATUS/SAVE FILE: archive_file_path: {}".format(archive_file_path)
+            )
             archive_file.save(archive_file_path)
             app.logger.debug("STATUS/SAVE FILE: archive_file: {}".format(archive_file))
             return formed_file_name
+
 
 def archive(archive_base, archive_file_name, archive_idx):
     do = DoArchive()
@@ -149,9 +169,11 @@ def archive(archive_base, archive_file_name, archive_idx):
 
     return archive_url
 
+
 def get_shows():
     shows = Show.query.all()
     return shows
+
 
 def get_shows_with_cover():
     do = DoArchive()
@@ -163,25 +185,34 @@ def get_shows_with_cover():
             )
     return shows
 
+
 def get_managed_shows(user):
     managed_shows = Show.query.filter(Show.users.contains(user)).all()
     return managed_shows
 
+
 def get_managed_show(user, id):
-    managed_show = Show.query.filter(Show.users.contains(user)).filter(Show.id == id).all()
+    managed_show = (
+        Show.query.filter(Show.users.contains(user)).filter(Show.id == id).all()
+    )
     return managed_show
+
 
 def get_items():
     items = Item.query.all()
     return items
 
+
 def get_managed_items(user):
     managed_shows = get_managed_shows(user)
     managed_items = []
     for managed_show in managed_shows:
-        managed_items_for_current_show = Item.query.filter(Item.shows.contains(managed_show)).all()
+        managed_items_for_current_show = Item.query.filter(
+            Item.shows.contains(managed_show)
+        ).all()
         managed_items.extend(managed_items_for_current_show)
     return managed_items
+
 
 def show_item_duplications_number(item):
     existing_items = Show.query.filter(Show.id == item.shows[0].id).first().items
@@ -190,12 +221,14 @@ def show_item_duplications_number(item):
     app.logger.error("Name_occurence (duplicate detection): {}".format(name_occurrence))
     return name_occurrence
 
+
 def comma_separated_params_to_list(param):
     result = []
-    for val in param.split(','):
+    for val in param.split(","):
         if val:
             result.append(val)
     return result
+
 
 def filter_show_items(show, items, archived, latest):
     items = sorted(items, key=lambda x: x["play_date"], reverse=True)
@@ -203,18 +236,27 @@ def filter_show_items(show, items, archived, latest):
         already_aired_items = [
             show_item
             for show_item in items
-            if (show_item.get("archived") &
-                (datetime.strptime(show_item.get("play_date"), "%Y-%m-%d") + timedelta(days=1) < datetime.today()))
+            if (
+                show_item.get("archived")
+                & (
+                    datetime.strptime(show_item.get("play_date"), "%Y-%m-%d")
+                    + timedelta(days=1)
+                    < datetime.today()
+                )
+            )
         ]
         return get_show_items(show, already_aired_items, latest)
     else:
         return get_show_items(show, items, latest)
-        
+
+
 def get_show_items(show, items, latest):
     do = DoArchive()
     if latest:
         items = items[0]
-        items["image_url"] = do.download(show.archive_lahmastore_base_url, items["image_url"])
+        items["image_url"] = do.download(
+            show.archive_lahmastore_base_url, items["image_url"]
+        )
         items["name_slug"] = normalise(items["name"])
         return items
     else:
