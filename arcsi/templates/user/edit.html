@@ -6,25 +6,41 @@
 
 {% block content %}
 <form action="{{ url_for('arcsi.view_user', id=user.id) }}" method="post" enctype="multipart/form-data">
+  <div>
   <label for="name">Username</label>
   <input name="name" id="name" value="{{ user.name }}">
-  <p>TODO Use security templates/validation</p>
+  </div>
+  <div>
   <label for="email">User email</label>
   <input name="email" id="email" value="{{ user.email }}">
+  </div>
+  <div>
   <label for="password">User password</label>
-  <input name="password" id="password">
+  <a href="{{ url_for('security.change_password') }}"><p>Change password</p></a>
+  </div>
+  <div>
   <label for="butt_user">User butt username</label>
   <input name="butt_user" id="butt_user" value="{{ user.butt_user }}">
+  </div>
+  <div>
   <label for="butt_pw">User butt password</label>
   <input name="butt_pw" id="butt_pw" value="{{ user.butt_pw }}">
+  </div>
+  <div>
   <label for="active">User active</label>
   <input type="checkbox" name="active" id="active" {% if user.active%} checked {% endif %}>
+  </div>
+  <div>
   <label for="shows">User's shows:</label>
   <select name="shows" id="shows">
     {% for show in user.shows %}
     <option value="{{ show.id }}">{{show.name}}</option>
     {% endfor %}
   </select>
-  <input type="submit" value="Update">
+  </div>
+  <div>
+  <p> User editing features are under construction, to change password follow the link above </p>
+  <input type="submit" value="Update" disabled>
+  </div>
 </form>
 {% endblock %}
