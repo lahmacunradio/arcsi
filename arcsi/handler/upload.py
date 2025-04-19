@@ -15,6 +15,7 @@ import time
 from base64 import b64encode
 from botocore.exceptions import ClientError
 from botocore.config import Config
+from werkzeug.utils import safe_join, secure_filename
 
 from flask import current_app as app
 
@@ -28,12 +29,8 @@ class DoArchive(object):
             "region": app.config["ARCHIVE_REGION"],  # region
             "host": app.config["ARCHIVE_HOST_BASE_URL"],  # origin
             "endpoint": app.config["ARCHIVE_ENDPOINT"],  # public
-            "api_key": app.config[
-                "ARCHIVE_API_KEY"
-            ],
-            "secret_key": app.config[
-                "ARCHIVE_SECRET_KEY"
-            ],
+            "api_key": app.config["ARCHIVE_API_KEY"],
+            "secret_key": app.config["ARCHIVE_SECRET_KEY"],
             "space": "",  # s3 bucket name
         }
 
@@ -54,9 +51,10 @@ class DoArchive(object):
         )
         try:
             res = cli.upload_file(
-                self.file, self.config["space"], 
-                "{}/{}".format(number, self.filename), 
-                ExtraArgs={"ACL":"public-read"},
+                self.file,
+                self.config["space"],
+                "{}/{}".format(number, self.filename),
+                ExtraArgs={"ACL": "public-read"},
             )
         except ClientError:
             return False
@@ -65,8 +63,43 @@ class DoArchive(object):
     def download(self, space, path):
         # TODO if space and dl file URL always change they don't need to be class attributes
         self.config["space"] = space
-        self.dl_file_url = "{}/{}/{}".format(self.config["endpoint"], self.config["space"], path)
+        self.dl_file_url = "{}/{}/{}".format(
+            self.config["endpoint"], self.config["space"], path
+        )
         return self.dl_file_url
+
+    def media_path(self, show, number, item_name):
+        try:
+            os.makedirs("{}/{}/{}".format(app.config["UPLOAD_FOLDER"], show, number))
+        except FileExistsError as err:
+            pass
+        media_file_path = safe_join(
+            app.config["UPLOAD_FOLDER"], show, number, secure_filename(item_name)
+        )
+        return media_file_path
+
+    def tmp_save_file(self, base_url, media_url, dir):
+        presigned_url = self.download(base_url, media_url)
+        (name, url) = (media_url.rsplit("/", 1)[1], presigned_url)
+        tmp_name = (
+            media_path(
+                base_url,
+                str(dir),
+                name,
+            ),
+        )
+        resp = requests.get(url, stream=True)
+        if resp.ok:
+
+            with open(
+                tmp_name,
+                "wb",
+            ) as _tmp_file:
+                for chunk in resp.iter_content(chunk_size=4 * 1024):
+                    _tmp_file.write(chunk)
+            return True, tmp_name
+        else:
+            return False, tmp_name
 
     # TODO STUB lets see what the final architecture would look like
     def batch_upload(self):
@@ -112,11 +145,15 @@ class AzuraArchive(object):
             "chunk_byte": 1024 * 1024,  # 1M
         }
 
-    def chunk_file_pieces(self,):
+    def chunk_file_pieces(
+        self,
+    ):
         total_chunk_num = math.ceil(self.play_file_size / self.config["chunk_byte"])
         return total_chunk_num
 
-    def upload(self,):
+    def upload(
+        self,
+    ):
         with open(self.play_file_path, "rb") as play_file:
             start = 0
             chunk_count = 1
@@ -145,7 +182,10 @@ class AzuraArchive(object):
 
                 app.logger.debug(
                     "post chunk {}/{} w/ {}/{} bytes".format(
-                        chunk_count, tot_chunk_num, chunk_byte, self.play_file_size,
+                        chunk_count,
+                        tot_chunk_num,
+                        chunk_byte,
+                        self.play_file_size,
                     )
                 )
                 try:
@@ -159,23 +199,36 @@ class AzuraArchive(object):
                         chunk_count += 1
                         remaining_byte -= chunk_byte
                         start += chunk_byte
-                        app.logger.debug("chunk posted! {} bytes remaining".format(remaining_byte))
-                    else: 
-                        app.logger.debug("Azuracast response error code: {}, body: {}".format(req.status_code, req.text))
-                        return False #exit while loop when error
+                        app.logger.debug(
+                            "chunk posted! {} bytes remaining".format(remaining_byte)
+                        )
+                    else:
+                        app.logger.debug(
+                            "Azuracast response error code: {}, body: {}".format(
+                                req.status_code, req.text
+                            )
+                        )
+                        return False  # exit while loop when error
                 except requests.exceptions.RequestException as e:
                     # max 30 retries
                     if retry >= 30:
                         app.logger.debug("upload failed after 30 retries")
                         return False
-                    app.logger.debug("Retry #{}: chunk post failed w/ {}!".format(retry, e,))
+                    app.logger.debug(
+                        "Retry #{}: chunk post failed w/ {}!".format(
+                            retry,
+                            e,
+                        )
+                    )
                     retry += 1
                     time.sleep(5)
                     continue
             return True
         return False
 
-    def embedded_metadata(self,):
+    def embedded_metadata(
+        self,
+    ):
         # TODO use default image from show if no ep_image
         # not all files have metadate -- create if needed
         try:
@@ -196,22 +249,34 @@ class AzuraArchive(object):
             )
             audio_meta.add(
                 # episode host
-                TPE1(encoding=3, text=self.show,)
+                TPE1(
+                    encoding=3,
+                    text=self.show,
+                )
             )
             audio_meta.add(
                 # episode title
-                TIT2(encoding=3, text=self.name,)
+                TIT2(
+                    encoding=3,
+                    text=self.name,
+                )
             )
             audio_meta.save(self.play_file_path, v2_version=3)
         # since we embed image to play_file we can only check the total play_file_size here
         self.play_file_size = os.path.getsize(self.play_file_path)
         return True
 
-    def assign_playlist(self,):
+    def assign_playlist(
+        self,
+    ):
         # PUT method; add episode to playlist
         if self.find_playlist_id():
             app.logger.debug("Playlist id found successfully")
-            app.logger.debug("Playlist id is {} \n playlist name is {}".format(self.playlist_id, self.playlist_name))
+            app.logger.debug(
+                "Playlist id is {} \n playlist name is {}".format(
+                    self.playlist_id, self.playlist_name
+                )
+            )
             if not self.empty_playlist():
                 app.logger.debug("Playlist is not empty")
                 app.logger.debug("Trying to wipe playlist")
@@ -235,12 +300,16 @@ class AzuraArchive(object):
                 app.logger.debug("Add to playlist request successful")
                 return True
             app.logger.debug("Add to playlist didn't succeed")
-            app.logger.debug("Add to playlist request returned {}".format(r.status_code))
+            app.logger.debug(
+                "Add to playlist request returned {}".format(r.status_code)
+            )
             app.logger.debug("Request response \n {}".format(r.content))
             return False
         return False
 
-    def find_playlist_id(self,):
+    def find_playlist_id(
+        self,
+    ):
         # GET method; at arcsi side we only have the playlist_name
         # we need the corresponding id to query Azuracast API
         r = requests.get(
@@ -251,8 +320,10 @@ class AzuraArchive(object):
             for playlist in r.json():
                 if playlist["name"] == self.playlist_name:
                     self.playlist_id = str(playlist["id"])
-                    app.logger.debug("Add to playlist request returned {}".format(r.status_code))
-                    return True                
+                    app.logger.debug(
+                        "Add to playlist request returned {}".format(r.status_code)
+                    )
+                    return True
             app.logger.debug("ERROR: Couldn't find playlist ID in Azuracast response.")
             return False
         app.logger.debug("ERROR: Azuracast request for playlist ID didn't succeed.")
@@ -273,7 +344,9 @@ class AzuraArchive(object):
             return False
         return False
 
-    def wipe_playlist_play_file(self,):
+    def wipe_playlist_play_file(
+        self,
+    ):
         # PUT method;
         # checks, selects & removes episodes assigned to playlist
         req = self.get_files()
@@ -299,7 +372,9 @@ class AzuraArchive(object):
                 return False
             return True
 
-    def get_files(self,):
+    def get_files(
+        self,
+    ):
         req = requests.get(
             self.config["base"] + self.config["endpoint"]["files"],
             headers=self.config["headers"],
