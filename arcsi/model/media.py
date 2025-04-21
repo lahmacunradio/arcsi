@@ -29,6 +29,7 @@ class Media(db.Model):
     )
     # Use this field for registering queue sccess -- TODO part 1.4
     uploaded_at = db.Column(db.DateTime)
+    uploader = db.Column(db.String(), nullable=True, default="arcsinymous")
 
     def __repr__(self):
         return "<Media {}>".format(str(self.id))

@@ -344,6 +344,16 @@ def get_audio(item):
     )
 
 
+def get_filtered_query(model, id):
+    query = db.session.execute(db.select(model).filter_by(id=id))
+    return query
+
+
+def get_shows():
+    shows = Show.query.all()
+    return shows
+
+
 def get_show_cover(show):
     do = DoArchive()
     if show.cover_image_url:
