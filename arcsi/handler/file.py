@@ -5,6 +5,7 @@ from mutagen.id3 import ID3, ID3NoHeaderError, APIC, TIT2, TPE1
 from mutagen.mp3 import MP3
 from PIL import Image
 from slugify import slugify
+from werkzeug.utils import safe_join
 
 
 CONNECTER = "-"
@@ -60,7 +61,7 @@ def path(group_name, number, element_name):
     #        os.makedirs("{}/{}/{}".format(app.config["UPLOAD_FOLDER"], group_name, number))
     except FileExistsError as err:
         pass
-    file_path = os.path.join(
+    file_path = safe_join(
         os.path.relpath("arcsi/static/upload/"), group_name, number, element_name
     )
     return file_path

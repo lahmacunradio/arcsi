@@ -160,6 +160,11 @@ def archive(archive_base, archive_file_name, archive_idx):
     return archive_url
 
 
+def get_filtered_query(model, id):
+    query = db.session.execute(db.select(model).filter_by(id=id))
+    return query
+
+
 def get_shows():
     shows = Show.query.all()
     return shows

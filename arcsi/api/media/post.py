@@ -97,7 +97,7 @@ def insert_media():
             )
         if secured_filename == "":
             return make_response(
-                jsonify("Request file is missing name"),
+                jsonify("Request file is missing"),
                 400,
                 headers,
             )
@@ -191,14 +191,13 @@ def insert_media():
                 space,
                 _form_hashed_name(media_metadata["name"], media_metadata["id"]),
             )
-            file_path = path(space, idx, file_name)
 
             if media_metadata.get("external_storage"):
-                media_metadata["url"] = _archive(file_path, space, idx)
+                media_metadata["url"] = _archive(space, file_name, idx)
             else:
                 media_metadata["external_storage"] = False
                 media_metadata["url"] = "http://localhost/{}".format(
-                    _save_file(file_path, valid["file"]).split("/", 1)[1]
+                    _save_file(space, idx, valid["file"], file_name).split("/", 1)[1]
                 )
 
             if is_image(valid["ext"]):
@@ -206,7 +205,7 @@ def insert_media():
             elif is_audio(valid["ext"]):
                 media_metadata["dimension"] = get_audio_length(valid["file"])
             else:
-                media_metadata["dimension"] = str(0)
+                media_metadata["dimension"] = "0x0"
 
             # Persist to storage
             new_media = schema.load(media_metadata)
@@ -220,20 +219,21 @@ def insert_media():
 ## Helper funcs
 
 
-def _archive(path, space, idx):
+def _archive(name, space, idx):
     do = DoArchive()
-    archive_file_path = path
+    archive_file_path = path(space, idx, name)
 
     archive_url = do.upload(
-        archive_file_path,  # TODO change this to either path or request.file
+        archive_file_path,  # TODO change this from path to streaming request.file chunks
         space,
         idx,
     )
     return archive_url
 
 
-def _save_file(path, file):
-    return local_save(file, path)
+def _save_file(space, idx, file, name):
+    save_file_path = path(space, idx, name)
+    return local_save(file, save_file_path)
 
 
 def _make_uuid():
