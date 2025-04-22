@@ -84,6 +84,8 @@ def insert_media():
 
     valids = {}
     for fname, f in request.files.items():
+        if not f:
+            continue  ## File upload form is empty (no file was selected by the user)
         secured_filename = secure_filename(f.filename)
         if not allowed_file(secured_filename):
             return make_response(
@@ -129,8 +131,8 @@ def insert_media():
         elif not file_length < 8192 and is_image(get_extension(secured_filename)):
             return make_response(
                 jsonify(
-                    "File size is too large. Limited to 8192 Kb. Actual {} Kb".format(
-                        file_length
+                    "File {} size is too large. Limited to 8192 Kb. Actual {} Kb".format(
+                        f.filename, file_length
                     ),
                     400,
                     headers,
