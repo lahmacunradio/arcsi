@@ -31,7 +31,7 @@ def select_all():
     return schema.dump(Media.query.all())
 
 
-@media.route("/<str:id>", methods=["GET"])
+@media.route("/<id>", methods=["GET"])
 def get_media(id):
     media = get_filtered_query(Media, id).scalar_one()
 

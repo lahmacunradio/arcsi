@@ -2,7 +2,22 @@ from flask import render_template
 from flask_login import current_user
 from flask_security import login_required, roles_accepted
 
-from arcsi.view import request_api, router
+from arcsi.view import router
+
+headers = {"Content-Type": "application/json"}
+
+
+# Optional keyword arguments: model id, api endpoint, http method
+# Default method: GET
+def request_api(model, **kwargs):
+    request_method = "GET" if not kwargs.get("method") else kwargs.pop("method")
+    endpoint = ["http://web:5666", model]
+    if kwargs.get("id"):
+        endpoint = endpoint.append(kwargs["id"])
+    if kwargs.get("endpoint"):
+        endpoint = endpoint.append(kwargs["endpoint"])
+    request_endpoint = "/".join(endpoint)
+    return rq(request_method, request_endpoint, {headers: headers})
 
 
 @router.route("/media/all")
@@ -31,7 +46,7 @@ def add_media():
     return render_template("media/new.html")
 
 
-@router.route("/media/<str:id>")
+@router.route("/media/<id>")
 @login_required
 def view_media(id):
     response = request_api("media", id=id)

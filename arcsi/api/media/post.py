@@ -43,7 +43,7 @@ accept_headers = {
 }
 
 
-@media.route("/<int:id>", methods=["POST"])
+@media.route("/<id>", methods=["POST"])
 def update_media(id):
     if not request.content_type.startswith("multipart/form-data"):
         return make_response(
@@ -167,6 +167,7 @@ def insert_media():
 
         # TODO Allow external urls also (depends on cloudflare media cache)
         # Maintain backward compatibility of URL formats
+        # TODO schema has tie and binding too -- maybe tie is going to be about the intent
         if media_metadata.get("binding"):
             [space, idx, media_metadata["name"]] = media_metadata.get("binding").split(
                 "_"

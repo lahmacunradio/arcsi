@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
 {% block header %}
+{% if current.user %}
 <h2>{% block title %}Welcome {{ current_user.name }}!{% endblock %}</h2>
+<div>
+  <p>Quicklinks:</p>
+  <ul>
+    <li><a href="{{ url_for('router.add_media') }}" title="Add media">Add new media file</a></li>
+  </ul>
+</div>
+{% endif %}
 {% endblock %}

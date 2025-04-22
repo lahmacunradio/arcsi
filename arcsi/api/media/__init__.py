@@ -22,6 +22,7 @@ class MediaSimpleSchema(Schema):
     tie = fields.Str(allow_none=True)
     binding = fields.Str(allow_none=True)
     size = fields.Int()
+    uploader = fields.Str(allow_none=True)
 
     """
     This decorated function runs to do a conversion on media ID's during interfacing with API calls.
