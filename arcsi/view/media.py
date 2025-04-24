@@ -24,18 +24,18 @@ def request_api(model, **kwargs):
 @router.route("/media/list")
 @router.route("/media")
 @login_required
-def list_medias():
-    medias = {}
+def list_media():
+    medium = {}
     response = request_api(
         "media",
         endpoint="all",
     )
     if response.ok:
         if current_user.has_role("admin"):
-            medias = response.json
+            medium = response.json
         if current_user.has_role("host"):
-            medias = response.json  # create api endpoint scoped to user owned media
-        return render_template("media/list.html", medias=medias)
+            medium = response.json  # create api endpoint scoped to user owned media
+        return render_template("media/list.html", medium=medium)
     else:
         return "No media found."
 

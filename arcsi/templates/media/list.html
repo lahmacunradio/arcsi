@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h2>{% block title %}Media archive{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+<h3>Media</h3>
+<div class="media-list">
+    {% for media in medium %}
+    <div class="media-card">
+        <p>Name:
+            <a href="{{ url_for('router.view_media', id=media.id) }}"><b>{{media.name}}</b></a>
+        </p>
+        <p>Type: {{media.extension}}</p>
+        <p>External link: {{media.url}}</p>
+        <p>Id: <b>{{media.id}}</b></p>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h2>{% block title %}Add episode to archive{% endblock %}</h2>
+<h2>{% block title %}Add media to archive{% endblock %}</h2>
 {% endblock %}
 
 {% block content %}
@@ -9,7 +9,7 @@
 
 <article class="add-infos">
   <div>
-    <label for="name">Episode name *</label>
+    <label for="name">Name *</label>
     <input name="name" id="name" required>
   </div>
 
@@ -24,11 +24,11 @@
   </div>
 
   <div>
-    <label for="external_storage">Choose archive target</label>
+    <label for="external_storage">Upload to external storage</label>
     <input type="hidden" id="external_storage" name="external_storage" value="1"><input type="checkbox"
       onclick="this.previousElementSibling.value=this.checked?1:0" checked>
-    <label for="uploader">Uploader</label>
-    <input name="uploader" id="uploader" value="{{ current_user.name }}">
+
+    <input type="hidden" name="uploader" id="uploader" value="{{ current_user.name }}">
   </div>
 
   <div>
@@ -44,8 +44,5 @@
 
 </article>
 </form>
-
-{{ ckeditor.load(pkg_type="basic") }}
-{{ ckeditor.config(name="description") }}
 
 {% endblock %}

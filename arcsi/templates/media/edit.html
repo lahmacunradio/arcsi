@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h2>{% block title %}Edit radio show{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+<form action="{{ url_for('arcsi.media.update', id=media.id) }}" method="post" enctype="multipart/form-data">
+<article class="add-infos">
+
+  <input type="hidden" name="user_name" id="user_name" value="{{ current_user.name }}">
+
+  <div>
+    <label for="name">Name</label>
+    <input name="name" id="name" value="{{ media.name }}">
+  </div>
+
+  <div>
+    <label for="tie">Tie</label>
+    <select name="tie" id="tie">
+      <option id="free" value="free" {% if media.tie=="free" %} selected {% endif %}>Free</option>
+      <option id="show" value="show" {% if media.tie=="show" %} selected {% endif %}>Show</option>
+      <option id="episode" value="episode" {% if media.tie=="episode" %} selected {% endif %}>Episode</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="binding"> Binding</label>
+    <!-- TODO Implement binding selector (show or episode, lists ) -->
+    <input name="binding" id="binding" disabled>
+  </div>
+
+  {% if not media.external_storage %}
+  <div>
+    <label for="external_storage">Upload to external storage</label>
+    <input type="hidden" id="external_storage" name="external_storage" value="0"><input type="checkbox"
+      onclick="this.previousElementSibling.value=this.checked?1:0">
+  <div>
+  {% endif %}
+    <input type="submit" value="Update">
+  </div>
+
+</article>
+</form>
+
+{% endblock %}
