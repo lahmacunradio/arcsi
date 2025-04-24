@@ -12,7 +12,7 @@
   <div>
     <label for="shows">Episode of</label>
     {% if current_user.has_role("admin") %}
-    <input type="hidden" name="show_name" id="show_name" value="{{ shows[0].name }}">
+    <input type="hidden" name="show_name" id="show_name" value="{{ item.shows[0].name }}">
     <select name="shows" id="shows"
       onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
       <option value="{{item.shows[0].id}}">{{ item.shows[0].name }}</option>
@@ -21,7 +21,8 @@
       {% endfor %}
     </select>
     {% else %}
-      <p value="{{ item.shows[0].id }}">{{ item.shows[0].name }}</p>
+      <input type="hidden" name="show_name" id="show_name" value="{{ item.shows[0].name }}">
+      <p name="shows" value="{{ item.shows[0].id }}">{{ item.shows[0].name }}</p>
     {% endif %}
   </div>
 
