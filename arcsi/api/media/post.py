@@ -13,6 +13,7 @@ from . import media, MediaSimpleSchema
 from arcsi.api.utils import (
     archive,
     allowed_file,
+    get_filtered_query,
     get_items,
     save_file,
     show_item_duplications_number,
@@ -44,13 +45,39 @@ accept_headers = {
 
 
 @media.route("/<id>", methods=["POST"])
-def update_media(id):
+def update(id):
     if not request.content_type.startswith("multipart/form-data"):
         return make_response(
             jsonify("Request must be multipart/form-data"), 415, accept_headers
         )
     if request.files:
         return make_response(jsonify("Request must not contain files"), 400, headers)
+
+
+    media_metadata = request.form.to_dict()
+    media_metadata["id"] = id
+    err = schema.validate(media_metadata)
+    if err:
+        return make_response(
+            jsonify("Invalid formed data sent to add media: {}".format(err)),
+            500,
+            headers,
+        )
+    else:
+        # Convert between id formats
+         edited = schema.load(media_metadata)
+         original = get_filtered_query(Media, edited.id).scalar_one()
+         # Make hashed name for the edited media name
+         if original.name != edited.name:
+             edited.name =  tidy_name(
+                original.extension,
+                id,
+                _form_hashed_name(edited.name, id),
+            )
+
+        if tie:
+            # TODO
+            pass
 
 
 """
@@ -72,7 +99,7 @@ Covers 2 user flows. 1, new free media 2, new bound media by show or episode rel
 
 
 @media.route("/new", methods=["POST"])
-def insert_media():
+def insert():
     if not request.content_type.startswith("multipart/form-data"):
         return make_response(
             jsonify("Request must be multipart/form-data"), 415, accept_headers
@@ -187,6 +214,7 @@ def insert_media():
             )
         # Successfully validated both meta and file
         else:
+            # Serialise for a second time to edit before calling schema.load()
             media_metadata = schema.dump(media_metadata)
             # Create URL with unique suffix for all new media
             file_name = tidy_name(
@@ -196,7 +224,7 @@ def insert_media():
             )
 
             if media_metadata.get("external_storage"):
-                media_metadata["url"] = _archive(space, file_name, idx)
+                media_metadata["url"] = _archive(file_name, space, idx)
             else:
                 media_metadata["external_storage"] = False
                 media_metadata["url"] = "http://localhost/{}".format(

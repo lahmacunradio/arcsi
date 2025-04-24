@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h2>{% block title %}{{media.name}}{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
+<p> Id: {{ media.id }}</p>
+<p> Tie: {{ media.tie }} -- {{ media.binding }}</p>
+<p> File size: {{ media.size }}</p>
+<p> Dimension: {{ media.dimension }}</p>
+<p> External link: {{ media.url }}</p>
+{% if media.extension == "jpg" %}
+<img src="{{ media.url }}" width = "500" height="500">
+{% else %}
+<p>
+        <audio controls="" name="media" style="width: 35%;">
+                <source src="{{ media.url }}" type="audio/mpeg">
+        </audio>
+</p>
+{% endif %}
+<p> Date: {{media.created_at}}</p>
+<p> Uploader: {{media.uploader}}</p>
+<p> External storage: {% if media.external_storage %}Yes{% else %}No, stored locally{% endif %}.</p>
+<hr>
+{% if current_user.has_role("admin") or current_user.has_role("host") %}
+<p><a href="{{ url_for('router.edit_media', id=media['id']) }}">Edit media</a>{% if current_user.has_role("admin")%} || <a class="TODO"
+        href="{{ url_for('router.delete_media', id=media['id']) }}">TODO! Delete media</a>{% endif %}
+{% endif %}
+{% endblock %}

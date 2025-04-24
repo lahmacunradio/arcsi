@@ -33,10 +33,11 @@ def select_all():
 
 @media.route("/<id>", methods=["GET"])
 def get_media(id):
-    media = get_filtered_query(Media, id).scalar_one()
+    one = get_filtered_query(Media, id).scalar_one()
 
-    if media:
-        serial_media = schema.dump(media)
+    if one:
+        serial_media = schema.dump(one)
+
         return serial_media
     else:
         return make_response(jsonify("Media not found"), 404, headers)
