@@ -4,6 +4,7 @@ from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import UUID
 
 from . import db
+from .secondary import items_medias, shows_medias
 
 
 class Media(db.Model):
@@ -30,6 +31,19 @@ class Media(db.Model):
     # Use this field for registering queue sccess -- TODO part 1.4
     uploaded_at = db.Column(db.DateTime)
     uploader = db.Column(db.String(), nullable=True, default="arcsinymous")
+
+    episodes = db.relationship(
+        "Item",
+        secondary=items_medias,
+        backref=db.backref("medias"),
+        lazy="dynamic",
+    )
+    shows = db.relationship(
+        "Show",
+        secondary=shows_medias,
+        backref=db.backref("medias"),
+        lazy="dynamic",
+    )
 
     def __repr__(self):
         return "<Media {}>".format(str(self.id))
