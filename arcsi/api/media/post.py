@@ -53,7 +53,6 @@ def update(id):
     if request.files:
         return make_response(jsonify("Request must not contain files"), 400, headers)
 
-
     media_metadata = request.form.to_dict()
     media_metadata["id"] = id
     err = schema.validate(media_metadata)
@@ -65,19 +64,20 @@ def update(id):
         )
     else:
         # Convert between id formats
-         edited = schema.load(media_metadata)
-         original = get_filtered_query(Media, edited.id).scalar_one()
-         # Make hashed name for the edited media name
-         if original.name != edited.name:
-             edited.name =  tidy_name(
+        edited = schema.load(media_metadata)
+        original = get_filtered_query(Media, edited.id).scalar_one()
+        # Make hashed name for the edited media name
+        if original.name != edited.name:
+            edited.name = tidy_name(
                 original.extension,
                 id,
                 _form_hashed_name(edited.name, id),
             )
 
-        if tie:
-            # TODO
-            pass
+
+#        if tie:
+# TODO
+#           pass
 
 
 """
@@ -227,7 +227,7 @@ def insert():
                 media_metadata["url"] = _archive(file_name, space, idx)
             else:
                 media_metadata["external_storage"] = False
-                media_metadata["url"] = "http://localhost/{}".format(
+                media_metadata["url"] = "http://localhost:1028/{}".format(
                     _save_file(space, idx, valid["file"], file_name).split("/", 1)[1]
                 )
 

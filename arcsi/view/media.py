@@ -1,3 +1,6 @@
+from requests.api import request as rq
+
+from flask import current_app as app
 from flask import render_template
 from flask_login import current_user
 from flask_security import login_required, roles_accepted
@@ -13,11 +16,11 @@ def request_api(model, **kwargs):
     request_method = "GET" if not kwargs.get("method") else kwargs.pop("method")
     endpoint = ["http://web:5666", model]
     if kwargs.get("id"):
-        endpoint = endpoint.append(kwargs["id"])
+        endpoint.append(kwargs["id"])
     if kwargs.get("endpoint"):
-        endpoint = endpoint.append(kwargs["endpoint"])
+        endpoint.append(kwargs["endpoint"])
     request_endpoint = "/".join(endpoint)
-    return rq(request_method, request_endpoint, {headers: headers})
+    return rq(request_method, request_endpoint, headers=headers)
 
 
 @router.route("/media/all")
@@ -32,9 +35,12 @@ def list_media():
     )
     if response.ok:
         if current_user.has_role("admin"):
-            medium = response.json
+            medium = response.json()
         if current_user.has_role("host"):
-            medium = response.json  # create api endpoint scoped to user owned media
+            medium = (
+                response.json()
+            )  # TODO create api endpoint scoped to user owned media
+        app.logger.info(medium)
         return render_template("media/list.html", medium=medium)
     else:
         return "No media found."

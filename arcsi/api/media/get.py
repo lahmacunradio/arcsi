@@ -17,22 +17,22 @@ from arcsi.handler.upload import DoArchive
 from arcsi.model.media import Media
 
 
+headers = {"Content-Type": "application/json"}
+
 schema = MediaSimpleSchema(
     many=True, only=("id", "url", "dimension", "size", "created_at")
 )
-
-headers = {"Content-Type": "application/json"}
 
 
 @media.route("/all", methods=["GET"])
 @media.route("/list", methods=["GET"])
 @media.route("", methods=["GET"])  # root of this blueprint see media/__init__.py
-def select_all():
+def all():
     return schema.dump(Media.query.all())
 
 
 @media.route("/<id>", methods=["GET"])
-def get_media(id):
+def one(id):
     one = get_filtered_query(Media, id).scalar_one()
 
     if one:
