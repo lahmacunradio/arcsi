@@ -20,7 +20,17 @@ from arcsi.model.media import Media
 headers = {"Content-Type": "application/json"}
 
 schema = MediaSimpleSchema(
-    many=True, only=("id", "url", "dimension", "size", "created_at")
+    many=True,
+    only=(
+        "id",
+        "url",
+        "dimension",
+        "size",
+        "tie",
+        "binding",
+        "name",
+        "extension",
+    ),
 )
 
 
