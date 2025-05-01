@@ -20,7 +20,6 @@ from arcsi.model.media import Media
 headers = {"Content-Type": "application/json"}
 
 schema = MediaSimpleSchema(
-    many=True,
     only=(
         "id",
         "url",
@@ -38,16 +37,22 @@ schema = MediaSimpleSchema(
 @media.route("/list", methods=["GET"])
 @media.route("", methods=["GET"])  # root of this blueprint see media/__init__.py
 def all():
-    return schema.dump(Media.query.all())
+    return schema.dump(Media.query.all(), many=True)
 
 
 @media.route("/<id>", methods=["GET"])
 def one(id):
-    one = get_filtered_query(Media, id).scalar_one()
+    partial_media = schema.load(
+        {"id": id}, partial=True
+    )  # load() triggers after_load() which returns media object with transformed id
 
-    if one:
+    if partial_media.id:
+        one = get_filtered_query(
+            Media, partial_media.id
+        ).scalar_one()  # transformed id is used to make query
+        app.logger.info(one.name)
         serial_media = schema.dump(one)
-
+        app.logger.info(serial_media)
         return serial_media
     else:
         return make_response(jsonify("Media not found"), 404, headers)

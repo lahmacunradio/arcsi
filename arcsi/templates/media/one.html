@@ -12,7 +12,7 @@
 <p> External link: {{ media.url }}</p>
 {% if media.extension == "jpg" %}
 <img src="{{ media.url }}" width = "500" height="500">
-{% else %}
+{% elif media.extension == "mp3" %}
 <p>
         <audio controls="" name="media" style="width: 35%;">
                 <source src="{{ media.url }}" type="audio/mpeg">
@@ -25,6 +25,6 @@
 <hr>
 {% if current_user.has_role("admin") or current_user.has_role("host") %}
 <p><a href="{{ url_for('router.edit_media', id=media['id']) }}">Edit media</a>{% if current_user.has_role("admin")%} || <a class="TODO"
-        href="{{ url_for('router.delete_media', id=media['id']) }}">TODO! Delete media</a>{% endif %}
+        href="">TODO! Delete media</a>{% endif %}
 {% endif %}
 {% endblock %}
