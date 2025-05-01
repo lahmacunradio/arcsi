@@ -1,12 +1,10 @@
-from requests import request as rq
-
 from flask import current_app as app
 from flask import redirect, render_template, request, session, url_for
 from flask_login import current_user
 from flask_security import login_required, roles_accepted
 
 from arcsi.api.media import MediaSimpleSchema
-from arcsi.view import router
+from arcsi.view import form_api_request, router
 
 headers = {"Content-Type": "application/json"}
 
@@ -45,18 +43,16 @@ schema_one = MediaSimpleSchema(
 @login_required
 def list_media():
     medium = {}
-
-    response = rq(
+    response = form_api_request(
         "GET",
-        "http://web:5666" + url_for("arcsi.media.all"),
-        headers=headers,
-        cookies={"session": request.cookies["session"]},
+        url_for("arcsi.media.all"),
     )
+    # TODO if response not ok raise exc
     if response.headers["Content-Type"] == "application/json":
         if current_user.has_role("admin"):
-            medium = schema_lists.load(response.json())
+            medium = response.json()
         if current_user.has_role("host"):
-            medium = schema_lists.load(
+            medium = (
                 response.json()
             )  # TODO create api endpoint scoped to user owned media
         return render_template("media/list.html", medium=medium)
@@ -73,9 +69,10 @@ def add_media():
 @router.route("/media/<id>")
 @login_required
 def view_media(id):
-    response = request_api("media", id=id)
-    if response.ok:
-        return render_template("media/one.html", media=response.json)
+    response = form_api_request("GET", url_for("arcsi.media.one", id=id))
+    if response.headers["Content-Type"] == "application/json":
+        one = response.json()
+        return render_template("media/one.html", media=one)
     else:
         return "Media not found"
 
@@ -83,8 +80,9 @@ def view_media(id):
 @router.route("/media/<id>/edit")
 @roles_accepted("admin", "host")
 def edit_media(id):
-    response = request_api("media", id=id)
-    if response.ok:
-        return render_template("media/edit.html", media=response.json)
+    response = form_api_request("GET", url_for("arcsi.media.one", id=id))
+    if response.headers["Content-Type"] == "application/json":
+        one = response.json()
+        return render_template("media/edit.html", media=one)
     else:
         return "Media not found"

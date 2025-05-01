@@ -3,6 +3,15 @@ from requests.api import request as rq
 from flask import Blueprint
 
 
+def form_api_request(method, endpoint):
+    return rq(
+        method,
+        "http://web:5666" + endpoint,
+        headers=headers,
+        cookies={"session": request.cookies["session"]},
+    )
+
+
 router = Blueprint("router", __name__)
 
 
