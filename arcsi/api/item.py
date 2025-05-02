@@ -6,10 +6,8 @@ from flask_security import auth_token_required, roles_accepted
 from marshmallow import fields, post_load, Schema
 from sqlalchemy import func
 
-from uuid import uuid4
-
 from . import arcsi
-from .utils import archive, broadcast_audio, normalise, save_file
+from .utils import process_files, archive_files, broadcast_episode, normalise
 from .utils import get_items, show_item_duplications_number
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
@@ -122,8 +120,8 @@ def archon_view_item(id):
 @arcsi.route("/archon/item/add", methods=["POST"])
 @roles_accepted("admin", "host")
 def archon_add_item():
-    no_error = True
-    error = ""
+    error = False
+    error_message = ""
     if request.is_json:
         return make_response(
             jsonify("Only accepts multipart/form-data for now, sorry"), 503, headers
@@ -197,111 +195,20 @@ def archon_add_item():
 
         # TODO get show cover img and set as fallback
         if request.files:
-            # Defend against possible duplicate files
-            if (0 < name_occurrence):
-                version_prefix = uuid4()
-                item_name = "{}-{}".format(new_item.name,version_prefix)
-            else:
-                item_name = new_item.name
-
-            # process files first
-            if request.files["play_file"]:
-                if request.files["play_file"] != "":
-                    play_file = request.files["play_file"]  
-
-                    new_item.play_file_name = save_file(
-                        archive_base=new_item.shows[0].archive_lahmastore_base_url,
-                        archive_idx=new_item.number,
-                        archive_file=play_file,
-                        archive_file_name=(new_item.shows[0].name, item_name),
-                    )
-
-            if request.files["image_file"]:
-                if request.files["image_file"] != "":
-                    image_file = request.files["image_file"]
-
-                    image_file_name = save_file(
-                        archive_base=new_item.shows[0].archive_lahmastore_base_url,
-                        archive_idx=new_item.number,
-                        archive_file=image_file,
-                        archive_file_name=(new_item.shows[0].name, item_name),
-                    )
-
-            if new_item.broadcast:
-                # we require both image and audio if broadcast (Azuracast) is set
-                if not (image_file_name and new_item.play_file_name):
-                    no_error = False
-                    error = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
-                    app.logger.debug(error)
-            # this branch is typically used for pre-uploading live episodes (no audio)
-            else: 
-                if not image_file_name:
-                    no_error = False
-                    error = "ERROR: You need to add at least an image"
-                    app.logger.debug(error)
-                    
+            process_files(request, new_item, name_occurrence, play_file, image_file, image_file_name, error, error_message) 
 
         # archive files if asked
         if new_item.archive_lahmastore:
-            if no_error and (play_file or image_file):
-                if image_file_name:
-                    new_item.image_url = archive(
-                        archive_base=new_item.shows[0].archive_lahmastore_base_url,
-                        archive_file_name=image_file_name,
-                        archive_idx=new_item.number,
-                    )
-                    if not new_item.image_url:
-                        no_error = False
-                        error = "ERROR: Image could not be uploaded to storage"
-                        app.logger.debug(error)
-
-                if new_item.play_file_name:
-                    new_item.archive_lahmastore_canonical_url = archive(
-                        archive_base=new_item.shows[0].archive_lahmastore_base_url,
-                        archive_file_name=new_item.play_file_name,
-                        archive_idx=new_item.number,
-                    )
-
-                    if new_item.archive_lahmastore_canonical_url:
-                        # Only set archived if there is audio data otherwise it's live episode
-                        new_item.archived = True
-                    else:  # Upload didn't succeed
-                        no_error = False
-                        error = "ERROR: Audio could not be uploaded to storage"
-                        app.logger.debug(error)
+            archive_files(new_item, play_file, image_file, image_file_name, error, error_message)
 
 
         # broadcast episode if asked
-        if new_item.broadcast and no_error:
-            if not (play_file and image_file):
-                no_error = False
-                error = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
-                app.logger.debug(error)
-            else:
-                new_item.airing = broadcast_audio(
-                    archive_base=new_item.shows[0].archive_lahmastore_base_url,
-                    archive_idx=new_item.number,
-                    broadcast_file_name=new_item.play_file_name,
-                    broadcast_playlist=new_item.shows[0].playlist_name,
-                    broadcast_show=new_item.shows[0].name,
-                    broadcast_title=new_item.name,
-                    image_file_name=image_file_name,
-                )
-                if not new_item.airing:
-                    no_error = False
-                    error = "ERROR: Item could not be uploaded to Azuracast"
-                    app.logger.debug(error)
-
-
-            # TODO some mp3 error
-            # TODO Maybe I used vanilla mp3 not from azuracast
-            # item_audio_obj = MP3(item_path)
-            # return item_audio_obj.filename
-            # item_length = item_audio_obj.info.length
+        if new_item.broadcast and (error == False):
+            broadcast_episode(new_item, play_file, image_file, image_file_name, error, error_message)
 
         db.session.commit()
-        # TODO no_error is just bandaid for proper exc handling
-        if no_error:
+        # TODO error is just bandaid for proper exc handling
+        if (error == False):
             return make_response(
                 jsonify(item_schema.dump(new_item)),
                 200,
@@ -312,7 +219,7 @@ def archon_add_item():
                 {
                     "error": {
                         "message": "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast).",
-                        "errorReason": error,
+                        "errorReason": error_message,
                         "code": 10205070
                     }
                 },
@@ -361,8 +268,8 @@ def archon_delete_item(id):
 @arcsi.route("/archon/item/<int:id>/edit", methods=["POST"])
 @roles_accepted("admin", "host")
 def archon_edit_item(id):
-    no_error = True
-    error = ""
+    error = False
+    error_message = ""
     image_file = None
     image_file_name = None
     play_file = None
@@ -429,100 +336,18 @@ def archon_edit_item(id):
         db.session.flush()
 
         if request.files:
-            # Defend against possible duplicate files
-            if (0 < name_occurrence):
-                version_prefix = uuid4()
-                item_name = "{}-{}".format(item.name,version_prefix)
-            else:
-                item_name = item.name
-
-            # process files first
-            if request.files["image_file"]:
-                if request.files["image_file"] != "":
-                    image_file = request.files["image_file"]
-
-                    image_file_name = save_file(
-                        archive_base=item.shows[0].archive_lahmastore_base_url,
-                        archive_idx=item.number,
-                        archive_file=image_file,
-                        archive_file_name=(item.shows[0].name, item_name),
-                    )
-
-            if request.files["play_file"]:
-                if request.files["play_file"] != "":
-                    play_file = request.files["play_file"]
-
-                    item.play_file_name = save_file(
-                        archive_base=item.shows[0].archive_lahmastore_base_url,
-                        archive_idx=item.number,
-                        archive_file=play_file,
-                        archive_file_name=(item.shows[0].name, item_name),
-                    )
-            if item.broadcast:
-                # we require both image and audio if broadcast (Azuracast) is set
-                if not (image_file_name and item.play_file_name):
-                    no_error = False
-                    error = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
-                    app.logger.debug(error)
-            # this branch is typically used for pre-uploading live episodes (no audio)
-            else: 
-                if not image_file_name:
-                    no_error = False
-                    error = "ERROR: You need to add at least an image"
-                    app.logger.debug(error)
-
+            process_files(request, item, name_occurrence, play_file, image_file, image_file_name, error, error_message)
 
         # archive files if asked
         if item.archive_lahmastore:
-            if no_error and (play_file or image_file):
-                if image_file_name:
-                    item.image_url = archive(
-                        archive_base=item.shows[0].archive_lahmastore_base_url,
-                        archive_file_name=image_file_name,
-                        archive_idx=item.number,
-                    )
-                    if not item.image_url:
-                        no_error = False
-                        error = "ERROR: Image could not be uploaded to storage"
-                        app.logger.debug(error)
-
-                if item.play_file_name:
-                    item.archive_lahmastore_canonical_url = archive(
-                        archive_base=item.shows[0].archive_lahmastore_base_url,
-                        archive_file_name=item.play_file_name,
-                        archive_idx=item.number,
-                    )
-                    # Only set archived if there is audio data otherwise it's live episode
-                    if item.archive_lahmastore_canonical_url:
-                        item.archived = True
-                    else:
-                        no_error = False
-                        error = "ERROR: Audio could not be uploaded to storage"
-                        app.logger.debug(error)
+            archive_files(item, play_file, image_file, image_file_name, error, error_message)
 
         # broadcast episode if asked
-        if item.broadcast and no_error:
-            if not (play_file and image_file):
-                no_error = False
-                error = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
-                app.logger.debug(error)
-            else:
-                item.airing = broadcast_audio(
-                    archive_base=item.shows[0].archive_lahmastore_base_url,
-                    archive_idx=item.number,
-                    broadcast_file_name=item.play_file_name,
-                    broadcast_playlist=item.shows[0].playlist_name,
-                    broadcast_show=item.shows[0].name,
-                    broadcast_title=item.name,
-                    image_file_name=image_file_name,
-                )
-                if not item.airing:
-                    no_error = False
-                    error = "ERROR: Item could not be uploaded to Azuracast"
-                    app.logger.debug(error)
+        if item.broadcast and (error == False):
+            broadcast_episode(item, play_file, image_file, image_file_name, error, error_message)
 
         db.session.commit()
-        if no_error:
+        if (error == False):
             return make_response(
                 jsonify(item_partial_schema.dump(item)), 200, headers
             )
@@ -531,7 +356,7 @@ def archon_edit_item(id):
                 {
                     "error": {
                         "message": "Some error happened, check server logs for details. Note that your media may have been uploaded (to DO and/or Azurcast).",
-                        "errorReason": error,
+                        "errorReason": error_message,
                         "code": 10205070
                     }
                 },

@@ -1,5 +1,7 @@
 import os
 from datetime import datetime, timedelta
+from uuid import uuid4
+
 from flask import request
 from flask import current_app as app
 from slugify import slugify
@@ -87,6 +89,32 @@ def form_filename(file_obj, title_tuple):
 def find_request_params(param, default, type):
     return request.args.get(param, default, type)
 
+def broadcast_episode(item, play_file, image_file, image_file_name, error, error_message):
+    if not (play_file and image_file):
+        error = True
+        error_message = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
+        app.logger.debug(error_message)
+    else:
+        item.airing = broadcast_audio(
+            archive_base=item.shows[0].archive_lahmastore_base_url,
+            archive_idx=item.number,
+            broadcast_file_name=item.play_file_name,
+            broadcast_playlist=item.shows[0].playlist_name,
+            broadcast_show=item.shows[0].name,
+            broadcast_title=item.name,
+            image_file_name=image_file_name,
+        )
+        if not item.airing:
+            error = True
+            error_message = "ERROR: Item could not be uploaded to Azuracast"
+            app.logger.debug(error_message)
+
+            # TODO some mp3 error
+            # TODO Maybe I used vanilla mp3 not from azuracast
+            # item_audio_obj = MP3(item_path)
+            # return item_audio_obj.filename
+            # item_length = item_audio_obj.info.length
+
 def broadcast_audio(
     archive_base,
     archive_idx,
@@ -122,6 +150,50 @@ def broadcast_audio(
             return True
     return False
 
+def process_files(request, item, name_occurrence, play_file, image_file, image_file_name, error, error_message):
+    # Defend against possible duplicate files
+    if (0 < name_occurrence):
+        version_prefix = uuid4()
+        item_name = "{}-{}".format(item.name,version_prefix)
+    else:
+        item_name = item.name
+
+    # process files first
+    if request.files["play_file"]:
+        if request.files["play_file"] != "":
+            play_file = request.files["play_file"]  
+
+            item.play_file_name = save_file(
+                archive_base=item.shows[0].archive_lahmastore_base_url,
+                archive_idx=item.number,
+                archive_file=play_file,
+                archive_file_name=(item.shows[0].name, item_name),
+            )
+
+    if request.files["image_file"]:
+        if request.files["image_file"] != "":
+            image_file = request.files["image_file"]
+
+            image_file_name = save_file(
+                archive_base=item.shows[0].archive_lahmastore_base_url,
+                archive_idx=item.number,
+                archive_file=image_file,
+                archive_file_name=(item.shows[0].name, item_name),
+            )
+
+    if item.broadcast:
+        # we require both image and audio if broadcast (Azuracast) is set
+        if not (image_file_name and item.play_file_name):
+            error = True
+            error_message = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
+            app.logger.debug(error_message)
+    # this branch is typically used for pre-uploading live episodes (no audio)
+    else:
+        if not image_file_name:
+            error = True
+            error_message = "ERROR: You need to add at least an image"
+            app.logger.debug(error_message)
+
 def save_file(archive_base, archive_idx, archive_file, archive_file_name):
     formed_file_name = form_filename(archive_file, archive_file_name)
     app.logger.debug("STATUS/SAVE FILE: formed_file_name: {}".format(formed_file_name))
@@ -140,6 +212,34 @@ def save_file(archive_base, archive_idx, archive_file, archive_file_name):
             archive_file.save(archive_file_path)
             app.logger.debug("STATUS/SAVE FILE: archive_file: {}".format(archive_file))
             return formed_file_name
+
+def archive_files(item, play_file, image_file, image_file_name, error, error_message):
+        # archive files if asked
+        if (error == False) and (play_file or image_file):
+            if image_file_name:
+                item.image_url = archive(
+                    archive_base=item.shows[0].archive_lahmastore_base_url,
+                    archive_file_name=image_file_name,
+                    archive_idx=item.number,
+                )
+                if not item.image_url:
+                    error = True
+                    error_message = "ERROR: Image could not be uploaded to storage"
+                    app.logger.debug(error_message)
+
+            if item.play_file_name:
+                item.archive_lahmastore_canonical_url = archive(
+                    archive_base=item.shows[0].archive_lahmastore_base_url,
+                    archive_file_name=item.play_file_name,
+                    archive_idx=item.number,
+                )
+                if item.archive_lahmastore_canonical_url:
+                    # Only set archived if there is audio data otherwise it's live episode
+                    item.archived = True
+                else: # Upload didn't succeed
+                    error = True
+                    error_message = "ERROR: Audio could not be uploaded to storage"
+                    app.logger.debug(error_message)
 
 def archive(archive_base, archive_file_name, archive_idx):
     do = DoArchive()
