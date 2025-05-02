@@ -114,6 +114,7 @@ def broadcast_episode(item, play_file, image_file, image_file_name, error, error
             # item_audio_obj = MP3(item_path)
             # return item_audio_obj.filename
             # item_length = item_audio_obj.info.length
+    return item, error, error_message
 
 def broadcast_audio(
     archive_base,
@@ -193,6 +194,7 @@ def process_files(request, item, name_occurrence, play_file, image_file, image_f
             error = True
             error_message = "ERROR: You need to add at least an image"
             app.logger.debug(error_message)
+    return item, play_file, image_file, image_file_name, error, error_message
 
 def save_file(archive_base, archive_idx, archive_file, archive_file_name):
     formed_file_name = form_filename(archive_file, archive_file_name)
@@ -214,32 +216,33 @@ def save_file(archive_base, archive_idx, archive_file, archive_file_name):
             return formed_file_name
 
 def archive_files(item, play_file, image_file, image_file_name, error, error_message):
-        # archive files if asked
-        if (error == False) and (play_file or image_file):
-            if image_file_name:
-                item.image_url = archive(
-                    archive_base=item.shows[0].archive_lahmastore_base_url,
-                    archive_file_name=image_file_name,
-                    archive_idx=item.number,
-                )
-                if not item.image_url:
-                    error = True
-                    error_message = "ERROR: Image could not be uploaded to storage"
-                    app.logger.debug(error_message)
+    # archive files if asked
+    if (error == False) and (play_file or image_file):
+        if image_file_name:
+            item.image_url = archive(
+                archive_base=item.shows[0].archive_lahmastore_base_url,
+                archive_file_name=image_file_name,
+                archive_idx=item.number,
+            )
+            if not item.image_url:
+                error = True
+                error_message = "ERROR: Image could not be uploaded to storage"
+                app.logger.debug(error_message)
 
-            if item.play_file_name:
-                item.archive_lahmastore_canonical_url = archive(
-                    archive_base=item.shows[0].archive_lahmastore_base_url,
-                    archive_file_name=item.play_file_name,
-                    archive_idx=item.number,
-                )
-                if item.archive_lahmastore_canonical_url:
-                    # Only set archived if there is audio data otherwise it's live episode
-                    item.archived = True
-                else: # Upload didn't succeed
-                    error = True
-                    error_message = "ERROR: Audio could not be uploaded to storage"
-                    app.logger.debug(error_message)
+        if item.play_file_name:
+            item.archive_lahmastore_canonical_url = archive(
+                archive_base=item.shows[0].archive_lahmastore_base_url,
+                archive_file_name=item.play_file_name,
+                archive_idx=item.number,
+            )
+            if item.archive_lahmastore_canonical_url:
+                # Only set archived if there is audio data otherwise it's live episode
+                item.archived = True
+            else: # Upload didn't succeed
+                error = True
+                error_message = "ERROR: Audio could not be uploaded to storage"
+                app.logger.debug(error_message)
+    return item, error, error_message
 
 def archive(archive_base, archive_file_name, archive_idx):
     do = DoArchive()

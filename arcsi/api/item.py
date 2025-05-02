@@ -195,16 +195,16 @@ def archon_add_item():
 
         # TODO get show cover img and set as fallback
         if request.files:
-            process_files(request, new_item, name_occurrence, play_file, image_file, image_file_name, error, error_message) 
+            new_item, play_file, image_file, image_file_name, error, error_message = process_files(request, new_item, name_occurrence, play_file, image_file, image_file_name, error, error_message) 
 
         # archive files if asked
         if new_item.archive_lahmastore:
-            archive_files(new_item, play_file, image_file, image_file_name, error, error_message)
+            new_item, error, error_message = archive_files(new_item, play_file, image_file, image_file_name, error, error_message)
 
 
         # broadcast episode if asked
         if new_item.broadcast and (error == False):
-            broadcast_episode(new_item, play_file, image_file, image_file_name, error, error_message)
+            new_item, error, error_message = broadcast_episode(new_item, play_file, image_file, image_file_name, error, error_message)
 
         db.session.commit()
         # TODO error is just bandaid for proper exc handling
@@ -336,15 +336,15 @@ def archon_edit_item(id):
         db.session.flush()
 
         if request.files:
-            process_files(request, item, name_occurrence, play_file, image_file, image_file_name, error, error_message)
+            item, play_file, image_file, image_file_name, error, error_message = process_files(request, item, name_occurrence, play_file, image_file, image_file_name, error, error_message)
 
         # archive files if asked
         if item.archive_lahmastore:
-            archive_files(item, play_file, image_file, image_file_name, error, error_message)
+            item, error, error_message = archive_files(item, play_file, image_file, image_file_name, error, error_message)
 
         # broadcast episode if asked
         if item.broadcast and (error == False):
-            broadcast_episode(item, play_file, image_file, image_file_name, error, error_message)
+            item, error, error_message = broadcast_episode(item, play_file, image_file, image_file_name, error, error_message)
 
         db.session.commit()
         if (error == False):
