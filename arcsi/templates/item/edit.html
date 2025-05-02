@@ -8,25 +8,22 @@
 <form action="{{ url_for('arcsi.archon_edit_item', id=item.id) }}" method="post" enctype="multipart/form-data">
 
 <article class="add-infos">
+  <h3>Information</h3>
   <div>
-    <label for="shows">Episode of show:</label>
+    <label for="shows">Episode of</label>
     {% if current_user.has_role("admin") %}
     <input type="hidden" name="show_name" id="show_name" value="{{ shows[0].name }}">
     <select name="shows" id="shows"
       onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
-      <option value="{{item.shows[0].id}}">{{ item.shows[0].name }}</option>
+      <option value="{{shows[0].id}}">{{ shows[0].name }}</option>
       {% for show in shows %}
       <option value="{{ show.id }}">{{ show.name }}</option>
       {% endfor %}
     </select>
     {% else %}
-    <input type="hidden" name="show_name" id="show_name" value="{{ item.shows[0].name }}">
-    <select name="shows" id="shows"
-      onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
-      {% for show in item.shows %}
-      <option value="{{ show.id }}">{{ show.name }}</option>
-      {% endfor %}
-    </select>
+      <input type="hidden" name="show_name" id="show_name" value="{{ shows[0].name }}">
+      <input type="hidden" name="shows" id="shows" value="{{ shows[0].id }}">
+      <p>{{ shows[0].name }}</p>
     {% endif %}
   </div>
 
@@ -65,50 +62,58 @@
     <input name="taglist" id="taglist" value="{% for tag in item.tags %}{{tag.display_name}},{% endfor %}">
   </div>
 
+  <h3>Radio</h3>
+  {% if item.airing %}
   <div>
-    <label for="play_date">Play date *</label>
-    <input type="date" name="play_date" id="play_date" value="{{ item.play_date }}">
+    <p>{{ item.name }} is currently on air.</p>
   </div>
-
+  {% endif %}
   <div>
-    <label for="play_file">Audio file *</label>
-    <input type="file" accept= ".mp3" name="play_file" id="play_file" value="{{ item.play_file_name }}">
+    <label>Original broadcast was</label>
+    <p>{% if item.live %} <span>Live</span> {% else %} <span>Recording</span> {% endif %}</p>
   </div>
-
   <div>
-    <label for="image_file">Episode cover image *</label>
-    <input type="file" accept= "image/*" name="image_file" id="image_file" value="{{ item.image_url }}">
+    <label for="play_date">Played on *</label>
+    <input type="date" name="play_date" id="play_date" value="{{ item.play_date }}" required>
   </div>
-
-  <div>  
-    <label for="live">Live</label>
-    <input type="hidden" name="live" id="live" 
-      {% if item.live %} value="1" {% else %} value="0" {% endif %}>
-    <input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
-      {% if item.live %} checked {% endif %}>
-    <label for="broadcast">Broadcast</label>
-    <input type="hidden" id="broadcast" name="broadcast"
-      {% if item.broadcast %} value="1" {% else %} value="0" {% endif %}>
-    <input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
-      {% if item.broadcast %} checked {% endif %}>
+  <div>
+    <label for="broadcast">Broadcast on air</label>
+    <input type="hidden" id="broadcast" name="broadcast" value="0">
+    <input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0">
   </div>
-
-  <div>   
-    <label for="archive_lahmastore">Archive to Lahmastore *</label>
-    <input type="hidden" id="archive_lahmastore" name="archive_lahmastore"
-      {% if item.archive_lahmastore %} value="1" {% else %} value="0" {% endif %}>
-    <input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
-      {% if item.archive_lahmastore %} checked {% endif %}>
+  <!-- TODO check how to refactor; submits with diff value and value parsed on srv; or
+       offer edit types, only info, archive or broadcast -->
+  <h3>Archive</h3>
+  <div>
+    <label for="archive_lahmastore">Archive to Lahmastore</label>
+    <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" value="0">
+    <input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0">
     <!-- TODO updated_at ? uploader means anything here? -->
     <input type="hidden" name="uploader" id="uploader" value="{{ current_user.email }}">
   </div>
 
-  <p>For <b>Live</b> episodes please use an <b>image</b> between <b>200-500 kB</b></p>
-  <p>For <b>Broadcasted</b> episodes next to the <b>image</b> please upload the <b>audio</b> in <b>.mp3</b> format</p>
+  <div>
+    <p>For <b>Live</b> episodes please use an <b>image</b> between <b>200-500 kB</b></p>
+    <p>For <b>Broadcasted</b> episodes next to the <b>image</b> please upload the <b>audio</b> in <b>.mp3</b> format</p>
+    <p>Files attached apply to archive or broadcast or both</p>
+  </div>
+  
+  <div class="add-media">
+  <div>
+    <label for="play_file">Audio file</label>
+    <input type="file" accept= ".mp3" name="play_file" id="play_file" value="{{ item.play_file_name }}">
+    <span onclick="play_file.value=''">X</span>
+  </div>
 
   <div>
+    <label for="image_file">Episode cover image</label>
+    <input type="file" accept= "image/*" name="image_file" id="image_file" value="{{ item.image_url }}">
+    <span onclick="image_file.value=''">X</span>
+  </div>
+  </div>
+  <div>
     <input type="submit" value="Update">
-  </div>  
+  </div>
 </article>
 </form>
 

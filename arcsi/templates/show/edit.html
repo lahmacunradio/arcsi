@@ -12,6 +12,7 @@
   <input type="hidden" name="user_name" id="user_name" value="{{ current_user.name }}">
   <input type="hidden" name="user_email" id="user_email" value="{{ current_user.email }}">
 
+  <h3>Information</h3>
   <div>
     <label for="active">Active *</label>
     <input type="hidden" id="active" name="active" value="1">
@@ -26,9 +27,9 @@
 
   <div>
     <label for="description">Show description *</label>
-    <input name="description" id="description" value="{{ show.description }}" required>
+    <textarea name="description" id="description" value="{{ show.description }}" required>{{ show.description }}</textarea>
   </div>
-  
+
   <div>
     <label for="contact_address">Contact address *</label>
     <input name="contact_address" id="contact_address" value="{{ show.contact_address }}">
@@ -55,35 +56,37 @@
     <input name="taglist" id="taglist" value="{% for tag in show.tags %}{{tag.display_name}},{% endfor %}">
   </div>
 
+  <h3>Radio</h3>
   <div>
     <label for="playlist_name">Playlist name</label>
     <input name="playlist_name" id="playlist_name" value="{{ show.playlist_name }}">
   </div>
-
-  <div>
-    <label for="image_file">Cover image</label>
-    <input type="file" accept= "image/*" name="image_file" id="image_file">
-  </div>
-
   <div>
     <label for="frequency">Frequency (new-show-per-month) *</label>
     <input type="number" name="frequency" id="frequency" value="{{ show.frequency }}">
   </div>
-  
+
   <div>
     <label for="week">Week *</label>
     <input type="number" name="week" id="week" value="{{ show.week }}">
     <label for="day">Day *</label>
     <input type="number" name="day" id="day" value="{{ show.day }}">
   </div>
-  
+
   <div>
     <label for="start">Start</label>
     <input type="time" name="start" id="start" value="{{ show.start }}">
+  </div>
+  <div>
     <label for="end">End</label>
     <input type="time" name="end" id="end" value="{{ show.end }}">
   </div>
 
+  <h3>Archive</h3>
+  <div>
+    <label for="image_file">Cover image</label>
+    <input type="file" accept= "image/*" name="image_file" id="image_file">
+  </div>
   <div>
     <label for="archive_lahmastore">Archive to Lahmastore *</label>
     <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" {% if show.archive_lahmastore %} value="1"
