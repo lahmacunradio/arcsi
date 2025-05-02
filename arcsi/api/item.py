@@ -30,9 +30,7 @@ class ItemDetailsSchema(Schema):
     name_slug = fields.Str(dump_only=True)
     description = fields.Str()
     language = fields.Str(max=5)
-    play_date = fields.Date(
-        required=False, load_default=datetime.today() + timedelta(days=1)
-    )  # Thanks Kamil Szot!
+    play_date = fields.Date(required=True)
     image_url = fields.Str(dump_only=True)
     play_file_name = fields.Str(dump_only=True)
     live = fields.Boolean()

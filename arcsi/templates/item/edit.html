@@ -73,8 +73,8 @@
     <p>{% if item.live %} <span>Live</span> {% else %} <span>Recording</span> {% endif %}</p>
   </div>
   <div>
-    <label for="play_date">Played on</label>
-    <input type="date" name="play_date" id="play_date" value="{{ item.play_date }}">
+    <label for="play_date">Played on *</label>
+    <input type="date" name="play_date" id="play_date" value="{{ item.play_date }}" required>
   </div>
   <div>
     <label for="broadcast">Broadcast on air</label>
