@@ -28,7 +28,7 @@ def add_show():
 @login_required
 def view_show(id):
     show = archon_view_show(id)
-    if (hasattr(show, 'status_code') and show.status_code == 404):
+    if hasattr(show, "status_code") and show.status_code == 404:
         return "Show not found"
     return render_template("show/view.html", show=show)
 
@@ -37,8 +37,8 @@ def view_show(id):
 @roles_accepted("admin", "host")
 def edit_show(id):
     show = archon_view_show(id)
-    if (hasattr(show, 'status_code') and show.status_code == 404):
+    if hasattr(show, "status_code") and show.status_code == 404:
         return "Show not found"
-    if (not current_user.has_role("admin") and not get_managed_show(current_user, id)):
+    if not current_user.has_role("admin") and not get_managed_show(current_user, id):
         return "You don't have access to edit this show!"
     return render_template("show/edit.html", show=show)
