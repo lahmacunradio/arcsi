@@ -93,7 +93,7 @@
     <label for="archive_lahmastore">Archive to Lahmastore *</label>
     <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" value="1"><input type="checkbox"
       onclick="this.previousElementSibling.value=this.checked?1:0" checked>
-    <input type="hidden" name="uploader" id="uploader" value="{{ current_user.email }}">
+    <input type="hidden" name="uploader" id="uploader" value="{{ current_user.name }}">
   </div>
 
   <p>For <b>Live</b> episodes please use an <b>image</b> between <b>200-500 kB</b></p>
