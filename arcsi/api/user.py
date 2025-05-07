@@ -16,7 +16,11 @@ class UserDetailsSchema(Schema):
     name = fields.Str(required=True)
     password = fields.Str(required=True)
     shows = fields.List(
-        fields.Nested("ShowDetailsSchema", only=("id", "name"),), dump_only=True
+        fields.Nested(
+            "ShowDetailsSchema",
+            only=("id", "name"),
+        ),
+        dump_only=True,
     )
     # TODO roles
     roles = fields.Str()
@@ -60,12 +64,12 @@ def get_api_token():
             jsonify("Only accepts multipart/form-data for now, sorry"), 503, headers
         )
     show_metadata = request.form.to_dict()
-    name = show_metadata['name']
-    password = show_metadata['password']
+    name = show_metadata["name"]
+    password = show_metadata["password"]
     user_query = User.query.filter_by(name=name)
     user = user_query.first_or_404()
     if user and verify_password(password, user.password):
-        token=user.get_auth_token()
+        token = user.get_auth_token()
         ret = {"api_token": token}
         return make_response(jsonify(ret), 200, headers)
     else:

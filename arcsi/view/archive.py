@@ -7,6 +7,4 @@ from arcsi.view import router
 # Flask-Security
 # @login_required
 def archive():
-    return render_template(
-        "archive/list_archive.html"
-    )
+    return render_template("archive/list_archive.html")
