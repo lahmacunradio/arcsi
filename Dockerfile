@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster
+FROM python:3.13-slim-bullseye
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -11,6 +11,7 @@ RUN apt-get update \
     libblas-dev libffi-dev liblapack-dev libopenblas-dev libpq-dev \
     musl-dev postgresql tmpreaper -y \
     && apt-get clean \
+    && pip3 install --upgrade pip  \
     && pip3 install -r requirements.txt
 
 ADD infra/tmpreaper.conf /etc/tmpreaper.conf
