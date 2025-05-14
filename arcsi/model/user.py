@@ -13,9 +13,7 @@ class User(db.Model, UserMixin):
     active = db.Column(db.Boolean, default=True)
     butt_user = db.Column(db.String())
     butt_pw = db.Column(db.String(128))
-    roles = db.relationship(
-        "Role", secondary=roles_users, backref=db.backref("users")
-    )
+    roles = db.relationship("Role", secondary=roles_users, backref=db.backref("users"))
     shows = db.relationship(
         "Show",
         secondary=shows_users,

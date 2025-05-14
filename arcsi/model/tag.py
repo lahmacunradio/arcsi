@@ -13,6 +13,4 @@ class Tag(db.Model):
     )
 
     def __repr__(self):
-        return "<Tag #{} -- {}>".format(
-            self.display_name, self.uploader
-        )
+        return "<Tag #{} -- {}>".format(self.display_name, self.uploader)
