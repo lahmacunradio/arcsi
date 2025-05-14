@@ -3,7 +3,12 @@ from flask_login import current_user
 from flask_security import login_required, roles_accepted, roles_required
 
 from arcsi.api import archon_view_show, archon_shows_schema
-from arcsi.api.utils import get_shows, get_managed_shows, get_managed_show
+from arcsi.api.utils import (
+    get_shows,
+    get_managed_shows,
+    get_managed_show,
+    show_playlist_is_empty,
+)
 from arcsi.view import router
 
 
@@ -30,7 +35,8 @@ def view_show(id):
     show = archon_view_show(id)
     if hasattr(show, "status_code") and show.status_code == 404:
         return "Show not found"
-    return render_template("show/view.html", show=show)
+    empty_playlist = show_playlist_is_empty(show.playlist_name)
+    return render_template("show/view.html", show=show, empty_playlist=empty_playlist)
 
 
 @router.route("/show/<id>/edit", methods=["GET"])

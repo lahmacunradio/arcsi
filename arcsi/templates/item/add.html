@@ -71,24 +71,25 @@
 
   <div>
     <label for="live">Live</label>
-    <input type="hidden" name="live" id="live" value="0"><input type="checkbox"
-      onclick="this.previousElementSibling.value=this.checked?1:0">
+    <input type="hidden" name="live" id="live" value="0">
+    <input type="checkbox" onclick=
+      "this.previousElementSibling.value=this.checked?1:0; play_file.disabled=!play_file.disabled;">
     <i class="fa fa-question-circle" aria-hidden="true"
       title="Tick this to clean up your Azura playlist"></i>
   </div>
 
   <div>
     <label for="archive_lahmastore">Archive</label>
-    <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" value="1"><input type="checkbox"
-      onclick="this.previousElementSibling.value=this.checked?1:0" checked>
+    <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" value="1">
+    <input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0" checked>
     <i class="fa fa-question-circle" aria-hidden="true"
       title="Tick this to upload the episode to the archive server, your listeners will be able to listen it back"></i>
   </div>
 
   <div>
     <label for="broadcast">Broadcast</label>
-    <input type="hidden" id="broadcast" name="broadcast" value="0"><input type="checkbox"
-      onclick="this.previousElementSibling.value=this.checked?1:0">
+    <input type="hidden" id="broadcast" name="broadcast" value="0">
+    <input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0">
     <i class="fa fa-question-circle" aria-hidden="true"
       title="Tick this to upload the episode to the Azura server, it will be broadcasted in your timeslot"></i>
   </div>
@@ -99,9 +100,8 @@
   <p>For <b>Archive</b> and <b>Broadcast</b> episodes next to the <b>image</b> please upload the <b>audio</b> in <b>.mp3</b> format</p>
 
   <div>
-    <label for="play_file">Audio file *</label>
+    <label for="play_file">Audio file (*)</label>
     <input type="file" accept= ".mp3" name="play_file" id="play_file">
-    <span for="play_file">Skip when episode is live</span>
   </div>
 
   <div>

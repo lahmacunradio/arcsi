@@ -170,6 +170,18 @@ def cleanup_show_playlist(broadcast_playlist):
     az.cleanup_playlist()
 
 
+def show_playlist_is_empty(broadcast_playlist):
+    az = AzuraArchive(
+        None,
+        None,
+        None,
+        None,
+        None,
+        broadcast_playlist,
+    )
+    return az.empty_playlist()
+
+
 def process_files(
     request,
     item,
@@ -233,8 +245,8 @@ def save_file(archive_base, archive_idx, archive_file, archive_file_name):
         return None
     else:
         if formed_file_name == "":
-            return None
             app.logger.debug("STATUS/SAVE FILE: File name could not be computed")
+            return None
         else:
             archive_file_path = media_path(
                 archive_base, str(archive_idx), formed_file_name
