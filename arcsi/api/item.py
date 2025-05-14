@@ -6,7 +6,13 @@ from marshmallow import fields, post_load, Schema
 from sqlalchemy import func
 
 from . import arcsi
-from .utils import process_files, archive_files, broadcast_episode, normalise
+from .utils import (
+    process_files,
+    archive_files,
+    broadcast_episode,
+    cleanup_show_playlist,
+    normalise,
+)
 from .utils import get_items, show_item_duplications_number
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
@@ -248,14 +254,20 @@ def archon_add_item():
                 )
             )
 
+        # cleanup previous episode from show's playlist
+        if new_item.live and (error == False):
+            cleanup_show_playlist(new_item.shows[0].playlist_name)
+
         # archive files if asked
         if new_item.archive_lahmastore:
+            # overwrites item's image_url, archive_lahmastore_canonical_url and archived
             new_item, error, error_message = archive_files(
                 new_item, play_file, image_file, image_file_name, error, error_message
             )
 
         # broadcast episode if asked
         if new_item.broadcast and (error == False):
+            # overwrites item's airing
             new_item, error, error_message = broadcast_episode(
                 new_item, play_file, image_file, image_file_name, error, error_message
             )
@@ -411,14 +423,20 @@ def archon_edit_item(id):
                 )
             )
 
+        # cleanup previous episode from show's playlist
+        if item.live and (error == False):
+            cleanup_show_playlist(item.shows[0].playlist_name)
+
         # archive files if asked
         if item.archive_lahmastore:
+            # overwrites item's image_url, archive_lahmastore_canonical_url and archived
             item, error, error_message = archive_files(
                 item, play_file, image_file, image_file_name, error, error_message
             )
 
         # broadcast episode if asked
         if item.broadcast and (error == False):
+            # overwrites item's airing
             item, error, error_message = broadcast_episode(
                 item, play_file, image_file, image_file_name, error, error_message
             )

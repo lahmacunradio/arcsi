@@ -158,6 +158,18 @@ def broadcast_audio(
     return False
 
 
+def cleanup_show_playlist(broadcast_playlist):
+    az = AzuraArchive(
+        None,
+        None,
+        None,
+        None,
+        None,
+        broadcast_playlist,
+    )
+    az.cleanup_playlist()
+
+
 def process_files(
     request,
     item,
