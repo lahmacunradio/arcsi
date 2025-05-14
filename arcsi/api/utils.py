@@ -170,18 +170,6 @@ def cleanup_show_playlist(broadcast_playlist):
     az.cleanup_playlist()
 
 
-def show_playlist_is_empty(broadcast_playlist):
-    az = AzuraArchive(
-        None,
-        None,
-        None,
-        None,
-        None,
-        broadcast_playlist,
-    )
-    return az.empty_playlist()
-
-
 def process_files(
     request,
     item,
