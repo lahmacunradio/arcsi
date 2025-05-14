@@ -231,6 +231,29 @@ class AzuraArchive(object):
         self,
     ):
         # PUT method; add episode to playlist
+        self.cleanup_playlist()
+        payload = {
+            "do": "playlist",
+            "files": [self.play_file_name],
+            "playlists": [self.playlist_id],
+        }
+        app.logger.debug("Playlist payload \n {}".format(payload))
+        r = requests.put(
+            self.config["base"] + self.config["endpoint"]["batch_update"],
+            headers=self.config["headers"],
+            json=payload,
+        )
+        if r.ok and not self.empty_playlist():
+            app.logger.debug("Add to playlist request successful")
+            return True
+        app.logger.debug("Add to playlist didn't succeed")
+        app.logger.debug("Add to playlist request returned {}".format(r.status_code))
+        app.logger.debug("Request response \n {}".format(r.content))
+        return False
+
+    def cleanup_playlist(
+        self,
+    ):
         if self.find_playlist_id():
             app.logger.debug("Playlist id found successfully")
             app.logger.debug(
@@ -246,27 +269,9 @@ class AzuraArchive(object):
                     app.logger.debug("Couldn't wipe playlist")
                     return False
                 app.logger.debug("Playlist wiped")
-            payload = {
-                "do": "playlist",
-                "files": [self.play_file_name],
-                "playlists": [self.playlist_id],
-            }
-            app.logger.debug("Playlist payload \n {}".format(payload))
-            r = requests.put(
-                self.config["base"] + self.config["endpoint"]["batch_update"],
-                headers=self.config["headers"],
-                json=payload,
-            )
-            if r.ok and not self.empty_playlist():
-                app.logger.debug("Add to playlist request successful")
                 return True
-            app.logger.debug("Add to playlist didn't succeed")
-            app.logger.debug(
-                "Add to playlist request returned {}".format(r.status_code)
-            )
-            app.logger.debug("Request response \n {}".format(r.content))
-            return False
-        return False
+            else:
+                return True
 
     def find_playlist_id(
         self,
