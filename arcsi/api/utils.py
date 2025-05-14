@@ -5,7 +5,7 @@ from uuid import uuid4
 from flask import request
 from flask import current_app as app
 from slugify import slugify
-from werkzeug.utils import secure_filename
+from werkzeug.utils import safe_join, secure_filename
 
 from arcsi.handler.upload import AzuraArchive, DoArchive
 from arcsi.model import db
@@ -56,7 +56,7 @@ def media_path(show, number, item_name):
         os.makedirs("{}/{}/{}".format(app.config["UPLOAD_FOLDER"], show, number))
     except FileExistsError as err:
         pass
-    media_file_path = os.path.join(
+    media_file_path = safe_join(
         app.config["UPLOAD_FOLDER"], show, number, secure_filename(item_name)
     )
     return media_file_path
@@ -92,10 +92,8 @@ def find_request_params(param, default, type):
     return request.args.get(param, default, type)
 
 
-def broadcast_episode(
-    item, play_file, image_file, image_file_name, error, error_message
-):
-    if not (play_file and image_file):
+def broadcast_episode(item, image_file_name, error, error_message):
+    if not (item.play_file_name and image_file_name):
         error = True
         error_message = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
         app.logger.debug(error_message)
@@ -174,8 +172,6 @@ def process_files(
     request,
     item,
     name_occurrence,
-    play_file,
-    image_file,
     image_file_name,
     error,
     error_message,
@@ -193,8 +189,8 @@ def process_files(
             play_file = request.files["play_file"]
 
             item.play_file_name = save_file(
-                archive_base=item.shows[0].archive_lahmastore_base_url,
-                archive_idx=item.number,
+                show_name=item.shows[0].archive_lahmastore_base_url,
+                episode_number=item.number,
                 archive_file=play_file,
                 archive_file_name=(item.shows[0].name, item_name),
             )
@@ -204,8 +200,8 @@ def process_files(
             image_file = request.files["image_file"]
 
             image_file_name = save_file(
-                archive_base=item.shows[0].archive_lahmastore_base_url,
-                archive_idx=item.number,
+                show_name=item.shows[0].archive_lahmastore_base_url,
+                episode_number=item.number,
                 archive_file=image_file,
                 archive_file_name=(item.shows[0].name, item_name),
             )
@@ -222,10 +218,10 @@ def process_files(
             error = True
             error_message = "ERROR: You need to add at least an image"
             app.logger.debug(error_message)
-    return item, play_file, image_file, image_file_name, error, error_message
+    return item, image_file_name, error, error_message
 
 
-def save_file(archive_base, archive_idx, archive_file, archive_file_name):
+def save_file(show_name, episode_number, archive_file, archive_file_name):
     formed_file_name = form_filename(archive_file, archive_file_name)
     app.logger.debug("STATUS/SAVE FILE: formed_file_name: {}".format(formed_file_name))
     if not allowed_file(formed_file_name):
@@ -237,7 +233,7 @@ def save_file(archive_base, archive_idx, archive_file, archive_file_name):
             return None
         else:
             archive_file_path = media_path(
-                archive_base, str(archive_idx), formed_file_name
+                show_name, str(episode_number), formed_file_name
             )
             app.logger.debug(
                 "STATUS/SAVE FILE: archive_file_path: {}".format(archive_file_path)
@@ -247,9 +243,9 @@ def save_file(archive_base, archive_idx, archive_file, archive_file_name):
             return formed_file_name
 
 
-def archive_files(item, play_file, image_file, image_file_name, error, error_message):
+def archive_files(item, image_file_name, error, error_message):
     # archive files if asked
-    if (error == False) and (play_file or image_file):
+    if (error == False) and (item.play_file_name or image_file_name):
         if image_file_name:
             item.image_url = archive(
                 archive_base=item.shows[0].archive_lahmastore_base_url,
@@ -284,6 +280,29 @@ def archive(archive_base, archive_file_name, archive_idx):
     archive_url = do.upload(archive_file_path, archive_base, archive_idx)
 
     return archive_url
+
+
+def cleanup_tmp_files(item):
+    if item.play_file_name:
+        delete_file(
+            show_name=item.shows[0].archive_lahmastore_base_url,
+            archive_file_path=item.archive_lahmastore_canonical_url,
+        )
+    delete_file(
+        show_name=item.shows[0].archive_lahmastore_base_url,
+        archive_file_path=item.image_url,
+    )
+
+
+def delete_file(show_name, archive_file_path):
+    os.remove(
+        safe_join(
+            app.config["UPLOAD_FOLDER"],
+            show_name,
+            archive_file_path,
+        )
+    )
+    return True
 
 
 def get_shows():

@@ -299,8 +299,8 @@ def archon_add_show():
         if request.files:
             if request.files["image_file"]:
                 cover_image_name = save_file(
-                    archive_base=new_show.archive_lahmastore_base_url,
-                    archive_idx=0,
+                    show_name=new_show.archive_lahmastore_base_url,
+                    episode_number=0,
                     archive_file=request.files["image_file"],
                     archive_file_name=(new_show.name, "cover"),
                 )
@@ -405,8 +405,8 @@ def archon_edit_show(id):
         if request.files:
             if request.files["image_file"]:
                 cover_image_name = save_file(
-                    archive_base=show.archive_lahmastore_base_url,
-                    archive_idx=0,
+                    show_name=show.archive_lahmastore_base_url,
+                    episode_number=0,
                     archive_file=request.files["image_file"],
                     archive_file_name=(show.name, "cover"),
                 )
