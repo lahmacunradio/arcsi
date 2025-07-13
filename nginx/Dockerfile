@@ -18,6 +18,6 @@ COPY ./renew /etc/periodic/weekly/renew
 RUN chmod +x /etc/periodic/weekly/renew
 
 # HTTP+S reverse proxy
-EXPOSE 80 443
+EXPOSE 80 443 25 465 587
 
 # ENTRYPOINT in Docker compose file

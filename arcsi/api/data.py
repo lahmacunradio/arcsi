@@ -4,9 +4,18 @@ from flask import jsonify, make_response, request
 from flask_security import roles_required
 
 from . import arcsi
+from arcsi.handler import delivery as d
 from arcsi.model.item import Item
 
 headers = {"Content-Type": "application/json"}
+
+
+@arcsi.route("/data/email", methods=["GET"])
+def test_email():
+    test_msg = d.write_test_message()
+    d.log_message("test message written")
+    # d.send_test_message(test_msg)
+    return ""
 
 
 @arcsi.route("/data/uploaded_episodes", methods=["POST"])

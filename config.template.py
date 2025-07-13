@@ -46,3 +46,13 @@ else:
 
 PORT = 5666  # The application port nginx proxy is passing to
 APP_BASE_URL = "http://{}:{}".format(HOST, PORT)
+
+PAGE_SIZE = 12  # Configuration for paging results from a DB query
+
+### EMAIL CONFIGURATION
+# Used by Flask-Mail
+MAIL_SERVER = "smtp.example.com"
+MAIL_PORT = 000  # update with actual number
+MAIL_USE_TLS = True  # security
+MAIL_USERNAME = "username"
+MAIL_PASSWORD = "password"
