@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         postgres-version: [12]
-        python-version: [3.8]
+        python-version: [3.13]
         node-version: [20]
 
     services:
@@ -48,6 +48,7 @@ jobs:
 
     - name: Install dependencies
       run: |
+        pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Set up Node.js ${{ matrix.node-version }}
