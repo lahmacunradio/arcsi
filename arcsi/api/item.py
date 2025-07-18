@@ -6,8 +6,16 @@ from marshmallow import fields, post_load, Schema
 from sqlalchemy import func
 
 from . import arcsi
-from .utils import process_files, archive_files, broadcast_episode, normalise
-from .utils import get_items, show_item_duplications_number
+from .utils import (
+    process_files,
+    archive_files,
+    broadcast_episode,
+    cleanup_show_playlist,
+    cleanup_tmp_files,
+    normalise,
+    get_items,
+    show_item_duplications_number,
+)
 from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.item import Item
@@ -187,12 +195,9 @@ def archon_add_item():
         length = 0
         archived = False
         image_file_name = None
-        image_file = None
         image_url = ""
-        play_file = None
         play_file_name = None
         archive_lahmastore_canonical_url = ""
-        external_url = ""
         shows = (
             db.session.query(Show)
             .filter(Show.id.in_((show.id for show in item_metadata.shows)))
@@ -235,34 +240,38 @@ def archon_add_item():
 
         # TODO get show cover img and set as fallback
         if request.files:
-            new_item, play_file, image_file, image_file_name, error, error_message = (
-                process_files(
-                    request,
-                    new_item,
-                    name_occurrence,
-                    play_file,
-                    image_file,
-                    image_file_name,
-                    error,
-                    error_message,
-                )
+            # overwrites item's play_file_name and broadcast
+            new_item, image_file_name, error, error_message = process_files(
+                request,
+                new_item,
+                name_occurrence,
+                image_file_name,
+                error,
+                error_message,
             )
+
+        # cleanup previous episode from show's playlist
+        if new_item.live and (error == False):
+            cleanup_show_playlist(new_item.shows[0].playlist_name)
 
         # archive files if asked
         if new_item.archive_lahmastore:
+            # overwrites item's image_url, archive_lahmastore_canonical_url and archived
             new_item, error, error_message = archive_files(
-                new_item, play_file, image_file, image_file_name, error, error_message
+                new_item, image_file_name, error, error_message
             )
 
         # broadcast episode if asked
         if new_item.broadcast and (error == False):
+            # overwrites item's airing
             new_item, error, error_message = broadcast_episode(
-                new_item, play_file, image_file, image_file_name, error, error_message
+                new_item, image_file_name, error, error_message
             )
 
         db.session.commit()
         # TODO error is just bandaid for proper exc handling
         if error == False:
+            cleanup_tmp_files(new_item)
             return make_response(
                 jsonify(item_schema.dump(new_item)),
                 200,
@@ -325,9 +334,7 @@ def archon_delete_item(id):
 def archon_edit_item(id):
     error = False
     error_message = ""
-    image_file = None
     image_file_name = None
-    play_file = None
 
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
@@ -398,33 +405,37 @@ def archon_edit_item(id):
         db.session.flush()
 
         if request.files:
-            item, play_file, image_file, image_file_name, error, error_message = (
-                process_files(
-                    request,
-                    item,
-                    name_occurrence,
-                    play_file,
-                    image_file,
-                    image_file_name,
-                    error,
-                    error_message,
-                )
+            # overwrites item's play_file_name and broadcast
+            item, image_file_name, error, error_message = process_files(
+                request,
+                item,
+                name_occurrence,
+                image_file_name,
+                error,
+                error_message,
             )
+
+        # cleanup previous episode from show's playlist
+        if item.live and (error == False):
+            cleanup_show_playlist(item.shows[0].playlist_name)
 
         # archive files if asked
         if item.archive_lahmastore:
+            # overwrites item's image_url, archive_lahmastore_canonical_url and archived
             item, error, error_message = archive_files(
-                item, play_file, image_file, image_file_name, error, error_message
+                item, image_file_name, error, error_message
             )
 
         # broadcast episode if asked
         if item.broadcast and (error == False):
+            # overwrites item's airing
             item, error, error_message = broadcast_episode(
-                item, play_file, image_file, image_file_name, error, error_message
+                item, image_file_name, error, error_message
             )
 
         db.session.commit()
         if error == False:
+            cleanup_tmp_files(item)
             return make_response(jsonify(item_partial_schema.dump(item)), 200, headers)
         return make_response(
             jsonify(
