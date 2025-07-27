@@ -243,7 +243,7 @@ class AzuraArchive(object):
             headers=self.config["headers"],
             json=payload,
         )
-        if r.ok and not self.empty_playlist():
+        if r.ok and not self.is_empty_playlist():
             app.logger.debug("Add to playlist request successful")
             return True
         app.logger.debug("Add to playlist didn't succeed")
@@ -254,14 +254,14 @@ class AzuraArchive(object):
     def cleanup_playlist(
         self,
     ):
-        if self.find_playlist_id():
+        if self.is_existing_playlist_set_playlist_id():
             app.logger.debug("Playlist id found successfully")
             app.logger.debug(
                 "Playlist id is {} \n playlist name is {}".format(
                     self.playlist_id, self.playlist_name
                 )
             )
-            if not self.empty_playlist():
+            if not self.is_empty_playlist():
                 app.logger.debug("Playlist is not empty")
                 app.logger.debug("Trying to wipe playlist")
                 wiped = self.wipe_playlist_play_file()
@@ -273,21 +273,19 @@ class AzuraArchive(object):
             else:
                 return True
 
-    def find_playlist_id(
-        self,
-    ):
+    def is_existing_playlist_set_playlist_id(self):
         # GET method; at arcsi side we only have the playlist_name
         # we need the corresponding id to query Azuracast API
-        r = requests.get(
+        req = requests.get(
             self.config["base"] + self.config["endpoint"]["playlists"],
             headers=self.config["headers"],
         )
-        if r.ok:
-            for playlist in r.json():
+        if req.ok:
+            for playlist in req.json():
                 if playlist["name"] == self.playlist_name:
                     self.playlist_id = str(playlist["id"])
                     app.logger.debug(
-                        "Add to playlist request returned {}".format(r.status_code)
+                        "Add to playlist request returned {}".format(req.status_code)
                     )
                     return True
             app.logger.debug("ERROR: Couldn't find playlist ID in Azuracast response.")
@@ -295,7 +293,7 @@ class AzuraArchive(object):
         app.logger.debug("ERROR: Azuracast request for playlist ID didn't succeed.")
         return False
 
-    def empty_playlist(self):
+    def is_empty_playlist(self):
         # we need to check that there are no other files in playlist
         req = requests.get(
             self.config["base"]

@@ -99,6 +99,22 @@ def find_request_params(param, default, type):
     return request.args.get(param, default, type)
 
 
+def get_playlist_existence_and_emptiness(playlist_name):
+    az = AzuraArchive(
+        None,
+        None,
+        None,
+        None,
+        None,
+        playlist_name,
+    )
+    playlist_exists = az.is_existing_playlist_set_playlist_id()
+    playlist_is_empty = True
+    if playlist_exists:
+        playlist_is_empty = az.is_empty_playlist()
+    return playlist_exists, playlist_is_empty
+
+
 def broadcast_episode(item, image_file_name, error, error_message):
     if not (item.play_file_name and image_file_name):
         error = True

@@ -9,8 +9,8 @@
     {% endif %} {% endfor %}</p>
 <p>Show active: {{show.active}}</p>
 <p>
-    {% if existing_playlist %}
-        {% if empty_playlist %}
+    {% if playlist_exists %}
+        {% if playlist_is_empty %}
             Azura playlist is empty
         {% else %}
             Azura playlist is not empty
