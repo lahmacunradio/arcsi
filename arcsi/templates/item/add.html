@@ -7,119 +7,119 @@
 {% block content %}
 <form action="{{ url_for('arcsi.archon_add_item') }}" method="post" enctype="multipart/form-data">
 
-<article class="add-infos">
-  <div>
-    <label for="shows">Episode of show *</label>
-    {% if current_user.has_role("admin") %}
-    <input type="hidden" name="show_name" id="show_name" value="{{ shows[0].name }}">
-    <select name="shows" id="shows"
-      onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
-      <option value="">--Please choose an option--</option>
-      {% for show in shows %}
-      <option value="{{ show.id }}">{{ show.name }}</option>
-      {% endfor %}
-    </select>
-    {% else %}
-    <input type="hidden" name="show_name" id="show_name" value="{{ current_user.shows[0].name }}">
-    <select name="shows" id="shows"
-      onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
-      {% for show in current_user.shows %}
-      <option value="{{ show.id }}">{{ show.name }}</option>
-      {% endfor %}
-    </select>
-    {% endif %}
-  </div>
-
-  <div>
-    <label for="number">Episode number *</label>
-    <input type="number" name="number" id="number">
-  </div>
-
-  <div>
-    <label for="name">Episode name *</label>
-    <input name="name" id="name" required>
-  </div>
-
-  <div>
-    <label for="description">Episode description</label>
-    <textarea name="description" id="description"></textarea>
-  </div>
-
-  <div>
-    <label for="external_url">External link</label>
-    <input name="external_url" id="external_url">
-  </div>
-
-  <div>
-    <label for="language">Episode language *</label>
-    <select name="language" id="language">
-      <option id="music" value="music" selected>Music</option>
-      <option id="hu_hu" value="hu_hu">Magyar</option>
-      <option id="en_uk" value="en_uk">English</option>
-    </select>
-  </div>
-
-  <div>
-    <label for="taglist">Item tag list (separate with commas)</label>
-    <input name="taglist" id="taglist">
-  </div>
-
-  <div>
-    <label for="play_date">Play date *</label>
-    <input type="date" name="play_date" id="play_date" required>
-  </div>
-  
-  <article class="add-infos add-airing">
+  <article class="add-infos">
     <div>
-      <label for="live">Live</label>
-      <input type="hidden" name="live" id="live" value="0">
-      <input type="checkbox" onclick=
-        "this.previousElementSibling.value=this.checked?1:0; play_file.disabled=!play_file.disabled;">
-      <i class="fa fa-question-circle" aria-hidden="true"
-        title="Tick this to clean up your Azura playlist"></i>
+      <label for="shows">Episode of show *</label>
+      {% if current_user.has_role("admin") %}
+      <input type="hidden" name="show_name" id="show_name" value="{{ shows[0].name }}">
+      <select name="shows" id="shows"
+        onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
+        <option value="">--Please choose an option--</option>
+        {% for show in shows %}
+        <option value="{{ show.id }}">{{ show.name }}</option>
+        {% endfor %}
+      </select>
+      {% else %}
+      <input type="hidden" name="show_name" id="show_name" value="{{ current_user.shows[0].name }}">
+      <select name="shows" id="shows"
+        onchange="this.previousElementSibling.value=this.options[this.selectedIndex].text">
+        {% for show in current_user.shows %}
+        <option value="{{ show.id }}">{{ show.name }}</option>
+        {% endfor %}
+      </select>
+      {% endif %}
     </div>
 
     <div>
-      <label for="archive_lahmastore">Archive</label>
-      <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" value="1">
-      <input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0" checked>
-      <i class="fa fa-question-circle" aria-hidden="true"
-        title="Tick this to upload the episode to the archive server, your listeners will be able to listen it back"></i>
+      <label for="number">Episode number *</label>
+      <input type="number" name="number" id="number">
     </div>
 
     <div>
-      <label for="broadcast">Broadcast</label>
-      <input type="hidden" id="broadcast" name="broadcast" value="0">
-      <input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0">
-      <i class="fa fa-question-circle" aria-hidden="true"
-        title="Tick this to upload the episode to the Azura server, it will be broadcasted in your timeslot"></i>
+      <label for="name">Episode name *</label>
+      <input name="name" id="name" required>
     </div>
+
+    <div>
+      <label for="description">Episode description</label>
+      <textarea name="description" id="description"></textarea>
+    </div>
+
+    <div>
+      <label for="external_url">External link</label>
+      <input name="external_url" id="external_url">
+    </div>
+
+    <div>
+      <label for="language">Episode language *</label>
+      <select name="language" id="language">
+        <option id="music" value="music" selected>Music</option>
+        <option id="hu_hu" value="hu_hu">Magyar</option>
+        <option id="en_uk" value="en_uk">English</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="taglist">Item tag list (separate with commas)</label>
+      <input name="taglist" id="taglist">
+    </div>
+
+    <div>
+      <label for="play_date">Play date *</label>
+      <input type="date" name="play_date" id="play_date" required>
+    </div>
+    
+    <article class="add-infos add-airing">
+      <div>
+        <label for="live">Live</label>
+        <input type="hidden" name="live" id="live" value="0">
+        <input type="checkbox" onclick=
+          "this.previousElementSibling.value=this.checked?1:0; play_file.disabled=!play_file.disabled;">
+        <i class="fa fa-question-circle" aria-hidden="true"
+          title="Tick this to clean up your Azura playlist"></i>
+      </div>
+
+      <div>
+        <label for="archive_lahmastore">Archive</label>
+        <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" value="1">
+        <input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0" checked>
+        <i class="fa fa-question-circle" aria-hidden="true"
+          title="Tick this to upload the episode to the archive server, your listeners will be able to listen it back"></i>
+      </div>
+
+      <div>
+        <label for="broadcast">Broadcast</label>
+        <input type="hidden" id="broadcast" name="broadcast" value="0">
+        <input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0">
+        <i class="fa fa-question-circle" aria-hidden="true"
+          title="Tick this to upload the episode to the Azura server, it will be broadcasted in your timeslot"></i>
+      </div>
+    </article>
+
+    <input type="hidden" name="uploader" id="uploader" value="{{ current_user.name }}">
+
+    <article class="add-infos add-media">
+      <p>For <b>Live</b> episodes please use an <b>image</b> between <b>200-500 kB</b></p>
+      <p>For <b>Archive</b> and <b>Broadcast</b> episodes next to the <b>image</b> please upload the <b>audio</b> in <b>.mp3</b> format</p>
+
+      <div>
+        <label for="play_file">Audio file (*)</label>
+        <input type="file" accept= ".mp3" name="play_file" id="play_file">
+        <span onclick="play_file.value=''"><b>Reset</b></span>
+      </div>
+
+      <div>
+        <label for="image_file">Episode cover image *</label>
+        <input type="file" accept= "image/*" name="image_file" id="image_file">
+        <span onclick="image_file.value=''"><b>Reset</b></span>
+      </div>
+    </article>
+    
+    <div>
+      <input type="submit" value="Add">
+    </div>
+
   </article>
-
-  <input type="hidden" name="uploader" id="uploader" value="{{ current_user.name }}">
-
-  <article class="add-infos add-media">
-    <p>For <b>Live</b> episodes please use an <b>image</b> between <b>200-500 kB</b></p>
-    <p>For <b>Archive</b> and <b>Broadcast</b> episodes next to the <b>image</b> please upload the <b>audio</b> in <b>.mp3</b> format</p>
-
-    <div>
-      <label for="play_file">Audio file (*)</label>
-      <input type="file" accept= ".mp3" name="play_file" id="play_file">
-      <span onclick="play_file.value=''"><b>Reset</b></span>
-    </div>
-
-    <div>
-      <label for="image_file">Episode cover image *</label>
-      <input type="file" accept= "image/*" name="image_file" id="image_file">
-      <span onclick="image_file.value=''"><b>Reset</b></span>
-    </div>
-  </article>
-  
-  <div>
-    <input type="submit" value="Add">
-  </div>
-
-</article>
 </form>
 
 {{ ckeditor.load(pkg_type="basic") }}

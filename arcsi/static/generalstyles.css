@@ -164,7 +164,7 @@ section ul {
 }
 
 .add-media > div span {
-  font-size: 1.3rem;
+  font-size: 1rem;
   margin-left: -3rem;
   cursor: pointer;
   border-style: double;
@@ -193,7 +193,7 @@ section ul {
 .add-infos > div label {
     margin: 0 0.4rem 0 0;
     font-weight: 500;
-    flex: 0 0 20rem;
+    flex: 0 0 15rem;
 }
 
 .add-infos > div input[type=file] {

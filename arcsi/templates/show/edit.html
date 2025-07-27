@@ -6,98 +6,103 @@
 
 {% block content %}
 <form action="{{ url_for('arcsi.archon_edit_show', id=show.id) }}" method="post" enctype="multipart/form-data">
-<article class="add-infos">
 
-  <input type="hidden" name="user_id" id="user_id" value="{{ current_user.id }}">
-  <input type="hidden" name="user_name" id="user_name" value="{{ current_user.name }}">
-  <input type="hidden" name="user_email" id="user_email" value="{{ current_user.email }}">
+  <article class="add-infos">
+    <input type="hidden" name="user_id" id="user_id" value="{{ current_user.id }}">
+    <input type="hidden" name="user_name" id="user_name" value="{{ current_user.name }}">
+    <input type="hidden" name="user_email" id="user_email" value="{{ current_user.email }}">
 
-  <div>
-    <label for="active">Active *</label>
-    <input type="hidden" id="active" name="active" value="1">
-    <input type="checkbox"
-      onclick="this.previousElementSibling.value=this.checked?1:0" {% if show.active %} checked {% endif %}>
-  </div>
+    <div>
+      <label for="active">Active *</label>
+      <input type="hidden" id="active" name="active" value="1">
+      <input type="checkbox"
+        onclick="this.previousElementSibling.value=this.checked?1:0" {% if show.active %} checked {% endif %}>
+    </div>
 
-  <div>
-    <label for="name">Show name *</label>
-    <input name="name" id="name" value="{{ show.name }}" required>
-  </div>
+    <div>
+      <label for="name">Show name *</label>
+      <input name="name" id="name" value="{{ show.name }}" required>
+    </div>
 
-  <div>
-    <label for="description">Show description *</label>
-    <input name="description" id="description" value="{{ show.description }}" required>
-  </div>
-  
-  <div>
-    <label for="contact_address">Contact address *</label>
-    <input name="contact_address" id="contact_address" value="{{ show.contact_address }}">
-  </div>
+    <div>
+      <label for="description">Show description *</label>
+      <input name="description" id="description" value="{{ show.description }}" required>
+    </div>
+    
+    <div>
+      <label for="contact_address">Contact address *</label>
+      <input name="contact_address" id="contact_address" value="{{ show.contact_address }}">
+    </div>
 
 
-   <div>
-    <label for="external_url">External link</label>
-    <input name="external_url" id="external_url" value="{{ show.external_url }}">
-  </div>
+    <div>
+      <label for="external_url">External link</label>
+      <input name="external_url" id="external_url" value="{{ show.external_url }}">
+    </div>
 
-  <div>
-    <label for="language">Show language *</label>
-    <select name="language" id="language">
-      <option id="music" value="music" {% if show.language=="music" %} selected {% endif %}>Music</option>
-      <option id="hu_hu" value="hu_hu" {% if show.language=="hu_hu" %} selected {% endif %}>Magyar</option>
-      <option id="en_uk" value="en_uk" {% if show.language=="en_uk" %} selected {% endif %}>English</option>
-    </select>
-  </div>
+    <div>
+      <label for="language">Show language *</label>
+      <select name="language" id="language">
+        <option id="music" value="music" {% if show.language=="music" %} selected {% endif %}>Music</option>
+        <option id="hu_hu" value="hu_hu" {% if show.language=="hu_hu" %} selected {% endif %}>Magyar</option>
+        <option id="en_uk" value="en_uk" {% if show.language=="en_uk" %} selected {% endif %}>English</option>
+      </select>
+    </div>
 
-  <div>
-    <label for="taglist">Show tag list (separate with commas)</label>
-    <!-- TODO remove or handle properly the last individual comma -->
-    <input name="taglist" id="taglist" value="{% for tag in show.tags %}{{tag.display_name}},{% endfor %}">
-  </div>
+    <div>
+      <label for="taglist">Show tag list (separate with commas)</label>
+      <!-- TODO remove or handle properly the last individual comma -->
+      <input name="taglist" id="taglist" value="{% for tag in show.tags %}{{tag.display_name}},{% endfor %}">
+    </div>
 
-  <div>
-    <label for="playlist_name">Playlist name</label>
-    <input name="playlist_name" id="playlist_name" value="{{ show.playlist_name }}">
-  </div>
+    <div>
+      <label for="playlist_name">Playlist name</label>
+      <input name="playlist_name" id="playlist_name" value="{{ show.playlist_name }}">
+    </div>
 
-  <div>
-    <label for="image_file">Cover image</label>
-    <input type="file" accept= "image/*" name="image_file" id="image_file">
-  </div>
+    <div>
+      <label for="frequency">Frequency (new-show-per-month) *</label>
+      <input type="number" name="frequency" id="frequency" value="{{ show.frequency }}">
+    </div>
+    
+    <div>
+      <label for="week">Week *</label>
+      <input type="number" name="week" id="week" value="{{ show.week }}">
+      <label for="day">Day *</label>
+      <input type="number" name="day" id="day" value="{{ show.day }}">
+    </div>
+    
+    <div>
+      <label for="start">Start</label>
+      <input type="time" name="start" id="start" value="{{ show.start }}">
+      <label for="end">End</label>
+      <input type="time" name="end" id="end" value="{{ show.end }}">
+    </div>
 
-  <div>
-    <label for="frequency">Frequency (new-show-per-month) *</label>
-    <input type="number" name="frequency" id="frequency" value="{{ show.frequency }}">
-  </div>
-  
-  <div>
-    <label for="week">Week *</label>
-    <input type="number" name="week" id="week" value="{{ show.week }}">
-    <label for="day">Day *</label>
-    <input type="number" name="day" id="day" value="{{ show.day }}">
-  </div>
-  
-  <div>
-    <label for="start">Start</label>
-    <input type="time" name="start" id="start" value="{{ show.start }}">
-    <label for="end">End</label>
-    <input type="time" name="end" id="end" value="{{ show.end }}">
-  </div>
+    <article class="add-infos add-airing">
+      <div>
+        <label for="archive_lahmastore">Archive to Lahmastore *</label>
+        <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" {% if show.archive_lahmastore %} value="1"
+          {% else %} value="0" {% endif %}><input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
+          {% if show.archive_lahmastore %} checked {% endif %}>
+      </div>
+    </article>
 
-  <div>
-    <label for="archive_lahmastore">Archive to Lahmastore *</label>
-    <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" {% if show.archive_lahmastore %} value="1"
-      {% else %} value="0" {% endif %}><input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0"
-      {% if show.archive_lahmastore %} checked {% endif %}>
-  </div>
+    <article class="add-infos add-media">
+      <p>Please use an <b>image</b> between <b>200-500 kB</b> as your show's cover</p>  
 
-  <p>Please use an <b>image</b> between <b>200-500 kB</b> as your show's cover</p>
+      <div>
+        <label for="image_file">Cover image</label>
+        <input type="file" accept= "image/*" name="image_file" id="image_file">
+        <span onclick="image_file.value=''"><b>Reset</b></span>
+      </div>
+    </article>
 
-  <div>
-    <input type="submit" value="Update">
-  </div>
+    <div>
+      <input type="submit" value="Update">
+    </div>
 
-</article>
+  </article>
 </form>
 
 {{ ckeditor.load(pkg_type="basic") }}
