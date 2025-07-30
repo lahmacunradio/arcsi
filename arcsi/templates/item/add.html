@@ -73,8 +73,7 @@
       <div>
         <label for="live">Live</label>
         <input type="hidden" name="live" id="live" value="0">
-        <input type="checkbox" onclick=
-          "this.previousElementSibling.value=this.checked?1:0; play_file.disabled=!play_file.disabled;">
+        <input type="checkbox" onclick="this.previousElementSibling.value=this.checked?1:0">
         <i class="fa fa-question-circle" aria-hidden="true"
           title="Tick this to clean up your Azura playlist"></i>
       </div>
@@ -103,15 +102,15 @@
       <p>For <b>Archive</b> and <b>Broadcast</b> episodes next to the <b>image</b> please upload the <b>audio</b> in <b>.mp3</b> format</p>
 
       <div>
-        <label for="play_file">Audio file (*)</label>
-        <input type="file" accept= ".mp3" name="play_file" id="play_file">
-        <span onclick="play_file.value=''"><b>Reset</b></span>
-      </div>
-
-      <div>
         <label for="image_file">Episode cover image *</label>
         <input type="file" accept= "image/*" name="image_file" id="image_file">
         <span onclick="image_file.value=''"><b>Reset</b></span>
+      </div>
+
+      <div>
+        <label for="play_file">Audio file (*)</label>
+        <input type="file" accept= ".mp3" name="play_file" id="play_file">
+        <span onclick="play_file.value=''"><b>Reset</b></span>
       </div>
     </article>
     

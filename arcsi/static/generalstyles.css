@@ -152,28 +152,6 @@ section ul {
     overflow: auto;
 }
 
-.add-airing > div p {
-  font-weight: 250;
-  min-width: 64%;
-  max-width: 65%;
-}
-
-.add-airing > div input[type=date],
-.add-airing > div select {
-  margin: 0.7rem 0;
-}
-
-.add-media > div span {
-  font-size: 1rem;
-  margin-left: -3rem;
-  cursor: pointer;
-  border-style: double;
-}
-.add-media > div p {
-  min-width: 64%;
-  max-width: 65%;
-}
-
 .add-infos {
     display: flex;
     flex-direction: column;
@@ -196,11 +174,6 @@ section ul {
     flex: 0 0 15rem;
 }
 
-.add-infos > div input[type=file] {
-  margin-bottom: 1rem;
-  margin-top: 1rem;
-}
-
 .add-infos > div input[type=button],
 .add-infos > div input[type=reset],
 .add-infos > div input[type=submit],
@@ -211,6 +184,28 @@ section ul {
     border-radius: 3px;
     padding: 0.5rem 2rem;
     padding: 0.75rem 2.33rem;
+}
+
+.add-media > p {
+  min-width: 64%;
+  max-width: 65%;
+}
+
+.add-media > div {
+  min-width: 64%;
+  max-width: 65%;
+}
+
+.add-media > div input[type=file] {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.add-media > div span {
+  font-size: 1rem;
+  margin-left: -3rem;
+  cursor: pointer;
+  border-style: double;
 }
 
 #topbutt {
