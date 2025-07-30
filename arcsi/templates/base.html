@@ -41,7 +41,8 @@
         <div>
           
           <div class="adminmenu">
-            <a href="/doc" title="API documentation" target="_blank"><i class="fa fa-book"></i><span for="fa"> API</span></a>
+            <a href="/faq" title="FAQ"><i class="fa fa-book"></i><span for="FAQ"> FAQ</span></a>
+            <a href="/doc" title="API doc" target="_blank"><i class="fa fa-file-code"></i><span for="API"> API</span></a>
             {% if current_user.has_role("admin") %}
             <a href="{{ url_for('router.view_data') }}" title="Statistics"><i class="fa fa-database"></i></a>
             {% endif %}

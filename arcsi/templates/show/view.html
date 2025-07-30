@@ -8,6 +8,17 @@
 <p>Show host: {% for user in show.users %} {% if user.name %} {{ user.name }} {% else %} {{ user.email }}
     {% endif %} {% endfor %}</p>
 <p>Show active: {{show.active}}</p>
+<p>
+    {% if playlist_exists %}
+        {% if playlist_is_empty %}
+            Azura playlist is empty
+        {% else %}
+            Azura playlist is not empty
+        {% endif %}
+    {% else %}
+        Azura playlist does not exist
+    {% endif %}
+</p>
 <p>Show name: {{show.name}}</p>
 <p>Show description: {{show.description}}</p>
 <p>Show contact address: {{show.contact_address}}</p>
