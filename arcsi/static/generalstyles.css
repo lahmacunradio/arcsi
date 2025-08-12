@@ -84,7 +84,6 @@ header .adminmenu {
 
 header .adminmenu a {
     margin: 0 0.5em;
-    font-size: 0.8rem;
 }
 
 header .has-submenu {
@@ -162,28 +161,51 @@ section ul {
 .add-infos > div {
     display: flex;
     flex-flow: row;
+    flex-wrap: wrap;
     margin: 0.5rem 0;
     align-items: center;
+    text-align: justify;
+    max-width: 33%;
 }
 
 .add-infos > div label {
     margin: 0 0.4rem 0 0;
     font-weight: 500;
+    flex: 0 0 15rem;
 }
 
-.add-infos > div input {
-    margin-right: 1rem;
-}
-
-.add-infos > div input[type=button], 
-.add-infos > div input[type=reset], 
-.add-infos > div input[type=submit], 
+.add-infos > div input[type=button],
+.add-infos > div input[type=reset],
+.add-infos > div input[type=submit],
 .add-infos > div button {
     background: #862eca;
     color: white;
     border: none;
     border-radius: 3px;
     padding: 0.5rem 2rem;
+    padding: 0.75rem 2.33rem;
+}
+
+.add-media > p {
+  min-width: 64%;
+  max-width: 65%;
+}
+
+.add-media > div {
+  min-width: 64%;
+  max-width: 65%;
+}
+
+.add-media > div input[type=file] {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.add-media > div span {
+  font-size: 1rem;
+  margin-left: -3rem;
+  cursor: pointer;
+  border-style: double;
 }
 
 #topbutt {
