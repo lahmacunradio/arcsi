@@ -17,7 +17,7 @@ ADD infra/tmpreaper.conf /etc/tmpreaper.conf
 
 ADD . /app
 
-EXPOSE 5666 465
+EXPOSE 5666
 
 RUN ["chmod", "+x", "/app/entrypoint.sh"]
 ENTRYPOINT []
