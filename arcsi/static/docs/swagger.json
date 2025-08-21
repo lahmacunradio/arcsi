@@ -103,66 +103,6 @@
         }
       }
     },
-    "/users/all": {
-      "get": {
-        "tags": [
-          "User Request"
-        ],
-        "summary": "Return Users for Archon",
-        "produces": [
-          "text/html"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "$ref": "component.json#/components/schemas/UserRequests"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/user/{id}": {
-      "get": {
-        "tags": [
-          "User Request"
-        ],
-        "summary": "Return User for Archon",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "ID of the user that we want to match",
-            "schema": {
-              "$ref": "component.json#/components/schemas/id"
-            }
-          }
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "component.json#/components/schemas/UserRequest"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Could not find user"
-          }
-        }
-      }
-    },
     "/users/get_api_token": {
       "post": {
         "tags": [
@@ -240,7 +180,6 @@
         "summary": "Return all Shows for Archon's Shows Page",
         "security": [
           {
-            "GuestApiKeyAuth": [],
             "AdminApiKeyAuth": []
           }
         ],
@@ -309,7 +248,6 @@
         "summary": "Add Show to Archon (internal use)",
         "security": [
           {
-            "GuestApiKeyAuth": [],
             "AdminApiKeyAuth": []
           }
         ],
@@ -356,7 +294,6 @@
         "summary": "Edit Show in Archon (internal use)",
         "security": [
           {
-            "GuestApiKeyAuth": [],
             "AdminApiKeyAuth": []
           }
         ],
@@ -631,7 +568,6 @@
         "summary": "Return all Items for Archon's Items Page",
         "security": [
           {
-            "GuestApiKeyAuth": [],
             "AdminApiKeyAuth": []
           }
         ],
@@ -702,7 +638,6 @@
         "summary": "Add Item to Archon (internal use)",
         "security": [
           {
-            "GuestApiKeyAuth": [],
             "AdminApiKeyAuth": []
           }
         ],
@@ -749,7 +684,6 @@
         "summary": "Edit Item in Archon (internal use)",
         "security": [
           {
-            "GuestApiKeyAuth": [],
             "AdminApiKeyAuth": []
           }
         ],

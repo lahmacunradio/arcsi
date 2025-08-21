@@ -269,9 +269,7 @@ class AzuraArchive(object):
                     app.logger.debug("Couldn't wipe playlist")
                     return False
                 app.logger.debug("Playlist wiped")
-                return True
-            else:
-                return True
+            return True
 
     def is_existing_playlist_set_playlist_id(self):
         # GET method; at arcsi side we only have the playlist_name
