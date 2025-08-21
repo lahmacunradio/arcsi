@@ -10,5 +10,9 @@
     {{ render_field_with_errors(login_user_form.password) }}
     {{ render_field_with_errors(login_user_form.remember) }}
     {{ render_field(login_user_form.submit) }}
+    {% if security.recoverable %}
+    <hr />
+    <a href="{{ url_for_security('forgot_password') }}">{{ _('Forgot password') }}</a><br />
+    {% endif %}
 </form>
 {% endblock %}
