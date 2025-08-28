@@ -19,6 +19,8 @@ SECURITY_SEND_REGISTER_EMAIL = True
 SECURITY_REGISTERABLE = True
 SECURITY_PASSWORD_SALT = "some_salt"
 SECURITY_USE_VERIFY_PASSWORD_CACHE = True
+# If mail capability is available and SMTP server is set forgot password functionality is available set this to True
+SECURITY_RECOVERABLE = False
 
 # ARCSI CONF
 UPLOAD_FOLDER = "/abs/path/on/your/machine"  # this is where arcsi stores uploadable files temporarily
