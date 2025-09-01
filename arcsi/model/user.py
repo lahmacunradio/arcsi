@@ -22,6 +22,7 @@ class User(db.Model, UserMixin):
         # TODO will this work ?
         cascade_backrefs=False,
     )
+    fs_uniquifier = db.Column(db.String(64), unique=True, nullable=True)
 
     def __repr__(self):
         return "<Host {}>".format(self.name)
