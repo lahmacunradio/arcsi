@@ -21,7 +21,8 @@ services:
     links:
       - "db"
     build: .
-    image: arcsi:0.4.5
+    hostname: ${HOSTNAME}
+    image: arcsi:0.4.6
     restart: always
     expose:
       - 5666
