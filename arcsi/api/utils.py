@@ -109,11 +109,10 @@ def get_playlist_existence_and_emptiness(playlist_name):
         playlist_name,
     )
     playlist_exists = az.is_existing_playlist_set_playlist_id()
+    playlist_is_empty = True
     if playlist_exists:
-        if az.is_empty_playlist():
-            return playlist_exists, True
-        else:
-            return playlist_exists, False
+        playlist_is_empty = az.is_empty_playlist()
+    return playlist_exists, playlist_is_empty
 
 
 def broadcast_episode(item, image_file_name, error, error_message):
