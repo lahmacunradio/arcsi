@@ -7,6 +7,7 @@ from .secondary import roles_users, shows_users
 class User(db.Model, UserMixin):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
+    fs_uniquifier = db.Column(db.String(64), nullable=False)
     name = db.Column(db.String(), unique=True)
     email = db.Column(db.String(), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
