@@ -6,96 +6,101 @@
 
 {% block content %}
 <form action="{{ url_for('arcsi.archon_add_show') }}" method="post" enctype="multipart/form-data">
-<article class="add-infos">
 
-  <input type="hidden" name="user_id" id="user_id" value="{{ current_user.id }}">
-  <input type="hidden" name="user_name" id="user_name" value="{{ current_user.name }}">
-  <input type="hidden" name="user_email" id="user_email" value="{{ current_user.email }}">
+  <article class="add-infos">
+    <input type="hidden" name="user_id" id="user_id" value="{{ current_user.id }}">
+    <input type="hidden" name="user_name" id="user_name" value="{{ current_user.name }}">
+    <input type="hidden" name="user_email" id="user_email" value="{{ current_user.email }}">
 
-  <div>
-    <label for="active">Active *</label>
-    <input type="hidden" id="active" name="active" value="1">
-    <input type="checkbox"
-      onclick="this.previousElementSibling.value=this.checked?1:0" checked>
-  </div>
+    <div>
+      <label for="active">Active *</label>
+      <input type="hidden" id="active" name="active" value="1">
+      <input type="checkbox"
+        onclick="this.previousElementSibling.value=this.checked?1:0" checked>
+    </div>
 
-  <div>
-    <label for="name">Show name *</label>
-    <input name="name" id="name" required>
-  </div>
+    <div>
+      <label for="name">Show name *</label>
+      <input name="name" id="name" required>
+    </div>
 
-  <div>
-    <label for="description">Show description *</label>
-    <input name="description" id="description" required>
-  </div>
+    <div>
+      <label for="description">Show description *</label>
+      <textarea name="description" id="description" required></textarea>
+    </div>
 
-  <div>
-    <label for="contact_address">Contact address *</label>
-    <input name="contact_address" id="contact_address">
-  </div>
+    <div>
+      <label for="contact_address">Contact address *</label>
+      <input name="contact_address" id="contact_address">
+    </div>
 
-  <div>
-    <label for="external_url">External link</label>
-    <input name="external_url" id="external_url">
-  </div>
+    <div>
+      <label for="external_url">External link</label>
+      <input name="external_url" id="external_url">
+    </div>
 
-  <div>
-      <label for="language">Show language *</label>
-      <select name="language" id="language">
-        <option id="music" value="music" selected>Music</option>
-        <option id="hu_hu" value="hu_hu">Magyar</option>
-        <option id="en_uk" value="en_uk">English</option>
-      </select>
-  </div>
+    <div>
+        <label for="language">Show language *</label>
+        <select name="language" id="language">
+          <option id="music" value="music" selected>Music</option>
+          <option id="hu_hu" value="hu_hu">Magyar</option>
+          <option id="en_uk" value="en_uk">English</option>
+        </select>
+    </div>
 
-  <div>
-    <label for="taglist">Show tag list (separate with commas)</label>
-    <input name="taglist" id="taglist">
-  </div>
+    <div>
+      <label for="taglist">Show tag list (separate with commas)</label>
+      <input name="taglist" id="taglist">
+    </div>
 
-  <div>
-    <label for="playlist_name">Playlist name</label>
-    <input name="playlist_name" id="playlist_name">
-  </div>
+    <div>
+      <label for="playlist_name">Playlist name</label>
+      <input name="playlist_name" id="playlist_name">
+    </div>
 
-  <div>
-    <label for="image_file">Cover image</label>
-    <input type="file" accept= "image/*" name="image_file" id="image_file">
-  </div>
+    <div>
+      <label for="frequency">Frequency (new-show-per-month) *</label>
+      <input type="number" name="frequency" id="frequency">
+    </div>
 
-  <div>
-    <label for="frequency">Frequency (new-show-per-month) *</label>
-    <input type="number" name="frequency" id="frequency">
-  </div>
+    <div>
+      <label for="week">Week *</label>
+      <input type="number" name="week" id="week">
+      <label for="day">Day *</label>
+      <input type="number" name="day" id="day">
+    </div>
 
-  <div>
-    <label for="week">Week *</label>
-    <input type="number" name="week" id="week">
-    <label for="day">Day *</label>
-    <input type="number" name="day" id="day">
-  </div>
+    <div>
+      <label for="start">Start</label>
+      <input type="time" name="start" id="start" value="00:00">
+      <label for="end">End</label>
+      <input type="time" name="end" id="end" value="00:00">
+    </div>
 
-  <div>
-    <label for="start">Start</label>
-    <input type="time" name="start" id="start" value="00:00">
-    <label for="end">End</label>
-    <input type="time" name="end" id="end" value="00:00">
-  </div>
+    <article class="add-infos add-airing">
+      <div>
+        <label for="archive_lahmastore">Archive to Lahmastore *</label>
+        <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" value="1">
+        <input type="checkbox"
+          onclick="this.previousElementSibling.value=this.checked?1:0" checked>
+      </div>
+    </article>
 
-  <div>
-    <label for="archive_lahmastore">Archive to Lahmastore *</label>
-    <input type="hidden" id="archive_lahmastore" name="archive_lahmastore" value="1">
-    <input type="checkbox"
-      onclick="this.previousElementSibling.value=this.checked?1:0" checked>
-  </div>
+    <article class="add-infos add-media">
+      <p>Please use an <b>image</b> between <b>200-500 kB</b> as your show's cover</p>
 
-  <p>Please use an <b>image</b> between <b>200-500 kB</b> as your show's cover</p>
+      <div>
+        <label for="image_file">Cover image</label>
+        <input type="file" accept= "image/*" name="image_file" id="image_file">
+        <span onclick="image_file.value=''"><b>Reset</b></span>
+      </div>
+    </article>
 
-  <div>
-    <input type="submit" value="Add">
-  </div>
+    <div>
+      <input type="submit" value="Add">
+    </div>
 
-</article>
+  </article>
 </form>
 
 {{ ckeditor.load(pkg_type="basic") }}

@@ -4,6 +4,7 @@ import os
 from flask import Flask
 from flask_ckeditor import CKEditor
 from flask_security import Security, SQLAlchemySessionUserDatastore
+from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_swagger_ui import get_swaggerui_blueprint
 from sqlalchemy.exc import ProgrammingError
@@ -11,8 +12,10 @@ from sqlalchemy.exc import ProgrammingError
 from arcsi.model import db, item, role, show, tag, user
 from arcsi.view.forms.register import ButtRegisterForm
 
-migrate = Migrate()
 ckeditor = CKEditor()
+migrate = Migrate()
+# TODO Flask-Mail deprecated -- switch to Flask-Mailman
+mail = Mail()
 
 
 def create_app(config_file):
@@ -42,6 +45,7 @@ def create_app(config_file):
         db.init_app(app)
         migrate.init_app(app, db)
         ckeditor.init_app(app)
+        app.mailing = mail.init_app(app)
 
         """
         The application factory runs when `flask db upgrade` is called

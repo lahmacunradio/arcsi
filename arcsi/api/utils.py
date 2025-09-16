@@ -5,7 +5,7 @@ from uuid import uuid4
 from flask import request
 from flask import current_app as app
 from slugify import slugify
-from werkzeug.utils import secure_filename
+from werkzeug.utils import safe_join, secure_filename
 
 from arcsi.handler.upload import AzuraArchive, DoArchive
 from arcsi.model import db
@@ -51,13 +51,20 @@ def dict_to_obj(dict_name, table):
     return obj_list
 
 
-def media_path(show, number, item_name):
+def media_path(norms_show_name, episode_number, item_name):
     try:
-        os.makedirs("{}/{}/{}".format(app.config["UPLOAD_FOLDER"], show, number))
+        os.makedirs(
+            "{}/{}/{}".format(
+                app.config["UPLOAD_FOLDER"], norms_show_name, episode_number
+            )
+        )
     except FileExistsError as err:
         pass
-    media_file_path = os.path.join(
-        app.config["UPLOAD_FOLDER"], show, number, secure_filename(item_name)
+    media_file_path = safe_join(
+        app.config["UPLOAD_FOLDER"],
+        norms_show_name,
+        episode_number,
+        secure_filename(item_name),
     )
     return media_file_path
 
@@ -92,21 +99,36 @@ def find_request_params(param, default, type):
     return request.args.get(param, default, type)
 
 
-def broadcast_episode(
-    item, play_file, image_file, image_file_name, error, error_message
-):
-    if not (play_file and image_file):
+def get_playlist_existence_and_emptiness(playlist_name):
+    az = AzuraArchive(
+        None,
+        None,
+        None,
+        None,
+        None,
+        playlist_name,
+    )
+    playlist_exists = az.is_existing_playlist_set_playlist_id()
+    if playlist_exists:
+        if az.is_empty_playlist():
+            return playlist_exists, True
+        else:
+            return playlist_exists, False
+
+
+def broadcast_episode(item, image_file_name, error, error_message):
+    if not (item.play_file_name and image_file_name):
         error = True
         error_message = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
         app.logger.debug(error_message)
     else:
         item.airing = broadcast_audio(
-            archive_base=item.shows[0].archive_lahmastore_base_url,
-            archive_idx=item.number,
-            broadcast_file_name=item.play_file_name,
-            broadcast_playlist=item.shows[0].playlist_name,
-            broadcast_show=item.shows[0].name,
-            broadcast_title=item.name,
+            norms_show_name=item.shows[0].archive_lahmastore_base_url,
+            episode_number=item.number,
+            audio_file_name=item.play_file_name,
+            playlist_name=item.shows[0].playlist_name,
+            show_name=item.shows[0].name,
+            episode_name=item.name,
             image_file_name=image_file_name,
         )
         if not item.airing:
@@ -123,25 +145,25 @@ def broadcast_episode(
 
 
 def broadcast_audio(
-    archive_base,
-    archive_idx,
-    broadcast_file_name,
-    broadcast_playlist,
-    broadcast_show,
-    broadcast_title,
+    norms_show_name,
+    episode_number,
+    audio_file_name,
+    playlist_name,
+    show_name,
+    episode_name,
     image_file_name,
 ):
     broadcast_file_path = media_path(
-        archive_base, str(archive_idx), broadcast_file_name
+        norms_show_name, str(episode_number), audio_file_name
     )
-    image_file_path = media_path(archive_base, str(archive_idx), image_file_name)
+    image_file_path = media_path(norms_show_name, str(episode_number), image_file_name)
     az = AzuraArchive(
         broadcast_file_path,
-        broadcast_file_name,
+        audio_file_name,
         image_file_path,
-        broadcast_show,
-        broadcast_title,
-        broadcast_playlist,
+        show_name,
+        episode_name,
+        playlist_name,
     )
 
     # TODO find image -- fallback to show cover; handle this if-tree better
@@ -158,12 +180,22 @@ def broadcast_audio(
     return False
 
 
+def cleanup_show_playlist(broadcast_playlist):
+    az = AzuraArchive(
+        None,
+        None,
+        None,
+        None,
+        None,
+        broadcast_playlist,
+    )
+    az.cleanup_playlist()
+
+
 def process_files(
     request,
     item,
     name_occurrence,
-    play_file,
-    image_file,
     image_file_name,
     error,
     error_message,
@@ -181,8 +213,8 @@ def process_files(
             play_file = request.files["play_file"]
 
             item.play_file_name = save_file(
-                archive_base=item.shows[0].archive_lahmastore_base_url,
-                archive_idx=item.number,
+                norms_show_name=item.shows[0].archive_lahmastore_base_url,
+                episode_number=item.number,
                 archive_file=play_file,
                 archive_file_name=(item.shows[0].name, item_name),
             )
@@ -192,8 +224,8 @@ def process_files(
             image_file = request.files["image_file"]
 
             image_file_name = save_file(
-                archive_base=item.shows[0].archive_lahmastore_base_url,
-                archive_idx=item.number,
+                norms_show_name=item.shows[0].archive_lahmastore_base_url,
+                episode_number=item.number,
                 archive_file=image_file,
                 archive_file_name=(item.shows[0].name, item_name),
             )
@@ -210,10 +242,10 @@ def process_files(
             error = True
             error_message = "ERROR: You need to add at least an image"
             app.logger.debug(error_message)
-    return item, play_file, image_file, image_file_name, error, error_message
+    return item, image_file_name, error, error_message
 
 
-def save_file(archive_base, archive_idx, archive_file, archive_file_name):
+def save_file(norms_show_name, episode_number, archive_file, archive_file_name):
     formed_file_name = form_filename(archive_file, archive_file_name)
     app.logger.debug("STATUS/SAVE FILE: formed_file_name: {}".format(formed_file_name))
     if not allowed_file(formed_file_name):
@@ -221,11 +253,11 @@ def save_file(archive_base, archive_idx, archive_file, archive_file_name):
         return None
     else:
         if formed_file_name == "":
-            return None
             app.logger.debug("STATUS/SAVE FILE: File name could not be computed")
+            return None
         else:
             archive_file_path = media_path(
-                archive_base, str(archive_idx), formed_file_name
+                norms_show_name, str(episode_number), formed_file_name
             )
             app.logger.debug(
                 "STATUS/SAVE FILE: archive_file_path: {}".format(archive_file_path)
@@ -235,14 +267,14 @@ def save_file(archive_base, archive_idx, archive_file, archive_file_name):
             return formed_file_name
 
 
-def archive_files(item, play_file, image_file, image_file_name, error, error_message):
+def archive_files(item, image_file_name, error, error_message):
     # archive files if asked
-    if (error == False) and (play_file or image_file):
+    if (error == False) and (item.play_file_name or image_file_name):
         if image_file_name:
             item.image_url = archive(
-                archive_base=item.shows[0].archive_lahmastore_base_url,
+                norms_show_name=item.shows[0].archive_lahmastore_base_url,
+                episode_number=item.number,
                 archive_file_name=image_file_name,
-                archive_idx=item.number,
             )
             if not item.image_url:
                 error = True
@@ -251,9 +283,9 @@ def archive_files(item, play_file, image_file, image_file_name, error, error_mes
 
         if item.play_file_name:
             item.archive_lahmastore_canonical_url = archive(
-                archive_base=item.shows[0].archive_lahmastore_base_url,
+                norms_show_name=item.shows[0].archive_lahmastore_base_url,
+                episode_number=item.number,
                 archive_file_name=item.play_file_name,
-                archive_idx=item.number,
             )
             if item.archive_lahmastore_canonical_url:
                 # Only set archived if there is audio data otherwise it's live episode
@@ -265,13 +297,38 @@ def archive_files(item, play_file, image_file, image_file_name, error, error_mes
     return item, error, error_message
 
 
-def archive(archive_base, archive_file_name, archive_idx):
+def archive(norms_show_name, episode_number, archive_file_name):
     do = DoArchive()
 
-    archive_file_path = media_path(archive_base, str(archive_idx), archive_file_name)
-    archive_url = do.upload(archive_file_path, archive_base, archive_idx)
+    archive_file_path = media_path(
+        norms_show_name, str(episode_number), archive_file_name
+    )
+    archive_url = do.upload(archive_file_path, norms_show_name, episode_number)
 
     return archive_url
+
+
+def cleanup_tmp_files(item):
+    if item.play_file_name:
+        delete_file(
+            norms_show_name=item.shows[0].archive_lahmastore_base_url,
+            archive_file_path=item.archive_lahmastore_canonical_url,
+        )
+    delete_file(
+        norms_show_name=item.shows[0].archive_lahmastore_base_url,
+        archive_file_path=item.image_url,
+    )
+
+
+def delete_file(norms_show_name, archive_file_path):
+    os.remove(
+        safe_join(
+            app.config["UPLOAD_FOLDER"],
+            norms_show_name,
+            archive_file_path,
+        )
+    )
+    return True
 
 
 def get_shows():
