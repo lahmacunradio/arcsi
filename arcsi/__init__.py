@@ -14,7 +14,6 @@ from arcsi.view.forms.register import ButtRegisterForm
 
 ckeditor = CKEditor()
 migrate = Migrate()
-# TODO Flask-Mail deprecated -- switch to Flask-Mailman
 mail = Mail()
 
 
