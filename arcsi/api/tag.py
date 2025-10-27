@@ -1,6 +1,7 @@
 from flask import make_response
 from flask_security import auth_token_required
 from marshmallow import fields, post_load, Schema
+from marshmallow.validate import Length
 
 from arcsi.handler.upload import DoArchive
 from arcsi.api import arcsi
@@ -10,7 +11,7 @@ from .utils import normalise
 
 class TagDetailsSchema(Schema):
     id = fields.Int()
-    display_name = fields.Str(required=True, min=3)
+    display_name = fields.Str(required=True, validate=Length(min=3))
     clean_name = fields.Str(dump_only=True)
     icon = fields.Str(dump_only=True)
     items = fields.Nested(

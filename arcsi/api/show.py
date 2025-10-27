@@ -5,6 +5,7 @@ from flask import jsonify, make_response, request
 from flask import current_app as app
 from flask_security import auth_token_required, roles_required, roles_accepted
 from marshmallow import fields, post_load, Schema
+from marshmallow.validate import Length
 from sqlalchemy import func
 
 from . import arcsi
@@ -32,9 +33,9 @@ class ShowDetailsSchema(Schema):
     name = fields.Str(required=True)
     description = fields.Str(required=True)
     cover_image_url = fields.Str(dump_only=True)
-    language = fields.Str(max=5)
+    language = fields.Str(validate=Length(min=5))
     playlist_name = fields.Str()
-    frequency = fields.Int(min=1, max=1)
+    frequency = fields.Int(validate=Length(equal=1))
     contact_address = fields.Email()
     week = fields.Int()
     day = fields.Int()
