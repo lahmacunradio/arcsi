@@ -259,6 +259,7 @@ ALTER TABLE public.shows_users OWNER TO postgres;
 
 CREATE TABLE public.users (
     id integer NOT NULL,
+    fs_uniquifier character varying(64) NOT NULL,
     name character varying,
     email character varying NOT NULL,
     butt_user character varying,
@@ -351,9 +352,9 @@ COPY public.roles_users (user_id, role_id) FROM stdin;
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (id, name, email, butt_user, butt_pw, password, active) FROM stdin;
-1	testguest	testguest@lahmacun.hu	buttguest	buttpw	$2b$12$bz/hCRWRMjNeHGr66wYZO.a/HHhenAHZaLECKmVYPFLSVTzvC/l9a	t
-2	testadmin	testadmin@lahmacun.hu	buttadmin	buttpw	$2b$12$bz/hCRWRMjNeHGr66wYZO.a/HHhenAHZaLECKmVYPFLSVTzvC/l9a	t
+COPY public.users (id, fs_uniquifier, name, email, butt_user, butt_pw, password, active) FROM stdin;
+1	e2e7eb331ea3458db2b675d979583d53	testguest	testguest@lahmacun.hu	buttguest	buttpw	$2b$12$bz/hCRWRMjNeHGr66wYZO.a/HHhenAHZaLECKmVYPFLSVTzvC/l9a	t
+2	514b916289b845a2adf4f754b08f098f	testadmin	testadmin@lahmacun.hu	buttadmin	buttpw	$2b$12$bz/hCRWRMjNeHGr66wYZO.a/HHhenAHZaLECKmVYPFLSVTzvC/l9a	t
 \.
 
 

@@ -22,7 +22,7 @@ services:
       - "db"
     build: .
     hostname: ${HOSTNAME}
-    image: arcsi:0.4.6
+    image: arcsi:0.4.7
     restart: always
     expose:
       - 5666
