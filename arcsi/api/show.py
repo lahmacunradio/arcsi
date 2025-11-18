@@ -385,11 +385,6 @@ def archon_edit_show(id):
         show.end = show_metadata.end
         show.archive_lahmastore = show_metadata.archive_lahmastore
         show.archive_lahmastore_base_url = slug(show_metadata.name)
-        show.users = (
-            db.session.query(User)
-            .filter(User.id.in_((user.id for user in show_metadata.users)))
-            .all()
-        )
         show.tags = (
             get_or_create(
                 Tag,
