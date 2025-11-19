@@ -340,6 +340,9 @@ def archon_edit_show(id):
     show_metadata = request.form.to_dict()
 
     # TODO see item.py same line
+
+    # TODO users is a required field currently,
+    # although it is not needed in case of an edit
     show_metadata["users"] = [
         {
             "id": show_metadata["user_id"],
