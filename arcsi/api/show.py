@@ -340,6 +340,9 @@ def archon_edit_show(id):
     show_metadata = request.form.to_dict()
 
     # TODO see item.py same line
+
+    # TODO users is a required field currently,
+    # although it is not needed in case of an edit
     show_metadata["users"] = [
         {
             "id": show_metadata["user_id"],
@@ -385,11 +388,6 @@ def archon_edit_show(id):
         show.end = show_metadata.end
         show.archive_lahmastore = show_metadata.archive_lahmastore
         show.archive_lahmastore_base_url = slug(show_metadata.name)
-        show.users = (
-            db.session.query(User)
-            .filter(User.id.in_((user.id for user in show_metadata.users)))
-            .all()
-        )
         show.tags = (
             get_or_create(
                 Tag,

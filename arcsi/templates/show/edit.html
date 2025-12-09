@@ -8,6 +8,10 @@
 <form action="{{ url_for('arcsi.archon_edit_show', id=show.id) }}" method="post" enctype="multipart/form-data">
 
   <article class="add-infos">
+    <!--
+    TODO users is a required field currently,
+    although it is not needed in case of an edit
+    //-->
     <input type="hidden" name="user_id" id="user_id" value="{{ current_user.id }}">
     <input type="hidden" name="user_name" id="user_name" value="{{ current_user.name }}">
     <input type="hidden" name="user_email" id="user_email" value="{{ current_user.email }}">
