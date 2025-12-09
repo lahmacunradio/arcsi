@@ -405,7 +405,10 @@ def filter_show_items(show, items, archived, latest):
                 )
             )
         ]
-        return get_show_items(show, already_aired_items, latest)
+        if 0 < len(already_aired_items):
+            return get_show_items(show, already_aired_items, latest)
+        else:
+            return []
     else:
         return get_show_items(show, items, latest)
 
