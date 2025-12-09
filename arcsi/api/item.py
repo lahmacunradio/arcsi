@@ -435,7 +435,8 @@ def archon_edit_item(id):
 
         db.session.commit()
         if error == False:
-            cleanup_tmp_files(item)
+            if request.files:
+                cleanup_tmp_files(item)
             return make_response(jsonify(item_partial_schema.dump(item)), 200, headers)
         return make_response(
             jsonify(
