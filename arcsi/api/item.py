@@ -474,4 +474,4 @@ def frontend_search_item():
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
         item.name_slug = normalise(item.name)
-    return items_schema.dumps(items.items)
+    return items_schema.dump(items.items)
