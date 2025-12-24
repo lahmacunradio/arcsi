@@ -15,7 +15,9 @@ SQLALCHEMY_TRACK_MODIFICATIONS = (
 # AUTHENTICATION
 # This enables Flask-Security to handle /register /login etc. so all-in-all: authentication
 # https://pythonhosted.org/Flask-Security/configuration.html
+SECURITY_CHANGEABLE = True
 SECURITY_SEND_REGISTER_EMAIL = True
+SECURITY_RECOVERABLE = True
 SECURITY_REGISTERABLE = True
 SECURITY_PASSWORD_SALT = "some_salt"
 SECURITY_USE_VERIFY_PASSWORD_CACHE = True
