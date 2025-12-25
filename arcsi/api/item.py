@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from flask import jsonify, make_response, request, redirect
+from flask import current_app as app
 from flask_security import auth_token_required, roles_accepted
 from marshmallow import fields, post_load, Schema
 from sqlalchemy import func
@@ -460,19 +461,30 @@ def frontend_search_item():
     page = request.args.get("page", 1, type=int)
     size = request.args.get("size", 12, type=int)
     param = request.args.get("param", "lahmacun", type=str)
-    items = (
-        Item.query.filter(
-            func.lower(Item.name).contains(func.lower(param))
-            | func.lower(Item.description).contains(func.lower(param))
-        )
+    show_items = (
+        Item.query.join(Item.shows, aliased=True)
+        .filter(func.lower(Show.name).contains(func.lower(param)))
         .filter(Item.play_date < datetime.today() - timedelta(days=1))
+    )
+    tag_items = (
+        Item.query.join(Item.tags, aliased=True)
+        .filter(func.lower(Tag.clean_name).contains(func.lower(param)))
+        .filter(Item.play_date < datetime.today() - timedelta(days=1))
+    )
+    items = Item.query.filter(
+        func.lower(Item.name).contains(func.lower(param))
+        | func.lower(Item.description).contains(func.lower(param))
+    ).filter(Item.play_date < datetime.today() - timedelta(days=1))
+    aggr_items = (
+        items.union(show_items)
+        .union(tag_items)
         .order_by(Item.play_date.desc())
         .paginate(page=page, per_page=size, error_out=False)
     )
-    for item in items.items:
+    for item in aggr_items.items:
         if item.image_url:
             item.image_url = do.download(
                 item.shows[0].archive_lahmastore_base_url, item.image_url
             )
         item.name_slug = normalise(item.name)
-    return items_schema.dump(items.items)
+    return items_schema.dump(aggr_items.items)
