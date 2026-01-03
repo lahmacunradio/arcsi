@@ -1,7 +1,6 @@
 from flask import make_response
 from flask_security import auth_token_required
 from marshmallow import fields, post_load, Schema
-from marshmallow.validate import Length
 
 from arcsi.handler.upload import DoArchive
 from arcsi.api import arcsi
@@ -11,7 +10,8 @@ from .utils import normalise
 
 class TagDetailsSchema(Schema):
     id = fields.Int()
-    display_name = fields.Str(required=True, validate=Length(min=3))
+    # TODO Display name must have min length of 3 chars validated. Right now, error with sending empty tag prevents that
+    display_name = fields.Str(required=True)
     clean_name = fields.Str(dump_only=True)
     icon = fields.Str(dump_only=True)
     items = fields.Nested(
