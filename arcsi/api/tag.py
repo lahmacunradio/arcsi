@@ -10,7 +10,8 @@ from .utils import normalise
 
 class TagDetailsSchema(Schema):
     id = fields.Int()
-    display_name = fields.Str(required=True, min=3)
+    # TODO Display name must have min length of 3 chars validated. Right now, error with sending empty tag prevents that
+    display_name = fields.Str(required=True)
     clean_name = fields.Str(dump_only=True)
     icon = fields.Str(dump_only=True)
     items = fields.Nested(

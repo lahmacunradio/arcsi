@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from flask import jsonify, make_response, request, redirect
 from flask_security import auth_token_required, roles_accepted
 from marshmallow import fields, post_load, Schema
+from marshmallow.validate import Length
 from sqlalchemy import func
 
 from . import arcsi
@@ -28,10 +29,10 @@ class ItemDetailsSchema(Schema):
     id = fields.Int()
     number = fields.Int(required=True)
     # TODO value can't be 0 -- reserved for show itself
-    name = fields.Str(required=True, min=1)
+    name = fields.Str(required=True, validate=Length(min=1))
     name_slug = fields.Str(dump_only=True)
     description = fields.Str()
-    language = fields.Str(max=5)
+    language = fields.Str(validate=Length(min=5))
     play_date = fields.Date(required=True)
     image_url = fields.Str(dump_only=True)
     play_file_name = fields.Str(dump_only=True)
