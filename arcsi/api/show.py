@@ -5,20 +5,24 @@ from flask import jsonify, make_response, request
 from flask import current_app as app
 from flask_security import auth_token_required, roles_required, roles_accepted
 from marshmallow import fields, post_load, Schema
+from marshmallow.validate import Length, Range
 from sqlalchemy import func
 
 from . import arcsi
 from .utils import (
     archive,
+    comma_separated_params_to_list,
+    get_item_fields,
+    get_item_fields_json,
+    get_show_cover,
+    get_show_cover_json,
+    normalise,
     save_file,
     slug,
     sort_for,
-    normalise,
-    comma_separated_params_to_list,
 )
 from .utils import filter_show_items, get_shows, get_shows_with_cover
 from .item import item_archive_schema
-from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.user import User
@@ -32,9 +36,9 @@ class ShowDetailsSchema(Schema):
     name = fields.Str(required=True)
     description = fields.Str(required=True)
     cover_image_url = fields.Str(dump_only=True)
-    language = fields.Str(max=5)
+    language = fields.Str(validate=Length(min=5))
     playlist_name = fields.Str()
-    frequency = fields.Int(min=1, max=1)
+    frequency = fields.Int(validate=Range(max=31, min=0))
     contact_address = fields.Email()
     week = fields.Int()
     day = fields.Int()
@@ -167,51 +171,40 @@ def archon_list_shows():
 @arcsi.route("/show/schedule", methods=["GET"])
 @auth_token_required
 def frontend_list_shows_for_schedule():
-    do = DoArchive()
     shows = Show.query.filter(Show.active == True).all()
     for show in shows:
-        if show.cover_image_url:
-            show.cover_image_url = do.download(
-                show.archive_lahmastore_base_url, show.cover_image_url
-            )
+        get_show_cover(show)
     return shows_schedule_schema.dump(shows)
 
 
 @arcsi.route("/show/schedule_by", methods=["GET"])
 @auth_token_required
 def frontend_list_shows_for_schedule_by():
-    do = DoArchive()
     day = request.args.get("day", 1, type=int)
     shows = Show.query.filter(Show.day == day and Show.active == True).all()
     shows_json = shows_schedule_by_schema.dump(shows)
     # iterate through shows
     for show_json in shows_json:
-        if show_json["cover_image_url"]:
-            show_json["cover_image_url"] = do.download(
-                show_json["archive_lahmastore_base_url"], show_json["cover_image_url"]
-            )
+        get_show_cover_json(show_json)
         if show_json["items"]:
             latest_item_found = False
             # iterate through show's items
-            for item in show_json["items"]:
+            for item_json in show_json["items"]:
                 # search for the first one which is archived & already aired
                 if (
                     latest_item_found == False
-                    and item["archived"] == True
+                    and item_json["archived"] == True
                     and (
                         (
-                            datetime.strptime(item["play_date"], "%Y-%m-%d")
+                            datetime.strptime(item_json["play_date"], "%Y-%m-%d")
                             + timedelta(days=1)
                         )
                         < datetime.today()
                     )
                 ):
                     latest_item_found = True
-                    item["image_url"] = do.download(
-                        show_json["archive_lahmastore_base_url"], item["image_url"]
-                    )
-                    item["name_slug"] = normalise(item["name"])
-                    show_json["items"] = item
+                    get_item_fields_json(item_json, show_json)
+                    show_json["items"] = item_json
             # if there is no archived show return empty array
             if latest_item_found == False:
                 show_json["items"] = []
@@ -430,14 +423,10 @@ def archon_edit_show(id):
 @arcsi.route("/archon/show/<int:id>", methods=["GET"])
 @roles_accepted("admin", "host", "guest")
 def archon_view_show(id):
-    do = DoArchive()
     show_query = Show.query.filter_by(id=id)
     show = show_query.first()
     if show:
-        if show.cover_image_url:
-            show.cover_image_url = do.download(
-                show.archive_lahmastore_base_url, show.cover_image_url
-            )
+        get_show_cover(show)
         # Display episodes by date in descending order
         # We need to sort nested: episode list of the full object then re-apply that part
         serial_show = show_schema.dump(show)
@@ -454,7 +443,6 @@ def archon_view_show(id):
 @arcsi.route("/show/<string:show_slug>/page", methods=["GET"])
 @auth_token_required
 def frontend_view_show_page(show_slug):
-    do = DoArchive()
     filter_params = request.args.getlist("filter")
     if len(filter_params) == 1 and "," in filter_params[0]:
         filter_params = comma_separated_params_to_list(filter_params[0])
@@ -464,10 +452,7 @@ def frontend_view_show_page(show_slug):
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first()
     if show:
-        if show.cover_image_url:
-            show.cover_image_url = do.download(
-                show.archive_lahmastore_base_url, show.cover_image_url
-            )
+        get_show_cover(show)
         serial_show = show_archive_schema.dump(show)
         if 0 < len(serial_show["items"]):
             serial_show["items"] = filter_show_items(
@@ -481,15 +466,11 @@ def frontend_view_show_page(show_slug):
 @arcsi.route("/show/<string:show_slug>/item/<string:item_slug>", methods=["GET"])
 @auth_token_required
 def frontend_view_episode_archive(show_slug, item_slug):
-    do = DoArchive()
     show_query = Show.query.filter_by(archive_lahmastore_base_url=show_slug)
     show = show_query.first_or_404()
     for item in show.items:
         if normalise(item.name) == item_slug:
-            item.image_url = do.download(
-                show.archive_lahmastore_base_url, item.image_url
-            )
-            item.name_slug = item_slug
+            get_item_fields(item)
             return item_archive_schema.dump(item)
     return make_response("Episode not found", 404, headers)
 
@@ -497,7 +478,6 @@ def frontend_view_episode_archive(show_slug, item_slug):
 @arcsi.route("/show/search", methods=["GET"])
 @auth_token_required
 def frontend_search_show():
-    do = DoArchive()
     page = request.args.get("page", 1, type=int)
     size = request.args.get("size", 12, type=int)
     param = request.args.get("param", "lahmacun", type=str)
@@ -506,8 +486,5 @@ def frontend_search_show():
         | func.lower(Show.description).contains(func.lower(param))
     ).paginate(page=page, per_page=size, error_out=False)
     for show in shows.items:
-        if show.cover_image_url:
-            show.cover_image_url = do.download(
-                show.archive_lahmastore_base_url, show.cover_image_url
-            )
+        get_show_cover(show)
     return shows_schedule_schema.dump(shows.items)

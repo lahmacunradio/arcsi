@@ -9,7 +9,8 @@ from flask_migrate import Migrate
 from flask_swagger_ui import get_swaggerui_blueprint
 from sqlalchemy.exc import ProgrammingError
 
-from arcsi.model import db, item, role, show, tag, user
+from arcsi.handler.upload import DoArchive
+from arcsi.model import db, role, user
 from arcsi.view.forms.register import ButtRegisterForm
 
 ckeditor = CKEditor()
@@ -36,9 +37,6 @@ def create_app(config_file):
     app.config.from_pyfile(config_file)
 
     user_store = SQLAlchemySessionUserDatastore(db.session, user.User, role.Role)
-    # TODO w/ user_store can create_role() etc.
-    # https://pythonhosted.org/Flask-Security/api.html#flask_security.datastore.SQLAlchemyUserDatastore
-    security = Security(app, user_store, register_form=ButtRegisterForm)
 
     with app.app_context():
         db.init_app(app)
@@ -64,6 +62,10 @@ def create_app(config_file):
             db.session.commit()
         except ProgrammingError as err:
             pass
+
+    # TODO w/ user_store can create_role() etc.
+    # https://pythonhosted.org/Flask-Security/api.html#flask_security.datastore.SQLAlchemyUserDatastore
+    security = Security(app, user_store, register_form=ButtRegisterForm)
 
     from arcsi import api
     from arcsi import view

@@ -1,6 +1,5 @@
 from flask import jsonify, make_response, request
 from flask_security import roles_required
-from flask_security.utils import verify_password
 from marshmallow import fields, post_load, Schema
 
 from arcsi.api import arcsi
@@ -63,12 +62,12 @@ def get_api_token():
         return make_response(
             jsonify("Only accepts multipart/form-data for now, sorry"), 503, headers
         )
-    show_metadata = request.form.to_dict()
-    name = show_metadata["name"]
-    password = show_metadata["password"]
+    user_metadata = request.form.to_dict()
+    name = user_metadata["name"]
+    password = user_metadata["password"]
     user_query = User.query.filter_by(name=name)
-    user = user_query.first_or_404()
-    if user and verify_password(password, user.password):
+    user = user_query.first()
+    if user and user.verify_and_update_password(password):
         token = user.get_auth_token()
         ret = {"api_token": token}
         return make_response(jsonify(ret), 200, headers)
