@@ -11,6 +11,8 @@ import threading
 import time
 
 from botocore.exceptions import ClientError
+from botocore.config import Config
+from werkzeug.utils import safe_join, secure_filename
 
 from flask import current_app as app
 
@@ -61,6 +63,39 @@ class DoArchive(object):
             self.config["endpoint"], self.config["space"], path
         )
         return self.dl_file_url
+
+    def media_path(self, show, number, item_name):
+        try:
+            os.makedirs("{}/{}/{}".format(app.config["UPLOAD_FOLDER"], show, number))
+        except FileExistsError as err:
+            pass
+        media_file_path = safe_join(
+            app.config["UPLOAD_FOLDER"], show, number, secure_filename(item_name)
+        )
+        return media_file_path
+
+    def tmp_save_file(self, base_url, media_url, dir):
+        presigned_url = self.download(base_url, media_url)
+        (name, url) = (media_url.rsplit("/", 1)[1], presigned_url)
+        tmp_name = (
+            media_path(
+                base_url,
+                str(dir),
+                name,
+            ),
+        )
+        resp = requests.get(url, stream=True)
+        if resp.ok:
+
+            with open(
+                tmp_name,
+                "wb",
+            ) as _tmp_file:
+                for chunk in resp.iter_content(chunk_size=4 * 1024):
+                    _tmp_file.write(chunk)
+            return True, tmp_name
+        else:
+            return False, tmp_name
 
     # TODO STUB lets see what the final architecture would look like
     def batch_upload(self):
