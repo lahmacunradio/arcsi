@@ -4,7 +4,6 @@ from flask import jsonify, make_response, request, redirect
 from flask_security import auth_token_required, roles_accepted
 from marshmallow import fields, post_load, Schema
 from marshmallow.validate import Length
-from sqlalchemy import func
 
 from . import arcsi
 from .utils import (
@@ -14,10 +13,14 @@ from .utils import (
     cleanup_show_playlist,
     cleanup_tmp_files,
     normalise,
+    get_audio,
+    get_item_fields,
     get_items,
+    search_items,
+    search_show_items,
+    search_tag_items,
     show_item_duplications_number,
 )
-from arcsi.handler.upload import DoArchive
 from arcsi.model import db
 from arcsi.model.item import Item
 from arcsi.model.show import Show
@@ -122,7 +125,6 @@ def archon_list_items():
 @arcsi.route("/item/latest", methods=["GET"])
 @auth_token_required
 def frontend_list_items_latest():
-    do = DoArchive()
     page = request.args.get("page", 1, type=int)
     size = request.args.get("size", 12, type=int)
     items = (
@@ -132,11 +134,7 @@ def frontend_list_items_latest():
         .paginate(page=page, per_page=size, error_out=False)
     )
     for item in items.items:
-        if item.image_url:
-            item.image_url = do.download(
-                item.shows[0].archive_lahmastore_base_url, item.image_url
-            )
-        item.name_slug = normalise(item.name)
+        get_item_fields(item)
     return items_archive_schema.dump(items.items)
 
 
@@ -148,12 +146,7 @@ def archon_view_item(id):
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
     if item:
-        if item.image_url:
-            do = DoArchive()
-            item.image_url = do.download(
-                item.shows[0].archive_lahmastore_base_url, item.image_url
-            )
-        item.name_slug = normalise(item.name)
+        get_item_fields(item)
         return item_schema.dump(item)
     else:
         return make_response("Item not found", 404, headers)
@@ -297,12 +290,9 @@ def archon_add_item():
 @arcsi.route("/item/<int:id>/listen", methods=["GET"])
 @roles_accepted("admin", "host")
 def listen_play_file(id):
-    do = DoArchive()
     item_query = Item.query.filter_by(id=id)
     item = item_query.first()
-    presigned = do.download(
-        item.shows[0].archive_lahmastore_base_url, item.archive_lahmastore_canonical_url
-    )
+    presigned = get_audio(item)
     return presigned
 
 
@@ -310,12 +300,9 @@ def listen_play_file(id):
 @arcsi.route("/archon/item/<int:id>/download", methods=["GET"])
 @roles_accepted("admin", "host")
 def archon_download_play_file(id):
-    do = DoArchive()
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
-    presigned = do.download(
-        item.shows[0].archive_lahmastore_base_url, item.archive_lahmastore_canonical_url
-    )
+    presigned = get_audio(item)
     return redirect(presigned, code=302)
 
 
@@ -457,23 +444,18 @@ def archon_edit_item(id):
 @arcsi.route("/item/search", methods=["GET"])
 @auth_token_required
 def frontend_search_item():
-    do = DoArchive()
     page = request.args.get("page", 1, type=int)
     size = request.args.get("size", 12, type=int)
     param = request.args.get("param", "lahmacun", type=str)
-    items = (
-        Item.query.filter(
-            func.lower(Item.name).contains(func.lower(param))
-            | func.lower(Item.description).contains(func.lower(param))
-        )
-        .filter(Item.play_date < datetime.today() - timedelta(days=1))
+    items = search_items(param)
+    show_items = search_show_items(param)
+    tag_items = search_tag_items(param)
+    aggr_items = (
+        items.union(show_items)
+        .union(tag_items)
         .order_by(Item.play_date.desc())
         .paginate(page=page, per_page=size, error_out=False)
     )
-    for item in items.items:
-        if item.image_url:
-            item.image_url = do.download(
-                item.shows[0].archive_lahmastore_base_url, item.image_url
-            )
-        item.name_slug = normalise(item.name)
-    return items_schema.dump(items.items)
+    for item in aggr_items.items:
+        get_item_fields(item)
+    return items_schema.dump(aggr_items.items)

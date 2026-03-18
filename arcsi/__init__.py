@@ -9,7 +9,8 @@ from flask_migrate import Migrate
 from flask_swagger_ui import get_swaggerui_blueprint
 from sqlalchemy.exc import ProgrammingError
 
-from arcsi.model import db, item, role, show, tag, user
+from arcsi.handler.upload import DoArchive
+from arcsi.model import db, role, user
 from arcsi.view.forms.register import ButtRegisterForm
 
 ckeditor = CKEditor()

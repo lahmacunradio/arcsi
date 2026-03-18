@@ -2,10 +2,9 @@ from flask import make_response
 from flask_security import auth_token_required
 from marshmallow import fields, post_load, Schema
 
-from arcsi.handler.upload import DoArchive
 from arcsi.api import arcsi
 from arcsi.model.tag import Tag
-from .utils import normalise
+from .utils import get_item_fields, get_show_cover
 
 
 class TagDetailsSchema(Schema):
@@ -73,19 +72,12 @@ def list_tags():
 @arcsi.route("/tag/<string:clean_tag>", methods=["GET"])
 @auth_token_required
 def view_tagged(clean_tag):
-    do = DoArchive()
     tag = Tag.query.filter_by(clean_name=clean_tag).first_or_404()
     if tag:
         for item in tag.items:
-            item.name_slug = normalise(item.name)
-            item.image_url = do.download(
-                item.shows[0].archive_lahmastore_base_url, item.image_url
-            )
+            get_item_fields(item)
         for show in tag.shows:
-            if show.cover_image_url:
-                show.cover_image_url = do.download(
-                    show.archive_lahmastore_base_url, show.cover_image_url
-                )
+            get_show_cover(show)
         return make_response(
             tags_details_schema.dumps(tag),
             200,
