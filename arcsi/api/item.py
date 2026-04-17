@@ -1,3 +1,4 @@
+import html
 from datetime import datetime, timedelta
 
 from flask import jsonify, make_response, request, redirect
@@ -447,6 +448,7 @@ def frontend_search_item():
     page = request.args.get("page", 1, type=int)
     size = request.args.get("size", 12, type=int)
     param = request.args.get("param", "lahmacun", type=str)
+    param = html.escape(param)
     items = search_items(param)
     show_items = search_show_items(param)
     tag_items = search_tag_items(param)

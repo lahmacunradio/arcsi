@@ -177,6 +177,7 @@ def frontend_list_shows_for_schedule():
     return shows_schedule_schema.dump(shows)
 
 
+# TODO: revisit get_show_cover_json and get_item_fields_json
 @arcsi.route("/show/schedule_by", methods=["GET"])
 @auth_token_required
 def frontend_list_shows_for_schedule_by():
