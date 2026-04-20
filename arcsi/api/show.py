@@ -108,7 +108,7 @@ show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
 shows_minimal_schema = ShowDetailsSchema(many=True, only=("id", "name"))
 shows_schedule_schema = ShowDetailsSchema(
-    many=True, exclude=("items", "contact_address")
+    many=True, exclude=("contact_address", "items", "users")
 )
 shows_schedule_by_schema = ShowDetailsSchema(
     many=True,
