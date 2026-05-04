@@ -780,7 +780,7 @@
         "tags": [
           "Item Requests for frontend"
         ],
-        "summary": "Return all searched Items (their name or description contains the parameter)",
+        "summary": "Return all searched Items (their parent show, name, description or one of the assigned tags contains the parameter)",
         "security": [
           {
             "GuestApiKeyAuth": []

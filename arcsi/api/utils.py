@@ -5,12 +5,14 @@ from uuid import uuid4
 from flask import request
 from flask import current_app as app
 from slugify import slugify
+from sqlalchemy import func
 from werkzeug.utils import safe_join, secure_filename
 
 from arcsi.handler.upload import AzuraArchive, DoArchive
 from arcsi.model import db
-from arcsi.model.show import Show
 from arcsi.model.item import Item
+from arcsi.model.show import Show
+from arcsi.model.tag import Tag
 
 CONNECTER = "_"
 DELIMITER = "-"
@@ -297,13 +299,11 @@ def archive_files(item, image_file_name, error, error_message):
 
 
 def archive(norms_show_name, episode_number, archive_file_name):
-    do = DoArchive()
-
     archive_file_path = media_path(
         norms_show_name, str(episode_number), archive_file_name
     )
+    do = DoArchive()
     archive_url = do.upload(archive_file_path, norms_show_name, episode_number)
-
     return archive_url
 
 
@@ -330,9 +330,34 @@ def delete_file(norms_show_name, archive_file_path):
     return True
 
 
+def get_audio(item):
+    do = DoArchive()
+    return do.download(
+        item.shows[0].archive_lahmastore_base_url, item.archive_lahmastore_canonical_url
+    )
+
+
 def get_shows():
     shows = Show.query.all()
     return shows
+
+
+def get_show_cover(show):
+    do = DoArchive()
+    if show.cover_image_url:
+        show.cover_image_url = do.download(
+            show.archive_lahmastore_base_url, show.cover_image_url
+        )
+    return show
+
+
+def get_show_cover_json(show_json):
+    do = DoArchive()
+    if show_json["cover_image_url"]:
+        show_json["cover_image_url"] = do.download(
+            show_json["archive_lahmastore_base_url"], show_json["cover_image_url"]
+        )
+    return show_json
 
 
 def get_shows_with_cover():
@@ -361,6 +386,47 @@ def get_managed_show(user, id):
 def get_items():
     items = Item.query.all()
     return items
+
+
+def get_item_fields(item):
+    do = DoArchive()
+    if item.image_url:
+        item.image_url = do.download(
+            item.shows[0].archive_lahmastore_base_url, item.image_url
+        )
+    item.name_slug = normalise(item.name)
+    return item
+
+
+def get_item_fields_json(item_json, show_json):
+    do = DoArchive()
+    item_json["image_url"] = do.download(
+        show_json["archive_lahmastore_base_url"], item_json["image_url"]
+    )
+    item_json["name_slug"] = normalise(item_json["name"])
+
+
+def search_items(param):
+    return Item.query.filter(
+        func.lower(Item.name).contains(func.lower(param))
+        | func.lower(Item.description).contains(func.lower(param))
+    ).filter(Item.play_date < datetime.today() - timedelta(days=1))
+
+
+def search_show_items(param):
+    return (
+        Item.query.join(Item.shows)
+        .filter(func.lower(Show.name).contains(func.lower(param)))
+        .filter(Item.play_date < datetime.today() - timedelta(days=1))
+    )
+
+
+def search_tag_items(param):
+    return (
+        Item.query.join(Item.tags)
+        .filter(func.lower(Tag.clean_name).contains(normalise(param)))
+        .filter(Item.play_date < datetime.today() - timedelta(days=1))
+    )
 
 
 def get_managed_items(user):
