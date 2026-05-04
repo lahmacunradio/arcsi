@@ -68,6 +68,11 @@
           "Statistics Request"
         ],
         "summary": "Returns the number of uploaded episodes during the given timeframe",
+        "security": [
+          {
+            "AdminApiKeyAuth": []
+          }
+        ],
         "consumes": [
           "multipart/form-data"
         ],
