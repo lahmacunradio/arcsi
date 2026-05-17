@@ -49,7 +49,7 @@ class TagDetailsSchema(Schema):
         return Tag(**data)
 
 
-tags_details_schema = TagDetailsSchema()
+tag_schema = TagDetailsSchema(only=("id", "display_name", "clean_name"))
 many_tags_schema = TagDetailsSchema(
     many=True, only=("id", "display_name", "clean_name")
 )
@@ -72,14 +72,8 @@ def list_tags():
 @arcsi.route("/tag/<string:clean_tag>", methods=["GET"])
 @auth_token_required
 def view_tagged(clean_tag):
-    tag = Tag.query.filter_by(clean_name=clean_tag).first_or_404()
-    if tag:
-        for item in tag.items:
-            get_item_fields(item)
-        for show in tag.shows:
-            get_show_cover(show)
-        return make_response(
-            tags_details_schema.dumps(tag),
-            200,
-            headers,
-        )
+    return make_response(
+        tag_schema.dumps(Tag.query.filter_by(clean_name=clean_tag).first_or_404()),
+        200,
+        headers,
+    )

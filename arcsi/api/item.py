@@ -18,6 +18,7 @@ from .utils import (
     get_item_fields,
     get_items,
     search_items,
+    search_items_by_tag,
     search_show_items,
     search_tag_items,
     show_item_duplications_number,
@@ -461,3 +462,9 @@ def frontend_search_item():
     for item in aggr_items.items:
         get_item_fields(item)
     return items_schema.dump(aggr_items.items)
+
+
+@arcsi.route("/item/tag/<string:clean_tag>", methods=["GET"])
+@auth_token_required
+def frontend_search_item_by_tag(clean_tag):
+    return items_schema.dump(search_items_by_tag(clean_tag))
