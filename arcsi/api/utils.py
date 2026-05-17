@@ -468,7 +468,7 @@ def search_tag_items(param):
 
 def search_shows_by_tag(param):
     return Show.query.join(Show.tags).filter(
-        func.lower(Tag.clear_name).contains(func.lower(param))
+        func.lower(Tag.clean_name).contains(func.lower(param))
     )
 
 
