@@ -467,7 +467,7 @@ def frontend_search_item():
 @arcsi.route("/item/tag/<string:clean_tag>", methods=["GET"])
 @auth_token_required
 def frontend_search_item_by_tag(clean_tag):
-    episodes = search_items_by_tag(clean_tag).all()
-    for item in episodes:
+    items = search_items_by_tag(clean_tag).all()
+    for item in items:
         get_item_fields(item)
-    return items_archive_schema.dump(episodes)
+    return items_archive_schema.dump(items)

@@ -1,4 +1,4 @@
-import os, json
+import os
 from datetime import datetime, timedelta
 from uuid import uuid4
 
@@ -399,7 +399,7 @@ def get_shows_with_latest_item(shows, schema):
             # if there is no archived show return empty array
             if latest_item_found == False:
                 show_json["items"] = []
-    return json.dumps(shows_json)
+    return shows_json
 
 
 def get_managed_show(user, id):

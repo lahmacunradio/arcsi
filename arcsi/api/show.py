@@ -187,7 +187,11 @@ def archon_list_shows():
 @arcsi.route("/show/all_schedule", methods=["GET"])
 @auth_token_required
 def frontend_shows_schedule():
-    return get_shows_with_latest_item(Show.query, frontend_shows_schedule_schema)
+    return make_response(
+        jsonify(get_shows_with_latest_item(Show.query, frontend_shows_schedule_schema)),
+        200,
+        headers,
+    )
 
 
 @arcsi.route("/show/schedule", methods=["GET"])
@@ -490,4 +494,7 @@ def frontend_search_show():
 @arcsi.route("/show/tag/<string:clean_tag>", methods=["GET"])
 @auth_token_required
 def frontend_search_show_by_tag(clean_tag):
-    return frontend_shows_tile_schema.dump(search_shows_by_tag(clean_tag))
+    shows = search_shows_by_tag(clean_tag)
+    for show in shows:
+        get_show_cover(show)
+    return frontend_shows_tile_schema.dump(shows)
