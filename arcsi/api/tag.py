@@ -4,6 +4,7 @@ from marshmallow import fields, post_load, Schema
 
 from arcsi.api import arcsi
 from arcsi.model.tag import Tag
+from .utils import get_item_fields, get_show_cover
 
 
 class TagDetailsSchema(Schema):
@@ -49,6 +50,7 @@ class TagDetailsSchema(Schema):
 
 
 tag_schema = TagDetailsSchema(only=("id", "display_name", "clean_name"))
+tags_details_schema = TagDetailsSchema()
 many_tags_schema = TagDetailsSchema(
     many=True, only=("id", "display_name", "clean_name")
 )
@@ -71,6 +73,21 @@ def list_tags():
 @arcsi.route("/tag/<string:clean_tag>", methods=["GET"])
 @auth_token_required
 def view_tagged(clean_tag):
+    tag = Tag.query.filter_by(clean_name=clean_tag).first_or_404()
+    if tag:
+        for item in tag.items:
+            get_item_fields(item)
+        for show in tag.shows:
+            get_show_cover(show)
+        return make_response(
+            tags_details_schema.dumps(tag),
+            200,
+            headers,
+        )
+
+@arcsi.route("/tag/<string:clean_tag>/minimal", methods=["GET"])
+@auth_token_required
+def view_tagged_minimal(clean_tag):
     return make_response(
         tag_schema.dumps(Tag.query.filter_by(clean_name=clean_tag).first_or_404()),
         200,
