@@ -407,10 +407,14 @@ def get_item_fields_json(item_json, show_json):
 
 
 def search_items(param):
-    return Item.query.filter(
-        func.lower(Item.name).contains(func.lower(param))
-        | func.lower(Item.description).contains(func.lower(param))
-    ).filter(Item.play_date < datetime.today() - timedelta(days=1))
+    return (
+        Item.query.filter(
+            func.lower(Item.name).contains(func.lower(param))
+            | func.lower(Item.description).contains(func.lower(param))
+        )
+        .filter(Item.play_date < datetime.today() - timedelta(days=1))
+        .filter(Item.archived == True)
+    )
 
 
 def search_show_items(param):
@@ -418,6 +422,7 @@ def search_show_items(param):
         Item.query.join(Item.shows)
         .filter(func.lower(Show.name).contains(func.lower(param)))
         .filter(Item.play_date < datetime.today() - timedelta(days=1))
+        .filter(Item.archived == True)
     )
 
 
@@ -426,6 +431,7 @@ def search_tag_items(param):
         Item.query.join(Item.tags)
         .filter(func.lower(Tag.clean_name).contains(normalise(param)))
         .filter(Item.play_date < datetime.today() - timedelta(days=1))
+        .filter(Item.archived == True)
     )
 
 

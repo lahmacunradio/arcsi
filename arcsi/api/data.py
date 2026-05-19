@@ -10,7 +10,7 @@ headers = {"Content-Type": "application/json"}
 
 
 @arcsi.route("/data/uploaded_episodes", methods=["POST"])
-@roles_required("guest")
+@roles_required("admin")
 def uploaded_episodes():
     date_metadata = request.form.to_dict()
     end_date = date_metadata["end_date"]
