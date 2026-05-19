@@ -49,6 +49,7 @@ class TagDetailsSchema(Schema):
         return Tag(**data)
 
 
+tag_schema = TagDetailsSchema(only=("id", "display_name", "clean_name"))
 tags_details_schema = TagDetailsSchema()
 many_tags_schema = TagDetailsSchema(
     many=True, only=("id", "display_name", "clean_name")
@@ -83,3 +84,12 @@ def view_tagged(clean_tag):
             200,
             headers,
         )
+
+@arcsi.route("/tag/<string:clean_tag>/minimal", methods=["GET"])
+@auth_token_required
+def view_tagged_minimal(clean_tag):
+    return make_response(
+        tag_schema.dumps(Tag.query.filter_by(clean_name=clean_tag).first_or_404()),
+        200,
+        headers,
+    )

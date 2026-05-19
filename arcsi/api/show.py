@@ -1,6 +1,3 @@
-import json
-
-from datetime import datetime, timedelta
 from flask import jsonify, make_response, request
 from flask import current_app as app
 from flask_security import auth_token_required, roles_required, roles_accepted
@@ -13,9 +10,9 @@ from .utils import (
     archive,
     comma_separated_params_to_list,
     get_item_fields,
-    get_item_fields_json,
     get_show_cover,
-    get_show_cover_json,
+    get_shows_with_latest_item,
+    search_shows_by_tag,
     normalise,
     save_file,
     slug,
@@ -107,10 +104,7 @@ show_archive_schema = ShowDetailsSchema(
 show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
 shows_minimal_schema = ShowDetailsSchema(many=True, only=("id", "name"))
-shows_schedule_schema = ShowDetailsSchema(
-    many=True, exclude=("contact_address", "items", "users")
-)
-shows_schedule_by_schema = ShowDetailsSchema(
+frontend_shows_tile_schema = ShowDetailsSchema(
     many=True,
     only=(
         "id",
@@ -118,6 +112,22 @@ shows_schedule_by_schema = ShowDetailsSchema(
         "name",
         "description",
         "cover_image_url",
+        "archive_lahmastore_base_url",
+        "tags",
+    ),
+)
+shows_schedule_schema = ShowDetailsSchema(
+    many=True, exclude=("contact_address", "items", "users")
+)
+frontend_shows_schedule_schema = ShowDetailsSchema(
+    many=True,
+    only=(
+        "id",
+        "active",
+        "name",
+        "description",
+        "cover_image_url",
+        "week",
         "day",
         "start",
         "end",
@@ -162,10 +172,26 @@ def frontend_list_shows_without_items():
     return shows_schedule_schema.dump(get_shows_with_cover())
 
 
+@arcsi.route("/show/all_tiles", methods=["GET"])
+@roles_accepted("admin", "host", "guest")
+def frontend_shows_tiles():
+    return frontend_shows_tile_schema.dump(get_shows_with_cover())
+
+
 @arcsi.route("/archon/show/all", methods=["GET"])
 @roles_accepted("admin", "host")
 def archon_list_shows():
     return archon_shows_schema.dump(get_shows())
+
+
+@arcsi.route("/show/all_schedule", methods=["GET"])
+@auth_token_required
+def frontend_shows_schedule():
+    return make_response(
+        jsonify(get_shows_with_latest_item(Show.query, frontend_shows_schedule_schema)),
+        200,
+        headers,
+    )
 
 
 @arcsi.route("/show/schedule", methods=["GET"])
@@ -182,34 +208,8 @@ def frontend_list_shows_for_schedule():
 @auth_token_required
 def frontend_list_shows_for_schedule_by():
     day = request.args.get("day", 1, type=int)
-    shows = Show.query.filter(Show.day == day and Show.active == True).all()
-    shows_json = shows_schedule_by_schema.dump(shows)
-    # iterate through shows
-    for show_json in shows_json:
-        get_show_cover_json(show_json)
-        if show_json["items"]:
-            latest_item_found = False
-            # iterate through show's items
-            for item_json in show_json["items"]:
-                # search for the first one which is archived & already aired
-                if (
-                    latest_item_found == False
-                    and item_json["archived"] == True
-                    and (
-                        (
-                            datetime.strptime(item_json["play_date"], "%Y-%m-%d")
-                            + timedelta(days=1)
-                        )
-                        < datetime.today()
-                    )
-                ):
-                    latest_item_found = True
-                    get_item_fields_json(item_json, show_json)
-                    show_json["items"] = item_json
-            # if there is no archived show return empty array
-            if latest_item_found == False:
-                show_json["items"] = []
-    return json.dumps(shows_json)
+    shows = Show.query.filter(Show.day == day)
+    return get_shows_with_latest_item(shows, frontend_shows_schedule_schema)
 
 
 # We are gonna use this on the new page as the show/all
@@ -489,3 +489,12 @@ def frontend_search_show():
     for show in shows.items:
         get_show_cover(show)
     return shows_schedule_schema.dump(shows.items)
+
+
+@arcsi.route("/show/tag/<string:clean_tag>", methods=["GET"])
+@auth_token_required
+def frontend_search_show_by_tag(clean_tag):
+    shows = search_shows_by_tag(clean_tag)
+    for show in shows:
+        get_show_cover(show)
+    return frontend_shows_tile_schema.dump(shows)

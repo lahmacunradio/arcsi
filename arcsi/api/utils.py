@@ -337,11 +337,6 @@ def get_audio(item):
     )
 
 
-def get_shows():
-    shows = Show.query.all()
-    return shows
-
-
 def get_show_cover(show):
     do = DoArchive()
     if show.cover_image_url:
@@ -360,6 +355,11 @@ def get_show_cover_json(show_json):
     return show_json
 
 
+def get_shows():
+    shows = Show.query.all()
+    return shows
+
+
 def get_shows_with_cover():
     do = DoArchive()
     shows = Show.query.all()
@@ -371,9 +371,35 @@ def get_shows_with_cover():
     return shows
 
 
-def get_managed_shows(user):
-    managed_shows = Show.query.filter(Show.users.contains(user)).all()
-    return managed_shows
+def get_shows_with_latest_item(shows, schema):
+    shows = shows.filter(Show.active == True).all()
+    shows_json = schema.dump(shows)
+    # iterate through shows
+    for show_json in shows_json:
+        get_show_cover_json(show_json)
+        if show_json["items"]:
+            latest_item_found = False
+            # iterate through show's items
+            for item_json in show_json["items"]:
+                # search for the first one which is archived & already aired
+                if (
+                    latest_item_found == False
+                    and item_json["archived"] == True
+                    and (
+                        (
+                            datetime.strptime(item_json["play_date"], "%Y-%m-%d")
+                            + timedelta(days=1)
+                        )
+                        < datetime.today()
+                    )
+                ):
+                    latest_item_found = True
+                    get_item_fields_json(item_json, show_json)
+                    show_json["items"] = item_json
+            # if there is no archived show return empty array
+            if latest_item_found == False:
+                show_json["items"] = []
+    return shows_json
 
 
 def get_managed_show(user, id):
@@ -383,9 +409,9 @@ def get_managed_show(user, id):
     return managed_show
 
 
-def get_items():
-    items = Item.query.all()
-    return items
+def get_managed_shows(user):
+    managed_shows = Show.query.filter(Show.users.contains(user)).all()
+    return managed_shows
 
 
 def get_item_fields(item):
@@ -404,6 +430,11 @@ def get_item_fields_json(item_json, show_json):
         show_json["archive_lahmastore_base_url"], item_json["image_url"]
     )
     item_json["name_slug"] = normalise(item_json["name"])
+
+
+def get_items():
+    items = Item.query.all()
+    return items
 
 
 def search_items(param):
@@ -430,6 +461,21 @@ def search_tag_items(param):
     return (
         Item.query.join(Item.tags)
         .filter(func.lower(Tag.clean_name).contains(normalise(param)))
+        .filter(Item.play_date < datetime.today() - timedelta(days=1))
+        .filter(Item.archived == True)
+    )
+
+
+def search_shows_by_tag(param):
+    return Show.query.join(Show.tags).filter(
+        func.lower(Tag.clean_name).contains(func.lower(param))
+    )
+
+
+def search_items_by_tag(param):
+    return (
+        Item.query.join(Item.tags)
+        .filter(func.lower(Tag.clean_name).contains(func.lower(param)))
         .filter(Item.play_date < datetime.today() - timedelta(days=1))
         .filter(Item.archived == True)
     )
