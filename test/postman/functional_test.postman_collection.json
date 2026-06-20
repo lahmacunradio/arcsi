@@ -6664,7 +6664,7 @@
           }
         ],
         "url": {
-          "raw": "{{url}}/show/all_tiles",
+          "raw": "{{url}}/show/all_details",
           "host": [
             "{{url}}"
           ],

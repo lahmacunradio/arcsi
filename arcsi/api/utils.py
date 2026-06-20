@@ -468,14 +468,14 @@ def search_tag_items(param):
 
 def search_shows_by_tag(param):
     return Show.query.join(Show.tags).filter(
-        func.lower(Tag.clean_name).contains(func.lower(param))
+        func.lower(Tag.clean_name) == (func.lower(param))
     )
 
 
 def search_items_by_tag(param):
     return (
         Item.query.join(Item.tags)
-        .filter(func.lower(Tag.clean_name).contains(func.lower(param)))
+        .filter(func.lower(Tag.clean_name) == (func.lower(param)))
         .filter(Item.play_date < datetime.today() - timedelta(days=1))
         .filter(Item.archived == True)
     )

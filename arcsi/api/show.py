@@ -104,7 +104,7 @@ show_archive_schema = ShowDetailsSchema(
 show_partial_schema = ShowDetailsSchema(partial=True)
 shows_schema = ShowDetailsSchema(many=True)
 shows_minimal_schema = ShowDetailsSchema(many=True, only=("id", "name"))
-frontend_shows_tile_schema = ShowDetailsSchema(
+shows_details_schema = ShowDetailsSchema(
     many=True,
     only=(
         "id",
@@ -116,10 +116,10 @@ frontend_shows_tile_schema = ShowDetailsSchema(
         "tags",
     ),
 )
-shows_schedule_schema = ShowDetailsSchema(
+shows_schedule_excluded_schema = ShowDetailsSchema(
     many=True, exclude=("contact_address", "items", "users")
 )
-frontend_shows_schedule_schema = ShowDetailsSchema(
+shows_schedule_schema = ShowDetailsSchema(
     many=True,
     only=(
         "id",
@@ -169,13 +169,13 @@ def list_shows():
 @arcsi.route("/show/all_without_items", methods=["GET"])
 @roles_accepted("admin", "host", "guest")
 def frontend_list_shows_without_items():
-    return shows_schedule_schema.dump(get_shows_with_cover())
+    return shows_schedule_excluded_schema.dump(get_shows_with_cover())
 
 
-@arcsi.route("/show/all_tiles", methods=["GET"])
+@arcsi.route("/show/all_details", methods=["GET"])
 @roles_accepted("admin", "host", "guest")
 def frontend_shows_tiles():
-    return frontend_shows_tile_schema.dump(get_shows_with_cover())
+    return shows_details_schema.dump(get_shows_with_cover())
 
 
 @arcsi.route("/archon/show/all", methods=["GET"])
@@ -188,7 +188,7 @@ def archon_list_shows():
 @auth_token_required
 def frontend_shows_schedule():
     return make_response(
-        jsonify(get_shows_with_latest_item(Show.query, frontend_shows_schedule_schema)),
+        jsonify(get_shows_with_latest_item(Show.query, shows_schedule_schema)),
         200,
         headers,
     )
@@ -200,7 +200,7 @@ def frontend_list_shows_for_schedule():
     shows = Show.query.filter(Show.active == True).all()
     for show in shows:
         get_show_cover(show)
-    return shows_schedule_schema.dump(shows)
+    return shows_schedule_excluded_schema.dump(shows)
 
 
 # TODO: revisit get_show_cover_json and get_item_fields_json
@@ -209,7 +209,7 @@ def frontend_list_shows_for_schedule():
 def frontend_list_shows_for_schedule_by():
     day = request.args.get("day", 1, type=int)
     shows = Show.query.filter(Show.day == day)
-    return get_shows_with_latest_item(shows, frontend_shows_schedule_schema)
+    return get_shows_with_latest_item(shows, shows_schedule_schema)
 
 
 # We are gonna use this on the new page as the show/all
@@ -488,13 +488,13 @@ def frontend_search_show():
     ).paginate(page=page, per_page=size, error_out=False)
     for show in shows.items:
         get_show_cover(show)
-    return shows_schedule_schema.dump(shows.items)
+    return shows_schedule_excluded_schema.dump(shows.items)
 
 
-@arcsi.route("/show/tag/<string:clean_tag>", methods=["GET"])
+@arcsi.route("/show/search_by_tag/<string:clean_tag>", methods=["GET"])
 @auth_token_required
 def frontend_search_show_by_tag(clean_tag):
     shows = search_shows_by_tag(clean_tag)
     for show in shows:
         get_show_cover(show)
-    return frontend_shows_tile_schema.dump(shows)
+    return shows_details_schema.dump(shows)
