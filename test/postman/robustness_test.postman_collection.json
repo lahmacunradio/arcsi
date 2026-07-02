@@ -981,13 +981,13 @@
           }
         ],
         "url": {
-          "raw": "{{url}}/item/tag/:clean_tag",
+          "raw": "{{url}}/item/search_by_tag:clean_tag",
           "host": [
             "{{url}}"
           ],
           "path": [
             "item",
-            "tag",
+            "search_by_tag",
             ":clean_tag"
           ],
           "variable": [
@@ -1218,7 +1218,7 @@
           ],
           "path": [
             "show",
-            "all_tiles"
+            "all_details"
           ]
         }
       },
@@ -1364,13 +1364,13 @@
           }
         ],
         "url": {
-          "raw": "{{url}}/show/tag/:clean_tag",
+          "raw": "{{url}}/show/search_by_tag/:clean_tag",
           "host": [
             "{{url}}"
           ],
           "path": [
             "show",
-            "tag",
+            "search_by_tag",
             ":clean_tag"
           ],
           "variable": [
