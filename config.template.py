@@ -17,12 +17,15 @@ SQLALCHEMY_TRACK_MODIFICATIONS = (
 # https://pythonhosted.org/Flask-Security/configuration.html
 SECURITY_CHANGEABLE = True
 SECURITY_SEND_REGISTER_EMAIL = True
+SECURITY_PASSWORD_CONFIRM_REQUIRED = True
+# If mail capability is available and SMTP server is set forgot password functionality is available set this to True
 SECURITY_RECOVERABLE = True
 SECURITY_REGISTERABLE = True
 SECURITY_PASSWORD_SALT = "some_salt"
 SECURITY_USE_VERIFY_PASSWORD_CACHE = True
-# If mail capability is available and SMTP server is set forgot password functionality is available set this to True
-SECURITY_RECOVERABLE = False
+
+RECAPTCHA_PUBLIC_KEY = "some_public_key"
+RECAPTCHA_PRIVATE_KEY = "some_private_key"
 
 # ARCSI CONF
 UPLOAD_FOLDER = "/abs/path/on/your/machine"  # this is where arcsi stores uploadable files temporarily
