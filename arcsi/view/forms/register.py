@@ -1,8 +1,8 @@
 from wtforms import StringField
-from flask_wtf.recaptcha import RecaptchaField
-from flask_security.forms import RegisterFormV2
+from flask_security.forms import RegisterForm
 
 
-class ButtRegisterForm(RegisterFormV2):
+class ButtRegisterForm(RegisterForm):
     name = StringField("Username", [])
-    recaptcha = RecaptchaField()
+    butt_user = StringField("Butt username", [])
+    butt_pw = StringField("Butt password", [])
