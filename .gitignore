@@ -1,6 +1,7 @@
 .DS_Store
 .env
 *.env
+*.venv  # managed by uv
 config.py
 .flaskenv
 *.pyc

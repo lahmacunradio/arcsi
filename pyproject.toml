@@ -1,0 +1,25 @@
+[project]
+name = "arcsi"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic==1.17.2",
+    "argon2-cffi==25.1.0",
+    "bcrypt==5.0.0",
+    "boto3==1.42.21",
+    "flask==3.1.2",
+    "flask-ckeditor==1.0.0",
+    "flask-mail==0.10.0",
+    "flask-migrate==4.1.0",
+    "flask-security==5.7.1",
+    "flask-swagger-ui==5.21.0",
+    "gunicorn==23.0.0",
+    "marshmallow==4.1.2",
+    "mutagen==1.47.0",
+    "psycopg2==2.9.11",
+    "python-slugify==8.0.4",
+    "pytz==2025.2",
+    "requests==2.32.5"
+]
