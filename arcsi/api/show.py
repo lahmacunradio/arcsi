@@ -187,8 +187,10 @@ def archon_list_shows():
 @arcsi.route("/show/all_schedule", methods=["GET"])
 @auth_token_required
 def frontend_shows_schedule():
+    week = request.args.get("week", 1, type=int)
+    shows = Show.query.filter_by(week=week)
     return make_response(
-        jsonify(get_shows_with_latest_item(Show.query, shows_schedule_schema)),
+        jsonify(get_shows_with_latest_item(shows, shows_schedule_schema)),
         200,
         headers,
     )
@@ -207,8 +209,9 @@ def frontend_list_shows_for_schedule():
 @arcsi.route("/show/schedule_by", methods=["GET"])
 @auth_token_required
 def frontend_list_shows_for_schedule_by():
+    week = request.args.get("week", 1, type=int)
     day = request.args.get("day", 1, type=int)
-    shows = Show.query.filter(Show.day == day)
+    shows = Show.query.filter_by(week=week).filter_by(day=day)
     return get_shows_with_latest_item(shows, shows_schedule_schema)
 
 

@@ -8,6 +8,7 @@ from .show import *
 from .tag import *
 from .user import *
 from .data import *
+from .liquidsoap import *
 
 # TODO add routing here eg
 # arcsi.route("/archive", methods=["GET"])(<method_name>)
