@@ -4,6 +4,7 @@ from flask_security import auth_token_required, roles_required, roles_accepted
 from marshmallow import fields, post_load, Schema
 from marshmallow.validate import Length, Range
 from sqlalchemy import func
+from datetime import datetime
 
 from . import arcsi
 from .utils import (
@@ -199,7 +200,16 @@ def frontend_shows_schedule():
 @arcsi.route("/show/schedule", methods=["GET"])
 @auth_token_required
 def frontend_list_shows_for_schedule():
-    shows = Show.query.filter(Show.active == True).all()
+    current_day = datetime.today().isocalendar().weekday
+    current_week = datetime.today().isocalendar().week
+    shows = Show.query.filter(Show.active == True)
+    shows_on_this_week = shows.filter(
+        (Show.week == current_week and Show.day >= current_day)
+    )
+    shows_on_next_week = shows.filter(
+        Show.week == (current_week + 1) and Show.day < current_day
+    )
+    shows = shows_on_this_week.union(shows_on_next_week).all()
     for show in shows:
         get_show_cover(show)
     return shows_schedule_excluded_schema.dump(shows)
