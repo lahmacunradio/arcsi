@@ -1,4 +1,6 @@
-FROM python:3.11.13-slim-bullseye AS builder
+FROM python:3.12-slim-trixie AS builder
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -13,7 +15,7 @@ ADD infra/tmpreaper.conf /etc/tmpreaper.conf
 FROM builder AS build
 WORKDIR /app
 ADD . .
-RUN pip3 install -r requirements.txt
+RUN uv lock
 
 FROM build AS init
 EXPOSE 5666
