@@ -189,7 +189,7 @@ def archon_list_shows():
 @auth_token_required
 def frontend_shows_schedule():
     week = request.args.get("week", 1, type=int)
-    shows = Show.query.filter_by(week=week)
+    shows = Show.query.filter(Show.week == week)
     return make_response(
         jsonify(get_shows_with_latest_item(shows, shows_schedule_schema)),
         200,
@@ -200,16 +200,17 @@ def frontend_shows_schedule():
 @arcsi.route("/show/schedule", methods=["GET"])
 @auth_token_required
 def frontend_list_shows_for_schedule():
-    current_day = datetime.today().isocalendar().weekday
-    current_week = datetime.today().isocalendar().week
-    shows = Show.query.filter(Show.active == True)
-    shows_on_this_week = shows.filter(
-        (Show.week == current_week and Show.day >= current_day)
-    )
-    shows_on_next_week = shows.filter(
-        Show.week == (current_week + 1) and Show.day < current_day
-    )
-    shows = shows_on_this_week.union(shows_on_next_week).all()
+    shows = Show.query.filter(Show.active == True).all()
+    # TODO: change with DB migration
+    # current_day = datetime.today().isocalendar().weekday
+    # current_week = datetime.today().isocalendar().week
+    # abcd_week = current_week % 4
+    # shows = Show.query.filter(Show.active == True)
+    # shows_on_this_week = shows.filter(
+    #     (Show.week == (abcd_week + 1) and Show.day >= current_day)
+    # )
+    # shows_on_next_week = shows.filter(Show.week == abcd_week and Show.day < current_day)
+    # shows = shows_on_this_week.union(shows_on_next_week).all()
     for show in shows:
         get_show_cover(show)
     return shows_schedule_excluded_schema.dump(shows)

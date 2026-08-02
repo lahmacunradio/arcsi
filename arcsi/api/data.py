@@ -15,17 +15,22 @@ headers = {"Content-Type": "application/json"}
 @arcsi.route("/data/weekly_schedule", methods=["GET"])
 @roles_required("admin")
 def weekly_schedule():
-    week_number = request.args.get("week", datetime.today().isocalendar().week, type=int)
+    week_number = request.args.get(
+        "week", datetime.today().isocalendar().week, type=int
+    )
     abcd_week = week_number % 4
-    shows = Show.query.filter(Show.active == True).filter_by(week=abcd_week).order_by(Show.day, Show.start).all()
+    shows = (
+        Show.query.filter(Show.active == True)
+        .filter_by(week=abcd_week)
+        .order_by(Show.day, Show.start)
+        .all()
+    )
     shows = shows_schedule_schema.dump(shows)
     playlist_init = make_playlist_init_script(shows)
     playlist_schedule = make_playlist_schedule_script(shows)
-    ret = {
-        "playlist_init": playlist_init,
-        "playlist_schedule": playlist_schedule
-    }
+    ret = {"playlist_init": playlist_init, "playlist_schedule": playlist_schedule}
     return make_response(jsonify(ret), 200, headers)
+
 
 @arcsi.route("/data/uploaded_episodes", methods=["POST"])
 @roles_required("admin")
