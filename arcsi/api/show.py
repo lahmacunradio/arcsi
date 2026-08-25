@@ -12,7 +12,7 @@ from .utils import (
     comma_separated_params_to_list,
     get_item_fields,
     get_show_cover,
-    get_shows_with_latest_item,
+    get_active_shows_with_latest_item,
     search_shows_by_tag,
     normalise,
     save_file,
@@ -83,7 +83,7 @@ class ShowDetailsSchema(Schema):
 
 
 show_schema = ShowDetailsSchema()
-show_archive_schema = ShowDetailsSchema(
+show_archive_page_schema = ShowDetailsSchema(
     only=(
         "id",
         "active",
@@ -160,13 +160,6 @@ headers = {"Content-Type": "application/json"}
 
 
 @arcsi.route("/show", methods=["GET"])
-# Still used by the application, but should be replaced with the /show/all_without_items
-@arcsi.route("/show/all", methods=["GET"])
-@auth_token_required
-def list_shows():
-    return shows_schema.dump(get_shows_with_cover())
-
-
 @arcsi.route("/show/all_without_items", methods=["GET"])
 @roles_accepted("admin", "host", "guest")
 def frontend_list_shows_without_items():
@@ -191,7 +184,7 @@ def frontend_shows_schedule():
     week = request.args.get("week", 1, type=int)
     shows = Show.query.filter(Show.week == week)
     return make_response(
-        jsonify(get_shows_with_latest_item(shows, shows_schedule_schema)),
+        jsonify(get_active_shows_with_latest_item(shows, shows_schedule_schema)),
         200,
         headers,
     )
@@ -200,7 +193,8 @@ def frontend_shows_schedule():
 @arcsi.route("/show/schedule", methods=["GET"])
 @auth_token_required
 def frontend_list_shows_for_schedule():
-    shows = Show.query.filter(Show.active == True).all()
+    week = request.args.get("week", 1, type=int)
+    shows = Show.query.filter(Show.week == week).filter(Show.active == True).all()
     # TODO: change with DB migration
     # current_day = datetime.today().isocalendar().weekday
     # current_week = datetime.today().isocalendar().week
@@ -223,7 +217,7 @@ def frontend_list_shows_for_schedule_by():
     week = request.args.get("week", 1, type=int)
     day = request.args.get("day", 1, type=int)
     shows = Show.query.filter_by(week=week).filter_by(day=day)
-    return get_shows_with_latest_item(shows, shows_schedule_schema)
+    return get_active_shows_with_latest_item(shows, shows_schedule_schema)
 
 
 # We are gonna use this on the new page as the show/all
@@ -468,7 +462,7 @@ def frontend_view_show_page(show_slug):
     show = show_query.first()
     if show:
         get_show_cover(show)
-        serial_show = show_archive_schema.dump(show)
+        serial_show = show_archive_page_schema.dump(show)
         if 0 < len(serial_show["items"]):
             serial_show["items"] = filter_show_items(
                 show, serial_show["items"], archived, latest

@@ -1,0 +1,522 @@
+{
+  "components": {
+    "schemas": {
+      "ShowRequestSchema": {
+        "type": "object",
+        "properties": {
+          "active": {
+            "type": "boolean",
+            "example": true
+          },
+          "name": {
+            "type": "string",
+            "example": "show-name"
+          },
+          "description": {
+            "type": "string",
+            "example": "show-description"
+          },
+          "language": {
+            "type": "string",
+            "example": "show-language"
+          },
+          "playlist_name": {
+            "type": "string",
+            "example": "show-playlist_name"
+          },
+          "frequency": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1
+          },
+          "week": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1
+          },
+          "day": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1
+          },
+          "start": {
+            "type": "string",
+            "example": "04:20"
+          },
+          "end": {
+            "type": "string",
+            "example": "06:00"
+          },
+          "archive_lahmastore": {
+            "type": "boolean",
+            "example": true
+          },
+          "users": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1
+          },
+          "user_name": {
+            "type": "string",
+            "example": "show-user_name"
+          },
+          "user_email": {
+            "type": "string",
+            "example": "show-user_email"
+          },
+          "image_file": {
+            "type": "file"
+          }
+        },
+        "example": {
+          "active": true,
+          "name": "show-name",
+          "description": "show-description",
+          "language": "show-language",
+          "playlist_name": "show-playlist_name",
+          "frequency": 1,
+          "week": 1,
+          "day": 1,
+          "start": "04:20",
+          "end": "06:00",
+          "archive_lahmastore": true,
+          "users": 1,
+          "user_name": "Arcsi",
+          "user_email": "arcsi@lahmacun.hu"
+        }
+      },
+      "ShowSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "cover_image_url": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "playlist_name": {
+            "type": "string"
+          },
+          "frequency": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "contact_address": {
+            "type": "string"
+          },
+          "week": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "day": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "start": {
+            "type": "string"
+          },
+          "end": {
+            "type": "string"
+          },
+          "archive_lahmastore": {
+            "type": "boolean"
+          },
+          "archive_lahmastore_base_url": {
+            "type": "string"
+          },
+          "external_url": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShowNestedItemSchema"
+            }
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShowNestedUserSchema"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShowNestedTagSchema"
+            }
+          }
+        }
+      },
+      "ShowsDetailsSchema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ShowDetailsSchema"
+        }
+      },
+      "ShowDetailsSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "cover_image_url": {
+            "type": "string"
+          },
+          "archive_lahmastore_base_url": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShowNestedTagSchema"
+            }
+          }
+        }
+      },
+      "ShowsScheduleExcludedSchema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ShowScheduleExcludedSchema"
+        }
+      },
+      "ShowScheduleExcludedSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "cover_image_url": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "playlist_name": {
+            "type": "string"
+          },
+          "frequency": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "week": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "day": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "start": {
+            "type": "string"
+          },
+          "end": {
+            "type": "string"
+          },
+          "archive_lahmastore": {
+            "type": "boolean"
+          },
+          "archive_lahmastore_base_url": {
+            "type": "string"
+          },
+          "external_url": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShowNestedTagSchema"
+            }
+          }
+        }
+      },
+      "ShowsScheduleSchema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ShowScheduleSchema"
+        }
+      },
+      "ShowScheduleSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "cover_image_url": {
+            "type": "string"
+          },
+          "week": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "day": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "start": {
+            "type": "string"
+          },
+          "end": {
+            "type": "string"
+          },
+          "frequency": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "language": {
+            "type": "string"
+          },
+          "playlist_name": {
+            "type": "string"
+          },
+          "archive_lahmastore_base_url": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShowNestedItemSchema"
+            }
+          }
+        }
+      },
+      "ShowsArchiveSchema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ShowArchiveSchema"
+        }
+      },
+      "ShowArchiveSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "external_url": {
+            "type": "string"
+          },
+          "cover_image_url": {
+            "type": "string"
+          },
+          "playlist_name": {
+            "type": "string"
+          },
+          "archive_lahmastore_base_url": {
+            "type": "string"
+          }
+        }
+      },
+      "ShowArchivePageSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "cover_image_url": {
+            "type": "string"
+          },
+          "day": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "start": {
+            "type": "string"
+          },
+          "end": {
+            "type": "string"
+          },
+          "frequency": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "language": {
+            "type": "string"
+          },
+          "playlist_name": {
+            "type": "string"
+          },
+          "archive_lahmastore_base_url": {
+            "type": "string"
+          },
+          "external_url": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShowNestedItemSchema"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShowNestedTagSchema"
+            }
+          }
+        }
+      },
+      "ArchonShowsSchema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ArchonShowSchema"
+        }
+      },
+      "ArchonShowSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShowNestedUserSchema"
+            }
+          },
+          "contract_address": {
+            "type": "string"
+          },
+          "external_url": {
+            "type": "string"
+          }
+        }
+      },
+      "ShowNestedItemSchema": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "name_slug": {
+            "type": "string"
+          },
+          "play_file_name": {
+            "type": "string"
+          },
+          "play_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "image_url": {
+            "type": "string"
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "download_count": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ShowNestedUserSchema": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "ShowNestedTagSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "clean_name": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
