@@ -57,7 +57,7 @@ class LiquidsoapScheduler(Scheduler):
 
     def get_playlist_schedule_template(self):
         playlist_schedule_file = open(
-            "/app/arcsi/templates/schedule/;s_playlist_schedule_{}.tpl".format(
+            "/app/arcsi/templates/schedule/ls_playlist_schedule_{}.tpl".format(
                 self.config["liquidsoap_version"]
             ),
             "r",
