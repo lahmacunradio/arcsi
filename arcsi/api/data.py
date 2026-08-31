@@ -4,10 +4,10 @@ from flask import jsonify, make_response, request
 from flask_security import roles_required
 
 from . import arcsi
+from arcsi.handler.schedule import LiquidsoapScheduler
 from arcsi.model.item import Item
 from arcsi.model.show import Show
 from .show import shows_schedule_schema
-from .liquidsoap import make_playlist_init_script, make_playlist_schedule_script
 
 headers = {"Content-Type": "application/json"}
 
@@ -15,6 +15,7 @@ headers = {"Content-Type": "application/json"}
 @arcsi.route("/data/weekly_schedule", methods=["GET"])
 @roles_required("admin")
 def weekly_schedule():
+    ls = LiquidsoapScheduler()
     week_number = request.args.get(
         "week", datetime.today().isocalendar().week, type=int
     )
@@ -26,8 +27,8 @@ def weekly_schedule():
         .all()
     )
     shows = shows_schedule_schema.dump(shows)
-    playlist_init = make_playlist_init_script(shows)
-    playlist_schedule = make_playlist_schedule_script(shows)
+    playlist_init = ls.make_playlist_init_script(shows)
+    playlist_schedule = ls.make_playlist_schedule_script(shows)
     ret = {"playlist_init": playlist_init, "playlist_schedule": playlist_schedule}
     return make_response(jsonify(ret), 200, headers)
 
