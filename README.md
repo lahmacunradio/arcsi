@@ -4,7 +4,7 @@ Lahmacun's archivator
 # Local setup
 ## Requirements
  - Docker
- - Python 3.6+
+ - Python 3.12+
 
 ## UNIX-type systems
 ### Get source code
@@ -15,12 +15,13 @@ Lahmacun's archivator
 Create following template files:
 1. config.template.py -> `config.py`
    * Set your values. Most are keys and secrets that you may get from third parties such as your storage and broadcast server. 
-2. app.env.template -> `app.env`
+2. gunicorn.conf.template.py -> `gunicorn.conf.py`
+3. app.env.template -> `app.env`
    * Set `FLASK_APP=run.py`
-3. db.env.template -> `db.env`
-4. srv.env.template -> `srv.env`
+4. db.env.template -> `db.env`
+5. srv.env.template -> `srv.env`
    * `Set DOMAIN=localhost`
-5. nginx/http_arcsi.conf.template -> `nginx/arcsi.conf`
+6. nginx/http_arcsi.conf.template -> `nginx/arcsi.conf`
 
 ### Start docker
 Run `docker-compose up -d`
