@@ -16,8 +16,8 @@ jobs:
     strategy:
       matrix:
         postgres-version: [12]
-        python-version: [3.11]
-        node-version: [20]
+        python-version: [3.14]
+        node-version: [24]
 
     services:
       postgres:
@@ -38,20 +38,20 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - name: Git checkout
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v7.0.1
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5.3.0
+    - name: Set up uv with Python version ${{ matrix.python-version }}
+      uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
       with:
         python-version: ${{ matrix.python-version }}
-        cache: 'pip'
+        enable-cache: true
 
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt
+        uv sync --locked --all-extras --dev
 
     - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.1.0
+      uses: actions/setup-node@v7.0.0
       with:
         node-version: ${{ matrix.node-version }}
 
@@ -64,7 +64,7 @@ jobs:
 
     - name: Run the application and Postman's tests
       run: |
-        gunicorn -b localhost:5000 -t 30 -w 2 --threads 2 "arcsi:create_app('../config_ci.py')" --daemon --log-file aguni.log --log-level debug
+        uv run gunicorn -b localhost:5000 -t 30 -w 2 --threads 2 "arcsi:create_app('../config_ci.py')" --daemon --log-file aguni.log --log-level debug
       env:
         FLASK_ENV: development
         UPLOAD_FOLDER: "uploads"
@@ -79,13 +79,13 @@ jobs:
         POSTGRES_PASSWORD: p0stgr3s
         POSTGRES_DB: arcsi
         CI: true
-    
+
     # Running the functional postman test collection with the test environment (-e) and insecure option (no SSL verification, -k)
     - name: Functional Test
       run: |
         cd test/postman/
         newman run functional_test.postman_collection.json -e test.postman_environment.json -k
-  
+
     # Running the robustness/performance postman test collection (bunch of GET requests) with multiple iterations (-n)
     - name: Robustness Test
       run: |
@@ -93,7 +93,7 @@ jobs:
         newman run robustness_test.postman_collection.json -e test.postman_environment.json -n 50 -k
 
     - name: Upload logs
-      uses: actions/upload-artifact@v4.4.3
+      uses: actions/upload-artifact@v7.0.1
       if: failure()
       with:
         path: aguni.log
