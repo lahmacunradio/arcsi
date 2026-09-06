@@ -69,3 +69,20 @@ class LiquidsoapScheduler(Scheduler):
     def make_playlist_schedule_script(self, shows):
         tpl = self.environment.from_string(self.get_playlist_schedule_template())
         return tpl.render(shows=shows)
+
+    def get_schedule_template(self):
+        playlist_schedule_file = open(
+            "/app/arcsi/templates/schedule/ls_schedule_{}.tpl".format(
+                self.config["liquidsoap_version"]
+            ),
+            "r",
+        )
+        template = playlist_schedule_file.read()
+        playlist_schedule_file.close()
+        return template
+
+    def make_schedule_script(self, playlist_init, playlist_schedule):
+        tpl = self.environment.from_string(self.get_schedule_template())
+        return tpl.render(
+            playlist_init=playlist_init, playlist_schedule=playlist_schedule
+        )

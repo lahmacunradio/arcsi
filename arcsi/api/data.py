@@ -29,8 +29,8 @@ def weekly_schedule():
     shows = shows_schedule_schema.dump(shows)
     playlist_init = ls.make_playlist_init_script(shows)
     playlist_schedule = ls.make_playlist_schedule_script(shows)
-    ret = {"playlist_init": playlist_init, "playlist_schedule": playlist_schedule}
-    return make_response(jsonify(ret), 200, headers)
+    ret = ls.make_schedule_script(playlist_init, playlist_schedule)
+    return make_response(ret, 200, {"Content-Type": "text/plain; charset=utf-8"})
 
 
 @arcsi.route("/data/uploaded_episodes", methods=["POST"])
