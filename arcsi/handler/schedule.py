@@ -26,6 +26,7 @@ class Scheduler(object):
     def get_end_time(timestamp):
         hour = Scheduler.get_hour(timestamp)
         minute = Scheduler.get_minute(timestamp)
+        # the last two minutes should be cut down for jingles
         if minute == 0:
             hour = hour - 1
             minute = 58
