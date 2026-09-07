@@ -27,9 +27,7 @@ def weekly_schedule():
         .all()
     )
     shows = shows_schedule_schema.dump(shows)
-    playlist_init = ls.make_playlist_init_script(shows)
-    playlist_schedule = ls.make_playlist_schedule_script(shows)
-    ret = ls.make_schedule_script(playlist_init, playlist_schedule)
+    ret = ls.make_schedule_script(shows)
     return make_response(ret, 200, {"Content-Type": "text/plain; charset=utf-8"})
 
 

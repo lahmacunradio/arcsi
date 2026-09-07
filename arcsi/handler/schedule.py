@@ -81,7 +81,9 @@ class LiquidsoapScheduler(Scheduler):
         playlist_schedule_file.close()
         return template
 
-    def make_schedule_script(self, playlist_init, playlist_schedule):
+    def make_schedule_script(self, shows):
+        playlist_init = self.make_playlist_init_script(shows)
+        playlist_schedule = self.make_playlist_schedule_script(shows)
         tpl = self.environment.from_string(self.get_schedule_template())
         return tpl.render(
             playlist_init=playlist_init, playlist_schedule=playlist_schedule
