@@ -22,6 +22,17 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: alembic_version; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.alembic_version (
+    version_num character varying
+);
+
+
+ALTER TABLE public.alembic_version OWNER TO postgres;
+
+--
 -- Name: items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -325,6 +336,14 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 ALTER TABLE ONLY public.tags ALTER COLUMN id SET DEFAULT nextval('public.tags_id_seq'::regclass);
+
+--
+-- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.alembic_version (version_num) FROM stdin;
+7aca41a00507
+\.
 
 
 --

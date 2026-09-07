@@ -1,7 +1,9 @@
 .DS_Store
 .env
 *.env
+*.venv  # managed by uv
 config.py
+gunicorn.conf.py
 .flaskenv
 *.pyc
 *.pyo
