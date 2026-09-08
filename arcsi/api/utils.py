@@ -371,7 +371,7 @@ def get_shows_with_cover():
     return shows
 
 
-def get_shows_with_latest_item(shows, schema):
+def get_active_shows_with_latest_item(shows, schema):
     shows = shows.filter(Show.active == True).all()
     shows_json = schema.dump(shows)
     # iterate through shows

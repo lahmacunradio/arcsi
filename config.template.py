@@ -44,6 +44,9 @@ ARCHIVE_SECRET_KEY = "secret_hash"  # used by boto3; obtained from provider's in
 AZURACAST_BASE_URL = "https://example-azura-stream.er/api"  # used by requests; base URL of your Azuracast station's API you wish to interact w/
 AZURACAST_API_KEY = "secret_hash"  # used by requests; API key to authenticate w/ Azuracast station; obtained from Azuracast interface
 
+# LIQUIDSOAP VERSION
+LIQUIDSOAP_VERSION = "v1"  # used to generate playlist initialization and scheduling
+
 if os.getenv("APP_ENV") == "development" or os.getenv("APP_ENV") == "production":
     HOST = "web"  # The service name for docker networking
     PREFERRED_URL_SCHEME = "https"

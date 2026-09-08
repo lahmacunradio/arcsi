@@ -37,15 +37,15 @@
       "description": "API for requesting and return User details"
     },
     {
-      "name": "Show Requests for frontend",
+      "name": "Show Requests for external usage",
       "description": "API for requesting and return Show details"
     },
     {
-      "name": "Item Requests for frontend",
+      "name": "Item Requests for external usage",
       "description": "API for requesting and return Item details"
     },
     {
-      "name": "Tag Requests for frontend",
+      "name": "Tag Requests for external usage",
       "description": "API for requesting and return Tag details"
     },
     {
@@ -57,15 +57,15 @@
       "description": "API for requesting and return Item details"
     },
     {
-      "name": "Statistics Request",
-      "description": "API for requesting and return Statistics"
+      "name": "Data Request",
+      "description": "API for requesting and return Data"
     }
   ],
   "paths": {
     "/data/uploaded_episodes": {
       "post": {
         "tags": [
-          "Statistics Request"
+          "Data Request"
         ],
         "summary": "Returns the number of uploaded episodes during the given timeframe",
         "security": [
@@ -77,7 +77,7 @@
           "multipart/form-data"
         ],
         "requestBody": {
-          "schema":{
+          "schema": {
             "$ref": "component.json#/components/schemas/timeFrame"
           }
         },
@@ -108,6 +108,49 @@
         }
       }
     },
+    "/data/weekly_schedule": {
+      "get": {
+        "tags": [
+          "Data Request"
+        ],
+        "summary": "Return weekly schedule playlist data for Liquidsoap",
+        "security": [
+          {
+            "AdminApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "week",
+            "required": false,
+            "description": "week number, default: current week",
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "type": "object",
+                "properties": {
+                  "playlist_init": {
+                    "type": "string"
+                  },
+                  "playlist_schedule": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/users/get_api_token": {
       "post": {
         "tags": [
@@ -120,8 +163,8 @@
         "requestBody": {
           "content": {
             "multipart/form-data": {
-              "schema":{
-                "$ref": "component.json#/components/schemas/UserRequestBody"
+              "schema": {
+                "$ref": "component.json#/components/schemas/UserRequest"
               }
             }
           }
@@ -149,34 +192,6 @@
         }
       }
     },
-    "/show/all": {
-      "get": {
-        "tags": [
-          "Show Requests for Archon"
-        ],
-        "summary": "Return all Shows for Archon's Shows Page (deprecated and should be deleted but it is still used by the frontend/app :/)",
-        "security": [
-          {
-            "GuestApiKeyAuth": []
-          }
-        ],
-        "produces": [
-          "text/html"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "$ref": "component.json#/components/schemas/ShowResponseBodies"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/archon/show/all": {
       "get": {
         "tags": [
@@ -197,7 +212,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ArchonShowResponseBodies"
+                  "$ref": "show-component.json#/components/schemas/ArchonShowsSchema"
                 }
               }
             }
@@ -234,7 +249,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowResponseBody"
+                  "$ref": "show-component.json#/components/schemas/ShowSchema"
                 }
               }
             }
@@ -262,8 +277,8 @@
         "requestBody": {
           "content": {
             "multipart/form-data": {
-              "schema":{
-                "$ref": "component.json#/components/schemas/ShowRequestBody"
+              "schema": {
+                "$ref": "show-component.json#/components/schemas/ShowRequestSchema"
               }
             }
           }
@@ -277,7 +292,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowResponseBody"
+                  "$ref": "show-component.json#/components/schemas/ShowSchema"
                 }
               }
             }
@@ -317,8 +332,8 @@
         "requestBody": {
           "content": {
             "multipart/form-data": {
-              "schema":{
-                "$ref": "component.json#/components/schemas/ShowRequestBody"
+              "schema": {
+                "$ref": "show-component.json#/components/schemas/ShowRequestSchema"
               }
             }
           }
@@ -332,7 +347,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowResponseBody"
+                  "$ref": "show-component.json#/components/schemas/ShowSchema"
                 }
               }
             }
@@ -349,9 +364,9 @@
     "/show/list": {
       "get": {
         "tags": [
-          "Show Requests for frontend"
+          "Show Requests for external usage"
         ],
-        "summary": "Return all Shows for frontend Shows Page",
+        "summary": "Return all Shows for frontend/app Shows Page",
         "security": [
           {
             "GuestApiKeyAuth": []
@@ -366,7 +381,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowsPageResponseBodies"
+                  "$ref": "show-component.json#/components/schemas/ShowsArchiveSchema"
                 }
               }
             }
@@ -377,9 +392,9 @@
     "/show/all_without_items": {
       "get": {
         "tags": [
-          "Show Requests for frontend"
+          "Show Requests for external usage"
         ],
-        "summary": "Return all Shows for frontend Shows Page",
+        "summary": "Return all Shows for frontend/app Shows Page",
         "security": [
           {
             "GuestApiKeyAuth": []
@@ -394,7 +409,72 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowScheduleResponseBodies"
+                  "$ref": "show-component.json#/components/schemas/ShowsScheduleExcludedSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/show/all_details": {
+      "get": {
+        "tags": [
+          "Show Requests for external usage"
+        ],
+        "summary": "Return all Shows for frontend/app Shows Page",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "show-component.json#/components/schemas/ShowsDetailsSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/show/all_schedule?week={week}": {
+      "get": {
+        "tags": [
+          "Show Requests for external usage"
+        ],
+        "summary": "Return all Shows for frontend/app Schedule Page",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "week",
+            "required": false,
+            "description": "week, default: 1",
+            "type": "number"
+          }
+        ],
+        "produces": [
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "show-component.json#/components/schemas/ShowsScheduleSchema"
                 }
               }
             }
@@ -405,7 +485,7 @@
     "/show/search?size={size}&page={page}&param={param}": {
       "get": {
         "tags": [
-          "Show Requests for frontend"
+          "Show Requests for external usage"
         ],
         "summary": "Return all searched Shows (their name or description contains the parameter)",
         "security": [
@@ -445,7 +525,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowResponseBodies"
+                  "$ref": "show-component.json#/components/schemas/ShowsScheduleExcludedSchema"
                 }
               }
             }
@@ -453,15 +533,61 @@
         }
       }
     },
-    "/show/schedule": {
+    "/show/search_by_tag/{clean_tag}": {
       "get": {
         "tags": [
-          "Show Requests for frontend"
+          "Show Requests for external usage"
         ],
-        "summary": "Return all active Shows for frontend Home and Schedule Page",
+        "summary": "Return all Shows with given Tag",
         "security": [
           {
             "GuestApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "clean_tag",
+            "required": true,
+            "description": "Tag.clean_name",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "show-component.json#/components/schemas/ShowsDetailsSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/show/schedule?week={week}": {
+      "get": {
+        "tags": [
+          "Show Requests for external usage"
+        ],
+        "summary": "Return all active Shows for frontend/app Home and Schedule Page",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "week",
+            "required": false,
+            "description": "week, default: 1",
+            "type": "number"
           }
         ],
         "produces": [
@@ -473,7 +599,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowScheduleResponseBodies"
+                  "$ref": "show-component.json#/components/schemas/ShowsScheduleExcludedSchema"
                 }
               }
             }
@@ -481,18 +607,25 @@
         }
       }
     },
-    "/show/schedule_by?day={day}": {
+    "/show/schedule_by?week={week}&day={day}": {
       "get": {
         "tags": [
-          "Show Requests for frontend"
+          "Show Requests for external usage"
         ],
-        "summary": "Return all active Shows airing on the chosen day for frontend Home and Schedule Page",
+        "summary": "Return all active Shows airing on the chosen day for frontend/app Home and Schedule Page",
         "security": [
           {
             "GuestApiKeyAuth": []
           }
         ],
         "parameters": [
+          {
+            "in": "query",
+            "name": "week",
+            "required": false,
+            "description": "week, default: 1",
+            "type": "number"
+          },
           {
             "in": "query",
             "name": "day",
@@ -510,7 +643,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowScheduleResponseBodies"
+                  "$ref": "show-component.json#/components/schemas/ShowsScheduleSchema"
                 }
               }
             }
@@ -521,9 +654,9 @@
     "/show/{show_slug}/page?filter={filter}": {
       "get": {
         "tags": [
-          "Show Requests for frontend"
+          "Show Requests for external usage"
         ],
-        "summary": "Return the chosen Show for frontend Show Subpage",
+        "summary": "Return the chosen Show for frontend/app Show Subpage",
         "security": [
           {
             "GuestApiKeyAuth": []
@@ -554,7 +687,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowSubPageResponseBody"
+                  "$ref": "show-component.json#/components/schemas/ShowArchivePageSchema"
                 }
               }
             }
@@ -585,7 +718,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ArchonItemResponseBodies"
+                  "$ref": "item-component.json#/components/schemas/ArchonItemsSchema"
                 }
               }
             }
@@ -624,7 +757,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ItemResponseBody"
+                  "$ref": "item-component.json#/components/schemas/ItemSchema"
                 }
               }
             }
@@ -652,8 +785,8 @@
         "requestBody": {
           "content": {
             "multipart/form-data": {
-              "schema":{
-                "$ref": "component.json#/components/schemas/ItemRequestBody"
+              "schema": {
+                "$ref": "item-component.json#/components/schemas/ItemRequestSchema"
               }
             }
           }
@@ -667,7 +800,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ItemResponseBody"
+                  "$ref": "item-component.json#/components/schemas/ItemSchema"
                 }
               }
             }
@@ -707,8 +840,8 @@
         "requestBody": {
           "content": {
             "multipart/form-data": {
-              "schema":{
-                "$ref": "component.json#/components/schemas/ItemRequestBody"
+              "schema": {
+                "$ref": "item-component.json#/components/schemas/ItemRequestSchema"
               }
             }
           }
@@ -722,7 +855,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ItemResponseBody"
+                  "$ref": "item-component.json#/components/schemas/ItemSchema"
                 }
               }
             }
@@ -739,9 +872,9 @@
     "/item/latest?size={size}&page={page}": {
       "get": {
         "tags": [
-          "Item Requests for frontend"
+          "Item Requests for external usage"
         ],
-        "summary": "Return latest Items for frontend Home and Archive Page",
+        "summary": "Return latest Items for frontend/app Home and Archive Page",
         "security": [
           {
             "GuestApiKeyAuth": []
@@ -772,7 +905,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ItemArchiveResponseBodies"
+                  "$ref": "item-component.json#/components/schemas/ItemsArchiveSchemaSchema"
                 }
               }
             }
@@ -783,7 +916,7 @@
     "/item/search?size={size}&page={page}&param={param}": {
       "get": {
         "tags": [
-          "Item Requests for frontend"
+          "Item Requests for external usage"
         ],
         "summary": "Return all searched Items (their parent show, name, description or one of the assigned tags contains the parameter)",
         "security": [
@@ -823,7 +956,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ItemResponseBodies"
+                  "$ref": "item-component.json#/components/schemas/ItemsSchema"
                 }
               }
             }
@@ -831,12 +964,12 @@
         }
       }
     },
-    "/show/{show_slug}/archive": {
+    "/item/search_by_tag/{clean_tag}": {
       "get": {
         "tags": [
-          "Item Requests for Archon"
+          "Item Requests for external usage"
         ],
-        "summary": "Return all Items for the given Show (was used by the old WP Show Page)",
+        "summary": "Return all Items with given Tag",
         "security": [
           {
             "GuestApiKeyAuth": []
@@ -845,28 +978,25 @@
         "parameters": [
           {
             "in": "path",
-            "name": "show_slug",
+            "name": "clean_tag",
             "required": true,
-            "description": "Show.archive_lahmastore_base_url",
+            "description": "Tag.clean_name",
             "type": "string"
           }
         ],
         "produces": [
-          "text/html"
+          "application/json"
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "text/html": {
+              "application/json": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ShowNestedItemResponsebodies"
+                  "$ref": "item-component.json#/components/schemas/ItemsArchiveSchemaSchema"
                 }
               }
             }
-          },
-          "404": {
-            "description": "Show not found"
           }
         }
       }
@@ -874,9 +1004,9 @@
     "/show/{show_slug}/item/{episode_slug}": {
       "get": {
         "tags": [
-          "Item Requests for frontend"
+          "Item Requests for external usage"
         ],
-        "summary": "Return Item for frontend Episode Subpage",
+        "summary": "Return Item for frontend/app Episode Subpage",
         "security": [
           {
             "GuestApiKeyAuth": []
@@ -907,7 +1037,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/ItemSubPageResponseBody"
+                  "$ref": "item-component.json#/components/schemas/ItemArchiveSchema"
                 }
               }
             }
@@ -990,10 +1120,50 @@
         }
       }
     },
+    "/archon/item/{id}": {
+      "get": {
+        "tags": [
+          "Item Requests for Archon"
+        ],
+        "summary": "Return Item by ID (requires host or admin role)",
+        "security": [
+          {
+            "AdminApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Item.id",
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "item-component.json#/components/schemas/ItemSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item not found"
+          }
+        }
+      }
+    },
     "/tag/all": {
       "get": {
         "tags": [
-          "Tag Requests for frontend"
+          "Tag Requests for external usage"
         ],
         "summary": "Return all Tags",
         "security": [
@@ -1010,7 +1180,7 @@
             "content": {
               "text/html": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/TagResponseBodies"
+                  "$ref": "tag-component.json#/components/schemas/TagsSchema"
                 }
               }
             }
@@ -1018,10 +1188,10 @@
         }
       }
     },
-    "/tag/{tag_slug}": {
+    "/tag/{clean_tag}": {
       "get": {
         "tags": [
-          "Tag Requests for frontend"
+          "Tag Requests for external usage"
         ],
         "summary": "Return the given Tag",
         "security": [
@@ -1032,7 +1202,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "tag_slug",
+            "name": "clean_tag",
             "required": true,
             "description": "Tag.clean_name",
             "type": "string"
@@ -1047,7 +1217,47 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "component.json#/components/schemas/TagResponseBody"
+                  "$ref": "tag-component.json#/components/schemas/TagDetailsSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tag not found"
+          }
+        }
+      }
+    },
+    "/tag/{clean_tag}/minimal": {
+      "get": {
+        "tags": [
+          "Tag Requests for external usage"
+        ],
+        "summary": "Return minimal Tag information (ID, display name, clean name)",
+        "security": [
+          {
+            "GuestApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "clean_tag",
+            "required": true,
+            "description": "Tag.clean_name",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "tag-component.json#/components/schemas/TagSchema"
                 }
               }
             }

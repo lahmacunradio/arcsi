@@ -1,0 +1,120 @@
+{
+  "components": {
+    "schemas": {
+      "TagsSchema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/TagSchema"
+        }
+      },
+      "TagSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "clean_name": {
+            "type": "string"
+          }
+        }
+      },
+      "TagDetailsSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "clean_name": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagNestedItemSchema"
+            }
+          },
+          "shows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagNestedShowSchema"
+            }
+          }
+        }
+      },
+      "TagNestedItemSchema": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "name_slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "image_url": {
+            "type": "string"
+          },
+          "play_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "shows": {
+            "type": "array",
+            "items": {
+              "$ref": "item-component.json#/components/schemas/ItemNestedShowSchema"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagSchema"
+            }
+          }
+        }
+      },
+      "TagNestedShowSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "archive_lahmastore_base_url": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "cover_image_url": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagSchema"
+            }
+          }
+        }
+      }
+    }
+  }
+}

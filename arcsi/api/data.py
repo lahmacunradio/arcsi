@@ -4,9 +4,31 @@ from flask import jsonify, make_response, request
 from flask_security import roles_required
 
 from . import arcsi
+from arcsi.handler.schedule import LiquidsoapScheduler
 from arcsi.model.item import Item
+from arcsi.model.show import Show
+from .show import shows_schedule_schema
 
 headers = {"Content-Type": "application/json"}
+
+
+@arcsi.route("/data/weekly_schedule", methods=["GET"])
+@roles_required("admin")
+def weekly_schedule():
+    ls = LiquidsoapScheduler()
+    week_number = request.args.get(
+        "week", datetime.today().isocalendar().week, type=int
+    )
+    abcd_week = week_number % 4
+    shows = (
+        Show.query.filter(Show.active == True)
+        .filter_by(week=abcd_week)
+        .order_by(Show.day, Show.start)
+        .all()
+    )
+    shows = shows_schedule_schema.dump(shows)
+    ret = ls.make_schedule_script(shows)
+    return make_response(ret, 200, {"Content-Type": "text/plain; charset=utf-8"})
 
 
 @arcsi.route("/data/uploaded_episodes", methods=["POST"])
