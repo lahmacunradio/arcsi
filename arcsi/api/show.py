@@ -4,7 +4,6 @@ from flask_security import auth_token_required, roles_required, roles_accepted
 from marshmallow import fields, post_load, Schema
 from marshmallow.validate import Length, Range
 from sqlalchemy import func
-from datetime import datetime
 
 from . import arcsi
 from .utils import (
@@ -38,7 +37,7 @@ class ShowDetailsSchema(Schema):
     playlist_name = fields.Str()
     frequency = fields.Int(validate=Range(max=31, min=0))
     contact_address = fields.Email()
-    week = fields.Int()
+    week = fields.List(fields.Int())
     day = fields.Int()
     start = fields.Time()
     end = fields.Time()
