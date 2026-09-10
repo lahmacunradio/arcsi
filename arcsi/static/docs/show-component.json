@@ -30,9 +30,12 @@
             "example": 1
           },
           "week": {
-            "type": "integer",
-            "format": "int32",
-            "example": 1
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32",
+              "example": 1
+            }
           },
           "day": {
             "type": "integer",
@@ -75,7 +78,7 @@
           "language": "show-language",
           "playlist_name": "show-playlist_name",
           "frequency": 1,
-          "week": 1,
+          "week": [1],
           "day": 1,
           "start": "04:20",
           "end": "06:00",
@@ -118,8 +121,12 @@
             "type": "string"
           },
           "week": {
-            "type": "integer",
-            "format": "int32"
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32",
+              "example": 1
+            }
           },
           "day": {
             "type": "integer",
@@ -232,8 +239,12 @@
             "format": "int32"
           },
           "week": {
-            "type": "integer",
-            "format": "int32"
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32",
+              "example": 1
+            }
           },
           "day": {
             "type": "integer",
@@ -288,8 +299,12 @@
             "type": "string"
           },
           "week": {
-            "type": "integer",
-            "format": "int32"
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32",
+              "example": 1
+            }
           },
           "day": {
             "type": "integer",
