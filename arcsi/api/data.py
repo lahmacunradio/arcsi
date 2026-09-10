@@ -20,9 +20,10 @@ def weekly_schedule():
         "week", datetime.today().isocalendar().week, type=int
     )
     abcd_week = week_number % 4
+    # TODO: week contains
     shows = (
         Show.query.filter(Show.active == True)
-        .filter_by(week=abcd_week)
+        .filter(Show.week.any(abcd_week))
         .order_by(Show.day, Show.start)
         .all()
     )

@@ -277,7 +277,7 @@
             },
             {
               "key": "week",
-              "value": "1",
+              "value": "[0,1,2,3]",
               "type": "text"
             },
             {
@@ -388,7 +388,7 @@
               "    pm.expect(show.end).to.be.an(\"string\")\r",
               "    pm.expect(show.day).to.be.an(\"number\")\r",
               "    pm.expect(show.frequency).to.be.an(\"number\")\r",
-              "    pm.expect(show.week).to.be.an(\"number\")\r",
+              "    pm.expect(show.week).to.be.an(\"array\")\r",
               "    pm.expect(show.id).to.be.an(\"number\")\r",
               "})"
             ],
@@ -456,7 +456,7 @@
             },
             {
               "key": "week",
-              "value": "1",
+              "value": "[0,1,2,3]",
               "type": "text"
             },
             {
@@ -566,7 +566,7 @@
               "    pm.expect(show.end).to.be.an(\"string\")\r",
               "    pm.expect(show.day).to.be.an(\"number\")\r",
               "    pm.expect(show.frequency).to.be.an(\"number\")\r",
-              "    pm.expect(show.week).to.be.an(\"number\")\r",
+              "    pm.expect(show.week).to.be.an(\"array\")\r",
               "    pm.expect(show.id).to.be.an(\"number\")\r",
               "})"
             ],
@@ -634,7 +634,7 @@
             },
             {
               "key": "week",
-              "value": "1",
+              "value": "[0,1,2,3]",
               "type": "text"
             },
             {
@@ -1021,7 +1021,7 @@
               "    pm.expect(show.end).to.be.an(\"string\")\r",
               "    pm.expect(show.day).to.be.an(\"number\")\r",
               "    pm.expect(show.frequency).to.be.an(\"number\")\r",
-              "    pm.expect(show.week).to.be.an(\"number\")\r",
+              "    pm.expect(show.week).to.be.an(\"array\")\r",
               "    pm.expect(show.id).to.be.an(\"number\")\r",
               "})"
             ],
@@ -5965,7 +5965,7 @@
               "        pm.expect(show.end).to.be.an(\"string\")\r",
               "        pm.expect(show.day).to.be.an(\"number\")\r",
               "        pm.expect(show.frequency).to.be.an(\"number\")\r",
-              "        pm.expect(show.week).to.be.an(\"number\")\r",
+              "        pm.expect(show.week).to.be.an(\"array\")\r",
               "        pm.expect(show.id).to.be.an(\"number\")\r",
               "    })\r",
               "})"
@@ -6032,7 +6032,7 @@
               "        pm.expect(show.end).to.be.an(\"string\")\r",
               "        pm.expect(show.day).to.be.an(\"number\")\r",
               "        pm.expect(show.frequency).to.be.an(\"number\")\r",
-              "        pm.expect(show.week).to.be.an(\"number\")\r",
+              "        pm.expect(show.week).to.be.an(\"array\")\r",
               "        pm.expect(show.id).to.be.an(\"number\")\r",
               "    })\r",
               "})"
@@ -6113,7 +6113,7 @@
               "        pm.expect(show.end).to.be.an(\"string\")\r",
               "        pm.expect(show.day).to.be.an(\"number\")\r",
               "        pm.expect(show.frequency).to.be.an(\"number\")\r",
-              "        pm.expect(show.week).to.be.an(\"number\")\r",
+              "        pm.expect(show.week).to.be.an(\"array\")\r",
               "        pm.expect(show.id).to.be.an(\"number\")\r",
               "    })\r",
               "})"
@@ -6188,7 +6188,7 @@
               "            pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
               "            pm.expect(show.start).to.be.an(\"string\")\r",
               "            pm.expect(show.end).to.be.an(\"string\")\r",
-              "            pm.expect(show.week).to.be.an(\"number\")\r",
+              "            pm.expect(show.week).to.be.an(\"array\")\r",
               "            pm.expect(show.day).to.be.an(\"number\")\r",
               "            pm.expect(show.frequency).to.be.an(\"number\")\r",
               "            pm.expect(show.id).to.be.an(\"number\")\r",
@@ -6220,7 +6220,7 @@
               "        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
               "        pm.expect(show.start).to.be.an(\"string\")\r",
               "        pm.expect(show.end).to.be.an(\"string\")\r",
-              "        pm.expect(show.week).to.be.an(\"number\")\r",
+              "        pm.expect(show.week).to.be.an(\"array\")\r",
               "        pm.expect(show.day).to.be.an(\"number\")\r",
               "        pm.expect(show.frequency).to.be.an(\"number\")\r",
               "        pm.expect(show.id).to.be.an(\"number\")\r",
@@ -6307,7 +6307,7 @@
               "            pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
               "            pm.expect(show.start).to.be.an(\"string\")\r",
               "            pm.expect(show.end).to.be.an(\"string\")\r",
-              "            pm.expect(show.week).to.be.an(\"number\")\r",
+              "            pm.expect(show.week).to.be.an(\"array\")\r",
               "            pm.expect(show.day).to.be.an(\"number\")\r",
               "            pm.expect(show.frequency).to.be.an(\"number\")\r",
               "            pm.expect(show.id).to.be.an(\"number\")\r",
@@ -6339,7 +6339,7 @@
               "        pm.expect(show.cover_image_url).to.be.an(\"string\")\r",
               "        pm.expect(show.start).to.be.an(\"string\")\r",
               "        pm.expect(show.end).to.be.an(\"string\")\r",
-              "        pm.expect(show.week).to.be.an(\"number\")\r",
+              "        pm.expect(show.week).to.be.an(\"array\")\r",
               "        pm.expect(show.day).to.be.an(\"number\")\r",
               "        pm.expect(show.frequency).to.be.an(\"number\")\r",
               "        pm.expect(show.id).to.be.an(\"number\")\r",

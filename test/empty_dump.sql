@@ -418,14 +418,6 @@ ALTER TABLE ONLY public.shows
 
 
 --
--- Name: shows shows_playlist_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.shows
-    ADD CONSTRAINT shows_playlist_name_key UNIQUE (playlist_name);
-
-
---
 -- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -447,6 +439,14 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_fs_uniquifier_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_fs_uniquifier_key UNIQUE (fs_uniquifier);
 
 --
 -- Name: tags tags_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
