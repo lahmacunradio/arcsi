@@ -55,8 +55,11 @@
 
     <div>
       <label for="taglist">Show tag list (separate with commas)</label>
-      <!-- TODO remove or handle properly the last individual comma -->
-      <input name="taglist" id="taglist" value="{% for tag in show.tags %}{{tag.display_name}},{% endfor %}">
+      {% set tags = [] %}
+      {% for tag in show.tags %}
+        {% set tags = tags.append(tag.display_name) %}
+      {% endfor %}
+      <input name="taglist" id="taglist" value={{ tags|join(',') }}>
     </div>
 
     <div>
@@ -71,7 +74,11 @@
     
     <div>
       <label for="week">Week *</label>
-      <input type="number" name="week" id="week" value="{{ show.week }}">
+      {% set weeks = [] %}
+      {% for week in show.week %}
+        {% set weeks = weeks.append(week) %}
+      {% endfor %}
+      <input name="week" id="week" value="{{ weeks|join(',') }}">
       <label for="day">Day *</label>
       <input type="number" name="day" id="day" value="{{ show.day }}">
     </div>
