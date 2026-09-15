@@ -60,13 +60,19 @@ jobs:
 
     - name: Run migrations
       run: |
-        psql -f test/empty_dump.sql postgresql://postgres:p0stgr3s@localhost:5432/arcsi
+        psql -f test/empty_dump.sql postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/$POSTGRES_DB
+      env:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: p0stgr3s
+        POSTGRES_DB: arcsi
 
     - name: Run the application and Postman's tests
       run: |
         uv run flask db upgrade
-        uv run gunicorn -b localhost:5000 -t 30 -w 2 --threads 2 "arcsi:create_app('../config_ci.py')" --daemon --log-file aguni.log --log-level debug
+        uv run gunicorn -b localhost:5666 -t 30 -w 2 --threads 2 "arcsi:create_app('../$CONFIG_PATH')" --daemon --log-file aguni.log --log-level debug
       env:
+        FLASK_APP: run.py
+        CONFIG_PATH: config_ci.py
         FLASK_ENV: development
         UPLOAD_FOLDER: "uploads"
         ARCHIVE_REGION: ${{ secrets.ARCHIVE_REGION }}
