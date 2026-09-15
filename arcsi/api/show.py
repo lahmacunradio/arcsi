@@ -181,7 +181,6 @@ def archon_list_shows():
 @auth_token_required
 def frontend_shows_schedule():
     week = request.args.get("week", 1, type=int)
-    # TODO: week contains
     shows = Show.query.filter(Show.week.any(week))
     return make_response(
         jsonify(get_active_shows_with_latest_item(shows, shows_schedule_schema)),

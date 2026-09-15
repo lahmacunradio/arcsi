@@ -153,6 +153,7 @@ CREATE TABLE public.shows (
     contact_address character varying,
     cover_image_url character varying,
     playlist_name character varying,
+    -- week integer[] NOT NULL,
     week integer NOT NULL,
     day integer NOT NULL,
     start time without time zone NOT NULL,
@@ -342,6 +343,7 @@ ALTER TABLE ONLY public.tags ALTER COLUMN id SET DEFAULT nextval('public.tags_id
 --
 
 COPY public.alembic_version (version_num) FROM stdin;
+-- ad8ffcbd6dce
 7aca41a00507
 \.
 
