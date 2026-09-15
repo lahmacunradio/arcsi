@@ -68,7 +68,6 @@ jobs:
 
     - name: Run the application and Postman's tests
       run: |
-        uv run flask db upgrade
         uv run gunicorn -b localhost:5666 -t 30 -w 2 --threads 2 "arcsi:create_app('../$CONFIG_PATH')" --daemon --log-file aguni.log --log-level debug
       env:
         FLASK_APP: run.py
