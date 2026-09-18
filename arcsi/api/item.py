@@ -8,14 +8,17 @@ from marshmallow.validate import Length
 
 from . import arcsi
 from .utils import (
-    process_files,
     archive_files,
     broadcast_episode,
     cleanup_show_playlist,
     cleanup_tmp_files,
     normalise,
+    process_files,
     get_audio,
     get_item_fields,
+)
+from .utils import read_show_field, read_tag_field
+from .utils import (
     get_items,
     search_items,
     search_items_by_tag,
@@ -166,18 +169,8 @@ def archon_add_item():
     # work around ImmutableDict type
     item_metadata = request.form.to_dict()
     # TODO if we could send JSON payloads w/ ajax then this prevalidation isn't needed
-    item_metadata["shows"] = [
-        {"id": item_metadata["shows"], "name": item_metadata["show_name"]}
-    ]
-    item_metadata["tags"] = [
-        {"display_name": tag_name.strip()}
-        for tag_name in item_metadata["taglist"].split(",")
-    ]
-    item_metadata["tags"] = [
-        dict(t) for t in {tuple(d.items()) for d in item_metadata["tags"]}
-    ]
-    item_metadata.pop("show_name", None)
-    item_metadata.pop("taglist", None)
+    item_metadata = read_show_field(item_metadata)
+    item_metadata = read_tag_field(item_metadata)
 
     # validate payload
     err = item_schema.validate(item_metadata)
@@ -333,18 +326,8 @@ def archon_edit_item(id):
     item_metadata = request.form.to_dict()
 
     # TODO if we could send JSON payloads w/ ajax then this prevalidation isn't needed
-    item_metadata["shows"] = [
-        {"id": item_metadata["shows"], "name": item_metadata["show_name"]}
-    ]
-    item_metadata["tags"] = [
-        {"display_name": tag_name.strip()}
-        for tag_name in item_metadata["taglist"].split(",")
-    ]
-    item_metadata["tags"] = [
-        dict(t) for t in {tuple(d.items()) for d in item_metadata["tags"]}
-    ]
-    item_metadata.pop("taglist", None)
-    item_metadata.pop("show_name", None)
+    item_metadata = read_show_field(item_metadata)
+    item_metadata = read_tag_field(item_metadata)
 
     # validate payload
     # TODO handle what happens on f.e: empty payload?

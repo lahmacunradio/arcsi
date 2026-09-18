@@ -9,16 +9,22 @@ from . import arcsi
 from .utils import (
     archive,
     comma_separated_params_to_list,
-    get_item_fields,
-    get_show_cover,
-    get_active_shows_with_latest_item,
-    search_shows_by_tag,
     normalise,
     save_file,
     slug,
     sort_for,
 )
-from .utils import filter_show_items, get_shows, get_shows_with_cover
+from .utils import read_user_fields, read_week_field, read_tag_field
+from .utils import (
+    filter_show_items,
+    get_item_fields,
+    get_active_shows_on_given_week,
+    get_show_cover,
+    get_shows,
+    get_shows_with_cover,
+    get_shows_with_latest_item,
+    search_shows_by_tag,
+)
 from .item import item_archive_schema
 from arcsi.model import db
 from arcsi.model.show import Show
@@ -37,7 +43,7 @@ class ShowDetailsSchema(Schema):
     playlist_name = fields.Str()
     frequency = fields.Int(validate=Range(max=31, min=0))
     contact_address = fields.Email()
-    week = fields.List(fields.Int())
+    week = fields.List(fields.Int(validate=Range(max=3, min=0)))
     day = fields.Int()
     start = fields.Time()
     end = fields.Time()
@@ -180,10 +186,9 @@ def archon_list_shows():
 @arcsi.route("/show/all_schedule", methods=["GET"])
 @auth_token_required
 def frontend_shows_schedule():
-    week = request.args.get("week", 1, type=int)
-    shows = Show.query.filter(Show.week.any(week))
+    shows = get_active_shows_on_given_week(request)
     return make_response(
-        jsonify(get_active_shows_with_latest_item(shows, shows_schedule_schema)),
+        jsonify(get_shows_with_latest_item(shows, shows_schedule_schema)),
         200,
         headers,
     )
@@ -192,8 +197,7 @@ def frontend_shows_schedule():
 @arcsi.route("/show/schedule", methods=["GET"])
 @auth_token_required
 def frontend_list_shows_for_schedule():
-    week = request.args.get("week", 1, type=int)
-    shows = Show.query.filter(Show.week.any(week)).filter(Show.active == True).all()
+    shows = get_active_shows_on_given_week(request)
     for show in shows:
         get_show_cover(show)
     return shows_schedule_excluded_schema.dump(shows)
@@ -203,10 +207,10 @@ def frontend_list_shows_for_schedule():
 @arcsi.route("/show/schedule_by", methods=["GET"])
 @auth_token_required
 def frontend_list_shows_for_schedule_by():
-    week = request.args.get("week", 1, type=int)
+    shows = get_active_shows_on_given_week(request)
     day = request.args.get("day", 1, type=int)
-    shows = Show.query.filter(Show.week.any(week)).filter(Show.day == day)
-    return get_active_shows_with_latest_item(shows, shows_schedule_schema)
+    shows = shows.filter(Show.day == day)
+    return get_shows_with_latest_item(shows, shows_schedule_schema)
 
 
 # We are gonna use this on the new page as the show/all
@@ -228,29 +232,9 @@ def archon_add_show():
     # work around ImmutableDict type
     show_metadata = request.form.to_dict()
     # TODO see item.py same line
-    show_metadata["users"] = [
-        {
-            "id": show_metadata["user_id"],
-            "name": show_metadata["user_name"],
-            "email": show_metadata["user_email"],
-        }
-    ]
-    show_metadata.pop("user_id", None)
-    show_metadata.pop("user_name", None)
-    show_metadata.pop("user_email", None)
-
-    show_metadata["week"] = [
-        week_number.strip() for week_number in show_metadata["week"].split(",")
-    ]
-
-    show_metadata["tags"] = [
-        {"display_name": dis_name.strip()}
-        for dis_name in show_metadata["taglist"].split(",")
-    ]
-    show_metadata["tags"] = [
-        dict(t) for t in {tuple(d.items()) for d in show_metadata["tags"]}
-    ]
-    show_metadata.pop("taglist", None)
+    show_metadata = read_user_fields(show_metadata)
+    show_metadata = read_week_field(show_metadata)
+    show_metadata = read_tag_field(show_metadata)
 
     # validate payload
     err = show_schema.validate(show_metadata)
@@ -339,29 +323,9 @@ def archon_edit_show(id):
 
     # TODO users is a required field currently,
     # although it is not needed in case of an edit
-    show_metadata["users"] = [
-        {
-            "id": show_metadata["user_id"],
-            "name": show_metadata["user_name"],
-            "email": show_metadata["user_email"],
-        }
-    ]
-    show_metadata.pop("user_id", None)
-    show_metadata.pop("user_name", None)
-    show_metadata.pop("user_email", None)
-
-    show_metadata["week"] = [
-        week_number.strip() for week_number in show_metadata["week"].split(",")
-    ]
-
-    show_metadata["tags"] = [
-        {"display_name": dis_name.strip()}
-        for dis_name in show_metadata["taglist"].split(",")
-    ]
-    show_metadata["tags"] = [
-        dict(t) for t in {tuple(d.items()) for d in show_metadata["tags"]}
-    ]
-    show_metadata.pop("taglist", None)
+    show_metadata = read_user_fields(show_metadata)
+    show_metadata = read_week_field(show_metadata)
+    show_metadata = read_tag_field(show_metadata)
 
     # validate payload
     err = show_partial_schema.validate(show_metadata)
