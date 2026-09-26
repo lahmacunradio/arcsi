@@ -61,11 +61,7 @@
 
     <div>
       <label for="taglist">Item tag list (separate with commas)</label>
-      {% set tags = [] %}
-      {% for tag in item.tags %}
-        {% set tags = tags.append(tag.display_name) %}
-      {% endfor %}
-      <input name="taglist" id="taglist" value="{{ tags|join(',') }}">
+      <input name="taglist" id="taglist" value="{{ item.tags|map(attribute='display_name')|join(',') }}">
     </div>
 
     <div>
