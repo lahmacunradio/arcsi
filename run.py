@@ -1,6 +1,7 @@
 from arcsi import create_app
+import os
 
-app = create_app("../config.py")
+app = create_app("../" + os.getenv("CONFIG_PATH"))
 
 
 if __name__ == "__main__":

@@ -153,7 +153,7 @@ CREATE TABLE public.shows (
     contact_address character varying,
     cover_image_url character varying,
     playlist_name character varying,
-    week integer NOT NULL,
+    week integer[] NOT NULL,
     day integer NOT NULL,
     start time without time zone NOT NULL,
     "end" time without time zone NOT NULL,
@@ -342,7 +342,7 @@ ALTER TABLE ONLY public.tags ALTER COLUMN id SET DEFAULT nextval('public.tags_id
 --
 
 COPY public.alembic_version (version_num) FROM stdin;
-7aca41a00507
+ad8ffcbd6dce
 \.
 
 
@@ -418,14 +418,6 @@ ALTER TABLE ONLY public.shows
 
 
 --
--- Name: shows shows_playlist_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.shows
-    ADD CONSTRAINT shows_playlist_name_key UNIQUE (playlist_name);
-
-
---
 -- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -447,6 +439,14 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_fs_uniquifier_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_fs_uniquifier_key UNIQUE (fs_uniquifier);
 
 --
 -- Name: tags tags_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres

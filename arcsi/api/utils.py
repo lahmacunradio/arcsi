@@ -360,6 +360,12 @@ def get_shows():
     return shows
 
 
+def get_active_shows_on_given_week(request):
+    week = request.args.get("week", 1, type=int)
+    abcd_week = week % 4
+    return Show.query.filter(Show.active == True).filter(Show.week.any(abcd_week))
+
+
 def get_shows_with_cover():
     do = DoArchive()
     shows = Show.query.all()
@@ -371,8 +377,7 @@ def get_shows_with_cover():
     return shows
 
 
-def get_active_shows_with_latest_item(shows, schema):
-    shows = shows.filter(Show.active == True).all()
+def get_shows_with_latest_item(shows, schema):
     shows_json = schema.dump(shows)
     # iterate through shows
     for show_json in shows_json:
@@ -490,6 +495,43 @@ def get_managed_items(user):
         ).all()
         managed_items.extend(managed_items_for_current_show)
     return managed_items
+
+
+def read_user_fields(metadata):
+    metadata["users"] = [
+        {
+            "id": metadata["user_id"],
+            "name": metadata["user_name"],
+            "email": metadata["user_email"],
+        }
+    ]
+    metadata.pop("user_id", None)
+    metadata.pop("user_name", None)
+    metadata.pop("user_email", None)
+    return metadata
+
+
+def read_week_field(metadata):
+    metadata["week"] = [
+        week_number.strip() for week_number in metadata["week"].split(",")
+    ]
+    return metadata
+
+
+def read_show_field(metadata):
+    metadata["shows"] = [{"id": metadata["shows"], "name": metadata["show_name"]}]
+    metadata.pop("show_name", None)
+    return metadata
+
+
+def read_tag_field(metadata):
+    metadata["tags"] = [
+        {"display_name": dis_name.strip()}
+        for dis_name in metadata["taglist"].split(",")
+    ]
+    metadata["tags"] = [dict(t) for t in {tuple(d.items()) for d in metadata["tags"]}]
+    metadata.pop("taglist", None)
+    return metadata
 
 
 def show_item_duplications_number(item):

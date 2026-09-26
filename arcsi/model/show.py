@@ -1,4 +1,5 @@
 from . import db
+from sqlalchemy.dialects.postgresql import ARRAY
 from .secondary import items_shows, tags_shows
 
 
@@ -15,7 +16,7 @@ class Show(db.Model):
     cover_image_url = db.Column(db.String())
     playlist_name = db.Column(db.String())
     frequency = db.Column(db.Integer, nullable=False, default=1)
-    week = db.Column(db.Integer, nullable=False)
+    week = db.Column(ARRAY(db.Integer, dimensions=1), nullable=False)
     day = db.Column(db.Integer, nullable=False)
     start = db.Column(db.Time, nullable=False)
     end = db.Column(db.Time, nullable=False)
