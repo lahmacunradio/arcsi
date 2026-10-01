@@ -13,7 +13,7 @@ class StreamingConfig(object):
 
 
 class AzuraConfig(StreamingConfig):
-    def __init__(self, station_id):
+    def __init__(self, station_id=None):
         self.station_id = station_id or 1
         self.config = {
             "base": "{}/station/{}".format(
