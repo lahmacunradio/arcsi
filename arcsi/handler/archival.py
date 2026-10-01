@@ -28,9 +28,11 @@ class S3Config(object):
 class DoArchive(S3Config):
     def __init__(self):
         super().__init__()
-        self.config = {
-            "endpoint": app.config["ARCHIVE_ENDPOINT"],  # public
-        }
+        self.config.update(
+            {
+                "endpoint": app.config["ARCHIVE_ENDPOINT"],  # public
+            }
+        )
 
     # Should we have one session for class instance or one each for each method called?
 
