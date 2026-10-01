@@ -279,7 +279,8 @@ class AzuraEpisode(AzuraConfig):
                 # episode host
                 TPE1(
                     encoding=3,
-                    text=self.show,
+                    # make sure playlistis initialized with show_name
+                    text=self.playlist.show,
                 )
             )
             audio_meta.add(
