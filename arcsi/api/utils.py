@@ -8,7 +8,8 @@ from slugify import slugify
 from sqlalchemy import func
 from werkzeug.utils import safe_join, secure_filename
 
-from arcsi.handler.upload import AzuraArchive, DoArchive
+from arcsi.handler.archival import DoArchive
+from arcsi.handler.streaming import AzuraEpisode, AzuraPlaylist
 from arcsi.model import db
 from arcsi.model.item import Item
 from arcsi.model.show import Show
@@ -102,18 +103,11 @@ def find_request_params(param, default, type):
 
 
 def get_playlist_existence_and_emptiness(playlist_name):
-    az = AzuraArchive(
-        None,
-        None,
-        None,
-        None,
-        None,
-        playlist_name,
-    )
-    playlist_exists = az.is_existing_playlist_set_playlist_id()
+    playlist = AzuraPlaylist(playlist_name)
+    playlist_exists = playlist.is_existing_playlist_set_playlist_id()
     playlist_is_empty = True
     if playlist_exists:
-        playlist_is_empty = az.is_empty_playlist()
+        playlist_is_empty = playlist.is_empty_playlist()
     return playlist_exists, playlist_is_empty
 
 
@@ -158,23 +152,23 @@ def broadcast_audio(
         norms_show_name, str(episode_number), audio_file_name
     )
     image_file_path = media_path(norms_show_name, str(episode_number), image_file_name)
-    az = AzuraArchive(
+    playlist = AzuraPlaylist(playlist_name, show_name)
+    streaming_episode = AzuraEpisode(
+        playlist,
+        episode_name,
         broadcast_file_path,
         audio_file_name,
         image_file_path,
-        show_name,
-        episode_name,
-        playlist_name,
     )
 
     # TODO find image -- fallback to show cover; handle this if-tree better
     # TODO embed metadata regardless of there's image or not f.e. title && artist
     # file_path but then image_url?? ugly
     if image_file_path:
-        episode_update = az.embedded_metadata()
-    station_upload = az.upload()
-    if station_upload:
-        episode_playlist = az.assign_playlist()
+        streaming_episode.embedded_metadata()
+    episode_upload = streaming_episode.upload()
+    if episode_upload:
+        episode_playlist = playlist.assign_audio(streaming_episode)
         if episode_playlist:
             # TODO change all other episode airing to false
             return True
@@ -182,15 +176,8 @@ def broadcast_audio(
 
 
 def cleanup_show_playlist(broadcast_playlist):
-    az = AzuraArchive(
-        None,
-        None,
-        None,
-        None,
-        None,
-        broadcast_playlist,
-    )
-    az.cleanup_playlist()
+    playlist = AzuraPlaylist(broadcast_playlist)
+    playlist.cleanup_playlist()
 
 
 def process_files(
