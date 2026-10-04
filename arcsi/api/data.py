@@ -22,7 +22,7 @@ def weekly_schedule():
     abcd_week = week_number % 4
     shows = (
         Show.query.filter(Show.active == True)
-        .filter_by(week=abcd_week)
+        .filter(Show.week.any(abcd_week))
         .order_by(Show.day, Show.start)
         .all()
     )
