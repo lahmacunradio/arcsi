@@ -1,18 +1,12 @@
 import os
-from datetime import datetime, timedelta
 from uuid import uuid4
 
 from flask import request
 from flask import current_app as app
 from slugify import slugify
-from sqlalchemy import func
 from werkzeug.utils import safe_join, secure_filename
 
-from arcsi.handler.upload import AzuraArchive, DoArchive
 from arcsi.model import db
-from arcsi.model.item import Item
-from arcsi.model.show import Show
-from arcsi.model.tag import Tag
 
 CONNECTER = "_"
 DELIMITER = "-"
@@ -101,98 +95,6 @@ def find_request_params(param, default, type):
     return request.args.get(param, default, type)
 
 
-def get_playlist_existence_and_emptiness(playlist_name):
-    az = AzuraArchive(
-        None,
-        None,
-        None,
-        None,
-        None,
-        playlist_name,
-    )
-    playlist_exists = az.is_existing_playlist_set_playlist_id()
-    playlist_is_empty = True
-    if playlist_exists:
-        playlist_is_empty = az.is_empty_playlist()
-    return playlist_exists, playlist_is_empty
-
-
-def broadcast_episode(item, image_file_name, error, error_message):
-    if not (item.play_file_name and image_file_name):
-        error = True
-        error_message = "ERROR: Both image and audio input are required if broadcast (Azuracast) is set"
-        app.logger.debug(error_message)
-    else:
-        item.airing = broadcast_audio(
-            norms_show_name=item.shows[0].archive_lahmastore_base_url,
-            episode_number=item.number,
-            audio_file_name=item.play_file_name,
-            playlist_name=item.shows[0].playlist_name,
-            show_name=item.shows[0].name,
-            episode_name=item.name,
-            image_file_name=image_file_name,
-        )
-        if not item.airing:
-            error = True
-            error_message = "ERROR: Item could not be uploaded to Azuracast"
-            app.logger.debug(error_message)
-
-            # TODO some mp3 error
-            # TODO Maybe I used vanilla mp3 not from azuracast
-            # item_audio_obj = MP3(item_path)
-            # return item_audio_obj.filename
-            # item_length = item_audio_obj.info.length
-    return item, error, error_message
-
-
-def broadcast_audio(
-    norms_show_name,
-    episode_number,
-    audio_file_name,
-    playlist_name,
-    show_name,
-    episode_name,
-    image_file_name,
-):
-    broadcast_file_path = media_path(
-        norms_show_name, str(episode_number), audio_file_name
-    )
-    image_file_path = media_path(norms_show_name, str(episode_number), image_file_name)
-    az = AzuraArchive(
-        broadcast_file_path,
-        audio_file_name,
-        image_file_path,
-        show_name,
-        episode_name,
-        playlist_name,
-    )
-
-    # TODO find image -- fallback to show cover; handle this if-tree better
-    # TODO embed metadata regardless of there's image or not f.e. title && artist
-    # file_path but then image_url?? ugly
-    if image_file_path:
-        episode_update = az.embedded_metadata()
-    station_upload = az.upload()
-    if station_upload:
-        episode_playlist = az.assign_playlist()
-        if episode_playlist:
-            # TODO change all other episode airing to false
-            return True
-    return False
-
-
-def cleanup_show_playlist(broadcast_playlist):
-    az = AzuraArchive(
-        None,
-        None,
-        None,
-        None,
-        None,
-        broadcast_playlist,
-    )
-    az.cleanup_playlist()
-
-
 def process_files(
     request,
     item,
@@ -268,45 +170,6 @@ def save_file(norms_show_name, episode_number, archive_file, archive_file_name):
             return formed_file_name
 
 
-def archive_files(item, image_file_name, error, error_message):
-    # archive files if asked
-    if (error == False) and (item.play_file_name or image_file_name):
-        if image_file_name:
-            item.image_url = archive(
-                norms_show_name=item.shows[0].archive_lahmastore_base_url,
-                episode_number=item.number,
-                archive_file_name=image_file_name,
-            )
-            if not item.image_url:
-                error = True
-                error_message = "ERROR: Image could not be uploaded to storage"
-                app.logger.debug(error_message)
-
-        if item.play_file_name:
-            item.archive_lahmastore_canonical_url = archive(
-                norms_show_name=item.shows[0].archive_lahmastore_base_url,
-                episode_number=item.number,
-                archive_file_name=item.play_file_name,
-            )
-            if item.archive_lahmastore_canonical_url:
-                # Only set archived if there is audio data otherwise it's live episode
-                item.archived = True
-            else:  # Upload didn't succeed
-                error = True
-                error_message = "ERROR: Audio could not be uploaded to storage"
-                app.logger.debug(error_message)
-    return item, error, error_message
-
-
-def archive(norms_show_name, episode_number, archive_file_name):
-    archive_file_path = media_path(
-        norms_show_name, str(episode_number), archive_file_name
-    )
-    do = DoArchive()
-    archive_url = do.upload(archive_file_path, norms_show_name, episode_number)
-    return archive_url
-
-
 def cleanup_tmp_files(item):
     if item.play_file_name:
         delete_file(
@@ -328,173 +191,6 @@ def delete_file(norms_show_name, archive_file_path):
         )
     )
     return True
-
-
-def get_audio(item):
-    do = DoArchive()
-    return do.download(
-        item.shows[0].archive_lahmastore_base_url, item.archive_lahmastore_canonical_url
-    )
-
-
-def get_show_cover(show):
-    do = DoArchive()
-    if show.cover_image_url:
-        show.cover_image_url = do.download(
-            show.archive_lahmastore_base_url, show.cover_image_url
-        )
-    return show
-
-
-def get_show_cover_json(show_json):
-    do = DoArchive()
-    if show_json["cover_image_url"]:
-        show_json["cover_image_url"] = do.download(
-            show_json["archive_lahmastore_base_url"], show_json["cover_image_url"]
-        )
-    return show_json
-
-
-def get_shows():
-    shows = Show.query.all()
-    return shows
-
-
-def get_active_shows_on_given_week(request):
-    week = request.args.get("week", 1, type=int)
-    abcd_week = week % 4
-    return Show.query.filter(Show.active == True).filter(Show.week.any(abcd_week))
-
-
-def get_shows_with_cover():
-    do = DoArchive()
-    shows = Show.query.all()
-    for show in shows:
-        if show.cover_image_url:
-            show.cover_image_url = do.download(
-                show.archive_lahmastore_base_url, show.cover_image_url
-            )
-    return shows
-
-
-def get_shows_with_latest_item(shows, schema):
-    shows_json = schema.dump(shows)
-    # iterate through shows
-    for show_json in shows_json:
-        get_show_cover_json(show_json)
-        if show_json["items"]:
-            latest_item_found = False
-            # iterate through show's items
-            for item_json in show_json["items"]:
-                # search for the first one which is archived & already aired
-                if (
-                    latest_item_found == False
-                    and item_json["archived"] == True
-                    and (
-                        (
-                            datetime.strptime(item_json["play_date"], "%Y-%m-%d")
-                            + timedelta(days=1)
-                        )
-                        < datetime.today()
-                    )
-                ):
-                    latest_item_found = True
-                    get_item_fields_json(item_json, show_json)
-                    show_json["items"] = item_json
-            # if there is no archived show return empty array
-            if latest_item_found == False:
-                show_json["items"] = []
-    return shows_json
-
-
-def get_managed_show(user, id):
-    managed_show = (
-        Show.query.filter(Show.users.contains(user)).filter(Show.id == id).all()
-    )
-    return managed_show
-
-
-def get_managed_shows(user):
-    managed_shows = Show.query.filter(Show.users.contains(user)).all()
-    return managed_shows
-
-
-def get_item_fields(item):
-    do = DoArchive()
-    if item.image_url:
-        item.image_url = do.download(
-            item.shows[0].archive_lahmastore_base_url, item.image_url
-        )
-    item.name_slug = normalise(item.name)
-    return item
-
-
-def get_item_fields_json(item_json, show_json):
-    do = DoArchive()
-    item_json["image_url"] = do.download(
-        show_json["archive_lahmastore_base_url"], item_json["image_url"]
-    )
-    item_json["name_slug"] = normalise(item_json["name"])
-
-
-def get_items():
-    items = Item.query.all()
-    return items
-
-
-def search_items(param):
-    return (
-        Item.query.filter(
-            func.lower(Item.name).contains(func.lower(param))
-            | func.lower(Item.description).contains(func.lower(param))
-        )
-        .filter(Item.play_date < datetime.today() - timedelta(days=1))
-        .filter(Item.archived == True)
-    )
-
-
-def search_show_items(param):
-    return (
-        Item.query.join(Item.shows)
-        .filter(func.lower(Show.name).contains(func.lower(param)))
-        .filter(Item.play_date < datetime.today() - timedelta(days=1))
-        .filter(Item.archived == True)
-    )
-
-
-def search_tag_items(param):
-    return (
-        Item.query.join(Item.tags)
-        .filter(func.lower(Tag.clean_name).contains(normalise(param)))
-        .filter(Item.play_date < datetime.today() - timedelta(days=1))
-        .filter(Item.archived == True)
-    )
-
-
-def search_shows_by_tag(param):
-    return Show.query.join(Show.tags).filter(
-        func.lower(Tag.clean_name) == (func.lower(param))
-    )
-
-
-def search_items_by_tag(param):
-    return (
-        Item.query.join(Item.tags)
-        .filter(func.lower(Tag.clean_name) == (func.lower(param)))
-        .filter(Item.play_date < datetime.today() - timedelta(days=1))
-        .filter(Item.archived == True)
-    )
-
-
-def get_managed_items(user):
-    managed_shows = get_managed_shows(user)
-    managed_items = []
-    for managed_show in managed_shows:
-        managed_items_for_current_show = Item.query.filter(
-            Item.shows.contains(managed_show)
-        ).all()
-        managed_items.extend(managed_items_for_current_show)
-    return managed_items
 
 
 def read_user_fields(metadata):
@@ -534,58 +230,9 @@ def read_tag_field(metadata):
     return metadata
 
 
-def show_item_duplications_number(item):
-    existing_items = Show.query.filter(Show.id == item.shows[0].id).first().items
-    existing_items_with_same_name = existing_items.filter_by(name=item.name)
-    name_occurrence = existing_items_with_same_name.count()
-    app.logger.error("Name_occurence (duplicate detection): {}".format(name_occurrence))
-    return name_occurrence
-
-
 def comma_separated_params_to_list(param):
     result = []
     for val in param.split(","):
         if val:
             result.append(val)
     return result
-
-
-def filter_show_items(show, items, archived, latest):
-    items = sorted(items, key=lambda x: x["play_date"], reverse=True)
-    if archived:
-        already_aired_items = [
-            show_item
-            for show_item in items
-            if (
-                show_item.get("archived")
-                & (
-                    datetime.strptime(show_item.get("play_date"), "%Y-%m-%d")
-                    + timedelta(days=1)
-                    < datetime.today()
-                )
-            )
-        ]
-        if 0 < len(already_aired_items):
-            return get_show_items(show, already_aired_items, latest)
-        else:
-            return []
-    else:
-        return get_show_items(show, items, latest)
-
-
-def get_show_items(show, items, latest):
-    do = DoArchive()
-    if latest:
-        items = items[0]
-        items["image_url"] = do.download(
-            show.archive_lahmastore_base_url, items["image_url"]
-        )
-        items["name_slug"] = normalise(items["name"])
-        return items
-    else:
-        for item in items:
-            item["image_url"] = do.download(
-                show.archive_lahmastore_base_url, item["image_url"]
-            )
-            item["name_slug"] = normalise(item["name"])
-        return items

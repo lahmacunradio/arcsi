@@ -2,7 +2,8 @@ from flask import jsonify, make_response, request
 from flask_security import roles_required
 from marshmallow import fields, post_load, Schema
 
-from arcsi.api import arcsi
+from . import arcsi
+
 from arcsi.model.user import User
 
 
