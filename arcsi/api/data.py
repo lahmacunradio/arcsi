@@ -4,10 +4,12 @@ from flask import jsonify, make_response, request
 from flask_security import roles_required
 
 from . import arcsi
+from .show import shows_schedule_schema
+
 from arcsi.handler.schedule import LiquidsoapScheduler
+
 from arcsi.model.item import Item
 from arcsi.model.show import Show
-from .show import shows_schedule_schema
 
 headers = {"Content-Type": "application/json"}
 

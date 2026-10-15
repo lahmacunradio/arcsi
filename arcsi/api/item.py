@@ -6,13 +6,9 @@ from flask_security import auth_token_required, roles_accepted
 from marshmallow import fields, post_load, Schema
 from marshmallow.validate import Length
 
-import arcsi
-from arcsi.api.utils import (
-    cleanup_tmp_files,
-    normalise,
-    process_files,
-)
-from arcsi.api.utils import read_show_field, read_tag_field
+from . import arcsi
+from .utils import cleanup_tmp_files, normalise, process_files
+from .utils import read_show_field, read_tag_field
 
 from arcsi.handler.archival import archive_files, get_audio, get_item_fields
 from arcsi.handler.streaming import broadcast_episode, cleanup_show_playlist

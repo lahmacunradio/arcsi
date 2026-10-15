@@ -2,8 +2,10 @@ from flask import make_response
 from flask_security import auth_token_required
 from marshmallow import fields, post_load, Schema
 
-from arcsi.api import arcsi
+from . import arcsi
+
 from arcsi.handler.archival import get_item_fields, get_show_cover
+
 from arcsi.model.tag import Tag
 
 
