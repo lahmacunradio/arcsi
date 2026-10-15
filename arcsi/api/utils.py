@@ -1,23 +1,12 @@
 import os
-from datetime import datetime, timedelta
 from uuid import uuid4
 
 from flask import request
 from flask import current_app as app
 from slugify import slugify
-from sqlalchemy import func
 from werkzeug.utils import safe_join, secure_filename
 
-from arcsi.handler.archival import (
-    get_show_cover_json,
-    get_item_fields_json,
-    get_show_items,
-)
-
 from arcsi.model import db
-from arcsi.model.item import Item
-from arcsi.model.show import Show
-from arcsi.model.tag import Tag
 
 CONNECTER = "_"
 DELIMITER = "-"
@@ -204,119 +193,6 @@ def delete_file(norms_show_name, archive_file_path):
     return True
 
 
-def get_shows():
-    shows = Show.query.all()
-    return shows
-
-
-def get_active_shows_on_given_week(request):
-    week = request.args.get("week", 1, type=int)
-    abcd_week = week % 4
-    return Show.query.filter(Show.active == True).filter(Show.week.any(abcd_week))
-
-
-def get_shows_with_latest_item(shows, schema):
-    shows_json = schema.dump(shows)
-    # iterate through shows
-    for show_json in shows_json:
-        get_show_cover_json(show_json)
-        if show_json["items"]:
-            latest_item_found = False
-            # iterate through show's items
-            for item_json in show_json["items"]:
-                # search for the first one which is archived & already aired
-                if (
-                    latest_item_found == False
-                    and item_json["archived"] == True
-                    and (
-                        (
-                            datetime.strptime(item_json["play_date"], "%Y-%m-%d")
-                            + timedelta(days=1)
-                        )
-                        < datetime.today()
-                    )
-                ):
-                    latest_item_found = True
-                    get_item_fields_json(item_json, show_json)
-                    show_json["items"] = item_json
-            # if there is no archived show return empty array
-            if latest_item_found == False:
-                show_json["items"] = []
-    return shows_json
-
-
-def get_managed_show(user, id):
-    managed_show = (
-        Show.query.filter(Show.users.contains(user)).filter(Show.id == id).all()
-    )
-    return managed_show
-
-
-def get_managed_shows(user):
-    managed_shows = Show.query.filter(Show.users.contains(user)).all()
-    return managed_shows
-
-
-def get_items():
-    items = Item.query.all()
-    return items
-
-
-def search_items(param):
-    return (
-        Item.query.filter(
-            func.lower(Item.name).contains(func.lower(param))
-            | func.lower(Item.description).contains(func.lower(param))
-        )
-        .filter(Item.play_date < datetime.today() - timedelta(days=1))
-        .filter(Item.archived == True)
-    )
-
-
-def search_show_items(param):
-    return (
-        Item.query.join(Item.shows)
-        .filter(func.lower(Show.name).contains(func.lower(param)))
-        .filter(Item.play_date < datetime.today() - timedelta(days=1))
-        .filter(Item.archived == True)
-    )
-
-
-def search_tag_items(param):
-    return (
-        Item.query.join(Item.tags)
-        .filter(func.lower(Tag.clean_name).contains(normalise(param)))
-        .filter(Item.play_date < datetime.today() - timedelta(days=1))
-        .filter(Item.archived == True)
-    )
-
-
-def search_shows_by_tag(param):
-    return Show.query.join(Show.tags).filter(
-        func.lower(Tag.clean_name) == (func.lower(param))
-    )
-
-
-def search_items_by_tag(param):
-    return (
-        Item.query.join(Item.tags)
-        .filter(func.lower(Tag.clean_name) == (func.lower(param)))
-        .filter(Item.play_date < datetime.today() - timedelta(days=1))
-        .filter(Item.archived == True)
-    )
-
-
-def get_managed_items(user):
-    managed_shows = get_managed_shows(user)
-    managed_items = []
-    for managed_show in managed_shows:
-        managed_items_for_current_show = Item.query.filter(
-            Item.shows.contains(managed_show)
-        ).all()
-        managed_items.extend(managed_items_for_current_show)
-    return managed_items
-
-
 def read_user_fields(metadata):
     metadata["users"] = [
         {
@@ -354,40 +230,9 @@ def read_tag_field(metadata):
     return metadata
 
 
-def show_item_duplications_number(item):
-    existing_items = Show.query.filter(Show.id == item.shows[0].id).first().items
-    existing_items_with_same_name = existing_items.filter_by(name=item.name)
-    name_occurrence = existing_items_with_same_name.count()
-    app.logger.error("Name_occurence (duplicate detection): {}".format(name_occurrence))
-    return name_occurrence
-
-
 def comma_separated_params_to_list(param):
     result = []
     for val in param.split(","):
         if val:
             result.append(val)
     return result
-
-
-def filter_show_items(show, items, archived, latest):
-    items = sorted(items, key=lambda x: x["play_date"], reverse=True)
-    if archived:
-        already_aired_items = [
-            show_item
-            for show_item in items
-            if (
-                show_item.get("archived")
-                & (
-                    datetime.strptime(show_item.get("play_date"), "%Y-%m-%d")
-                    + timedelta(days=1)
-                    < datetime.today()
-                )
-            )
-        ]
-        if 0 < len(already_aired_items):
-            return get_show_items(show, already_aired_items, latest)
-        else:
-            return []
-    else:
-        return get_show_items(show, items, latest)

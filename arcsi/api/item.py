@@ -13,14 +13,6 @@ from arcsi.api.utils import (
     process_files,
 )
 from arcsi.api.utils import read_show_field, read_tag_field
-from arcsi.api.utils import (
-    get_items,
-    search_items,
-    search_items_by_tag,
-    search_show_items,
-    search_tag_items,
-    show_item_duplications_number,
-)
 
 from arcsi.handler.archival import archive_files, get_audio, get_item_fields
 from arcsi.handler.streaming import broadcast_episode, cleanup_show_playlist
@@ -30,6 +22,15 @@ from arcsi.model.item import Item
 from arcsi.model.show import Show
 from arcsi.model.tag import Tag
 from arcsi.model.utils import get_or_create
+
+from arcsi.utils.item import (
+    get_items,
+    search_items,
+    search_items_by_tag,
+    search_show_items,
+    search_tag_items,
+    show_item_duplications_number,
+)
 
 
 class ItemDetailsSchema(Schema):

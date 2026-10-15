@@ -9,7 +9,10 @@ from arcsi.api import (
     archon_items_schema,
     shows_minimal_schema,
 )
-from arcsi.api.utils import get_items, get_managed_items, get_shows, get_managed_shows
+
+from arcsi.utils.item import get_items, get_managed_items
+from arcsi.utils.show import get_shows, get_managed_shows
+
 from arcsi.view import router
 
 

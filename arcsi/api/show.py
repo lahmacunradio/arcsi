@@ -15,24 +15,27 @@ from arcsi.api.utils import (
     sort_for,
 )
 from arcsi.api.utils import read_user_fields, read_week_field, read_tag_field
-from arcsi.api.utils import (
-    filter_show_items,
-    get_active_shows_on_given_week,
-    get_shows,
-    get_shows_with_latest_item,
-    search_shows_by_tag,
-)
+
 from arcsi.handler.archival import (
     archive,
     get_item_fields,
     get_show_cover,
     get_shows_with_cover,
 )
+
 from arcsi.model import db
 from arcsi.model.show import Show
 from arcsi.model.user import User
 from arcsi.model.tag import Tag
 from arcsi.model.utils import get_or_create
+
+from arcsi.utils.show import (
+    get_active_shows_on_given_week,
+    get_shows,
+    search_shows_by_tag,
+    filter_show_items,
+    get_shows_with_latest_item,
+)
 
 
 class ShowDetailsSchema(Schema):
