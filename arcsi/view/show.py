@@ -2,13 +2,9 @@ from flask import render_template
 from flask_login import current_user
 from flask_security import login_required, roles_accepted, roles_required
 
-from arcsi.api import archon_view_show, archon_shows_schema
-from arcsi.api.utils import (
-    get_shows,
-    get_managed_shows,
-    get_managed_show,
-    get_playlist_existence_and_emptiness,
-)
+from arcsi.api.show import archon_view_show, archon_shows_schema
+from arcsi.api.utils import get_shows, get_managed_shows, get_managed_show
+from arcsi.handler.streaming import get_playlist_existence_and_emptiness
 from arcsi.view import router
 
 

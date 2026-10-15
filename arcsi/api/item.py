@@ -6,19 +6,14 @@ from flask_security import auth_token_required, roles_accepted
 from marshmallow import fields, post_load, Schema
 from marshmallow.validate import Length
 
-from . import arcsi
-from .utils import (
-    archive_files,
-    broadcast_episode,
-    cleanup_show_playlist,
+import arcsi
+from arcsi.api.utils import (
     cleanup_tmp_files,
     normalise,
     process_files,
-    get_audio,
-    get_item_fields,
 )
-from .utils import read_show_field, read_tag_field
-from .utils import (
+from arcsi.api.utils import read_show_field, read_tag_field
+from arcsi.api.utils import (
     get_items,
     search_items,
     search_items_by_tag,
@@ -26,6 +21,10 @@ from .utils import (
     search_tag_items,
     show_item_duplications_number,
 )
+
+from arcsi.handler.archival import archive_files, get_audio, get_item_fields
+from arcsi.handler.streaming import broadcast_episode, cleanup_show_playlist
+
 from arcsi.model import db
 from arcsi.model.item import Item
 from arcsi.model.show import Show
