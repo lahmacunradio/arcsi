@@ -156,8 +156,6 @@ def archon_view_item(id):
 @arcsi.route("/archon/item/add", methods=["POST"])
 @roles_accepted("admin", "host")
 def archon_add_item():
-    error = False
-    error_message = ""
     if request.is_json:
         return make_response(
             jsonify("Only accepts multipart/form-data for now, sorry"), 503, headers
@@ -169,10 +167,12 @@ def archon_add_item():
     item_metadata = read_tag_field(item_metadata)
 
     # validate payload
-    err = item_schema.validate(item_metadata)
-    if err:
+    validation_error = item_schema.validate(item_metadata)
+    if validation_error:
         return make_response(
-            jsonify("Invalid data sent to add item, see: {}".format(err)), 500, headers
+            jsonify("Invalid data sent to add item, see: {}".format(validation_error)),
+            500,
+            headers,
         )
     else:
         item_metadata = item_schema.load(item_metadata)
@@ -285,9 +285,6 @@ def archon_delete_item(id):
 @arcsi.route("/archon/item/<int:id>/edit", methods=["POST"])
 @roles_accepted("admin", "host")
 def archon_edit_item(id):
-    error = False
-    error_message = ""
-
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
 
@@ -301,10 +298,10 @@ def archon_edit_item(id):
     # validate payload
     # TODO handle what happens on f.e: empty payload?
     # if err: -- need to check files {put IMG, put AUDIO} first
-    err = item_schema.validate(item_metadata)
-    if err:
+    validation_error = item_schema.validate(item_metadata)
+    if validation_error:
         return make_response(
-            jsonify("Invalid data sent to edit item, see: {}".format(err)),
+            jsonify("Invalid data sent to edit item, see: {}".format(validation_error)),
             500,
             headers,
         )

@@ -79,6 +79,8 @@ def show_item_duplications_number(item):
 
 def handle_files_and_options(request, item, name_occurrence):
     image_file_name = None
+    error = False
+    error_message = ""
 
     if request.files:
         # overwrites item's play_file_name and broadcast
