@@ -7,15 +7,10 @@ from sqlalchemy import func
 
 from . import arcsi
 from .item import item_archive_schema
-from .utils import comma_separated_params_to_list, normalise, save_file, slug, sort_for
+from .utils import comma_separated_params_to_list, normalise, slug, sort_for
 from .utils import read_user_fields, read_week_field, read_tag_field
 
-from arcsi.handler.archival import (
-    archive,
-    get_item_fields,
-    get_show_cover,
-    get_shows_with_cover,
-)
+from arcsi.handler.archival import get_item_fields, get_show_cover, get_shows_with_cover
 
 from arcsi.model import db
 from arcsi.model.show import Show
@@ -24,11 +19,12 @@ from arcsi.model.tag import Tag
 from arcsi.model.utils import get_or_create
 
 from arcsi.utils.show import (
+    filter_show_items,
     get_active_shows_on_given_week,
     get_shows,
-    search_shows_by_tag,
-    filter_show_items,
     get_shows_with_latest_item,
+    save_and_archive_file,
+    search_shows_by_tag,
 )
 
 
@@ -275,20 +271,7 @@ def archon_add_show():
         db.session.add(new_show)
         db.session.flush()
 
-        if request.files:
-            if request.files["image_file"]:
-                cover_image_name = save_file(
-                    norms_show_name=new_show.archive_lahmastore_base_url,
-                    episode_number=0,
-                    archive_file=request.files["image_file"],
-                    archive_file_name=(new_show.name, "cover"),
-                )
-                if cover_image_name:
-                    new_show.cover_image_url = archive(
-                        norms_show_name=new_show.archive_lahmastore_base_url,
-                        episode_number=0,
-                        archive_file_name=cover_image_name,
-                    )
+        new_show = save_and_archive_file(request, new_show)
 
         db.session.commit()
 
@@ -363,28 +346,7 @@ def archon_edit_show(id):
         db.session.add(show)
         db.session.flush()
 
-        if request.files:
-            if request.files["image_file"]:
-                cover_image_name = save_file(
-                    norms_show_name=show.archive_lahmastore_base_url,
-                    episode_number=0,
-                    archive_file=request.files["image_file"],
-                    archive_file_name=(show.name, "cover"),
-                )
-                if cover_image_name:
-                    app.logger.debug(
-                        "STATUS: Cover image name: {}".format(cover_image_name)
-                    )
-                    show.cover_image_url = archive(
-                        norms_show_name=show.archive_lahmastore_base_url,
-                        episode_number=0,
-                        archive_file_name=cover_image_name,
-                    )
-                    app.logger.debug(
-                        "STATUS: Cover image url: {}".format(show.cover_image_url)
-                    )
-                else:
-                    app.logger.debug("ERROR: Error while uploading cover image.")
+        show = save_and_archive_file(request, show)
 
         db.session.commit()
         return make_response(jsonify(show_partial_schema.dump(show)), 200, headers)

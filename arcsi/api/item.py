@@ -7,11 +7,10 @@ from marshmallow import fields, post_load, Schema
 from marshmallow.validate import Length
 
 from . import arcsi
-from .utils import cleanup_tmp_files, normalise, process_files
+from .utils import cleanup_tmp_files, normalise
 from .utils import read_show_field, read_tag_field
 
-from arcsi.handler.archival import archive_files, get_audio, get_item_fields
-from arcsi.handler.streaming import broadcast_episode, cleanup_show_playlist
+from arcsi.handler.archival import get_audio, get_item_fields
 
 from arcsi.model import db
 from arcsi.model.item import Item
@@ -20,6 +19,7 @@ from arcsi.model.tag import Tag
 from arcsi.model.utils import get_or_create
 
 from arcsi.utils.item import (
+    handle_files_and_options,
     get_items,
     search_items,
     search_items_by_tag,
@@ -179,7 +179,6 @@ def archon_add_item():
         download_count = 0
         length = 0
         archived = False
-        image_file_name = None
         image_url = ""
         play_file_name = None
         archive_lahmastore_canonical_url = ""
@@ -224,34 +223,9 @@ def archon_add_item():
         db.session.flush()
 
         # TODO get show cover img and set as fallback
-        if request.files:
-            # overwrites item's play_file_name and broadcast
-            new_item, image_file_name, error, error_message = process_files(
-                request,
-                new_item,
-                name_occurrence,
-                image_file_name,
-                error,
-                error_message,
-            )
-
-        # cleanup previous episode from show's playlist
-        if new_item.live and (error == False):
-            cleanup_show_playlist(new_item.shows[0].playlist_name)
-
-        # archive files if asked
-        if new_item.archive_lahmastore:
-            # overwrites item's image_url, archive_lahmastore_canonical_url and archived
-            new_item, error, error_message = archive_files(
-                new_item, image_file_name, error, error_message
-            )
-
-        # broadcast episode if asked
-        if new_item.broadcast and (error == False):
-            # overwrites item's airing
-            new_item, error, error_message = broadcast_episode(
-                new_item, image_file_name, error, error_message
-            )
+        new_item, error, error_message = handle_files_and_options(
+            request, new_item, name_occurrence
+        )
 
         db.session.commit()
         # TODO error is just bandaid for proper exc handling
@@ -313,7 +287,6 @@ def archon_delete_item(id):
 def archon_edit_item(id):
     error = False
     error_message = ""
-    image_file_name = None
 
     item_query = Item.query.filter_by(id=id)
     item = item_query.first_or_404()
@@ -373,34 +346,9 @@ def archon_edit_item(id):
         db.session.add(item)
         db.session.flush()
 
-        if request.files:
-            # overwrites item's play_file_name and broadcast
-            item, image_file_name, error, error_message = process_files(
-                request,
-                item,
-                name_occurrence,
-                image_file_name,
-                error,
-                error_message,
-            )
-
-        # cleanup previous episode from show's playlist
-        if item.live and (error == False):
-            cleanup_show_playlist(item.shows[0].playlist_name)
-
-        # archive files if asked
-        if item.archive_lahmastore:
-            # overwrites item's image_url, archive_lahmastore_canonical_url and archived
-            item, error, error_message = archive_files(
-                item, image_file_name, error, error_message
-            )
-
-        # broadcast episode if asked
-        if item.broadcast and (error == False):
-            # overwrites item's airing
-            item, error, error_message = broadcast_episode(
-                item, image_file_name, error, error_message
-            )
+        item, error, error_message = handle_files_and_options(
+            request, item, name_occurrence
+        )
 
         db.session.commit()
         if error == False:

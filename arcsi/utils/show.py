@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
 from sqlalchemy import func
 
+from arcsi.api.utils import save_file
 
 from arcsi.handler.archival import (
+    archive,
     get_show_cover_json,
     get_item_fields_json,
     get_show_items,
@@ -92,3 +94,21 @@ def search_shows_by_tag(param):
     return Show.query.join(Show.tags).filter(
         func.lower(Tag.clean_name) == (func.lower(param))
     )
+
+
+def save_and_archive_file(request, show):
+    if request.files:
+        if request.files["image_file"]:
+            cover_image_name = save_file(
+                norms_show_name=show.archive_lahmastore_base_url,
+                episode_number=0,
+                archive_file=request.files["image_file"],
+                archive_file_name=(show.name, "cover"),
+            )
+            if cover_image_name:
+                show.cover_image_url = archive(
+                    norms_show_name=show.archive_lahmastore_base_url,
+                    episode_number=0,
+                    archive_file_name=cover_image_name,
+                )
+    return show

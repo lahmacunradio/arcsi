@@ -59,36 +59,6 @@ class DoArchive(S3Config):
         return "{}/{}/{}".format(self.config["endpoint"], show_name, file_name)
 
 
-def archive_files(item, image_file_name, error, error_message):
-    # archive files if asked
-    if (error == False) and (item.play_file_name or image_file_name):
-        if image_file_name:
-            item.image_url = archive(
-                norms_show_name=item.shows[0].archive_lahmastore_base_url,
-                episode_number=item.number,
-                archive_file_name=image_file_name,
-            )
-            if not item.image_url:
-                error = True
-                error_message = "ERROR: Image could not be uploaded to storage"
-                app.logger.debug(error_message)
-
-        if item.play_file_name:
-            item.archive_lahmastore_canonical_url = archive(
-                norms_show_name=item.shows[0].archive_lahmastore_base_url,
-                episode_number=item.number,
-                archive_file_name=item.play_file_name,
-            )
-            if item.archive_lahmastore_canonical_url:
-                # Only set archived if there is audio data otherwise it's live episode
-                item.archived = True
-            else:  # Upload didn't succeed
-                error = True
-                error_message = "ERROR: Audio could not be uploaded to storage"
-                app.logger.debug(error_message)
-    return item, error, error_message
-
-
 def archive(norms_show_name, episode_number, archive_file_name):
     archive_file_path = media_path(
         norms_show_name, str(episode_number), archive_file_name
