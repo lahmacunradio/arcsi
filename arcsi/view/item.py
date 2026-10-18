@@ -2,15 +2,13 @@ from flask import render_template
 from flask_login import current_user
 from flask_security import login_required, roles_accepted
 
+from . import router
 
-from arcsi.api import (
-    archon_view_item,
-    listen_play_file,
-    archon_items_schema,
-    shows_minimal_schema,
-)
-from arcsi.api.utils import get_items, get_managed_items, get_shows, get_managed_shows
-from arcsi.view import router
+from arcsi.api.item import archon_view_item, listen_play_file, archon_items_schema
+from arcsi.api.show import shows_minimal_schema
+
+from arcsi.utils.item import get_items, get_managed_items
+from arcsi.utils.show import get_shows, get_managed_shows
 
 
 @router.route("/item/all")
