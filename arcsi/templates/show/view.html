@@ -2,6 +2,14 @@
 
 {% block header %}
 <h2>{% block title %}{{show.name}}{% endblock %}</h2>
+{% if current_user.has_role("admin") or current_user.has_role("host") %}
+<p>
+    <a href="{{ url_for('router.edit_show', id=show['id']) }}"><b>Edit show</b></a>
+    {% if current_user.has_role("admin")%} || 
+    <a href="{{ url_for('arcsi.archon_delete_show', id=show['id']) }}"><b>Delete show</b></a>
+    {% endif %}
+</p>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -34,8 +42,18 @@
 <p>Show start: {{show.start}}</p>
 <p>Show end: {{show.end}}</p>
 <p>Show archive lahmastore base URL: {{show.archive_lahmastore_base_url}}</p>
+<p>Show tags:</p>
+<ul>
+    {% for tag in show["tags"] %}
+    <li>
+        <b>
+            {{tag.display_name}}
+        </b>
+    </li>
+    {% endfor %}
+</ul>
 <p>Show items:</p>
-    <ul>
+<ul>
     {% for item in show["items"] %}
     <li>
     --name: <a href="{{ url_for('router.view_item', id=item.id) }}">
@@ -48,20 +66,5 @@
         href="{{ url_for('router.view_item', id=item.id) }}">{{item.id}}</a>
     </li>    
     {% endfor %}
-    </ul> 
-<p>Show tags:</p>
-<ul>
-    {% for tag in show["tags"] %}
-    <li>
-        <b>
-            {{tag.display_name}}
-        </b>
-    </li>
-    {% endfor %}
-</ul>
-<hr>
-{% if current_user.has_role("admin") or current_user.has_role("host") %}
-<p><a href="{{ url_for('router.edit_show', id=show['id']) }}">Edit show</a>{% if current_user.has_role("admin")%} || <a
-        href="{{ url_for('arcsi.archon_delete_show', id=show['id']) }}">Delete show</a>{% endif %}
-{% endif %}
+</ul> 
 {% endblock %}
