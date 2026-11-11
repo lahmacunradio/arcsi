@@ -2,6 +2,14 @@
 
 {% block header %}
 <h2>{% block title %}{{item.name}}{% endblock %}</h2>
+{% if current_user.has_role("admin") or current_user.has_role("host") %}
+<p>
+  <a href="{{ url_for('router.edit_item', id=item['id']) }}"><b>Edit Episode</b></a>
+  {% if current_user.has_role("admin") %}||
+  <a href="{{ url_for('arcsi.archon_delete_item', id=item['id']) }}"><b>Delete Episode</b></a>
+  {% endif %}
+</p>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -22,9 +30,9 @@
 <p>Episode archive lahmastore: {{item["archive_lahmastore"]}}</p>
 <p>Episode archive lahmastore URL : {{item.archive_lahmastore_canonical_url}} </p>
 <p>
-        <audio controls="" name="media" style="width: 35%;">
-                <source src="{{ audiofile_URL }}" type="audio/mpeg">
-        </audio>
+  <audio controls="" name="media" style="width: 35%;">
+    <source src="{{ audiofile_URL }}" type="audio/mpeg">
+  </audio>
 </p>
 <p>Episode archived?: {{item["archived"]}}</p>
 <!-- <p>Episode D/L count: {{item["download_count"]}}</p> -->
@@ -40,9 +48,4 @@
   </li>
   {% endfor %}
 </ul>
-<hr>
-{% if current_user.has_role("admin") or current_user.has_role("host") %}
-<p><a href="{{ url_for('router.edit_item', id=item['id']) }}">Edit Episode</a> {% if current_user.has_role("admin") %}|| <a
-        href="{{ url_for('arcsi.archon_delete_item', id=item['id']) }}">Delete Episode</a>{% endif %}</p>
-{% endif %}
 {% endblock %}
