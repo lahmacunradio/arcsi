@@ -6,7 +6,7 @@ from flask_security import auth_token_required, roles_accepted
 from marshmallow import fields, post_load, Schema
 from marshmallow.validate import Length
 
-from . import arcsi
+from . import arcsi, cache
 from .utils import cleanup_tmp_files, normalise
 from .utils import read_show_field, read_tag_field
 
@@ -119,12 +119,14 @@ headers = {"Content-Type": "application/json"}
 @arcsi.route("/item", methods=["GET"])
 @arcsi.route("/archon/item/all", methods=["GET"])
 @roles_accepted("admin", "host")
+@cache.cached(timeout=60)
 def archon_list_items():
     return archon_items_schema.dump(get_items())
 
 
 @arcsi.route("/item/latest", methods=["GET"])
 @auth_token_required
+@cache.cached(timeout=60)
 def frontend_list_items_latest():
     page = request.args.get("page", 1, type=int)
     size = request.args.get("size", 12, type=int)
