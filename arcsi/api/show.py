@@ -281,6 +281,8 @@ def archon_add_show():
 
         db.session.commit()
 
+        cleanup_show_cache()
+
         return make_response(
             jsonify(show_schema.dump(new_show)),
             200,
@@ -355,6 +357,9 @@ def archon_edit_show(id):
         show = save_and_archive_file(request, show)
 
         db.session.commit()
+
+        cleanup_show_cache()
+
         return make_response(jsonify(show_partial_schema.dump(show)), 200, headers)
 
 
@@ -435,3 +440,12 @@ def frontend_search_show_by_tag(clean_tag):
     for show in shows:
         get_show_cover(show)
     return shows_details_schema.dump(shows)
+
+
+def cleanup_show_cache():
+    cache.delete_cached(frontend_list_shows_without_items)
+    cache.delete_cached(frontend_shows_tiles)
+    cache.delete_cached(archon_list_shows)
+    cache.delete_cached(frontend_shows_schedule)
+    cache.delete_cached(frontend_list_shows_for_schedule)
+    cache.delete_cached(frontend_list_shows_page)

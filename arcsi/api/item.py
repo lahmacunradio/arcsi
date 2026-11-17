@@ -239,6 +239,9 @@ def archon_add_item():
                 200,
                 headers,
             )
+
+        cleanup_item_cache()
+
         return make_response(
             jsonify(
                 {
@@ -355,6 +358,9 @@ def archon_edit_item(id):
             if request.files:
                 cleanup_tmp_files(item)
             return make_response(jsonify(item_partial_schema.dump(item)), 200, headers)
+
+        cleanup_item_cache()
+
         return make_response(
             jsonify(
                 {
@@ -398,3 +404,8 @@ def frontend_search_item_by_tag(clean_tag):
     for item in items:
         get_item_fields(item)
     return items_archive_schema.dump(items)
+
+
+def cleanup_item_cache():
+    cache.delete_cached(archon_list_items)
+    cache.delete_cached(frontend_list_items_latest)
