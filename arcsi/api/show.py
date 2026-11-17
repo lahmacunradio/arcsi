@@ -443,9 +443,9 @@ def frontend_search_show_by_tag(clean_tag):
 
 
 def cleanup_show_cache():
-    cache.delete_cached(frontend_list_shows_without_items)
-    cache.delete_cached(frontend_shows_tiles)
-    cache.delete_cached(archon_list_shows)
-    cache.delete_cached(frontend_shows_schedule)
-    cache.delete_cached(frontend_list_shows_for_schedule)
-    cache.delete_cached(frontend_list_shows_page)
+    cache.delete_cached(arcsi.frontend_list_shows_without_items)
+    cache.delete_cached(arcsi.frontend_shows_tiles)
+    cache.delete_cached(arcsi.archon_list_shows)
+    cache.delete_cached(arcsi.frontend_shows_schedule)
+    cache.delete_cached(arcsi.frontend_list_shows_for_schedule)
+    cache.delete_cached(arcsi.frontend_list_shows_page)

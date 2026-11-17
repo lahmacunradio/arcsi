@@ -407,5 +407,5 @@ def frontend_search_item_by_tag(clean_tag):
 
 
 def cleanup_item_cache():
-    cache.delete_cached(archon_list_items)
-    cache.delete_cached(frontend_list_items_latest)
+    cache.delete_cached(arcsi.archon_list_items)
+    cache.delete_cached(arcsi.frontend_list_items_latest)
