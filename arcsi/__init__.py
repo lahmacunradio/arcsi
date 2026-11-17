@@ -2,7 +2,6 @@ import logging
 import os
 
 from flask import Flask
-from flask_caching import Cache
 from flask_ckeditor import CKEditor
 from flask_security import Security, SQLAlchemySessionUserDatastore
 from flask_mail import Mail
@@ -10,13 +9,13 @@ from flask_migrate import Migrate
 from flask_swagger_ui import get_swaggerui_blueprint
 from sqlalchemy.exc import ProgrammingError
 
+from arcsi.api.cache import cache
 from arcsi.model import db, role, user
 from arcsi.view.forms.register import ButtRegisterForm
 
 ckeditor = CKEditor()
 migrate = Migrate()
 mail = Mail()
-cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
 
 
 def create_app(config_file):
