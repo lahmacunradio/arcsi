@@ -2,6 +2,7 @@ import logging
 import os
 
 from flask import Flask
+from flask_caching import Cache
 from flask_ckeditor import CKEditor
 from flask_security import Security, SQLAlchemySessionUserDatastore
 from flask_mail import Mail
@@ -15,6 +16,7 @@ from arcsi.view.forms.register import ButtRegisterForm
 ckeditor = CKEditor()
 migrate = Migrate()
 mail = Mail()
+cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
 
 
 def create_app(config_file):
@@ -42,7 +44,7 @@ def create_app(config_file):
         migrate.init_app(app, db)
         ckeditor.init_app(app)
         app.mailing = mail.init_app(app)
-
+        cache.init_app(app)
         """
         The application factory runs when `flask db upgrade` is called
         in entrypoint. At this stage we don't have `roles` relations available.

@@ -1,9 +1,6 @@
 from flask import Blueprint
-from flask import current_app as app
-from flask_caching import Cache
 
 arcsi = Blueprint("arcsi", __name__, url_prefix="/arcsi")
-cache = Cache(app, config={"CACHE_TYPE": "SimpleCache"})
 
 from .item import *
 from .role import *
