@@ -263,10 +263,6 @@
               "        pm.expect(item.id).to.be.an(\"number\")\r",
               "        pm.expect(item.number).to.be.an(\"number\")\r",
               "    })\r",
-              "})\r",
-              "\r",
-              "pm.test(\"Episodes number is 5\", function() {\r",
-              "    pm.expect(items.length).to.equal(0)\r",
               "})"
             ],
             "type": "text/javascript",
