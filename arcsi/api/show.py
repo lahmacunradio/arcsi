@@ -162,28 +162,28 @@ headers = {"Content-Type": "application/json"}
 @arcsi.route("/show", methods=["GET"])
 @arcsi.route("/show/all_without_items", methods=["GET"])
 @roles_accepted("admin", "host", "guest")
-@cache.cached(timeout=60)
+@cache.cached(timeout=600)
 def frontend_list_shows_without_items():
     return shows_schedule_excluded_schema.dump(get_shows_with_cover())
 
 
 @arcsi.route("/show/all_details", methods=["GET"])
 @roles_accepted("admin", "host", "guest")
-@cache.cached(timeout=60)
+@cache.cached(timeout=600)
 def frontend_shows_tiles():
     return shows_details_schema.dump(get_shows_with_cover())
 
 
 @arcsi.route("/archon/show/all", methods=["GET"])
 @roles_accepted("admin", "host")
-@cache.cached(timeout=60)
+@cache.cached(timeout=600)
 def archon_list_shows():
     return archon_shows_schema.dump(get_shows())
 
 
 @arcsi.route("/show/all_schedule", methods=["GET"])
 @auth_token_required
-@cache.cached(timeout=60)
+@cache.cached(timeout=600)
 def frontend_shows_schedule():
     shows = get_active_shows_on_given_week(request)
     return make_response(
@@ -195,7 +195,7 @@ def frontend_shows_schedule():
 
 @arcsi.route("/show/schedule", methods=["GET"])
 @auth_token_required
-@cache.cached(timeout=60)
+@cache.cached(timeout=600)
 def frontend_list_shows_for_schedule():
     shows = get_active_shows_on_given_week(request)
     for show in shows:
@@ -216,7 +216,7 @@ def frontend_list_shows_for_schedule_by():
 # We are gonna use this on the new page as the show/all
 @arcsi.route("/show/list", methods=["GET"])
 @auth_token_required
-@cache.cached(timeout=60)
+@cache.cached(timeout=600)
 def frontend_list_shows_page():
     return shows_archive_schema.dump(get_shows_with_cover())
 
