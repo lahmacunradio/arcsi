@@ -27,6 +27,8 @@ SECURITY_USE_VERIFY_PASSWORD_CACHE = True
 RECAPTCHA_PUBLIC_KEY = "some_public_key"
 RECAPTCHA_PRIVATE_KEY = "some_private_key"
 
+CACHE_TYPE = "SimpleCache"
+
 # ARCSI CONF
 UPLOAD_FOLDER = "/abs/path/on/your/machine"  # this is where arcsi stores uploadable files temporarily
 ALLOWED_EXTENSIONS = ["mp3", "gif", "jpg", "jpeg", "png"]

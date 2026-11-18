@@ -30,6 +30,7 @@ dependencies = [
     { name = "bcrypt" },
     { name = "boto3" },
     { name = "flask" },
+    { name = "flask-caching" },
     { name = "flask-ckeditor" },
     { name = "flask-mail" },
     { name = "flask-migrate" },
@@ -51,6 +52,7 @@ requires-dist = [
     { name = "bcrypt", specifier = "==5.0.0" },
     { name = "boto3", specifier = "==1.42.21" },
     { name = "flask", specifier = "==3.1.2" },
+    { name = "flask-caching", specifier = "==2.5.0" },
     { name = "flask-ckeditor", specifier = "==1.0.0" },
     { name = "flask-mail", specifier = "==0.10.0" },
     { name = "flask-migrate", specifier = "==4.1.0" },
@@ -209,6 +211,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/4c/df/dfd07d75fda643ba07af75e33cfd72472a12bb13901812ca34e47f081507/botocore-1.42.21.tar.gz", hash = "sha256:db8f99d186156da42feb4fd2098017383d9b155097290cc53da7258f6e652c39", size = 14877471, upload-time = "2026-01-03T00:58:51.84Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/6e/a1/78c50c437fdf17369adeae275445f40f51029888911923ace37523db4c02/botocore-1.42.21-py3-none-any.whl", hash = "sha256:6b59973a3ba8c3cfd5123f2656fef2339beee9f6483b8bc12bb00c5453ea2c6d", size = 14550712, upload-time = "2026-01-03T00:58:48.653Z" },
+]
+
+[[package]]
+name = "cachelib"
+version = "0.17.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/67/e8/f7e968e40ed6c07276a5ab20bda22e9ed6a3f152292787995f0d5ad2ef16/cachelib-0.17.2.tar.gz", hash = "sha256:583958fcf24a89b8fda57a4d9439162dfcb81a3a6199bcab7154b9844842bcdf", size = 180894, upload-time = "2026-11-10T06:02:46.952Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9b/bb/806d17468f8cda4810fee10ef1fb88d8967fbc97efff5d71c9cfe48a8758/cachelib-0.17.2-py3-none-any.whl", hash = "sha256:0618fe23be4dd804c0d971beccbfed7a8749c77cfd3fa033b6a9b9646b5d114c", size = 35481, upload-time = "2026-11-10T06:02:45.616Z" },
 ]
 
 [[package]]
@@ -392,6 +403,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/dc/6d/cfe3c0fcc5e477df242b98bfe186a4c34357b4847e87ecaef04507332dab/flask-3.1.2.tar.gz", hash = "sha256:bf656c15c80190ed628ad08cdfd3aaa35beb087855e2f494910aa3774cc4fd87", size = 720160, upload-time = "2025-08-19T21:03:21.205Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ec/f9/7f9263c5695f4bd0023734af91bedb2ff8209e8de6ead162f35d8dc762fd/flask-3.1.2-py3-none-any.whl", hash = "sha256:ca1d8112ec8a6158cc29ea4858963350011b5c846a414cdb7a954aa9e967d03c", size = 103308, upload-time = "2025-08-19T21:03:19.499Z" },
+]
+
+[[package]]
+name = "flask-caching"
+version = "2.5.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cachelib" },
+    { name = "flask" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/dc/ce/a54552acb28bd0ac617703780e8f2344a4e5aee7a46936328fe7cf5b3a95/flask_caching-2.5.0.tar.gz", hash = "sha256:5a8779b54695f96e1b4a7a149dd8c6d863433ea66327cde4311ce7fd7b57391f", size = 218694, upload-time = "2026-08-24T18:52:01.459Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fc/51/ce7bc1eb0787acef0fecd6dae3f9f45cf46da5c5a51da79efa1e0eb2724c/flask_caching-2.5.0-py3-none-any.whl", hash = "sha256:8e625acd99759171a428ceb9b669ba6743c11dd9b37ace4e0ea7a3ee34097ccd", size = 34976, upload-time = "2026-08-24T18:52:00.136Z" },
 ]
 
 [[package]]

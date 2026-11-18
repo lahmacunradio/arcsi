@@ -7,6 +7,7 @@ from marshmallow import fields, post_load, Schema
 from marshmallow.validate import Length
 
 from . import arcsi
+from .cache import cache
 from .utils import cleanup_tmp_files, normalise
 from .utils import read_show_field, read_tag_field
 
@@ -119,12 +120,14 @@ headers = {"Content-Type": "application/json"}
 @arcsi.route("/item", methods=["GET"])
 @arcsi.route("/archon/item/all", methods=["GET"])
 @roles_accepted("admin", "host")
+@cache.cached(timeout=600)
 def archon_list_items():
     return archon_items_schema.dump(get_items())
 
 
 @arcsi.route("/item/latest", methods=["GET"])
 @auth_token_required
+@cache.cached(timeout=600)
 def frontend_list_items_latest():
     page = request.args.get("page", 1, type=int)
     size = request.args.get("size", 12, type=int)
@@ -228,6 +231,7 @@ def archon_add_item():
         )
 
         db.session.commit()
+
         # TODO error is just bandaid for proper exc handling
         if error == False:
             cleanup_tmp_files(new_item)
@@ -236,6 +240,8 @@ def archon_add_item():
                 200,
                 headers,
             )
+        cache.clear()
+
         return make_response(
             jsonify(
                 {
@@ -348,10 +354,13 @@ def archon_edit_item(id):
         )
 
         db.session.commit()
+
         if error == False:
             if request.files:
                 cleanup_tmp_files(item)
             return make_response(jsonify(item_partial_schema.dump(item)), 200, headers)
+        cache.clear()
+
         return make_response(
             jsonify(
                 {
