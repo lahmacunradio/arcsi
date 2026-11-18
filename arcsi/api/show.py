@@ -443,9 +443,7 @@ def frontend_search_show_by_tag(clean_tag):
 
 
 def cleanup_show_cache():
-    cache.delete_cached(
-        arcsi.frontend_list_shows_without_items, "/arcsi/show/all_without_items"
-    )
+    cache.delete_cached("/arcsi/show/all_without_items")
     cache.delete_cached("/arcsi/show/all_details")
     cache.delete_cached("/arcsi/archon/show/all")
     cache.delete_cached("/arcsi/show/all_schedule")
