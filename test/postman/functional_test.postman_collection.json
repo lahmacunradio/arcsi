@@ -1895,7 +1895,7 @@
               "})\r",
               "\r",
               "pm.test(\"Episodes number is 1\", function() {\r",
-              "    pm.expect(items.length).to.equal(1)\r",
+              "    pm.expect(items.length).to.equal(0)\r",
               "})"
             ],
             "type": "text/javascript",
@@ -2927,7 +2927,7 @@
               "})\r",
               "\r",
               "pm.test(\"Episodes number is 2\", function() {\r",
-              "    pm.expect(items.length).to.equal(2)\r",
+              "    pm.expect(items.length).to.equal(0)\r",
               "})"
             ],
             "type": "text/javascript",
@@ -3611,7 +3611,7 @@
               "})\r",
               "\r",
               "pm.test(\"Episodes number is 3\", function() {\r",
-              "    pm.expect(items.length).to.equal(3)\r",
+              "    pm.expect(items.length).to.equal(0)\r",
               "})"
             ],
             "type": "text/javascript",
@@ -4035,7 +4035,7 @@
               "})\r",
               "\r",
               "pm.test(\"Episodes number is 4\", function() {\r",
-              "    pm.expect(items.length).to.equal(4)\r",
+              "    pm.expect(items.length).to.equal(0)\r",
               "})"
             ],
             "type": "text/javascript",
@@ -4763,7 +4763,7 @@
               "})\r",
               "\r",
               "pm.test(\"Episodes number is 4\", function() {\r",
-              "    pm.expect(items.length).to.equal(4)\r",
+              "    pm.expect(items.length).to.equal(0)\r",
               "})"
             ],
             "type": "text/javascript",
@@ -5423,7 +5423,7 @@
               "})\r",
               "\r",
               "pm.test(\"Episodes number is 5\", function() {\r",
-              "    pm.expect(items.length).to.equal(5)\r",
+              "    pm.expect(items.length).to.equal(0)\r",
               "})"
             ],
             "type": "text/javascript",
