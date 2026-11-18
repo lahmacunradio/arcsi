@@ -446,8 +446,8 @@ def cleanup_show_cache():
     cache.delete_cached(
         arcsi.frontend_list_shows_without_items, "/arcsi/show/all_without_items"
     )
-    cache.delete_cached(arcsi.frontend_shows_tiles, "/arcsi/show/all_details")
-    cache.delete_cached(arcsi.archon_list_shows, "/arcsi/archon/show/all")
-    cache.delete_cached(arcsi.frontend_shows_schedule, "/arcsi/show/all_schedule")
-    cache.delete_cached(arcsi.frontend_list_shows_for_schedule, "/arcsi/show/schedule")
-    cache.delete_cached(arcsi.frontend_list_shows_page, "/arcsi/show/list")
+    cache.delete_cached("/arcsi/show/all_details")
+    cache.delete_cached("/arcsi/archon/show/all")
+    cache.delete_cached("/arcsi/show/all_schedule")
+    cache.delete_cached("/arcsi/show/schedule")
+    cache.delete_cached("/arcsi/show/list")
