@@ -9,6 +9,7 @@ from flask_migrate import Migrate
 from flask_swagger_ui import get_swaggerui_blueprint
 from sqlalchemy.exc import ProgrammingError
 
+from arcsi.api.cache import cache
 from arcsi.model import db, role, user
 from arcsi.view.forms.register import ButtRegisterForm
 
@@ -42,7 +43,7 @@ def create_app(config_file):
         migrate.init_app(app, db)
         ckeditor.init_app(app)
         app.mailing = mail.init_app(app)
-
+        cache.init_app(app)
         """
         The application factory runs when `flask db upgrade` is called
         in entrypoint. At this stage we don't have `roles` relations available.

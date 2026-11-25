@@ -22,6 +22,8 @@ SECURITY_REGISTERABLE = True
 SECURITY_PASSWORD_SALT = "some_salt"
 SECURITY_USE_VERIFY_PASSWORD_CACHE = True
 
+CACHE_TYPE = "SimpleCache"
+
 # ARCSI CONF
 UPLOAD_FOLDER = "uploads"  # this is where arcsi stores uploadable files temporarily
 ALLOWED_EXTENSIONS = ["mp3", "gif", "jpg", "jpeg", "png"]
