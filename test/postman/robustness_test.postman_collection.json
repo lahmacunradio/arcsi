@@ -266,7 +266,7 @@
               "})\r",
               "\r",
               "pm.test(\"Episodes number is 5\", function() {\r",
-              "    pm.expect(items.length).to.equal(0)\r",
+              "    pm.expect(items.length).to.equal(5)\r",
               "})"
             ],
             "type": "text/javascript",
