@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  
+  web:
+    links:
+      - "db"
+    build: .
+    hostname: ${HOSTNAME}
+    image: arcsi:0.4.7-dev
+    restart: always
+    ports:
+      - "5000:5000"
+    expose:
+      - 5000
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    env_file: 
+        - db.env.template
+    # there is no `depend_on: condition:` in compose service v3
+    entrypoint: gunicorn "arcsi:create_app('../config.py.dev')" --reload -b 0.0.0.0:5000 -t 30 --worker-class=gthread -w 2 --threads 2 --log-file aguni.log --log-level debug
+
+  db:
+    image: postgres:12
+    restart: always
+    volumes:
+      - ./test/empty_dump.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    env_file:
+      - db.env.template
